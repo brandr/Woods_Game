@@ -1,0 +1,16 @@
+Woods game todolist
+
+-make a git repo
+-make the game top-down
+	*figure out how we want objects to be rendered and what kind of camera style we want-- could go for a look with a slight angle (example: stardew valley)
+-figure out a tile system where the player is always on a tile and different tiles allow different  walking speeds
+-finish sorting out memory leaks (note that they don't actually seem to be real leaks but need to make sure)
+-figure out what kind of world/dungeon/level system we want
+-make player animations with transparency and non-square images, then implement better collisions
+	*also figure out how to map player movement to different actions
+-idea: put level coords and dimensions in the corresponding files
+	*could also put them in different files and load the dungeon based on this data
+-test large levels to see if there is lag when entering them
+-figure out how to handle player leaving the level when there's no corresponding level
+-implement backgrounds simlarly to tutorial tile system (think in terms of layers and have the different layers rendered on top of each other, possibly using a transparent color with background images)
+	*either implement parallax or plan for it
