@@ -3,6 +3,7 @@
 
 InputManager::InputManager()
 {
+
 }
 
 
@@ -17,13 +18,7 @@ bool InputManager::is_key_pressed(ALLEGRO_EVENT ev, int key)
 
 bool InputManager::is_key_pressed(ALLEGRO_EVENT ev, std::vector<int> keys)
 {
-	if (ev.type == ALLEGRO_EVENT_KEY_DOWN) {
-		int size = keys.size();
-		for (int i = 0; i < size; i++) {
-			if (ev.keyboard.keycode == keys[i]) return true;
-		}
-	}
-	return false;
+	return is_input_pressed(ev, ALLEGRO_EVENT_KEY_UP, keys);
 }
 
 bool InputManager::is_key_released(ALLEGRO_EVENT ev, int key)
@@ -40,4 +35,44 @@ bool InputManager::is_key_released(ALLEGRO_EVENT ev, std::vector<int> keys)
 		}
 	}
 	return false;
+}
+
+bool InputManager::is_input_pressed(ALLEGRO_EVENT ev, int evtype, std::vector<int> keys)
+{
+	if (ev.type == ALLEGRO_EVENT_KEY_UP) return false;
+	if (ev.type == evtype) {
+		int size = keys.size();
+		for (int i = 0; i < size; i++) {
+			if (ev.keyboard.keycode == keys[i]) return true;
+		}
+	}
+	return false;
+}
+
+bool InputManager::is_input_pressed(ALLEGRO_EVENT ev, int evtype, int key)
+{
+	if (ev.type == ALLEGRO_EVENT_JOYSTICK_CONFIGURATION) {
+		//TODO
+		return false;
+	}
+	if (ev.type == ALLEGRO_EVENT_JOYSTICK_AXIS) {
+		return evtype == ALLEGRO_EVENT_JOYSTICK_AXIS;
+	}
+	if (ev.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN) {
+		//TODO
+		return false;
+	}
+	if (ev.type == ALLEGRO_EVENT_JOYSTICK_BUTTON_UP) {
+		//std::cout << "joystick release" << std::endl;
+		return false;
+	}
+	if (ev.type == ALLEGRO_EVENT_KEY_UP && ev.keyboard.keycode == key) return false;
+	if (ev.type == ALLEGRO_EVENT_KEY_DOWN) return ev.type == evtype && ev.keyboard.keycode == key;
+	return false;
+}
+
+bool InputManager::is_input_released(ALLEGRO_EVENT ev, int evtype, int key)
+{
+	//temp. use evtype if necessary for special cases
+	return ev.type == ALLEGRO_EVENT_KEY_UP && is_key_released(ev, key);
 }

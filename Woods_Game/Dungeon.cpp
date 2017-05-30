@@ -14,9 +14,10 @@ Dungeon::Dungeon(int width, int height)
 	}
 	//TODO: add platforms differently using gameimagemanager
 	//TEMP
-	
-	add_level(new Level("temp_map_1", "Level_1", 0, 0, 1, 1));
-	add_level(new Level("temp_map_1", "Level_2", 1, 0, 2, 1));
+	add_level(new Level("temp_level_1", 0, 0, 1, 1));
+	add_level(new Level("temp_level_2", 1, 0, 2, 1));
+	//add_level(new Level("temp_map_1", "Level_1", 0, 0, 1, 1));
+	//add_level(new Level("temp_map_1", "Level_2", 1, 0, 2, 1));
 	//TEMP
 }
 

@@ -1,6 +1,8 @@
 #ifndef GAMEIMAGE_H
 #define GAMEIMAGE_H
 #include "SpriteSheetAnimation.h"
+#include <map>
+#include "PPCD.h"
 
 #define DEFAULT_SCREEN_WIDTH 800
 #define DEFAULT_SCREEN_HEIGHT 600
@@ -9,21 +11,27 @@
 
 class ImageLoader;
 //enum ATTRIBUTES{IMAGE, POSITION};
-enum TYPES{PLAYER, PLATFORM, GAME_IMAGE};
+enum GAME_MODES{TOP_DOWN, SIDE_SCROLLING};
+enum TYPES{PLAYER, BLOCK, GAME_IMAGE};
+enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
 
 class GameImage
 {
 protected:
+	ALLEGRO_BITMAP *bitmap;
 	std::string image_filename;
 	Rect* image_subsection = NULL;
 	//Level* current_level;
 	Rect rect;
 	Animation *animation;
 	SpriteSheetAnimation *ss_animation;
+	int direction = 0, anim_state = 0;
+	std::map<std::pair<int, int>, int> animation_dir_map;
+	mask_t *mask;
 public:
 	GameImage(std::string);
 	GameImage();
-	GameImage(int, int, int, int);
+	GameImage(float, float, float, float);
 	virtual ~GameImage();
 	virtual int get_type();
 	std::string get_image_filename();
@@ -33,13 +41,18 @@ public:
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();	//TEMP, need to figure out what arguments nee to be passed
 	void set_position(int, int);
+	void set_bitmap(ALLEGRO_BITMAP *bitmap);
+	virtual void refresh_mask();
+	virtual int get_animation_index();
+	mask_t* get_mask();
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();
-	int get_x();
-	int get_y();
-	int get_width();
-	int get_height();
+
+	float get_x();
+	float get_y();
+	float get_width();
+	float get_height();
 	virtual bool contains_point(int, int);
 	virtual bool intersects_area(Rect);
 	//virtual void set_current_level(Level*);

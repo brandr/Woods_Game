@@ -28,6 +28,7 @@ public:
 	virtual void unload_content();
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY* display);
+	
 	//void set_world(World);
 	//void set_current_level(int, int);
 	//Level* get_current_level();

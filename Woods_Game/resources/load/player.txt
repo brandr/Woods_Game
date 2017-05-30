@@ -1,2 +1,2 @@
 Load=[image][position][spritesheet][ss_frame_count][ss_frame_dimensions]
-[temp_player][10,10][temp_player_spritesheet][3,4][64,64]
+[temp_player][10,10][temp_player_spritesheet_2][3,5][64,64]

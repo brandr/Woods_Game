@@ -21,7 +21,7 @@ int main()
 	
 	//before title screen
 
-	//_CrtSetBreakAlloc(150);		
+	//_CrtSetBreakAlloc(955);		
 	// ? gameimage vector allocation
 	//_CrtSetBreakAlloc(161); //map allocation in imageloader
 	//_CrtSetBreakAlloc(2928);		
@@ -67,25 +67,26 @@ int main()
 	al_init_primitives_addon();
 	al_init_image_addon();
 	al_install_keyboard();
+	al_install_joystick();
 	al_install_mouse();
 
 	// set up timer/keyboard input
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
-	ALLEGRO_KEYBOARD_STATE keyState;
+	//ALLEGRO_KEYBOARD_STATE keyState;
 
 	// register all sources that we will listen for in the main loop
 	al_register_event_source(event_queue, al_get_timer_event_source(timer));
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
+	al_register_event_source(event_queue, al_get_joystick_event_source());
 	al_register_event_source(event_queue, al_get_display_event_source(display));
 	bool done = false, draw = true;
-
+	
 	//TitleScreen title_screen;
-	ScreenManager::get_instance().initilaize(DBG_NEW TitleScreen());
+	ScreenManager::get_instance().initilaize(new TitleScreen());
 	ScreenManager::get_instance().load_content();
 	ImageLoader::get_instance().load_content();
 	InputManager input;
-
 	al_start_timer(timer);
 	// game loop
 	while (!done) {
@@ -97,10 +98,6 @@ int main()
 		ScreenManager::get_instance().process_event(events);
 		// handle movement updates
 		if (events.type == ALLEGRO_EVENT_TIMER) {
-			al_get_keyboard_state(&keyState);
-			//TODO: process keyboard input here
-			//if (input.is_key_pressed(events, ALLEGRO_KEY_ESCAPE)) done = true;
-			//ScreenManager::get_instance().update(&keyState);
 			ScreenManager::get_instance().update();
 			draw = true;
 		}
@@ -116,7 +113,17 @@ int main()
 		ScreenManager::get_instance().unload_content();
 		al_destroy_display(display);
 		al_destroy_timer(timer);
+		al_unregister_event_source(event_queue, al_get_timer_event_source(timer));
+		al_unregister_event_source(event_queue, al_get_keyboard_event_source());
+		al_unregister_event_source(event_queue, al_get_joystick_event_source());
+		al_unregister_event_source(event_queue, al_get_display_event_source(display));
 		al_destroy_event_queue(event_queue);
+		al_uninstall_joystick();
+		al_uninstall_mouse();
+		al_uninstall_keyboard();
+		al_uninstall_system();
+		//delete left_joystick;
+		//delete right_joystick;
 	}
 	_CrtDumpMemoryLeaks();
 	return 0;

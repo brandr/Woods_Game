@@ -18,6 +18,15 @@ Level::Level(std::string filename, std::string id,  int grid_x, int grid_y, int 
 	this->height = STANDARD_LEVEL_GRID_HEIGHT * grid_height;
 }
 
+Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int grid_height)
+{
+	this->filename = filename;
+	this->grid_x = grid_x;
+	this->grid_y = grid_y;
+	this->width = STANDARD_LEVEL_GRID_WIDTH * grid_width;
+	this->height = STANDARD_LEVEL_GRID_HEIGHT * grid_height;
+}
+
 Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)		
 {
 	this->grid_x = grid_x;
@@ -35,6 +44,11 @@ Level::~Level()
 void Level::update(std::map<int, bool> input_map)
 {
 	
+}
+
+std::vector<std::string> Level::get_layers()
+{
+	return {"tile_layer", "block_layer"}; //temp. figure out where to store the different lists of layers for t he level, or how to get them efficiently when reading the text file
 }
 
 // checks to see whether a space is passable

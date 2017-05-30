@@ -3,14 +3,19 @@
 #include<allegro5/allegro_primitives.h>
 #include "FileManager.h"
 
+enum ANIMATION_DIRECTIONS{ANIM_NEUTRAL = 0, ANIM_RIGHT = 1, ANIM_LEFT = 2, ANIM_UP = 3, ANIM_DOWN = 4};
+enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1};
+enum AXES { HORIZONTAL, VERTICAL };
+
 struct Rect {
-	int x, y, width, height;
+	//int x, y, width, height;
+	float x, y, width, height;
 public:
 	Rect();
-	Rect(int, int, int, int);
+	Rect(float, float, float, float);
 	bool intersects_rect(Rect);
-	int right();
-	int bottom();	
+	float right();
+	float bottom();	
 };
 
 class Animation
@@ -26,6 +31,7 @@ public:
 	void set_filename(std::string);
 	std::string get_filename();
 	Rect get_current_rect();
+	void set_row(int row);
 	std::pair<int, int> &get_frame_count();
 	std::pair<int, int> &get_current_frame();
 	std::pair<int, int> &get_frame_dimensions();

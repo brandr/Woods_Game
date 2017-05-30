@@ -4,7 +4,7 @@
 //#include "Platform.h"
 //#include "GameImageManager.h"
 #include "Player.h"
-#include "Platform.h"
+#include "Tile.h"
 #include<map>
 #include<list>
 #include <iostream>
@@ -16,28 +16,22 @@ class GameImageManager;
 class Level
 {
 private:
-	//MainGameScreen* screen;
-	//Player* player;
-	//std::vector<Platform> platforms;
 	std::string filename = "";
 	std::string id = "";
 	int grid_x;
 	int grid_y;
 	int width;
 	int height;
-	//std::vector<std::vector<Level*>>* dungeon_grid;
 public:
 	static const int STANDARD_LEVEL_GRID_WIDTH = 800;
 	static const int STANDARD_LEVEL_GRID_HEIGHT = 600;
 	Level();
 	Level(std::string, std::string, int, int, int, int);
+	Level(std::string, int, int, int, int);
 	Level(int, int, int, int);
 	~Level();
-	//void load_images(ImageLoader&);
-	//void set_player(Player*);
 	void update(std::map<int, bool>);
-	//std::list<GameImage> get_images();
-	//void change_player_level();
+	std::vector<std::string> get_layers();
 	bool passable_at(int, int);
 	std::string get_filename();
 	std::string get_id();

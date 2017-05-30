@@ -5,18 +5,18 @@ Rect::Rect() {
 
 }
 
-Rect::Rect(int x, int y, int width, int height) {
+Rect::Rect(float x, float y, float width, float height) {
 	this->x = x;
 	this->y = y;
 	this->width = width;
 	this->height = height;
 }
 
-int Rect::right() {
+float Rect::right() {
 	return x + width;
 }
 
-int Rect::bottom() {
+float Rect::bottom() {
 	return y + height;
 }
 
@@ -88,6 +88,14 @@ Rect Animation::get_current_rect()
 	//TODO
 	//std::cout << "have frame dimensions: " << frame_dimensions.first << std::endl;
 	return Rect(current_frame.first*frame_dimensions.first, current_frame.second*frame_dimensions.second, frame_dimensions.first, frame_dimensions.second);
+}
+
+void Animation::set_row(int row)
+{
+	if (row != get_current_frame().second) {
+		get_current_frame().first = 0;
+		get_current_frame().second = row;
+	}
 }
 
 std::pair<int, int>& Animation::get_frame_count()
