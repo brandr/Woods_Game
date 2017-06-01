@@ -21,11 +21,12 @@ int main()
 	
 	//before title screen
 
-	//_CrtSetBreakAlloc(955);		
-	// ? gameimage vector allocation
-	//_CrtSetBreakAlloc(161); //map allocation in imageloader
-	//_CrtSetBreakAlloc(2928);		
-	//_CrtSetBreakAlloc(183);
+	//_CrtSetBreakAlloc(605);		
+	/*
+	known sources of leaks:
+	-map allocation in imageloader
+	-gameimage vector allocation
+	*/
 
 	//TEST
 	/*
@@ -122,8 +123,6 @@ int main()
 		al_uninstall_mouse();
 		al_uninstall_keyboard();
 		al_uninstall_system();
-		//delete left_joystick;
-		//delete right_joystick;
 	}
 	_CrtDumpMemoryLeaks();
 	return 0;
