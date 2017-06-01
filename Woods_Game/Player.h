@@ -15,7 +15,7 @@ class Player :
 private:
 	std::map<int, bool> move_map;
 	std::pair<float, float> move_joystick_pos;
-	float walk_speed;
+	float base_walk_speed;
 	float jump_speed;
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
@@ -25,12 +25,13 @@ public:
 	virtual ~Player();
 	virtual int get_type();
 	virtual void load_content(std::vector<std::string> attributes, std::vector<std::string> contents);
-	virtual void update(std::vector<Entity>, std::pair<int,int>, int);
+	virtual void update(std::vector<Entity>, std::vector<Tile>, std::pair<int,int>, int);
 	void update_side_scrolling(std::vector<Entity>, std::pair<int, int>);
 	void update_top_down(std::vector<Entity>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	float get_walk_speed();
 	void set_direction(int);
 	void queue_move(int);
 	bool check_move(int);

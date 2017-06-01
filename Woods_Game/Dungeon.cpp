@@ -62,7 +62,7 @@ void Dungeon::unload_content()
 							deleted_level_coords.push_back(std::to_string(x2) + "," + std::to_string(y2));
 						}
 					}
-					//std::cout << "DELETING LEVEL" << std::endl;
+					dungeon_grid[y][x]->unload_content();
 					delete dungeon_grid[y][x];
 					dungeon_grid[y][x] = NULL;
 				}
@@ -100,6 +100,7 @@ void Dungeon::add_level(Level* level)
 			dungeon_grid[y][x] = level;
 		}
 	}
+	level->load_from_map();
 	//level_list.push_back(*level);
 	//
 	//level.set_dungeon_grid(&dungeon_grid);

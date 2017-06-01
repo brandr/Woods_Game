@@ -1,10 +1,7 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-//#include "Player.h"
-//#include "Platform.h"
-//#include "GameImageManager.h"
 #include "Player.h"
-#include "Tile.h"
+//#include "Tile.h"
 #include<map>
 #include<list>
 #include <iostream>
@@ -18,6 +15,13 @@ class Level
 private:
 	std::string filename = "";
 	std::string id = "";
+	//temp
+	std::vector<std::vector<Tile>> tiles;
+	std::vector<GameImage*> game_images;
+	std::vector<Entity*> entities;
+	std::vector<Being*> beings;
+	//Player* player;
+	//temp
 	int grid_x;
 	int grid_y;
 	int width;
@@ -30,7 +34,19 @@ public:
 	Level(std::string, int, int, int, int);
 	Level(int, int, int, int);
 	~Level();
-	void update(std::map<int, bool>);
+	void load_from_map();
+	void unload_content();
+	void update(int game_mode);
+	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
+	std::pair<int, int> tile_image_offset(std::string tile_string);
+	void add_being(Being *b);
+	void remove_player();
+	void remove_game_images(int type);
+	void remove_entities(int type);
+	void remove_beings(int type);
+	std::vector<Entity> get_interactables(Entity*);
+	std::vector<Tile> get_nearby_tiles(Entity*);
+	std::vector<Entity> get_player_interactables();
 	std::vector<std::string> get_layers();
 	bool passable_at(int, int);
 	std::string get_filename();

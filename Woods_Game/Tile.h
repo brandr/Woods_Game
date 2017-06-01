@@ -5,8 +5,10 @@ class Tile:
 {
 private:
 	Block* block = NULL;
+	float speed_mod = 1.0f;
 	//temp
-	ALLEGRO_BITMAP *bitmap;
+	//ALLEGRO_BITMAP *bitmap;
+
 	//temp
 public:
 	Tile();
@@ -17,5 +19,7 @@ public:
 	//void set_bitmap(ALLEGRO_BITMAP *bitmap);	//TEMP
 	Block *get_block();
 	void set_block(Block *b);
+	void set_speed_mod(float sm);
+	float get_speed_mod();
 };
 

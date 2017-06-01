@@ -84,7 +84,7 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 		ImageLoader::get_instance().load_spritesheet(*animation);
 	}
 	mask = NULL; //TEMP
-	refresh_mask();
+	//refresh_mask();
 	//TODO: set rect width and height correctly for rect collisions
 	//TODO: some way to figure out which row of animation we should be on
 }
@@ -94,7 +94,7 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 	this->image_filename = image_filename;
 	this->image_subsection = image_subsection;
 	rect.x = position.first, rect.y = position.second;
-	refresh_mask();
+	//refresh_mask();
 }
 
 void GameImage::unload_content()

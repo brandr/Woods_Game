@@ -25,11 +25,12 @@ void Being::set_yvel(int vel)
 	yvel = vel;
 }
 
-void Being::update(std::vector<Entity> interactables, std::pair<int, int> level_dimensions, int game_mode)
+void Being::update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	
 	//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to oher levels)
-	movement_update(interactables, game_mode);
+	
+	movement_update(interactables, nearby_tiles, game_mode);
 	animation_update(game_mode);
 	Entity::update();
 	//TODO: non-platform collisions (some beings may pass through some objects, so need a system to handle nuance instead of just checking is_solid)
@@ -43,18 +44,23 @@ void Being::animation_update(int game_mode)
 	//TODO
 }
 
-void Being::movement_update(std::vector<Entity> interactables, int game_mode) {
+void Being::movement_update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, int game_mode) {
+	int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i].get_block();
+		if (b) interactables.push_back(*b);
+	}
 	switch (game_mode) {
 		case(TOP_DOWN):
-			movement_update_top_down(interactables);
+			movement_update_top_down(interactables, nearby_tiles);
 			break;
 		case(SIDE_SCROLLING):
-			movement_update_side_scrolling(interactables);
+			movement_update_side_scrolling(interactables, nearby_tiles);
 			break;
 	}
 }
 
-void Being::movement_update_side_scrolling(std::vector<Entity> interactables)
+void Being::movement_update_side_scrolling(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles)
 {
 	Rect* side = NULL;
 	if (xvel < 0) side = new Rect(rect.x + xvel, rect.y, xvel, rect.height);
@@ -121,10 +127,12 @@ void Being::movement_update_side_scrolling(std::vector<Entity> interactables)
 	rect.y += yvel;
 }
 
-void Being::movement_update_top_down(std::vector<Entity> interactables)
+void Being::movement_update_top_down(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles)
 {
 	//TODO: consider having a grid of tiles on the level to make all interactions with grid-locked gameimages easier.
 	// note that these can't have their collisions handled by empty_at()
+	float speed_multiplier = get_speed_multiplier(nearby_tiles);
+	xvel *= speed_multiplier, yvel *= speed_multiplier;
 	float xoff = xvel, yoff = yvel;
 	Rect* check_rect = new Rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
 	if (!empty_at(*check_rect, interactables)) {	
@@ -135,7 +143,6 @@ void Being::movement_update_top_down(std::vector<Entity> interactables)
 			mag -= 1.0f;
 		}
 		if (mag <= 1.0f) {
-			//TODO: check different angles
 			float angle = M_PI/6.0f;
 			float xoff1 = xvel, yoff1 = yvel, xoff2 = xvel, yoff2 = yvel;
 			while(!precise_empty_at(interactables, xoff1, yoff1) && !precise_empty_at(interactables, xoff2, yoff2) && angle < 5.0f*M_PI/12.0f){
@@ -150,14 +157,6 @@ void Being::movement_update_top_down(std::vector<Entity> interactables)
 					xvel = xoff2, yvel = yoff2;
 					break;
 				}
-				/*
-				while (!precise_empty_at(interactables, xoff1, yoff1) && !precise_empty_at(interactables, xoff2, yoff2)) {
-					float temp_mag1 = std::pow(std::pow(xoff1, 2.0) + std::pow(yoff1, 2), 0.5);
-					float temp_mag2 = std::pow(std::pow(xoff2, 2.0) + std::pow(yoff2, 2), 0.5);
-					xoff1 = (xvel / temp_mag1)*mag, yoff1 = (yvel / temp_mag1)*mag;
-					mag1 -= 1.0f, mag2 -=1.0f;
-				}
-				*/
 				angle += M_PI / 6.0f;
 			}
 			if (!precise_empty_at(interactables, xvel, yvel)) 
@@ -170,65 +169,6 @@ void Being::movement_update_top_down(std::vector<Entity> interactables)
 	}
 	delete check_rect;
 	check_rect = NULL;
-	/*
-	Rect* h_side = NULL;
-	if (xvel < 0) h_side = new Rect(rect.x + xvel, rect.y, -1*xvel, rect.height);
-	else if (xvel > 0) h_side = new Rect(rect.x + rect.width, rect.y, xvel, rect.height);
-	if (h_side && !empty_at(*h_side, interactables)) {
-		refresh_mask();
-		for (int i = 0; i < interactables.size(); i++) 
-			interactables[i].refresh_mask();	//TODO: in the event of slowdown, limit this to only interactables that are already rect-colliding
-			
-		//TODO: make this collision pixel perfect
-		//h_side->width = 1;
-		//while (empty_at(*h_side, interactables)) {
-		//mask_t check_mask = 
-		//while (Mask_Collide(mask, interactables[i].get_mask())) {
-		while (empty_at(mask, interactables, HORIZONTAL)) {
-			if (xvel < 0) {
-				rect.x -= 1;
-				h_side->x = rect.x - 1;
-			}
-			else {
-				rect.x += 1;
-				h_side->x = rect.x + rect.width;
-			}
-		}
-		xvel = 0;
-	}
-	if (h_side)
-	{
-		delete h_side;
-		h_side = NULL;
-	}
-	// check for vertical collisions 
-	Rect* v_side = NULL;
-	if (yvel < 0) v_side = new Rect(rect.x, rect.y + yvel, rect.width, -1*yvel);
-	else if (yvel > 0) v_side = new Rect(rect.x, rect.y + rect.height, rect.width, yvel);
-	if (v_side && !empty_at(*v_side, interactables)) {
-		refresh_mask();
-		for (int i = 0; i < interactables.size(); i++)
-			interactables[i].refresh_mask();	//TODO: in the event of slowdown, limit this to only interactables that are already rect-colliding
-		//TODO: make this collision pixel perfect
-		v_side->height = 1;
-		while (empty_at(mask, interactables, VERTICAL)) {
-			if (yvel < 0) {
-				rect.y -= 1;
-				v_side->y = rect.y - 1;
-			}
-			else {
-				rect.y += 1;
-				v_side->y = rect.y + rect.height;
-			}
-		}
-		yvel = 0;
-	}
-	if (v_side)
-	{
-		delete v_side;
-		v_side = NULL;
-	}
-	*/
 	rect.x += xvel;
 	rect.y += yvel;
 	//TODO
@@ -267,6 +207,19 @@ bool Being::precise_empty_at(std::vector<Entity> interactables, int xoff, int yo
 			return false;
 	}
 	return true;
+}
+float Being::get_speed_multiplier(std::vector<Tile> tiles)
+{
+	float mult = 1.0f;
+	int t_size = tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		mask_t *tmask = tiles[i].get_mask();
+		if (tmask) 
+			if (tmask && Mask_Collide(mask, tmask, get_x() - tiles[i].get_x(), get_y() - tiles[i].get_y())) {
+				mult = std::min(mult, tiles[i].get_speed_mod());
+			}
+	}
+	return mult;
 }
 /*
 bool Being::empty_at(mask_t *mask, std::vector<Entity> interactables, int axis)

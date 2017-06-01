@@ -1,16 +1,10 @@
 Woods game todolist
 
--figure out a tile system where the player is always on a tile and different tiles allow different  walking speeds
-	*this will be useful for optimizing collision checks, because impassable objects can be locked to tiles, meaning that entites which can't
-     pass through them only need to check for collisions with the tiles in their immediate vicinity. Only if the entity is close enough to a tile
-	 (and moving towards it) is a pixel-perfect collision check necessary.
--fix delay when travelenig between levels
--fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -figure out how we want objects to be rendered and what kind of camera style we want-- could go for a look with a slight angle (example: stardew valley)
+	*could reinforce the appearance of 3D by giving objects masks that are just ovals/diamonds around the "base" of the object (so the player can walk behind solid objects)
+-fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
 -figure out what kind of world/dungeon/level system we want
--make player animations with transparency and non-square images, then implement better collisions
-	*also figure out how to map player movement to different actions
 -idea: put level coords and dimensions in the corresponding files
 	*could also put them in different files and load the dungeon based on this data
 -test large levels to see if there is lag when entering them

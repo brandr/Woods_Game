@@ -10,7 +10,7 @@ Player::Player()
 	//image_filename = "images/temp_player.png";
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
-	walk_speed = 5;
+	base_walk_speed = 5;
 	jump_speed = 30;
 }
 
@@ -32,10 +32,11 @@ void Player::load_content(std::vector<std::string> attributes, std::vector<std::
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_LEFT)] = 2;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_UP)] = 3;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_DOWN)] = 4;
+	refresh_mask();
 	//TODO: if necessary, map player direction to different animations
 }
 
-void Player::update(std::vector<Entity> interactables, std::pair<int, int> level_dimensions, int game_mode)
+void Player::update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	if (exit_level_check(level_dimensions))
 		return;
@@ -48,7 +49,7 @@ void Player::update(std::vector<Entity> interactables, std::pair<int, int> level
 		update_top_down(interactables, level_dimensions);
 		break;
 	}
-	Being::update(interactables, level_dimensions, game_mode);
+	Being::update(interactables, nearby_tiles, level_dimensions, game_mode);
 	clear_input();
 }
 
@@ -58,10 +59,10 @@ void Player::update_side_scrolling(std::vector<Entity> interactables, std::pair<
 	if (jumping && on_ground(interactables)) jumping = false;
 	switch (direction) {
 	case DIR_LEFT:
-		xvel = -1 * walk_speed;
+		xvel = -1 * get_walk_speed();
 		break;
 	case DIR_RIGHT:
-		xvel = walk_speed;
+		xvel = get_walk_speed();
 		break;
 	case DIR_NEUTRAL:
 		xvel = 0;
@@ -84,26 +85,26 @@ void Player::update_top_down(std::vector<Entity> interactables, std::pair<int, i
 	anim_state = ANIM_NEUTRAL;
 	//keyboard
 	if (check_move(MOVE_LEFT) && !check_move(MOVE_RIGHT)) {
-		xvel = -1 * walk_speed;
+		xvel = -1 * get_walk_speed();
 		direction = DIR_LEFT, anim_state = ANIM_STATE_WALKING;
 	}
 	else if (check_move(MOVE_RIGHT) && !check_move(MOVE_LEFT)) {
-		xvel = walk_speed;
+		xvel = get_walk_speed();
 		direction = DIR_RIGHT, anim_state = ANIM_STATE_WALKING;
 	}
 	if (check_move(MOVE_DOWN) && !check_move(MOVE_UP)) {
-		yvel = walk_speed;
+		yvel = get_walk_speed();
 		direction = DIR_DOWN, anim_state = ANIM_STATE_WALKING;
 	}
 	else if (check_move(MOVE_UP) && !check_move(MOVE_DOWN)) {
-		yvel = -1 * walk_speed;
+		yvel = -1 * get_walk_speed();
 		direction = DIR_UP, anim_state = ANIM_STATE_WALKING;
 	}
 	//joystick
 	if (abs(move_joystick_pos.first) <= 0.05f && abs(move_joystick_pos.second) <= 0.05f) {
 		return;
 	}
-	xvel = move_joystick_pos.first*walk_speed, yvel = move_joystick_pos.second*walk_speed;
+	xvel = move_joystick_pos.first*get_walk_speed(), yvel = move_joystick_pos.second*get_walk_speed();
 	if (xvel >= 0) {
 		if (xvel >= std::abs(yvel)) direction = DIR_RIGHT;
 		else if (yvel > 0) direction = DIR_DOWN;
@@ -158,6 +159,13 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_LEFT);
 	if (input_map[INPUT_RIGHT])
 		queue_move(MOVE_RIGHT);
+}
+
+float Player::get_walk_speed()
+{
+	//TODO: get tile modifier
+
+	return base_walk_speed;
 }
 
 void Player::set_direction(int dir)

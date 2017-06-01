@@ -9,10 +9,12 @@
 class GameImageManager
 {
 private:
+	/*
 	std::vector<std::vector<Tile>> tiles;
 	std::vector<GameImage*> game_images;
 	std::vector<Entity*> entities;
 	std::vector<Being*> beings;
+	*/
 	//std::vector<Block*> blocks;
 	std::pair<int, int> get_camera_offset();
 	std::pair<int, int> tile_image_offset(std::string tile_string);
@@ -42,7 +44,14 @@ public:
 	//void add_block(Block *p);
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	std::vector<Entity> get_interactables(Entity*);
+	std::vector<Tile> get_nearby_tiles(Entity*);
 	std::vector<Entity> get_player_interactables();
+	/*
+	std::vector<std::vector<Tile>> get_tiles();
+	std::vector<GameImage*> get_game_images();
+	std::vector<Entity*> get_entities();
+	std::vector<Being*> get_beings();
+	*/
 	void change_player_level();
 	void draw(ALLEGRO_DISPLAY *display);
 };

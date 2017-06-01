@@ -14,6 +14,9 @@ Tile::~Tile()
 void Tile::set_content(std::string image_filename, Rect * image_subsection, std::pair<int, int> position)
 {
 	GameImage::set_content(image_filename, image_subsection, position);
+	//mask = Mask_Create(get_width(), get_height());
+	refresh_mask();
+	//mask = Mask_New();
 	//bitmap = //ImageLoader::get_instance().get_current_image(this);
 }
 
@@ -47,4 +50,14 @@ Block * Tile::get_block()
 void Tile::set_block(Block * b)
 {
 	block = b;
+}
+
+void Tile::set_speed_mod(float sm)
+{
+	speed_mod = sm;
+}
+
+float Tile::get_speed_mod()
+{
+	return speed_mod;
 }
