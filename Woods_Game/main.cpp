@@ -24,6 +24,7 @@ int main()
 	//_CrtSetBreakAlloc(605);		
 	/*
 	known sources of leaks:
+
 	-map allocation in imageloader
 	-gameimage vector allocation
 	*/
