@@ -43,14 +43,15 @@ std::string GameImage::get_image_filename()
 
 void GameImage::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
 {
+	//TODO: allow for mulitple animations (map of string->animation)
 	std::string anim_filename = "";
-	std::pair<int, int> ss_frame_count;
 	std::pair<int, int> ss_frame_dimensions;
+	std::vector<std::string> anim_keys;
 	int size = attributes.size();
+	std::map<std::string, std::pair<int, int>> frame_counts;
+	//TODO: some way to check whether a mask image exists
+	//bool mask_exists = true;
 	for (int i = 0; i < size; i++) {
-		//TODO: allow cross-section of image
-		//std::cout << "attribute: "<< attributes[i]  << std::endl;
-		//TODO: make it possible to load animations/spritesheets here
 		if (attributes[i] == "image") {
 			image_filename = contents[i];
 			ImageLoader::get_instance().load_image(contents[i]);
@@ -63,14 +64,47 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 		}
 		else if (attributes[i] == "spritesheet") {
 			anim_filename = "sprite_sheets/" + contents[i];
-			animation = new Animation();
+			//animation = new Animation();
 			ss_animation = new SpriteSheetAnimation();
 		}
+		else if (attributes[i] == "anim_keys") {
+			std::string keys_string = contents[i];
+			std::string delimiter = ",";
+			size_t pos = 0;
+			std::string key;
+			while ((pos = keys_string.find(delimiter)) != std::string::npos) {
+				key = keys_string.substr(0, pos);
+				anim_keys.push_back(key);
+				keys_string.erase(0, pos + delimiter.length());
+			}
+			//last iteration
+			anim_keys.push_back(keys_string);
+		}
 		else if (attributes[i] == "ss_frame_count") {
-			std::string str = contents[i];
-			int x = atoi(str.substr(0, str.find(',')).c_str());
-			int y = atoi(str.substr(str.find(',') + 1).c_str());
-			ss_frame_count = std::pair<int, int>(x, y);
+			//...
+			std::string frame_count_list_str = contents[i];
+			std::string delimiter = ";";
+
+			size_t pos = 0;
+			std::string frame_count_str;
+			while ((pos = frame_count_list_str.find(delimiter)) != std::string::npos) {
+				frame_count_str = frame_count_list_str.substr(0, pos);
+				std::string anim_key_str = frame_count_str.substr(0, frame_count_str.find(":"));
+				std::string pair_str = frame_count_str.substr(frame_count_str.find(":") + 1).c_str();
+				int x = atoi(pair_str.substr(0, pair_str.find(',')).c_str());
+				int y = atoi(pair_str.substr(pair_str.find(',') + 1).c_str());
+				frame_counts[anim_key_str] = std::pair<int, int>(x, y);
+				frame_count_list_str.erase(0, pos + delimiter.length());
+			}
+
+			//last iteration
+			frame_count_str = frame_count_list_str;
+			std::string anim_key_str = frame_count_str.substr(0, frame_count_str.find(":"));
+			std::string pair_str = frame_count_str.substr(frame_count_str.find(":") + 1).c_str();
+			int x = atoi(pair_str.substr(0, pair_str.find(',')).c_str());
+			int y = atoi(pair_str.substr(pair_str.find(',') + 1).c_str());
+			frame_counts[anim_key_str] = std::pair<int, int>(x, y);
+			frame_count_list_str.erase(0, pos + delimiter.length());
 		}
 		else if (attributes[i] == "ss_frame_dimensions") {
 			std::string str = contents[i];
@@ -79,14 +113,31 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 			ss_frame_dimensions = std::pair<int, int>(x, y);
 		}
 	}
-	if (animation) {
-		animation->load_content(anim_filename, ss_frame_count, std::pair<int, int>(0, 0), ss_frame_dimensions);
-		ImageLoader::get_instance().load_spritesheet(*animation);
+	if (ss_animation) {
+		int keys_size = anim_keys.size();
+		
+		for (int i = 0; i < keys_size; i++) {
+			std::string key = anim_keys[i];
+			Animation *anim = new Animation();
+			std::pair<int, int> frame_count = frame_counts[key]; 
+			anim->load_content(anim_filename + "_" + key, frame_count, std::pair<int, int>(0, 0), ss_frame_dimensions);
+			ImageLoader::get_instance().load_spritesheet(*anim);
+			animations[key] = anim;
+		}
 	}
 	mask = NULL; //TEMP
-	//refresh_mask();
-	//TODO: set rect width and height correctly for rect collisions
-	//TODO: some way to figure out which row of animation we should be on
+	if (anim_filename != "") {
+		ALLEGRO_BITMAP *mask_image = ImageLoader::get_instance().get_image(anim_filename + "_mask");
+		if (!mask_image) {
+			ImageLoader::get_instance().load_image(anim_filename + "_mask");
+			mask_image = ImageLoader::get_instance().get_image(anim_filename + "_mask");
+		}
+		if (mask_image) {
+			mask = Mask_New(mask_image);
+		}
+		//TODO: consider loading mask from sprite by default if a mask image is not found.
+		mask_image = NULL;
+	}
 }
 
 void GameImage::set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position)
@@ -99,32 +150,29 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 
 void GameImage::unload_content()
 {
-	//std::cout << "unloading content" << std::endl;
 	if(image_subsection)
 		delete image_subsection;
-	if(animation)
-		delete animation;
 	if(ss_animation)
 		delete ss_animation;
 	if(mask)
 		Mask_Delete(mask);
+	for (auto const &it : animations) {
+		it.second->unload_content();
+		delete it.second;
+	}
+	animations.clear();
+	animations.swap(std::map<std::string, Animation*>());
 	image_subsection = NULL;
-	animation = NULL;
 	ss_animation = NULL;
 	mask = NULL;
 }
 
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
-	//td::cout << "rect coords: " << rect. << std::endl;
-	//TODO: handle animations 
-	//TODO: makee sure bounding rect for non-square/animated gameimages is handled correctly (may need per-pixel collisions
 	ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
-	if (animation && ss_animation) draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+	if (ss_animation) draw_bitmap = ImageLoader::get_instance().get_current_image(this);
 	//bitmap = ImageLoader::get_instance().get_current_image(this);
 	if (draw_bitmap && rect.x + x_offset < DEFAULT_SCREEN_WIDTH && rect.right() + x_offset > 0 && rect.y + y_offset < DEFAULT_SCREEN_HEIGHT && rect.bottom() + y_offset > 0) {
-		//if (animation)
-			//std::cout << "drawing sprite " << std::endl;
 		al_draw_bitmap(bitmap, rect.x + x_offset, rect.y + y_offset, 0);
 	}
 
@@ -132,9 +180,17 @@ void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 
 void GameImage::update()
 {
-	if (animation && ss_animation) {	//TEMP: might sometimes only have animation
-		animation->set_row(get_animation_index());
-		ss_animation->update(*animation);
+	if (ss_animation) {	//TEMP: might sometimes only have animation
+		Animation* anim = get_animation();
+		if (anim) {
+			//TODO: figure out how to set animation direction
+			//anim->set_row(get_animation_index());
+			anim->set_row(get_animation_direction());
+			ss_animation->update(*anim);
+		}
+		//std::string anim_key = get_anim_key();
+		//TODO
+		
 	}
 }
 
@@ -159,21 +215,52 @@ void GameImage::refresh_mask()
 	mask = Mask_New(bitmap);
 }
 
+/*
 int GameImage::get_animation_index()
 {
 	auto it = animation_dir_map.find(std::pair<int, int>(anim_state, direction));
 	if (it == animation_dir_map.end()) return 0;
 	return it->second;
 }
+*/
 
 mask_t * GameImage::get_mask()
 {
 	return mask;
 }
 
+std::string GameImage::get_anim_state_key()
+{
+	switch (anim_state) {
+	case ANIM_STATE_NEUTRAL:
+		return "neutral";
+	case ANIM_STATE_WALKING:
+		return "walking";
+	}
+		
+	return std::string();
+}
+
+int GameImage::get_animation_direction()
+{
+	switch (direction) {
+	case DIR_UP: return ANIM_UP;
+	case DIR_DOWN: return ANIM_DOWN;
+	case DIR_LEFT: return ANIM_LEFT;
+	case DIR_RIGHT: return ANIM_RIGHT;
+	case DIR_NEUTRAL: return ANIM_NEUTRAL;
+	}
+	return 0;
+}
+
 Animation * GameImage::get_animation()
 {
-	return animation;
+	//TODO: don't accidentally create a null pointer here
+	auto it = animations.find(get_anim_state_key());
+	if (it == animations.end()) {
+		return nullptr;
+	}
+	return it->second;
 }
 
 SpriteSheetAnimation* GameImage::get_ss_animation()

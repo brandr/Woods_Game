@@ -27,12 +27,14 @@ int Player::get_type()
 void Player::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
 {
 	GameImage::load_content(attributes, contents);
+	/*
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_NEUTRAL, DIR_NEUTRAL)] = 0;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_RIGHT)] = 1;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_LEFT)] = 2;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_UP)] = 3;
 	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_DOWN)] = 4;
-	refresh_mask();
+	*/
+	//refresh_mask();
 	//TODO: if necessary, map player direction to different animations
 }
 

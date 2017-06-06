@@ -5,7 +5,7 @@
 SpriteSheetAnimation::SpriteSheetAnimation()
 {
 	frame_counter = 0;
-	switch_frame = 20; //temp
+	switch_frame = 8; //temp
 }
 
 

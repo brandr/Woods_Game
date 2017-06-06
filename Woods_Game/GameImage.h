@@ -23,10 +23,11 @@ protected:
 	Rect* image_subsection = NULL;
 	//Level* current_level;
 	Rect rect;
-	Animation *animation;
+	//Animation *animation;
+	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
-	std::map<std::pair<int, int>, int> animation_dir_map;
+	//std::map<std::pair<int, int>, int> animation_dir_map;
 	mask_t *mask;
 public:
 	GameImage(std::string);
@@ -43,8 +44,10 @@ public:
 	void set_position(int, int);
 	void set_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void refresh_mask();
-	virtual int get_animation_index();
+	//virtual int get_animation_index();
 	mask_t* get_mask();
+	std::string get_anim_state_key();
+	int get_animation_direction();
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();

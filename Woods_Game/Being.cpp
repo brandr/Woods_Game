@@ -129,13 +129,11 @@ void Being::movement_update_side_scrolling(std::vector<Entity> interactables, st
 
 void Being::movement_update_top_down(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles)
 {
-	//TODO: consider having a grid of tiles on the level to make all interactions with grid-locked gameimages easier.
-	// note that these can't have their collisions handled by empty_at()
 	float speed_multiplier = get_speed_multiplier(nearby_tiles);
 	xvel *= speed_multiplier, yvel *= speed_multiplier;
 	float xoff = xvel, yoff = yvel;
 	Rect* check_rect = new Rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
-	if (!empty_at(*check_rect, interactables)) {	
+	if (!empty_at(*check_rect, interactables)) {
 		float mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
 		while (!precise_empty_at(interactables, xoff, yoff) && mag > 1.0f) {
 			float temp_mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
@@ -143,9 +141,9 @@ void Being::movement_update_top_down(std::vector<Entity> interactables, std::vec
 			mag -= 1.0f;
 		}
 		if (mag <= 1.0f) {
-			float angle = M_PI/6.0f;
+			float angle = M_PI / 12.0f;
 			float xoff1 = xvel, yoff1 = yvel, xoff2 = xvel, yoff2 = yvel;
-			while(!precise_empty_at(interactables, xoff1, yoff1) && !precise_empty_at(interactables, xoff2, yoff2) && angle < 5.0f*M_PI/12.0f){
+			while (!precise_empty_at(interactables, xoff1, yoff1) && !precise_empty_at(interactables, xoff2, yoff2) && angle < 5.0*M_PI/12.0f){ //5.0f*M_PI / 12.0f) {
 				xoff1 = xvel * std::cos(angle) - yvel * std::sin(angle), yoff1 = xvel * std::sin(angle) + yvel * std::cos(angle);
 				xoff2 = xvel * std::cos(-1.0f*angle) - yvel * std::sin(-1.0f*angle), yoff2 = xvel * std::sin(-1.0f*angle) + yvel * std::cos(-1.0f*angle);
 				float mag1 = std::pow(std::pow(xoff1, 2.0) + std::pow(yoff1, 2), 0.5), mag2 = std::pow(std::pow(xoff2, 2.0) + std::pow(yoff2, 2), 0.5);
@@ -157,16 +155,18 @@ void Being::movement_update_top_down(std::vector<Entity> interactables, std::vec
 					xvel = xoff2, yvel = yoff2;
 					break;
 				}
-				angle += M_PI / 6.0f;
+				angle += M_PI / 12.0f;
 			}
-			if (!precise_empty_at(interactables, xvel, yvel)) 
+			if (!precise_empty_at(interactables, xvel, yvel)) {
 				xvel = 0, yvel = 0;
+			}
 		}
 		else
 		{
 			xvel = xoff, yvel = yoff;
 		}
 	}
+	std::cout << std::endl;
 	delete check_rect;
 	check_rect = NULL;
 	rect.x += xvel;

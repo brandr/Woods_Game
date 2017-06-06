@@ -1,14 +1,14 @@
 Woods game todolist
 
+-create "dead tree" objects which are very tall but have short bases that the player can collide with
+	*conisder allowing them to be centered in such a way that they don't have to be drawn onscreen
+-fix the issue where the player can go faster while running against a wall than while walking normally.
 -figure out how we want objects to be rendered and what kind of camera style we want-- could go for a look with a slight angle (example: stardew valley)
 	*carefully consider how trees in particular will look since the player will spend a lot of time in the forest
 		#idea: have the trees' leaves turn transparent when the player is colliding with them visually
-	*could reinforce the appearance of 3D by giving objects masks that are just ovals/diamonds around the "base" of the object (so the player can walk behind solid objects)
--test and refine collisions on slow terrain
-	*also test with controller
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
--figure out what kind of world/dungeon/level system we want
+-idea: consider including animation frame duration in the files from which we load gameimages 
 -idea: put level coords and dimensions in the corresponding files
 	*could also put them in different files and load the dungeon based on this data
 -test large levels to see if there is lag when entering them

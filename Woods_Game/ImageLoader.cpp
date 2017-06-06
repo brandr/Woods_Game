@@ -62,7 +62,6 @@ void ImageLoader::load_image(std::string filename)
 	std::string full_filename = ImageLoader::full_filename(filename);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
 	if (it != image_map.end()) return;
-	//std::shared_ptr<ALLEGRO_BITMAP> image(al_load_bitmap(full_filename.c_str()), al_destroy_bitmap);
 	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
 	ALLEGRO_BITMAP *image = al_load_bitmap(full_filename.c_str());	//temp path- change in exe
 	
@@ -72,7 +71,6 @@ void ImageLoader::load_image(std::string filename)
 		std::cout << "loader failed to load image" << std::endl;
 	}
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
-	//image_map[(std::pair<std::string, std::string>(full_filename, ""))] = std::move(image);
 	image_map[(std::pair<std::string, std::string>(full_filename, ""))] = image;
 }
 
@@ -114,7 +112,6 @@ void ImageLoader::load_spritesheet(Animation anim)
   			load_image(filename, rect);
 		}
 	}
-	std::cout << std::endl;
 }
 
 //TODO: modify this to allow for spritesheets
@@ -126,6 +123,7 @@ ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
 		return get_image(anim->get_filename(), anim->get_current_rect());
 	}
 	std::string full_filename = ImageLoader::full_filename(image->get_image_filename());
+	//std::cout << "looking for filename: " << full_filename << std::endl;
 	Rect* subsection = image->get_image_subsection();
 	std::string rect_string = "";
 	if (subsection) rect_string = rect_to_string(*subsection);
@@ -148,6 +146,7 @@ ALLEGRO_BITMAP * ImageLoader::get_image(std::string filename)
 
 ALLEGRO_BITMAP * ImageLoader::get_image(std::string filename, Rect subsection)
 {
+
 	std::string full_filename = ImageLoader::full_filename(filename);
 	std::string rect_string = rect_to_string(subsection);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));

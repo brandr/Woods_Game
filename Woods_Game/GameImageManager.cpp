@@ -53,6 +53,7 @@ GameImageManager::~GameImageManager()
 void GameImageManager::load_content()
 {
 	current_level = world.get_current_dungeon()->level_at(0, 0);
+	//load_player();
 	load_level_content("resources/load/player.txt", "", PLAYER);
 	//TEMP
 	//load_level(0, 0);
@@ -127,91 +128,23 @@ void GameImageManager::load_level_content(std::string filename, std::string id, 
 
 void GameImageManager::load_level_from_map(Level level)
 {
+
+}
+
+void GameImageManager::load_player()
+{
 	/*
-	FileManager file_manager;	//NOTE: see if filemanager can be chhanged to a singleton
-	std::string filename = "resources/load/maps/" + level.get_filename() + ".txt";
-	std::vector<std::string> layers = level.get_layers();
-	int size = layers.size();
-	for (int layer_index = 0; layer_index < size; layer_index++) {
-		std::string layer_id = layers[layer_index];
-		std::vector<std::vector<std::string>> attributes;
-		std::vector<std::vector<std::string>> contents;
-		std::map<std::pair<int, int>, float> speed_mods;
-		file_manager.load_content(filename.c_str(), attributes, contents, layer_id);
-		int indexY = 0;
-		int size = attributes.size();
-		std::string tile_sheet_filename = "";
-		std::string null_tile = "";
-		for (int i = 0; i < size; i++) {
-			std::pair<int, int> tile(0, 0);
-			const int isize = attributes[i].size();
-			for (int j = 0; j < isize; j++) {
-				if (attributes[i][j] == "NullTile") {	//consider changing to "default tile" or something
-					null_tile = contents[i][j];
-				}
-				else if (attributes[i][j] == "TileSheet") {
-					tile_sheet_filename = "tile_sheets/" + contents[i][j];
-				}
-				else if (attributes[i][j] == "speed_modifier") {
-					const int contents_size = contents[i].size();
-					for (int k = 0; k < contents_size; k++) {
-						std::string speed_string = contents[i][k];
-						std::string tile_string = speed_string.substr(0, speed_string.find(":"));
-						std::pair<int, int> tile_offset = tile_image_offset(tile_string);
-						float speed_mod = ::atof(speed_string.substr(speed_string.find(":") + 1).c_str());
-						speed_mods[tile_offset] = speed_mod;
-					}
-				}
-				else if (attributes[i][j] == "StartLayer") {	//TODO: figure out what to do with EndLayer tag
-					const int contents_size = contents[i].size();
-					
-					if (layer_id == "tile_layer") {
-						tiles.push_back(std::vector<Tile>());
-						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {
-								std::pair<int, int> tile_offset = tile_image_offset(contents[i][k]);
-								Rect* offset_rect = new Rect(tile_offset.first*TILE_SIZE, tile_offset.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-								ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								Tile t;
-								t.set_content(tile_sheet_filename, offset_rect, position);
-								t.set_bitmap(ImageLoader::get_instance().get_current_image(&t));	//TEMP
-								auto it = speed_mods.find(tile_offset);
-								if (it != speed_mods.end()) t.set_speed_mod(it->second);
-								tiles[indexY].push_back(t);
-							}
-							else {
-								Rect* offset_rect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
-								ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								Tile t;
-								t.set_content(tile_sheet_filename, offset_rect, position);
-								t.set_bitmap(ImageLoader::get_instance().get_current_image(&t)); //TEMP
-								//NOTE: currently all default tiles have a speed mod of 1.0.
-								tiles[indexY].push_back(t);
-							}
-						}
-					}
-					else if (layer_id == "block_layer") {
-						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {	//TODO: allow for animated blocks if necessary
-								std::pair<int, int>tile_offset = tile_image_offset(contents[i][k]);
-								Rect* offset_rect = new Rect(tile_offset.first*TILE_SIZE, tile_offset.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-								ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								Block* b = new Block();
-								b->set_content(tile_sheet_filename, offset_rect, position);
-								b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
-								tiles[indexY][k].set_block(b);
-							}
-						}
-					}
-					indexY++;
-				}
-			}
-		}
-	}
-	*/
+	//load_level_content(, "", PLAYER);-
+	std::vector<std::vector<std::string>> attributes;
+	std::vector<std::vector<std::string>> contents;
+	file_manager.load_content("resources/load/player.txt", attributes, contents);
+	player = new Player();
+	//GameImage *image;
+	//	image = new Player();
+	player->load_content(attributes[i], contents[i]);
+		player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
+		current_level->add_being(player);
+		*/
 }
 
 void GameImageManager::unload_content()

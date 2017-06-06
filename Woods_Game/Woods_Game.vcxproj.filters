@@ -148,8 +148,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="todolist.txt">
-      <Filter>Source Files</Filter>
-    </Text>
+    <Text Include="todolist.txt" />
   </ItemGroup>
 </Project>

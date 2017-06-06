@@ -15,7 +15,7 @@ private:
 	std::vector<Entity*> entities;
 	std::vector<Being*> beings;
 	*/
-	//std::vector<Block*> blocks;
+	FileManager file_manager;
 	std::pair<int, int> get_camera_offset();
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
@@ -39,13 +39,14 @@ public:
 	void load_level_content(std::string filename, std::string id, int type);
 	//void load_level_from_map(std::string layerID, std::string mapID);
 	void load_level_from_map(Level level);
+	void load_player();
 	void unload_content();
 	void unload_level_content();
 	//void add_block(Block *p);
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
-	std::vector<Entity> get_interactables(Entity*);
-	std::vector<Tile> get_nearby_tiles(Entity*);
-	std::vector<Entity> get_player_interactables();
+	//std::vector<Entity> get_interactables(Entity*);
+	//std::vector<Tile> get_nearby_tiles(Entity*);
+	//std::vector<Entity> get_player_interactables();
 	/*
 	std::vector<std::vector<Tile>> get_tiles();
 	std::vector<GameImage*> get_game_images();

@@ -1,2 +1,2 @@
-Load=[image][position][spritesheet][ss_frame_count][ss_frame_dimensions]
-[temp_player][10,10][temp_player_spritesheet_2][3,5][64,64]
+Load=[image][position][spritesheet][ss_frame_dimensions][anim_keys][ss_frame_count]
+[temp_player][10,10][player_spritesheet_1][64,64][neutral,walking][neutral:3,5;walking:2,5]
