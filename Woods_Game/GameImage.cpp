@@ -127,6 +127,8 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 	}
 	mask = NULL; //TEMP
 	if (anim_filename != "") {
+		load_mask(anim_filename);
+		/*]
 		ALLEGRO_BITMAP *mask_image = ImageLoader::get_instance().get_image(anim_filename + "_mask");
 		if (!mask_image) {
 			ImageLoader::get_instance().load_image(anim_filename + "_mask");
@@ -137,6 +139,7 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 		}
 		//TODO: consider loading mask from sprite by default if a mask image is not found.
 		mask_image = NULL;
+		*/
 	}
 }
 
@@ -146,6 +149,21 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 	this->image_subsection = image_subsection;
 	rect.x = position.first, rect.y = position.second;
 	//refresh_mask();
+}
+
+void GameImage::load_mask(std::string base_filename)
+{
+	//std::cout << "loading mask for type " << get_type() << std::endl;
+	ALLEGRO_BITMAP *mask_image = ImageLoader::get_instance().get_image(base_filename + "_mask");
+	if (!mask_image) {
+		ImageLoader::get_instance().load_image(base_filename + "_mask");
+		mask_image = ImageLoader::get_instance().get_image(base_filename + "_mask");
+	}
+	if (mask_image) {
+		mask = Mask_New(mask_image);
+	}
+	//TODO: consider loading mask from sprite by default if a mask image is not found.
+	mask_image = NULL;
 }
 
 void GameImage::unload_content()
@@ -172,9 +190,12 @@ void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 	ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
 	if (ss_animation) draw_bitmap = ImageLoader::get_instance().get_current_image(this);
 	//bitmap = ImageLoader::get_instance().get_current_image(this);
-	if (draw_bitmap && rect.x + x_offset < DEFAULT_SCREEN_WIDTH && rect.right() + x_offset > 0 && rect.y + y_offset < DEFAULT_SCREEN_HEIGHT && rect.bottom() + y_offset > 0) {
+	if (draw_bitmap && rect.x + x_offset < DEFAULT_SCREEN_WIDTH && rect.right() + x_offset > 0 && 
+		rect.y + y_offset < DEFAULT_SCREEN_HEIGHT && rect.bottom() + y_offset > 0) {
 		al_draw_bitmap(bitmap, rect.x + x_offset, rect.y + y_offset, 0);
+		
 	}
+	
 
 }
 
@@ -198,6 +219,11 @@ void GameImage::set_position(int x, int y)
 {
 	rect.x = x;
 	rect.y = y;
+}
+
+void GameImage::set_rect(int x, int y, int width, int height)
+{
+	rect.x = x, rect.y = y, rect.width = width, rect.height = height;
 }
 
 void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)

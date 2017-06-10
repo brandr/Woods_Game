@@ -1,17 +1,20 @@
 Woods game todolist
 
--create "dead tree" objects which are very tall but have short bases that the player can collide with
-	*conisder allowing them to be centered in such a way that they don't have to be drawn onscreen
+-make it so objects are rendered in the correct order
+	*idea: have a center_offset pair for all gameimages which is used in conjunction with the rect position to figure out the coordinates of the center
+		#all non-tile objects are then drawn in order from greatest to least y coordinate of center
+-make the leaves as a separate sprite and having them turn partly transparent when the player passes behind them.
 -fix the issue where the player can go faster while running against a wall than while walking normally.
--figure out how we want objects to be rendered and what kind of camera style we want-- could go for a look with a slight angle (example: stardew valley)
-	*carefully consider how trees in particular will look since the player will spend a lot of time in the forest
-		#idea: have the trees' leaves turn transparent when the player is colliding with them visually
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
 -idea: consider including animation frame duration in the files from which we load gameimages 
+-make a small forest level with trails and brush to test basic exploration.
+	*from here, can implement items like shears to make temporary trails (this will require changing the level's tiles from the player class,  
+		which may be difficult)
+	*may also want to implement a HUD and decide how item management will be handled
+	*this may be a good time to implement a stamina system
 -idea: put level coords and dimensions in the corresponding files
 	*could also put them in different files and load the dungeon based on this data
 -test large levels to see if there is lag when entering them
 -figure out how to handle player leaving the level when there's no corresponding level
--implement backgrounds simlarly to tutorial tile system (think in terms of layers and have the different layers rendered on top of each other, possibly using a transparent color with background images)
-	*either implement parallax or plan for it
+-either implement parallax or plan for it

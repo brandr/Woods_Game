@@ -101,3 +101,16 @@ void FileManager::load_content(const char * filename,
 		}
 	}
 }
+
+std::vector<std::string> FileManager::string_to_parts(std::string str, std::string delimiter)
+{
+	size_t pos = 0;
+	std::vector<std::string> parts;
+	while ((pos = str.find(delimiter)) != std::string::npos) {
+		parts.push_back(str.substr(0,pos));
+		str.erase(0, pos + delimiter.length());
+	}
+	//last iteration
+	parts.push_back(str);
+	return parts;
+}

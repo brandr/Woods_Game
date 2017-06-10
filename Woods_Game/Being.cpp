@@ -25,11 +25,10 @@ void Being::set_yvel(int vel)
 	yvel = vel;
 }
 
-void Being::update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Being::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	
 	//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to oher levels)
-	
 	movement_update(interactables, nearby_tiles, game_mode);
 	animation_update(game_mode);
 	Entity::update();
@@ -44,11 +43,11 @@ void Being::animation_update(int game_mode)
 	//TODO
 }
 
-void Being::movement_update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, int game_mode) {
+void Being::movement_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, int game_mode) {
 	int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i].get_block();
-		if (b) interactables.push_back(*b);
+		if (b) interactables.push_back(b);
 	}
 	switch (game_mode) {
 		case(TOP_DOWN):
@@ -60,7 +59,7 @@ void Being::movement_update(std::vector<Entity> interactables, std::vector<Tile>
 	}
 }
 
-void Being::movement_update_side_scrolling(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles)
+void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles)
 {
 	Rect* side = NULL;
 	if (xvel < 0) side = new Rect(rect.x + xvel, rect.y, xvel, rect.height);
@@ -127,8 +126,10 @@ void Being::movement_update_side_scrolling(std::vector<Entity> interactables, st
 	rect.y += yvel;
 }
 
-void Being::movement_update_top_down(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles)
+void Being::movement_update_top_down(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles)
 {
+	
+	//temp
 	float speed_multiplier = get_speed_multiplier(nearby_tiles);
 	xvel *= speed_multiplier, yvel *= speed_multiplier;
 	float xoff = xvel, yoff = yvel;
@@ -166,7 +167,6 @@ void Being::movement_update_top_down(std::vector<Entity> interactables, std::vec
 			xvel = xoff, yvel = yoff;
 		}
 	}
-	std::cout << std::endl;
 	delete check_rect;
 	check_rect = NULL;
 	rect.x += xvel;
@@ -174,7 +174,7 @@ void Being::movement_update_top_down(std::vector<Entity> interactables, std::vec
 	//TODO
 }
 
-bool Being::on_ground(std::vector<Entity> interactables) {
+bool Being::on_ground(std::vector<Entity*> interactables) {
 	Rect* below = new Rect(rect.x, rect.y + rect.height, rect.width, 1);
 	if (empty_at(*below, interactables)) {
 		delete below;
@@ -189,22 +189,28 @@ bool Being::on_ground(std::vector<Entity> interactables) {
 }
 
 //bool Being::empty_at(Rect r, std::vector<Entity> interactables, bool pixel_perfect) {
-bool Being::empty_at(Rect r, std::vector<Entity> interactables) {
-	//TODO: this currently does bounding box collision checks. Implement more sophisticated checks later.
-	for (Entity e : interactables) {
-		if (e.is_solid() && e.intersects_area(r)) {
+bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
+	for (Entity *e : interactables) {
+		
+		if (e->is_solid() && e->intersects_area(r)) {
 			return false;
 		}
 	}
 	return true;
 }
-bool Being::precise_empty_at(std::vector<Entity> interactables, int xoff, int yoff)
+bool Being::precise_empty_at(std::vector<Entity*> interactables, int xoff, int yoff)
 {
 	if (!mask) return true;
 	const int size = interactables.size();
 	for (int i = 0; i < size; i++) {
-		if (Mask_Collide(mask, interactables[i].get_mask(), (get_x() + xoff) - interactables[i].get_x(), (get_y() + yoff) - interactables[i].get_y()))
+		//if (interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
+		//	(get_x() + xoff) - interactables[i]->get_x(),
+		//	(get_y() + yoff) - interactables[i]->get_y())) {
+		if (interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
+				 (get_x() + xoff) - interactables[i]->get_x(),
+				 (get_y() + yoff) - interactables[i]->get_y())) {
 			return false;
+		}
 	}
 	return true;
 }

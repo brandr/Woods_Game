@@ -12,6 +12,8 @@ protected:
 public:
 	Entity();
 	~Entity();
+	virtual void set_solid(bool solid);
 	virtual bool is_solid();
+	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 };
 #endif

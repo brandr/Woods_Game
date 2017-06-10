@@ -10,6 +10,8 @@
 //class MainGameScreen;
 class ImageLoader;
 class GameImageManager;
+
+
 class Level
 {
 private:
@@ -38,13 +40,14 @@ public:
 	void unload_content();
 	void update(int game_mode);
 	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
-	std::pair<int, int> tile_image_offset(std::string tile_string);
+	std::pair<int, int> string_to_pair(std::string tile_string);
+	void add_entity(Entity *e);
 	void add_being(Being *b);
 	void remove_player();
 	void remove_game_images(int type);
 	void remove_entities(int type);
 	void remove_beings(int type);
-	std::vector<Entity> get_interactables(Entity*);
+	std::vector<Entity*> get_interactables(Entity*);
 	std::vector<Tile> get_nearby_tiles(Entity*);
 	std::vector<Entity> get_player_interactables();
 	std::vector<std::string> get_layers();

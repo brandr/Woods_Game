@@ -27,18 +27,10 @@ int Player::get_type()
 void Player::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
 {
 	GameImage::load_content(attributes, contents);
-	/*
-	animation_dir_map[std::pair<int, int>(ANIM_STATE_NEUTRAL, DIR_NEUTRAL)] = 0;
-	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_RIGHT)] = 1;
-	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_LEFT)] = 2;
-	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_UP)] = 3;
-	animation_dir_map[std::pair<int, int>(ANIM_STATE_WALKING, DIR_DOWN)] = 4;
-	*/
-	//refresh_mask();
 	//TODO: if necessary, map player direction to different animations
 }
 
-void Player::update(std::vector<Entity> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Player::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	if (exit_level_check(level_dimensions))
 		return;
@@ -55,7 +47,7 @@ void Player::update(std::vector<Entity> interactables, std::vector<Tile> nearby_
 	clear_input();
 }
 
-void Player::update_side_scrolling(std::vector<Entity> interactables, std::pair<int, int> level_dimensions)
+void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair<int, int> level_dimensions)
 {
 	//TODO: joystick-based movement
 	if (jumping && on_ground(interactables)) jumping = false;
@@ -80,8 +72,9 @@ void Player::update_side_scrolling(std::vector<Entity> interactables, std::pair<
 }
 
 //TODO: may want to update direction if necessary for animations
-void Player::update_top_down(std::vector<Entity> interactables, std::pair<int, int> level_dimensions)
+void Player::update_top_down(std::vector<Entity*> interactables, std::pair<int, int> level_dimensions)
 {
+
 	//TODO: figure out how best to handle joystick and keyboard inputs that occur at the same time
 	xvel = 0, yvel = 0;
 	anim_state = ANIM_NEUTRAL;
@@ -201,7 +194,7 @@ void Player::set_joystick_movement(std::pair<float, float> pos)
 	move_joystick_pos = pos;
 }
 
-void Player::attempt_jump(std::vector<Entity> interactables)
+void Player::attempt_jump(std::vector<Entity*> interactables)
 {
 	if (on_ground(interactables)) {
 		jumping = true;

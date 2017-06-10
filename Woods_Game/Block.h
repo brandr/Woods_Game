@@ -1,4 +1,4 @@
-#include "Entity.h"
+#include "EntityGroup.h"
 class Block :
 	public Entity
 {

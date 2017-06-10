@@ -133,87 +133,18 @@ void GameImageManager::load_level_from_map(Level level)
 
 void GameImageManager::load_player()
 {
-	/*
-	//load_level_content(, "", PLAYER);-
-	std::vector<std::vector<std::string>> attributes;
-	std::vector<std::vector<std::string>> contents;
-	file_manager.load_content("resources/load/player.txt", attributes, contents);
-	player = new Player();
-	//GameImage *image;
-	//	image = new Player();
-	player->load_content(attributes[i], contents[i]);
-		player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
-		current_level->add_being(player);
-		*/
+	
 }
 
 void GameImageManager::unload_content()
 {
 	world.unload_content();
-	//int g_size = game_images.size();
-	/*
-	for (int i = 0; i < game_images.size(); i++) {
-		if (game_images[i]) {
-			game_images[i]->unload_content();
-			delete game_images[i];
-		}
-	}
-	for (int i = 0; i < tiles.size(); i++) {
-		for (int j = 0; j < tiles[i].size(); j++) {
-			tiles[i][j].unload_content();
-		}
-		tiles[i].clear();
-		std::vector<Tile>().swap(tiles[i]);
-	}
-	std::vector<std::vector<Tile>>().swap(tiles);
-	game_images.clear();
-	std::vector<GameImage*>().swap(game_images);
-	entities.clear();
-	std::vector<Entity*>().swap(entities);
-	beings.clear();
-	std::vector<Being*>().swap(beings);
-	player = NULL;
-	*/
 	player = NULL;
 }
 
 void GameImageManager::unload_level_content()
 {
-	/*
-	for (int i = 0; i < tiles.size(); i++) {
-		for (int j = 0; j < tiles[i].size(); j++) {
-			tiles[i][j].unload_content();
-		}
-		tiles[i].clear();
-		std::vector<Tile>().swap(tiles[i]);
-	}
-	std::vector<std::vector<Tile>>().swap(tiles);
-	int g_size = game_images.size();
-	for (int i = 0; i < g_size; i++) {
-		if (game_images[i]->get_type() != PLAYER) {
-			game_images[i]->unload_content();
-			delete game_images[i];
-		}
-	}
-	game_images.swap(std::vector<GameImage*>());
-	entities.swap(std::vector<Entity*>());
-	beings.swap(std::vector<Being*>());
-	//blocks.swap(std::vector<Block*>());
-
-	//TODO: put these 3 lines somewhere else since we might not always want to add the player here
-	game_images.push_back(player);
-	entities.push_back(player);
-	beings.push_back(player);
-	*/
 }
-/*
-void GameImageManager::add_block(Block * b)
-{
-	entities.push_back(dynamic_cast<Entity*>(b));
-	blocks.push_back(dynamic_cast<Block*>(b));
-	game_images.push_back(dynamic_cast<GameImage*>(b));
-}
-*/
 
 void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::pair<float,float>> joystick_map)
 {
@@ -231,19 +162,7 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 	}
 	//std::vector<Entity> interactables = get_player_interactables();		//TODO: instead of just player interactables, get all interactables since other beings may interact with objects.
 	current_level->update(get_game_mode());
-	/*
-	int size = beings.size();
-	for (int i = 0; i < size; i++) {
-		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
-			std::vector<Entity> interactables = get_interactables(beings[i]);
-			std::vector<Tile> tiles = get_nearby_tiles(beings[i]);
-			beings[i]->update(interactables, tiles, dimensions, get_game_mode());	//TEMP. need to handle gamemode some other way, maybe by accessing it from level or storing it in GameImageManager
-			beings[i]->set_bitmap(ImageLoader::get_instance().get_current_image(beings[i]));
-		}
-		else
-			std::cout << "NULL BEING" << std::endl;
-	}
-	*/
+
 }
 
 void GameImageManager::change_player_level()
@@ -314,93 +233,8 @@ void GameImageManager::change_player_level()
 	current_level = next_level;
 }
 
-/*
-std::vector<Entity> GameImageManager::get_interactables(Entity* entity)
-{	
-	std::vector<Entity> interactables;
-	
-	//TODO: get interactables that could potentially interact with the entity this frame, based on location and other factors.
-	int xpos = entity->get_x(), ypos = entity->get_y(), width = entity->get_width(), height = entity->get_height();
-	int tx_max = tiles[0].size() - 1, ty_max = tiles.size() - 1;
-	int tx1 = std::max(0, xpos / TILE_SIZE - 2), ty1 = std::max(0, ypos / TILE_SIZE - 2),
-		tx2 = std::min(tx_max, (xpos + width) / TILE_SIZE + 2), ty2 = std::min(ty_max, (ypos + height) / TILE_SIZE + 2);
-	for (int y = ty1; y < ty2; y++) {
-		for (int x = tx1; x < tx2; x++) {
-			Entity *e = tiles[y][x].get_block();
-			if(e) interactables.push_back(*e);
-		}
-	}
-	
-	return interactables;
-}
-*/
-/*
-std::vector<Tile> GameImageManager::get_nearby_tiles(Entity* entity)
-{
-
-	std::vector<Tile> nearby_tiles;
-	//TODO: get interactables that could potentially interact with the entity this frame, based on location and other factors.
-	int xpos = entity->get_x(), ypos = entity->get_y(), width = entity->get_width(), height = entity->get_height();
-	int tx_max = tiles[0].size() - 1, ty_max = tiles.size() - 1;
-	int tx1 = std::max(0, xpos / TILE_SIZE - 2), ty1 = std::max(0, ypos / TILE_SIZE - 2),
-		tx2 = std::min(tx_max, (xpos + width) / TILE_SIZE + 2), ty2 = std::min(ty_max, (ypos + height) / TILE_SIZE + 2);
-	for (int y = ty1; y < ty2; y++) {
-		for (int x = tx1; x < tx2; x++) {
-			nearby_tiles.push_back(tiles[y][x]);
-		}
-	}
-	return nearby_tiles;
-}
-*/
-/*
-std::vector<Entity> GameImageManager::get_player_interactables()
-{	
-	std::vector<Entity> interactables;
-	//TODO: non-block interactables
-	return interactables;
-}
-*/
-/*
-std::vector<std::vector<Tile>> GameImageManager::get_tiles()
-{
-	return std::vector<std::vector<Tile>>();
-}
-
-std::vector<GameImage*> GameImageManager::get_game_images()
-{
-	return std::vector<GameImage*>();
-}
-
-std::vector<Entity*> GameImageManager::get_entities()
-{
-	return std::vector<Entity*>();
-}
-
-std::vector<Being*> GameImageManager::get_beings()
-{
-	return std::vector<Being*>();
-}
-*/
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
 	if (current_level) current_level->draw(display, get_camera_offset());
-		// only draw things that are on screen
-	/*
-	std::pair<int, int> off = get_camera_offset();
-	const int start_x = std::max(0, (-1*off.first) / TILE_SIZE - 1);
-	const int start_y = std::max(0, (-1*off.second) / TILE_SIZE - 1);
-	const int x_size = tiles[0].size(), y_size = tiles.size();
-	const int end_x = std::min(x_size, start_x + DEFAULT_SCREEN_WIDTH  / TILE_SIZE + 3);
-	const int end_y = std::min(y_size, start_y + DEFAULT_SCREEN_HEIGHT / TILE_SIZE + 3);
-	for (int y = start_y; y < end_y; y++) {
-		for (int x = start_x; x < end_x; x++) {
-			tiles[y][x].draw(display, off.first, off.second);
-		}
-	}
-	int size = game_images.size();
-	for (int i = 0; i < size; i++) {
-		game_images[i]->draw(display, off.first, off.second);
-	}
-	*/
 }
 
