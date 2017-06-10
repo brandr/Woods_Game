@@ -1,9 +1,16 @@
 #include "Level.h"
 #include "GameImageManager.h"
 
+struct game_image_center_comparison
+{
+	inline bool operator() (GameImage* g1, GameImage* g2)
+	{
+		return (g1->get_center().second < g2->get_center().second);
+	}
+};
+
 Level::Level()
 {
-	//TEMP
 	width = 800;
 	height = 600;
 }
@@ -55,6 +62,7 @@ void Level::load_from_map()
 		std::map<std::pair<int, int>, float> speed_mods;
 		// map entity offsets to root offsets
 		std::map<std::pair<int, int>, std::pair<int, int>> root_offsets;
+		std::map<std::pair<int, int>, std::pair<int, int>> center_offsets;
 		// map entity offsets to entity components
 		std::map < std::pair<int, int>, std::vector <EntityComponentData >> entity_component_map;
 		std::pair<int, int> image_dimensions;
@@ -79,7 +87,7 @@ void Level::load_from_map()
 					for (int k = 0; k < contents_size; k++) {
 						std::string speed_string = contents[i][k];
 						std::string tile_string = speed_string.substr(0, speed_string.find(":"));
-						std::pair<int, int> tile_offset = string_to_pair(tile_string);
+						std::pair<int, int> tile_offset = FileManager::string_to_pair(tile_string);
 						float speed_mod = ::atof(speed_string.substr(speed_string.find(":") + 1).c_str());
 						speed_mods[tile_offset] = speed_mod;
 					}
@@ -87,12 +95,18 @@ void Level::load_from_map()
 				// entity loading
 				else if (attributes[i][j] == "root_offset") {
 					std::string root_offset_data = contents[i][j];
-					std::pair<int, int> ss_offset = string_to_pair(root_offset_data.substr(0, root_offset_data.find(":")));
-					std::pair<int, int> root_offset = string_to_pair(root_offset_data.substr(root_offset_data.find(":") + 1).c_str());
+					std::pair<int, int> ss_offset = FileManager::string_to_pair(root_offset_data.substr(0, root_offset_data.find(":")));
+					std::pair<int, int> root_offset = FileManager::string_to_pair(root_offset_data.substr(root_offset_data.find(":") + 1).c_str());
 					root_offsets[ss_offset] = root_offset;
 				}
+				else if (attributes[i][j] == "center_offset") {
+					std::string center_offset_data = contents[i][j];
+					std::pair<int, int> ss_offset = FileManager::string_to_pair(center_offset_data.substr(0, center_offset_data.find(":")));
+					std::pair<int, int> center_offset = FileManager::string_to_pair(center_offset_data.substr(center_offset_data.find(":") + 1).c_str());
+					center_offsets[ss_offset] = center_offset;
+				}
 				else if (attributes[i][j] == "entity_components") {
-					std::pair<int, int> ss_offset = string_to_pair(contents[i][j].substr(0, contents[i][j].find(":")));
+					std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][j].substr(0, contents[i][j].find(":")));
 					std::string entity_components_str = contents[i][j].substr(contents[i][j].find(":") + 1).c_str();
 					std::vector<std::string> entity_components_str_list = FileManager::string_to_parts(entity_components_str, ";");
 					int entity_components_size = entity_components_str_list.size();
@@ -108,7 +122,7 @@ void Level::load_from_map()
 					entity_component_map[ss_offset] = component_data_list;
 				}
 				else if (attributes[i][j] == "image_dimensions") {
-					image_dimensions = string_to_pair(contents[i][j]);
+					image_dimensions = FileManager::string_to_pair(contents[i][j]);
 				}
 				else if (attributes[i][j] == "StartLayer") {	//TODO: figure out what to do with EndLayer tag
 					const int contents_size = contents[i].size();
@@ -117,7 +131,7 @@ void Level::load_from_map()
 						tiles.push_back(std::vector<Tile>());
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
-								std::pair<int, int> tile_offset = string_to_pair(contents[i][k]);
+								std::pair<int, int> tile_offset = FileManager::string_to_pair(contents[i][k]);
 								Rect* offset_rect = new Rect(tile_offset.first*TILE_SIZE, tile_offset.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 								ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
@@ -144,7 +158,7 @@ void Level::load_from_map()
 					else if (layer_id == "block_layer") {
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {	//TODO: allow for animated blocks if necessary
-								std::pair<int, int>tile_offset = string_to_pair(contents[i][k]);
+								std::pair<int, int>tile_offset = FileManager::string_to_pair(contents[i][k]);
 								Rect* offset_rect = new Rect(tile_offset.first*TILE_SIZE, tile_offset.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 								ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
@@ -160,8 +174,9 @@ void Level::load_from_map()
 					else if (layer_id == "entity_group_layer") {
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
-								std::pair<int, int> ss_offset = string_to_pair(contents[i][k]);
+								std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][k]);
 								std::pair<int, int> root_off = root_offsets[ss_offset];
+								std::pair<int, int> center_off = center_offsets[ss_offset];
 								std::vector<EntityComponentData> comp_data = entity_component_map[ss_offset];
 								std::pair<int, int> root_pos(k*TILE_SIZE, indexY*TILE_SIZE);
 								std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
@@ -178,15 +193,16 @@ void Level::load_from_map()
 									e->set_content(comp_filename, ss_offset_rect, group_pos);
 									e->set_rect(group_pos.first, group_pos.second, image_dimensions.first, image_dimensions.second);
 									e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
-									//TODO: set entity attributes like solid, transparent on collide, etc
+									e->set_entity_attributes(data.attributes);
+									//TODO: figure out where to check entity attributes like solid, transparent on collide, etc
 									//TODO: set whatever is necessary for objects to be drawn on the correct layer
-									//TODO: set rect as necessary
 									entity_list.push_back(e);
 								}
 								EntityGroup *e_group = new EntityGroup();
 								e_group->set_entities(entity_list);
 								e_group->set_solid(true);	//temp. consider making a set of attributes for the entire group and including solid if necessary
 								e_group->set_rect(group_pos.first, group_pos.second, image_dimensions.first, image_dimensions.second);
+								e_group->set_center_offset(center_off);
 								e_group->load_mask(tile_sheet_filename);
 								add_entity(e_group);
 							}
@@ -254,12 +270,15 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 			tiles[y][x].draw(display, off.first, off.second);
 		}
 	}	
+	//TODO: draw game_images in order from lowest center y to highest center y
+	std::sort(game_images.begin(), game_images.end(), game_image_center_comparison());
 	int size = game_images.size();
 	for (int i = 0; i < size; i++) {
 		game_images[i]->draw(display, off.first, off.second);
 	}
 }
 
+/*
 std::pair<int, int> Level::string_to_pair(std::string tile_string)
 {
 	std::pair<int, int> pair;
@@ -267,7 +286,7 @@ std::pair<int, int> Level::string_to_pair(std::string tile_string)
 	pair.second = atoi(tile_string.substr(tile_string.find(',') + 1).c_str());
 	return pair;
 }
-
+*/
 void Level::add_entity(Entity * e)
 {
 	entities.push_back(e);

@@ -50,22 +50,22 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 	int size = attributes.size();
 	std::map<std::string, std::pair<int, int>> frame_counts;
 	//TODO: some way to check whether a mask image exists
-	//bool mask_exists = true;
 	for (int i = 0; i < size; i++) {
 		if (attributes[i] == "image") {
 			image_filename = contents[i];
 			ImageLoader::get_instance().load_image(contents[i]);
 		}
-		//else if (attributes[i] == ""
 		else if (attributes[i] == "position") {
 			std::string tile_string = contents[i];
 			rect.x = atoi(tile_string.substr(0, tile_string.find(',')).c_str());
 			rect.y = atoi(tile_string.substr(tile_string.find(',') + 1).c_str());
-		}
+		}	
 		else if (attributes[i] == "spritesheet") {
 			anim_filename = "sprite_sheets/" + contents[i];
-			//animation = new Animation();
 			ss_animation = new SpriteSheetAnimation();
+		}
+		else if (attributes[i] == "center_offset") {
+			center_offset = FileManager::string_to_pair(contents[i]);
 		}
 		else if (attributes[i] == "anim_keys") {
 			std::string keys_string = contents[i];
@@ -226,6 +226,16 @@ void GameImage::set_rect(int x, int y, int width, int height)
 	rect.x = x, rect.y = y, rect.width = width, rect.height = height;
 }
 
+void GameImage::set_center_offset(std::pair<int, int> offset)
+{
+	this->center_offset = offset;
+}
+
+const std::pair<int, int> GameImage::get_center() const
+{
+	return std::pair<int, int>(static_cast<int>(rect.x) + center_offset.first, static_cast<int>(rect.y) + center_offset.second);
+}
+
 void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	this->bitmap = bitmap;
@@ -342,3 +352,22 @@ bool GameImage::outside_level(std::pair<int, int> level_dimensions)
 	//if (!current_level) return true;
 	return rect.right() < 0 || rect.x > level_dimensions.first || rect.bottom() < 0 || rect.y > level_dimensions.second;
 }
+
+
+/*
+inline bool center_comparsion::operator()(const GameImage & gi1, const GameImage & gi2)
+{
+	return (gi1.get_center().second < gi2.get_center().second);
+}
+*/
+/*
+bool operator<(const GameImage & g1, const GameImage & g2)
+{
+	return (g1.get_center().second < g2.get_center().second);
+}
+
+bool operator>(const GameImage & g1, const GameImage & g2)
+{
+	return (g1.get_center().second > g2.get_center().second);
+}
+*/

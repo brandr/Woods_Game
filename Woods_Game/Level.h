@@ -40,7 +40,7 @@ public:
 	void unload_content();
 	void update(int game_mode);
 	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
-	std::pair<int, int> string_to_pair(std::string tile_string);
+	//std::pair<int, int> string_to_pair(std::string tile_string);
 	void add_entity(Entity *e);
 	void add_being(Being *b);
 	void remove_player();

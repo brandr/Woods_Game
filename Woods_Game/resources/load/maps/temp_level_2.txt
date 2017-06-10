@@ -61,10 +61,25 @@ Load=[EndLayer]
 
 EndLoad=[block_layer]
 
-Load=[entity_layer]
+Load=[entity_group_layer]
+
+Load=[NullTile]
+[---]
 
 Load=[TileSheet]
-[entity_tile_sheet_1]
+[tree_tile_sheet_1]
+
+Load=[image_dimensions]
+[64,192]
+
+Load=[root_offset]
+[0,0:0,128]
+
+Load=[center_offset]
+[0,0:32,175]
+
+Load=[entity_components]
+[0,0:trunk;leaves-transparent_on_contact]
 
 Load=[StartLayer]
 
@@ -81,4 +96,4 @@ Load=[StartLayer]
 
 Load=[EndLayer]
 
-EndLoad=[entity_layer]
+EndLoad=[entity_group_layer]

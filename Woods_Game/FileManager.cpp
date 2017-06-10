@@ -102,6 +102,14 @@ void FileManager::load_content(const char * filename,
 	}
 }
 
+std::pair<int, int> FileManager::string_to_pair(std::string tile_string)
+{
+	std::pair<int, int> pair;
+	pair.first = atoi(tile_string.substr(0, tile_string.find(',')).c_str());
+	pair.second = atoi(tile_string.substr(tile_string.find(',') + 1).c_str());
+	return pair;
+}
+
 std::vector<std::string> FileManager::string_to_parts(std::string str, std::string delimiter)
 {
 	size_t pos = 0;

@@ -25,3 +25,8 @@ void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	GameImage::draw(display, x_offset, y_offset);
 }
+
+void Entity::set_entity_attributes(std::vector<std::string> attributes)
+{
+	this->entity_attributes = attributes;
+}

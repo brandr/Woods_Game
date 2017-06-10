@@ -1,6 +1,8 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#define JOYSTICK_DEADZONE 0.1f
+
 #include "Being.h"
 #include<map>
 

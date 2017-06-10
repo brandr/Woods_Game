@@ -20,7 +20,6 @@ std::pair<int, int> GameImageManager::get_camera_offset()
 			x = 0;
 		else {
 			x = -1 * std::min((std::max(0.0f, player->get_x() - DEFAULT_SCREEN_WIDTH / 2)), (float)(current_level->get_width() - DEFAULT_SCREEN_WIDTH));
-			//TODO
 		}
 		if (current_level->get_height() <= DEFAULT_SCREEN_HEIGHT)
 			y = 0;
@@ -28,7 +27,6 @@ std::pair<int, int> GameImageManager::get_camera_offset()
 			y = -1 * std::min((std::max(0.0f, player->get_y() - DEFAULT_SCREEN_HEIGHT / 2)), (float)(current_level->get_height() - DEFAULT_SCREEN_HEIGHT));
 		}
 	}
-	//TODO
 	std::pair<int,int> off = std::make_pair(x, y);
 	return off;
 }

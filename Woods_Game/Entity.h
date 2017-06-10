@@ -8,6 +8,7 @@ class Entity :
 {
 protected:
 	bool solid;
+	std::vector<std::string> entity_attributes;
 	//Level* current_level;
 public:
 	Entity();
@@ -15,5 +16,7 @@ public:
 	virtual void set_solid(bool solid);
 	virtual bool is_solid();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual void set_entity_attributes(std::vector<std::string> attributes);
+
 };
 #endif
