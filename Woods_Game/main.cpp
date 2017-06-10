@@ -7,8 +7,8 @@
 #else
 #define DBG_NEW new
 #endif
-#include <stdlib.h>
-#include <crtdbg.h>
+#include<stdlib.h>
+#include<crtdbg.h>
 #include<allegro5/allegro_native_dialog.h>
 #include<allegro5/allegro_primitives.h>
 

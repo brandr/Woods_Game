@@ -9,6 +9,7 @@ Woods game todolist
 -fix the issue where the player can go faster while running against a wall than while walking normally.
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -idea: consider including animation frame duration in the files from which we load gameimages 
+	*may also want to adjust frame duration ingame in  some cases, such as when tilting the joystick very lightly with a controller
 -implement different types of "brush" tiles and figure out how to make them look and feel like they flow smoothly from one to another.
 	*might need to remake the tile speed modifier system
 	*idea: just organize tile types into rows based on their type and speed modifier, and in each row have differnt styles of the same tile type, along with some made for corners/edges of other tile types
