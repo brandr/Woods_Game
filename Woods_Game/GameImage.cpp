@@ -1,6 +1,6 @@
 #include "GameImage.h"
 #include "ImageLoader.h"
-#include<iostream>
+#include <iostream>
 
 GameImage::GameImage(std::string filename)
 {

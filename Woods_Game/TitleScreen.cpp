@@ -1,5 +1,4 @@
 #include "TitleScreen.h"
-//#include "ScreenManager.h"
 
 InputManager title_input;
 
@@ -15,7 +14,6 @@ TitleScreen::~TitleScreen()
 
 void TitleScreen::load_content()
 {
-	//font = al_load_ttf_font("C:/Users/Robert/Documents/Visual Studio 2017/Projects/Woods_Game/Woods_Game/resources/fonts/Xeranthemum.ttf", 30, NULL);
 	font = al_load_ttf_font("resources/fonts/Xeranthemum.ttf", 30, NULL);
 }
 

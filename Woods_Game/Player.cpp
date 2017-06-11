@@ -96,7 +96,7 @@ void Player::update_top_down(std::vector<Entity*> interactables, std::pair<int, 
 		direction = DIR_UP, anim_state = ANIM_STATE_WALKING;
 	}
 	//joystick
-	if (abs(move_joystick_pos.first) <= 0.05f && abs(move_joystick_pos.second) <= JOYSTICK_DEADZONE) {
+	if (abs(move_joystick_pos.first) <= JOYSTICK_DEADZONE && abs(move_joystick_pos.second) <= JOYSTICK_DEADZONE) {
 		return;
 	}
 	xvel = move_joystick_pos.first*get_walk_speed(), yvel = move_joystick_pos.second*get_walk_speed();

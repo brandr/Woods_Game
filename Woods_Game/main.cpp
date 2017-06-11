@@ -1,14 +1,7 @@
-#define _CRTDBG_MAP_ALLOC
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 // Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
 // allocations to be of _CLIENT_BLOCK type
 //TODO: replace new with DBG_NEW when it is used
-#else
-#define DBG_NEW new
-#endif
 #include<stdlib.h>
-#include<crtdbg.h>
 #include<allegro5/allegro_native_dialog.h>
 #include<allegro5/allegro_primitives.h>
 
@@ -18,7 +11,6 @@
 
 int main()
 {
-	
 	//before title screen
 
 	//_CrtSetBreakAlloc(605);		
@@ -125,6 +117,6 @@ int main()
 		al_uninstall_keyboard();
 		al_uninstall_system();
 	}
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 	return 0;
 }

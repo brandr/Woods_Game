@@ -68,12 +68,7 @@ void MainGameScreen::set_input_map()
 
 void MainGameScreen::load_content()
 {
-	//current_level = Level(0, 0, 800, 600);
-	//std::cout << "Loading main screen content.." << std::endl;
 	game_image_manager.load_content();
-	//TODO: uncomment when necessary
-	//TODO: copy necessary info from world/dungeon innto current level, or load it (the world structure may not even be necessary if we only load adjacent levels at any given time
-	//TODO: load blocks and other level data via game_image_manager
 }
 
 void MainGameScreen::unload_content()
@@ -108,10 +103,5 @@ int MainGameScreen::get_camera_offset_y()
 
 void MainGameScreen::refresh()
 {
-	/*
-	input_map[INPUT_UP] = false;
-	input_map[INPUT_DOWN] = false;
-	input_map[INPUT_LEFT] = false;
-	input_map[INPUT_RIGHT] = false;
-	*/
+
 }
