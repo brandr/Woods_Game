@@ -59,7 +59,8 @@ void Level::load_from_map()
 		std::vector<std::vector<std::string>> attributes;
 		std::vector<std::vector<std::string>> contents;
 		// map tile offsets to speed mods
-		std::map<std::pair<int, int>, float> speed_mods;
+		std::map<int, float> speed_mods; 
+		std::map<int, int> edge_priorities;
 		// map entity offsets to root offsets
 		std::map<std::pair<int, int>, std::pair<int, int>> root_offsets;
 		std::map<std::pair<int, int>, std::pair<int, int>> center_offsets;
@@ -87,9 +88,19 @@ void Level::load_from_map()
 					for (int k = 0; k < contents_size; k++) {
 						std::string speed_string = contents[i][k];
 						std::string tile_string = speed_string.substr(0, speed_string.find(":"));
-						std::pair<int, int> tile_offset = FileManager::string_to_pair(tile_string);
+						//std::pair<int, int> tile_offset = FileManager::string_to_pair(tile_string);
+						//float speed_mod = 
 						float speed_mod = ::atof(speed_string.substr(speed_string.find(":") + 1).c_str());
-						speed_mods[tile_offset] = speed_mod;
+						speed_mods[::atoi(tile_string.c_str())] = speed_mod;
+					}
+				}
+				else if (attributes[i][j] == "edge_priority") {
+					const int contents_size = contents[i].size();
+					for (int k = 0; k < contents_size; k++) {
+						std::string edge_string = contents[i][k];
+						std::string tile_string = edge_string.substr(0, edge_string.find(":"));
+						int priority_string = ::atoi(edge_string.substr(edge_string.find(":") + 1).c_str());
+						edge_priorities[::atoi(tile_string.c_str())] = priority_string;
 					}
 				}
 				// entity loading
@@ -138,7 +149,7 @@ void Level::load_from_map()
 								Tile t;
 								t.set_content(tile_sheet_filename, offset_rect, position);
 								t.set_bitmap(ImageLoader::get_instance().get_current_image(&t));	
-								auto it = speed_mods.find(tile_offset);
+								auto it = speed_mods.find(tile_offset.second);
 								if (it != speed_mods.end()) t.set_speed_mod(it->second);
 								tiles[indexY].push_back(t);
 							}
@@ -213,6 +224,23 @@ void Level::load_from_map()
 			}
 		}
 	}
+	load_tile_edges();
+}
+
+void Level::load_tile_edges()
+{
+	int tile_rows = tiles.size();
+	int tile_cols = tiles[0].size();
+	for (int y = 0; y < tile_rows; y++) {
+		for (int x = 0; x < tile_cols; x++) {
+			Tile t = tiles[y][x];
+			if (x > 0) {
+
+			}
+			//TODO
+		}
+	}
+	//TODO
 }
 
 void Level::unload_content()

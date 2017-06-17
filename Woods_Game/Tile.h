@@ -6,6 +6,7 @@ class Tile:
 private:
 	Block* block = NULL;
 	float speed_mod = 1.0f;
+	int edge_priority = 0;
 	//temp
 	//ALLEGRO_BITMAP *bitmap;
 

@@ -37,6 +37,7 @@ public:
 	Level(int, int, int, int);
 	~Level();
 	void load_from_map();
+	void load_tile_edges();
 	void unload_content();
 	void update(int game_mode);
 	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);

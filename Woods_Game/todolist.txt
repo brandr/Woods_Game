@@ -1,12 +1,14 @@
 Woods game todolist
 
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
+-IDEA: make a separate program to progamatically generate varied tile sheets based on some criteria
 -make a small forest level with trails and brush to test basic exploration.
 	*from here, can implement items like shears to make temporary trails (this will require changing the level's tiles from the player class,  
 		which may be difficult)
 	*may also want to implement a HUD and decide how item management will be handled
 	*this may be a good time to implement a stamina system
 -fix the issue where the player can go faster while running against a wall than while walking normally.
+-fix the glitch where parts of the player's face sometimes disappear
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -idea: consider including animation frame duration in the files from which we load gameimages 
 	*may also want to adjust frame duration ingame in  some cases, such as when tilting the joystick very lightly with a controller

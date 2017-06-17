@@ -101,6 +101,7 @@ void Dungeon::add_level(Level* level)
 		}
 	}
 	level->load_from_map();
+
 	//level_list.push_back(*level);
 	//
 	//level.set_dungeon_grid(&dungeon_grid);

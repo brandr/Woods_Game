@@ -8,10 +8,10 @@ Load=[NullTile]
 [---]
 
 Load=[speed_modifier]
-[1,0:0.5][2,0:0.25]
+[0:0.75][1:.85][2:1.0]
 
 Load=[TileSheet]
-[back_tile_sheet_1]
+[back_tile_sheet_2]
 
 Load=[StartLayer]
 
