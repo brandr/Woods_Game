@@ -28,7 +28,8 @@ void Being::set_yvel(int vel)
 void Being::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	
-	//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to oher levels)
+	//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to other levels)
+	collision_update(interactables, nearby_tiles, game_mode);
 	movement_update(interactables, nearby_tiles, game_mode);
 	animation_update(game_mode);
 	Entity::update();
@@ -104,7 +105,6 @@ void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, s
 	}
 	// check for collisions below
 	else {
-		//Rect* below = new Rect(rect.x , rect.y + rect.height, rect.width, std::max(yvel + gravity, 2));
 		Rect* below = new Rect(rect.x, rect.y + rect.height, rect.width, std::max(yvel, 2.0f));
 		if (empty_at(*below, interactables)) {
 			yvel = std::min(yvel + gravity, terminal_velocity);
@@ -128,8 +128,6 @@ void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, s
 
 void Being::movement_update_top_down(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles)
 {
-	
-	//temp
 	float speed_multiplier = get_speed_multiplier(nearby_tiles);
 	xvel *= speed_multiplier, yvel *= speed_multiplier;
 	float xoff = xvel, yoff = yvel;
@@ -171,7 +169,42 @@ void Being::movement_update_top_down(std::vector<Entity*> interactables, std::ve
 	check_rect = NULL;
 	rect.x += xvel;
 	rect.y += yvel;
-	//TODO
+}
+
+void Being::collision_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, int game_mode)
+{
+	colliding_entities.clear();
+	int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i].get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
+			get_x() - interactables[i]->get_x(),
+			get_y() - interactables[i]->get_y())) {
+			Entity* e = interactables[i];
+			colliding_entities.push_back(e);
+			collide_with_entity(e);
+		}
+	}
+}
+
+void Being::collide_with_entity(Entity * e)
+{
+	if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_DAMAGE)) {
+		if (counters[BOUNCE] > 0) return;
+		if (counters[SWING] > 0) return;
+		//TODO: once health is implemented, apply damage as necessary. (will also need to figure out invincibility frames)
+		std::pair<float, float> p1 = get_rect_center();
+		std::pair<float, float> p2 = e->get_rect_center();
+		std::pair<float, float> bounce_vec = std::pair<float, float>(p1.first - p2.first, p1.second - p2.second);
+		int knockback = std::max(1, e->get_entity_attribute(E_ATTR_KNOCKBACK));
+		float mag = std::pow(std::pow(bounce_vec.first, 2.0) + std::pow(bounce_vec.second, 2), 0.5);
+		xvel = (bounce_vec.first / mag)*knockback, yvel = (bounce_vec.second / mag)*knockback;
+		counters[BOUNCE] = knockback*2; //temp	
+	}
 }
 
 bool Being::on_ground(std::vector<Entity*> interactables) {
@@ -191,7 +224,6 @@ bool Being::on_ground(std::vector<Entity*> interactables) {
 //bool Being::empty_at(Rect r, std::vector<Entity> interactables, bool pixel_perfect) {
 bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
-		
 		if (e->is_solid() && e->intersects_area(r)) {
 			return false;
 		}
@@ -203,10 +235,7 @@ bool Being::precise_empty_at(std::vector<Entity*> interactables, int xoff, int y
 	if (!mask) return true;
 	const int size = interactables.size();
 	for (int i = 0; i < size; i++) {
-		//if (interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
-		//	(get_x() + xoff) - interactables[i]->get_x(),
-		//	(get_y() + yoff) - interactables[i]->get_y())) {
-		if (interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
+		if (interactables[i]->is_solid() && interactables[i]->get_mask() && Mask_Collide(mask, interactables[i]->get_mask(),
 				 (get_x() + xoff) - interactables[i]->get_x(),
 				 (get_y() + yoff) - interactables[i]->get_y())) {
 			return false;
@@ -224,6 +253,13 @@ float Being::get_speed_multiplier(std::vector<Tile> tiles)
 			if (tmask && Mask_Collide(mask, tmask, get_x() - tiles[i].get_x(), get_y() - tiles[i].get_y())) {
 				mult = std::min(mult, tiles[i].get_speed_mod());
 			}
+	}
+	int e_size = colliding_entities.size();
+	for (int i = 0; i < e_size; i++) {
+		Entity* e = colliding_entities[i];
+		if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_SLOW)) {
+			mult = mult / e->get_entity_attribute(E_ATTR_CONTACT_SLOW);
+		}
 	}
 	return mult;
 }

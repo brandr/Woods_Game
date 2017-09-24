@@ -27,20 +27,26 @@ int Player::get_type()
 void Player::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
 {
 	GameImage::load_content(attributes, contents);
+	inventory.load_content();
+	//TODO: load inventory depending on what items the player should have
 	//TODO: if necessary, map player direction to different animations
+}
+
+void Player::reset_entity_flags()
+{
+	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
 void Player::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	if (exit_level_check(level_dimensions))
 		return;
-	//TODO
 	switch (game_mode) {
 	case SIDE_SCROLLING:
 		update_side_scrolling(interactables, level_dimensions);
 		break;
 	case TOP_DOWN:
-		update_top_down(interactables, level_dimensions);
+		update_top_down(interactables, nearby_tiles, level_dimensions);
 		break;
 	}
 	Being::update(interactables, nearby_tiles, level_dimensions, game_mode);
@@ -72,9 +78,20 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 }
 
 //TODO: may want to update direction if necessary for animations
-void Player::update_top_down(std::vector<Entity*> interactables, std::pair<int, int> level_dimensions)
+void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions)
 {
-
+	if (counters[BOUNCE]) return;
+	if (counters[SWING]) {
+		switch (current_action) {
+		case(ACTION_SHEAR):
+			shear_update(interactables, nearby_tiles, level_dimensions);
+			break;
+		}
+		return;
+	}
+	current_action = ACTION_NONE;
+	reset_entity_flags();
+	//if (countres[])
 	//TODO: figure out how best to handle joystick and keyboard inputs that occur at the same time
 	xvel = 0, yvel = 0;
 	anim_state = ANIM_NEUTRAL;
@@ -156,6 +173,56 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_RIGHT);
 }
 
+void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions)
+{
+	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
+	//auto it = entity_flags.find(E_FLAG_HIT_OTHER);
+	//if (it != entity_flags.end() && it->second) return;
+	const int t_size = nearby_tiles.size();
+	for(int i = 0; i < t_size; i++){
+		Block *b = nearby_tiles[i].get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+	
+	mask_t *shear_mask = additional_masks[std::pair<std::string, int>("slicing", direction)];
+	float x_off = 0, y_off = 0;
+	switch(direction){
+		case DIR_NEUTRAL:
+			x_off = 16, y_off = 52;
+			break;
+		case DIR_UP:
+			x_off = 16, y_off = 8;
+			break;
+		case DIR_DOWN:
+			x_off = 16, y_off = 52;
+			break;
+		case DIR_LEFT:
+			x_off = -8, y_off = 16;
+			break;
+		case DIR_RIGHT:
+			x_off = 40, y_off = 16;
+			break;
+	}
+
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->get_mask() && Mask_Collide(shear_mask, interactables[i]->get_mask(),
+			get_x() + x_off - interactables[i]->get_x(),
+			get_y() + y_off - interactables[i]->get_y())) {
+				Entity* e = interactables[i];
+				if (e->has_entity_attribute(E_ATTR_SHEARABLE) 
+					&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {	//TEMP: replace with shearable check
+					set_entity_attribute(E_ATTR_HIT_OTHER, 1);
+					Item *shears = get_selected_item();
+					const int shear_power = shears->get_item_attribute(ITEM_ATTR_POWER);
+					e->take_durability_damage(shear_power);
+					return;
+				}
+			}
+	}
+	//TODO
+}
+
 float Player::get_walk_speed()
 {
 	//TODO: get tile modifier
@@ -186,7 +253,7 @@ void Player::clear_input()
 	move_map[MOVE_DOWN] = false;
 	move_map[MOVE_LEFT] = false;
 	move_map[MOVE_RIGHT] = false;
-	//move_joystick_pos = std::pair<float, float>(0.0f, 0.0f);
+	move_joystick_pos = std::pair<float, float>(0.0f, 0.0f);
 }
 
 void Player::set_joystick_movement(std::pair<float, float> pos)
@@ -220,6 +287,57 @@ void Player::set_exit_level_flag(bool flag)
 bool Player::get_exit_level_flag()
 {
 	return exit_level_flag;
+}
+
+void Player::use_selected_item()
+{
+	if (current_action != ACTION_NONE) return;
+	if (counters[BOUNCE] || counters[SWING]) return;
+	Item *item = inventory.get_selected_hotbar_item();
+	if (item) {
+		switch (item->get_item_key()) {
+		case ITEM_SHEARS:
+			use_shears();
+			break;
+		}
+	}
+}
+
+void Player::hotbar_index_left()
+{
+	if (current_action != ACTION_NONE) return;
+	inventory.hotbar_index_left();
+}
+
+void Player::hotbar_index_right()
+{
+	if (current_action != ACTION_NONE) return;
+	inventory.hotbar_index_right();
+}
+
+void Player::use_shears()
+{
+	xvel = 0, yvel = 0;
+	counters[SWING] = 19; //TEMP. This is done to match up with the animation length.
+	anim_state = ANIM_STATE_SHEARING;
+	current_action = ACTION_SHEAR;
+	get_animation()->reset();
+	ss_animation->reset();
+}
+
+int Player::get_current_action()
+{
+	return current_action;
+}
+
+Item * Player::get_selected_item()
+{
+	return inventory.get_selected_hotbar_item();
+}
+
+Inventory& Player::get_inventory()
+{
+	return inventory;
 }
 
 //TODO: need to check for no next level in the given direction

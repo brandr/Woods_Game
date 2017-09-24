@@ -10,17 +10,21 @@
 
 
 class ImageLoader;
-//enum ATTRIBUTES{IMAGE, POSITION};
-enum GAME_MODES{TOP_DOWN, SIDE_SCROLLING};
+enum GAME_MODES{TOP_DOWN, SIDE_SCROLLING, MAIN_GAME_PAUSED, MAIN_GAME_INVENTORY};
 enum TYPES{PLAYER, BLOCK, GAME_IMAGE, ENTITY_GROUP};
 enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
 
-/*
-struct center_comparsion
-{
-	inline bool operator() (const GameImage& gi1, const GameImage& gi2);
-};
-*/
+enum COUNTERS { BOUNCE, SWING };
+
+//attributes
+const static std::string E_ATTR_HIT_OTHER = "hit_other";
+const static std::string E_ATTR_DURABILITY = "durability";
+const static std::string E_ATTR_CURRENT_DURABILITY = "current_durability";
+const static std::string E_ATTR_BROKEN = "broken";
+const static std::string E_ATTR_CONTACT_SLOW = "contact_slow";
+const static std::string E_ATTR_CONTACT_DAMAGE = "contact_damage";
+const static std::string E_ATTR_KNOCKBACK = "knockback";
+const static std::string E_ATTR_SHEARABLE = "shearable";
 
 class GameImage
 {
@@ -28,6 +32,7 @@ protected:
 	ALLEGRO_BITMAP *bitmap;
 	std::string image_filename;
 	Rect* image_subsection = NULL;
+	std::vector<ALLEGRO_BITMAP*> additional_image_layers;
 	//Level* current_level;
 	Rect rect;
 	std::pair<int, int> center_offset = std::pair<int,int>(0,0);
@@ -37,7 +42,7 @@ protected:
 	int direction = 0, anim_state = 0;
 	//std::map<std::pair<int, int>, int> animation_dir_map;
 	mask_t *mask;
-
+	std::map<std::pair<std::string, int>, mask_t*> additional_masks;
 	//temp
 	//ALLEGRO_BITMAP *temp_mask_image;
 	//temp
@@ -51,21 +56,26 @@ public:
 	virtual void load_content(std::vector<std::string>, std::vector<std::string>);
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
 	virtual void load_mask(std::string base_filename);
+	virtual void load_additional_masks(std::vector<std::string> attributes, std::vector<std::string> contents, std::string prefix);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
-	virtual void update();	//TEMP, need to figure out what arguments nee to be passed
+	virtual void update();	//TEMP, need to figure out what arguments need to be passed
 	void set_position(int, int);
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
 	virtual const std::pair<int,int> get_center() const;
 	void set_bitmap(ALLEGRO_BITMAP *bitmap);
+	virtual void draw_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void refresh_mask();
 	mask_t* get_mask();
 	std::string get_anim_state_key();
+	static std::string get_anim_state_key(int key);
+	virtual int get_animation_row();
 	int get_animation_direction();
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();
+	std::pair<float, float> get_rect_center();
 	float get_x();
 	float get_y();
 	float get_width();
@@ -73,6 +83,7 @@ public:
 	virtual bool contains_point(int, int);
 	virtual bool intersects_area(Rect);
 	virtual bool outside_level(std::pair<int, int>);
+	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);
 	//friend bool operator < (const GameImage& g1, const GameImage& g2);
 	//friend bool operator> (const GameImage& g1, const GameImage& g2);
 };

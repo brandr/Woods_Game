@@ -144,8 +144,11 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Being.h" />
+    <ClInclude Include="Controls.h" />
+    <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="Entity.h" />
+    <ClInclude Include="EntityEffect.h" />
     <ClInclude Include="EntityGroup.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameImage.h" />
@@ -153,9 +156,15 @@
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="Inventory.h" />
+    <ClInclude Include="InventoryScreen.h" />
+    <ClInclude Include="Item.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="MenuItem.h" />
+    <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PPCD.h" />
     <ClInclude Include="resource.h" />
@@ -168,8 +177,11 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Being.cpp" />
+    <ClCompile Include="Controls.cpp" />
+    <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="Entity.cpp" />
+    <ClCompile Include="EntityEffect.cpp" />
     <ClCompile Include="EntityGroup.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameImage.cpp" />
@@ -177,10 +189,16 @@
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="Inventory.cpp" />
+    <ClCompile Include="InventoryScreen.cpp" />
+    <ClCompile Include="Item.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="MenuItem.cpp" />
+    <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PPCD.cpp" />
     <ClCompile Include="ScreenManager.cpp" />

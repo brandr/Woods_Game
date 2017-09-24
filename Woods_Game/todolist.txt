@@ -1,6 +1,40 @@
 Woods game todolist
 
+NOTES:
+*whenever adding new counters, be sure to check how they all interact 
+	(i.e., what happens if you use shears right as you collide with thorns and bounce)
+
+TODOS
+
+-implement control settings
+	*start with screen that allows user to navigate to keyboard or controller controls
+	-have some keyboard button also map to shearing
+-add wasd controls
+
+-fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
+	*make sure this fix applies to both inventory and pause
+-make some tool (mallet?) to break rocks and an animation for them being hit/destroyed
+-make it so the game can detect when a controller is plugged in and respond properly
+	*look at main, where the event queue registers the source 
+		(might need some check accessed through the main loop)
+	*might want to do this for mouse too
+-make custom mouse cursor
+
+-make effects for the player touching vegetation
+	*might consider a small "rustling vegetation" animation that covers the player's feet instead 
+		#this could be used for wading through shallow water
+
+-figure out how trails are going to work with the current tile system
+	*could have them occupy existing tiles as some sort of "contents" and have trail images drawn over them and increase movement modifier
+	-consider allowing hotbar to move to the top of the screen
+-fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
+-figure out how to scale object/ui sizes with resolution
+-consider making a "cleaner" way of storing block entity effects (so that they don't attempt to load the entire spritesheet)
+-make sure the current entity effect system works for things that are not blocks (need some example)
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
+-figure out how to handle discrepancies between a level's width and height as read from the file and the actual size in terms of tiles.
+	*keep in mind that the overall level system should probably allow grid-based levels.
+-make it so screen settings are saved properly to the config file after they are changed
 -IDEA: make a separate program to progamatically generate varied tile sheets based on some criteria
 -make a small forest level with trails and brush to test basic exploration.
 	*from here, can implement items like shears to make temporary trails (this will require changing the level's tiles from the player class,  
@@ -12,9 +46,6 @@ Woods game todolist
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -idea: consider including animation frame duration in the files from which we load gameimages 
 	*may also want to adjust frame duration ingame in  some cases, such as when tilting the joystick very lightly with a controller
--implement different types of "brush" tiles and figure out how to make them look and feel like they flow smoothly from one to another.
-	*might need to remake the tile speed modifier system
-	*idea: just organize tile types into rows based on their type and speed modifier, and in each row have differnt styles of the same tile type, along with some made for corners/edges of other tile types
 -make the leaves as a separate sprite and having them turn partly transparent when the player passes behind them.
 	*could also try doing this for the entire trees, since we might have very large trees that obscure the player
 	*first, make sure the leaves have their mask loaded by images. (do this in level when they are created)
@@ -24,4 +55,18 @@ Woods game todolist
 	*could also put them in different files and load the dungeon based on this data
 -test large levels to see if there is lag when entering them
 -figure out how to handle player leaving the level when there's no corresponding level
+
+LONG TERM PLANS
+
+-make destroyed objects (like ferns) drop items sometimes
+-implement a time system and/or a stamina system
+	*make it get dark near the end of the day
+-make harvestable plants that grow over time
+	*consider implementing a "cooking" system
+-figure out a way to handle "buildings" that the player can go inside of, changing the view (and effectively changing the current level.)
+	*consider ways of adding more than one floor.
+-consider adding animals
 -if we add faraway backgrounds, implement parallax 
+-make video options (and audio when sound is implemented)
+	*allow screen resizing and fullscreen
+-make control options (for both keyboard and controller)

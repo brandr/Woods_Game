@@ -1,16 +1,16 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-#include "Player.h"
-//#include "Tile.h"
+//#include "Player.h"
 #include<map>
 #include<list>
 #include <iostream>
 #include <utility>
 
-//class MainGameScreen;
-class ImageLoader;
-class GameImageManager;
+//---
+#include "Inventory.h"
 
+//class ImageLoader;
+class GameImageManager;
 
 class Level
 {
@@ -37,11 +37,11 @@ public:
 	Level(int, int, int, int);
 	~Level();
 	void load_from_map();
-	void load_tile_edges();
+	void load_tile_edges(std::string filename);
 	void unload_content();
 	void update(int game_mode);
 	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
-	//std::pair<int, int> string_to_pair(std::string tile_string);
+	void draw_edge_tile(Tile &tile, std::string edge_filename, int edge_row, int dir_key);
 	void add_entity(Entity *e);
 	void add_being(Being *b);
 	void remove_player();

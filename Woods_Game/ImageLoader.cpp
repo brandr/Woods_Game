@@ -28,13 +28,10 @@ std::string ImageLoader::full_filename(std::string filename)
 ImageLoader::~ImageLoader()
 {
 	unload_content();
-	//image_map.clear();
-	//image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
 }
 
 void ImageLoader::load_content()
 {
-	//image_map = std::map<std::pair<std::string, std::string>, std::shared_ptr<ALLEGRO_BITMAP>>();
 	image_map = std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>();
 }
 
@@ -45,14 +42,6 @@ void ImageLoader::unload_content()
 	}
 	image_map.clear();
 	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-
-	/*
-	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
-	*/
 }
 
 
@@ -84,7 +73,6 @@ void ImageLoader::load_image(std::string filename, Rect subsection)
 	if (it != image_map.end()) return;
 	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
 	ALLEGRO_BITMAP *image = image_map[(std::pair<std::string, std::string>(full_filename, ""))];
-	//std::shared_ptr<ALLEGRO_BITMAP> image(al_load_bitmap(full_filename.c_str()), al_destroy_bitmap);
 	if (image == NULL) {
 		//TODO: error handling
 		std::cout << filename << std::endl;
@@ -92,12 +80,7 @@ void ImageLoader::load_image(std::string filename, Rect subsection)
 	}
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
 	ALLEGRO_BITMAP* sub_image = al_create_sub_bitmap(image, subsection.x, subsection.y, subsection.width, subsection.height);
-	//std::shared_ptr<ALLEGRO_BITMAP> sub_image(al_create_sub_bitmap(image.get(), subsection.x, subsection.y, subsection.width, subsection.height), al_destroy_bitmap);
-	//std::unique_ptr<ALLEGRO_BITMAP> sub_image(al_create_sub_bitmap(image.get(), subsection.x, subsection.y, subsection.width, subsection.height));
 	image_map[(std::pair<std::string, std::string>(full_filename, rect_to_string(subsection)))] = sub_image;
-
-	//image_map[(std::pair<std::string, std::string>(full_filename, ""))] = std::move(sub_image);
-	//image.release();
 }
 
 void ImageLoader::load_spritesheet(Animation anim)
@@ -123,14 +106,11 @@ ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
 		return get_image(anim->get_filename(), anim->get_current_rect());
 	}
 	std::string full_filename = ImageLoader::full_filename(image->get_image_filename());
-	//std::cout << "looking for filename: " << full_filename << std::endl;
 	Rect* subsection = image->get_image_subsection();
 	std::string rect_string = "";
 	if (subsection) rect_string = rect_to_string(*subsection);
-	//return image_map[std::pair<std::string, std::string>(full_filename, rect_string)];
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
-		//std::cout << "failed to find image with filename: " + full_filename + " and subsection: " + rect_string << std::endl;
 		return nullptr;
 	}
 	else return it->second;

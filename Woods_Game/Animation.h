@@ -4,8 +4,12 @@
 #include "FileManager.h"
 
 enum ANIMATION_DIRECTIONS{ANIM_NEUTRAL = 0, ANIM_RIGHT = 1, ANIM_LEFT = 2, ANIM_UP = 3, ANIM_DOWN = 4};
-enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1};
+enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1, ANIM_STATE_SHEARING = 2};
 enum AXES { HORIZONTAL, VERTICAL };
+
+static const int DEFAULT_EFFECT_FRAME_DURATION = 4;
+//const static std::string EFFECT_BREAK = "break";
+//std::vector<std::string> ENTITY_EFFECT_NAMES{ EFFECT_BREAK };
 
 struct Rect {
 	//int x, y, width, height;
@@ -23,11 +27,12 @@ class Animation
 public:
 	Animation();
 	~Animation();
-	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>);
+	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>, int);
 	void unload_content();
 	void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();
 	bool is_active();
+	void reset();
 	void set_filename(std::string);
 	std::string get_filename();
 	Rect get_current_rect();
@@ -36,6 +41,7 @@ public:
 	std::pair<int, int> &get_current_frame();
 	std::pair<int, int> &get_frame_dimensions();
 	std::pair<int, int> get_image_dimensions();
+	int get_frame_duration();
 protected:
 	//TODO: necessary data to to get the image via imageloader
 	float alpha;
@@ -44,5 +50,6 @@ protected:
 	std::pair<int, int> frame_count;
 	std::pair<int, int> current_frame;
 	std::pair<int, int> frame_dimensions;
+	int frame_duration = 1;
 };
 

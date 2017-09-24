@@ -53,24 +53,27 @@ void Level::load_from_map()
 	FileManager file_manager;	//NOTE: see if filemanager can be chhanged to a singleton
 	std::string filename = "resources/load/maps/" + get_filename() + ".txt";
 	std::vector<std::string> layers = get_layers();
+	
 	int size = layers.size();
 	for (int layer_index = 0; layer_index < size; layer_index++) {
+		std::string tile_sheet_filename = "";
 		std::string layer_id = layers[layer_index];
 		std::vector<std::vector<std::string>> attributes;
 		std::vector<std::vector<std::string>> contents;
-		// map tile offsets to speed mods
+
+		// tile properties
 		std::map<int, float> speed_mods; 
 		std::map<int, int> edge_priorities;
-		// map entity offsets to root offsets
-		std::map<std::pair<int, int>, std::pair<int, int>> root_offsets;
-		std::map<std::pair<int, int>, std::pair<int, int>> center_offsets;
-		// map entity offsets to entity components
+		// block properties
+		std::map <int, EntityData> block_map;
+		// entity properties
+		std::map < std::pair<int, int>, EntityData> entity_map;
 		std::map < std::pair<int, int>, std::vector <EntityComponentData >> entity_component_map;
+
 		std::pair<int, int> image_dimensions;
 		file_manager.load_content(filename.c_str(), attributes, contents, layer_id);
 		int indexY = 0;
 		int size = attributes.size();
-		std::string tile_sheet_filename = "";
 		std::string null_tile = "";
 		for (int i = 0; i < size; i++) {
 			std::pair<int, int> tile(0, 0);
@@ -86,48 +89,72 @@ void Level::load_from_map()
 				else if (attributes[i][j] == "speed_modifier") {
 					const int contents_size = contents[i].size();
 					for (int k = 0; k < contents_size; k++) {
-						std::string speed_string = contents[i][k];
-						std::string tile_string = speed_string.substr(0, speed_string.find(":"));
-						//std::pair<int, int> tile_offset = FileManager::string_to_pair(tile_string);
-						//float speed_mod = 
-						float speed_mod = ::atof(speed_string.substr(speed_string.find(":") + 1).c_str());
-						speed_mods[::atoi(tile_string.c_str())] = speed_mod;
+						std::pair<std::string, std::string> speed_strs = FileManager::string_to_pair(contents[i][k], ":");
+						speed_mods[::atoi(speed_strs.first.c_str())] = ::atof(speed_strs.second.c_str());
 					}
 				}
 				else if (attributes[i][j] == "edge_priority") {
 					const int contents_size = contents[i].size();
 					for (int k = 0; k < contents_size; k++) {
-						std::string edge_string = contents[i][k];
-						std::string tile_string = edge_string.substr(0, edge_string.find(":"));
-						int priority_string = ::atoi(edge_string.substr(edge_string.find(":") + 1).c_str());
-						edge_priorities[::atoi(tile_string.c_str())] = priority_string;
+						std::pair<std::string, std::string> edge_strs = FileManager::string_to_pair(contents[i][k], ":");
+						edge_priorities[::atoi(edge_strs.first.c_str())] = ::atoi(edge_strs.second.c_str());
+					}
+				}
+				// block loading
+				else if (attributes[i][j] == "solid_blocks") {
+					const int contents_size = contents[i].size();
+					for (int k = 0; k < contents_size; k++) {
+						const int block_index = ::atoi(contents[i][k].c_str());
+						auto it = block_map.find(block_index);
+						if (it == block_map.end()) {
+							block_map[block_index] = EntityData();
+						}
+						block_map[block_index].solid = true;
+					}
+				}
+				else if (attributes[i][j] == "block_attributes") {
+					const int contents_size = contents[i].size();
+					for (int k = 0; k < contents_size; k++) {
+						std::pair<std::string, std::string> block_attr_parts = FileManager::string_to_pair(contents[i][k], ":");
+						const int block_index = ::atoi(block_attr_parts.first.c_str());
+						auto it = block_map.find(block_index);
+						if (it == block_map.end()) {
+							block_map[block_index] = EntityData();
+						}
+						std::map<std::string, int> block_attributes;
+						std::vector<std::string> attr_str_list = FileManager::string_to_parts(block_attr_parts.second, ",");
+						const int attr_count = attr_str_list.size();
+						for (int attr_index = 0; attr_index < attr_count; attr_index++) {
+							std::pair<std::string,std::string> attr_parts = FileManager::string_to_pair(attr_str_list[attr_index], "-");
+							block_attributes[attr_parts.first] = ::atoi(attr_parts.second.c_str());
+						}
+						block_map[block_index].attributes = block_attributes;
 					}
 				}
 				// entity loading
 				else if (attributes[i][j] == "root_offset") {
-					std::string root_offset_data = contents[i][j];
-					std::pair<int, int> ss_offset = FileManager::string_to_pair(root_offset_data.substr(0, root_offset_data.find(":")));
-					std::pair<int, int> root_offset = FileManager::string_to_pair(root_offset_data.substr(root_offset_data.find(":") + 1).c_str());
-					root_offsets[ss_offset] = root_offset;
+					std::pair<std::string, std::string> root_off_strs = FileManager::string_to_pair(contents[i][j], ":");
+					EntityData data;
+					data.root_offset = FileManager::string_to_pair(root_off_strs.second);
+					entity_map[FileManager::string_to_pair(root_off_strs.first)] = data;
 				}
 				else if (attributes[i][j] == "center_offset") {
-					std::string center_offset_data = contents[i][j];
-					std::pair<int, int> ss_offset = FileManager::string_to_pair(center_offset_data.substr(0, center_offset_data.find(":")));
-					std::pair<int, int> center_offset = FileManager::string_to_pair(center_offset_data.substr(center_offset_data.find(":") + 1).c_str());
-					center_offsets[ss_offset] = center_offset;
+					std::pair<std::string, std::string> center_off_strs = FileManager::string_to_pair(contents[i][j], ":");
+					entity_map[FileManager::string_to_pair(center_off_strs.first)].center_offset
+						= FileManager::string_to_pair(center_off_strs.second);
 				}
 				else if (attributes[i][j] == "entity_components") {
-					std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][j].substr(0, contents[i][j].find(":")));
-					std::string entity_components_str = contents[i][j].substr(contents[i][j].find(":") + 1).c_str();
-					std::vector<std::string> entity_components_str_list = FileManager::string_to_parts(entity_components_str, ";");
+					std::pair<std::string, std::string> entity_comp_strs = FileManager::string_to_pair(contents[i][j], ":");
+					std::pair<int, int> ss_offset = FileManager::string_to_pair(entity_comp_strs.first);
+					std::vector<std::string> entity_components_str_list = FileManager::string_to_parts(entity_comp_strs.second, ";");
 					int entity_components_size = entity_components_str_list.size();
 					std::vector<EntityComponentData> component_data_list;
 					for (int k = 0; k < entity_components_size; k++) {
 						std::string comp_str = entity_components_str_list[k];
-						std::string comp_name = comp_str.substr(0, comp_str.find("-"));
-						std::string comp_attributes_str = comp_str.substr(comp_str.find("-") + 1);
-						std::vector<std::string> comp_attributes = FileManager::string_to_parts(comp_attributes_str, ",");
-						EntityComponentData data(comp_name, comp_attributes);
+						std::pair<std::string, std::string> comp_strs 
+							= FileManager::string_to_pair(entity_components_str_list[k], "-"); 
+						std::vector<std::string> comp_attributes = FileManager::string_to_parts(comp_strs.second, ",");
+						EntityComponentData data(comp_strs.first, comp_attributes);
 						component_data_list.push_back(data);
 					}
 					entity_component_map[ss_offset] = component_data_list;
@@ -148,6 +175,8 @@ void Level::load_from_map()
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
 								Tile t;
 								t.set_content(tile_sheet_filename, offset_rect, position);
+								t.set_sheet_row(tile_offset.second);
+								t.set_edge_priority(edge_priorities[tile_offset.second]);
 								t.set_bitmap(ImageLoader::get_instance().get_current_image(&t));	
 								auto it = speed_mods.find(tile_offset.second);
 								if (it != speed_mods.end()) t.set_speed_mod(it->second);
@@ -159,8 +188,9 @@ void Level::load_from_map()
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
 								Tile t;
 								t.set_content(tile_sheet_filename, offset_rect, position);
+								t.set_edge_priority(0);
 								t.set_bitmap(ImageLoader::get_instance().get_current_image(&t)); 
-								//NOTE: currently all default tiles have a speed mod of 1.0.
+								//NOTE: currently all default tiles have a speed mod of 1.0 and an edge priority of 0.
 								tiles[indexY].push_back(t);
 							}
 						}
@@ -176,18 +206,23 @@ void Level::load_from_map()
 								Block* b = new Block();
 								b->set_content(tile_sheet_filename, offset_rect, position);
 								b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
+								auto it = block_map.find(tile_offset.second);
+								if (it != block_map.end()) {
+									b->set_solid(it->second.solid);
+									b->set_entity_attributes(it->second.attributes);
+								}
+								b->load_entity_effects(tile_sheet_filename, tile_offset.second, std::pair<int,int>(TILE_SIZE,TILE_SIZE));
 								tiles[indexY][k].set_block(b);
 							}
 						}
 					}
 					// entity group loading
-					
 					else if (layer_id == "entity_group_layer") {
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
 								std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][k]);
-								std::pair<int, int> root_off = root_offsets[ss_offset];
-								std::pair<int, int> center_off = center_offsets[ss_offset];
+								std::pair<int, int> root_off = entity_map[ss_offset].root_offset;
+								std::pair<int, int> center_off = entity_map[ss_offset].center_offset; 
 								std::vector<EntityComponentData> comp_data = entity_component_map[ss_offset];
 								std::pair<int, int> root_pos(k*TILE_SIZE, indexY*TILE_SIZE);
 								std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
@@ -205,8 +240,6 @@ void Level::load_from_map()
 									e->set_rect(group_pos.first, group_pos.second, image_dimensions.first, image_dimensions.second);
 									e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
 									e->set_entity_attributes(data.attributes);
-									//TODO: figure out where to check entity attributes like solid, transparent on collide, etc
-									//TODO: set whatever is necessary for objects to be drawn on the correct layer
 									entity_list.push_back(e);
 								}
 								EntityGroup *e_group = new EntityGroup();
@@ -221,27 +254,67 @@ void Level::load_from_map()
 					}
 					indexY++;
 				}
+				else if (attributes[i][j] == "EndLayer") {
+					if (layer_id == "tile_layer") {
+						load_tile_edges(tile_sheet_filename);
+					}
+				}
 			}
 		}
 	}
-	load_tile_edges();
 }
 
-void Level::load_tile_edges()
+void Level::load_tile_edges(std::string tilesheet_filename)
 {
 	int tile_rows = tiles.size();
 	int tile_cols = tiles[0].size();
+	std::string edge_filename = tilesheet_filename + "_edges"; //need to test that this formats the filename correctly
+	// map of sheet row/priority to groups of tiles with that priority
+	std::map<std::pair<int, int>, std::map<int, bool> > edge_map;
 	for (int y = 0; y < tile_rows; y++) {
 		for (int x = 0; x < tile_cols; x++) {
-			Tile t = tiles[y][x];
-			if (x > 0) {
-
+			edge_map.clear();
+			Tile &t = tiles[y][x];
+			int x_off1 = x > 0 ? -1 : 0;
+			int y_off1 = y > 0 ? -1 : 0;
+			int x_off2 = x < tile_cols - 1 ? 1 : 0;
+			int y_off2 = y < tile_rows - 1 ? 1 : 0;
+			for (int y_off = y_off1; y_off <= y_off2; y_off++) {
+				for (int x_off = x_off1; x_off <= x_off2; x_off++) {
+					if (y_off == 0 && x_off == 0) continue;
+					Tile check_tile = tiles[y + y_off][x + x_off];
+					int priority = check_tile.get_edge_priority();
+					const int row = check_tile.get_sheet_row();
+					auto it = edge_map.find(std::pair<int, int>(priority, row));
+					if (it == edge_map.end()) {
+						std::map<int, bool> sub_map;
+						edge_map[std::pair<int, int>(priority, row)] = sub_map;
+					}
+					// little trick to map x_off, y_off combinations to the enum directional values in Tile.h
+					int dir_val = (y_off + 1) * 3 + (x_off + 1);
+					edge_map[std::pair<int, int>(priority, row)][dir_val] = priority > t.get_edge_priority();
+				}
 			}
-			//TODO
+			// each iteration of this loop represents a different priority
+			for (const auto& edge_pair: edge_map) {
+				std::pair<int, int> edge_key = edge_pair.first;
+				std::map<int, bool> sub_map = edge_pair.second;
+				if (sub_map[TILE_UP] && sub_map[TILE_DOWN] && sub_map[TILE_LEFT] && sub_map[TILE_RIGHT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_CENTER);
+				else {
+					if (sub_map[TILE_UP]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_UP);
+					if (sub_map[TILE_DOWN]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_DOWN);
+					if (sub_map[TILE_LEFT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_LEFT);
+					if (sub_map[TILE_RIGHT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_RIGHT);
+					if (sub_map[TILE_UP_LEFT] && !sub_map[TILE_UP] && !sub_map[TILE_LEFT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_UP_LEFT);
+					if (sub_map[TILE_UP_RIGHT] && !sub_map[TILE_UP] && !sub_map[TILE_RIGHT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_UP_RIGHT);
+					if (sub_map[TILE_DOWN_LEFT] && !sub_map[TILE_DOWN] && !sub_map[TILE_LEFT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_DOWN_LEFT);
+					if (sub_map[TILE_DOWN_RIGHT] && !sub_map[TILE_DOWN] && !sub_map[TILE_RIGHT]) draw_edge_tile(t, edge_filename, edge_key.second, TILE_DOWN_RIGHT);
+				}
+			}
 		}
 	}
-	//TODO
 }
+
 
 void Level::unload_content()
 {
@@ -265,14 +338,13 @@ void Level::unload_content()
 	std::vector<Entity*>().swap(entities);
 	beings.clear();
 	std::vector<Being*>().swap(beings);
-	//player = NULL;
 }
 
 void Level::update(int game_mode)
 {
 	std::pair<int, int> dimensions = get_dimensions();
-	int size = beings.size();
-	for (int i = 0; i < size; i++) {
+	int b_size = beings.size();
+	for (int i = 0; i < b_size; i++) {
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
 			std::vector<Entity*> interactables = get_interactables(beings[i]);
 
@@ -283,6 +355,25 @@ void Level::update(int game_mode)
 		else
 			std::cout << "NULL BEING" << std::endl;
 	}
+	const int height = tiles.size();
+	for (int y = 0; y < height; y++) {
+		const int width = tiles[y].size();
+		for (int x = 0; x < width; x++) {
+			Block *b = tiles[y][x].get_block();
+			if (b) {
+				b->update();
+			}
+		}
+	}
+	/*
+	int e_size = entities.size();
+	
+	for (int i = 0; i < e_size; i++) {
+		if (entities[i] && entities[i]->get_entity_attribute(E_ATTR_BROKEN) == 1) {
+			//TODO: decide if we need to do anything with broken entities here
+		}
+	}
+	*/
 }
 
 void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
@@ -291,8 +382,8 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	const int start_x = std::max(0, (-1 * off.first) / TILE_SIZE - 1);
 	const int start_y = std::max(0, (-1 * off.second) / TILE_SIZE - 1);
 	const int x_size = tiles[0].size(), y_size = tiles.size();
-	const int end_x = std::min(x_size, start_x + DEFAULT_SCREEN_WIDTH / TILE_SIZE + 3);
-	const int end_y = std::min(y_size, start_y + DEFAULT_SCREEN_HEIGHT / TILE_SIZE + 3);
+	const int end_x = std::min(x_size, start_x + al_get_display_width(display) / TILE_SIZE + 3);
+	const int end_y = std::min(y_size, start_y + al_get_display_height(display) / TILE_SIZE + 3);
 	for (int y = start_y; y < end_y; y++) {
 		for (int x = start_x; x < end_x; x++) {
 			tiles[y][x].draw(display, off.first, off.second);
@@ -306,15 +397,15 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	}
 }
 
-/*
-std::pair<int, int> Level::string_to_pair(std::string tile_string)
+void Level::draw_edge_tile(Tile &tile, std::string edge_filename, int edge_row, int dir_key)
 {
-	std::pair<int, int> pair;
-	pair.first = atoi(tile_string.substr(0, tile_string.find(',')).c_str());
-	pair.second = atoi(tile_string.substr(tile_string.find(',') + 1).c_str());
-	return pair;
+	
+	Rect subsection(dir_key*TILE_SIZE, edge_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	ImageLoader::get_instance().load_image(edge_filename, subsection);
+	ALLEGRO_BITMAP* edge_image = ImageLoader::get_instance().get_image(edge_filename, subsection);
+	tile.draw_onto_bitmap(edge_image);
 }
-*/
+
 void Level::add_entity(Entity * e)
 {
 	entities.push_back(e);
@@ -374,7 +465,7 @@ std::vector<Entity*> Level::get_interactables(Entity *entity)
 	int size = entities.size();
 	for (int i = 0; i < size; i++) {
 		Entity *e = entities[i];
-		if (e && e != entity) {	//TODO: make sure this check actually works
+		if (e && e != entity) {	//TODO: make sure this != check actually works
 			interactables.push_back(e);
 		}
 	}

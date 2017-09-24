@@ -12,19 +12,19 @@
 //#include "Level.h"//TEMP
 
 
-std::pair<int, int> GameImageManager::get_camera_offset()
+std::pair<int, int> GameImageManager::get_camera_offset(ALLEGRO_DISPLAY *display)
 {
 	int x = 0, y = 0;
 	if (player) {
-		if (current_level->get_width() <= DEFAULT_SCREEN_WIDTH)
+		if (current_level->get_width() <= al_get_display_width(display))
 			x = 0;
 		else {
-			x = -1 * std::min((std::max(0.0f, player->get_x() - DEFAULT_SCREEN_WIDTH / 2)), (float)(current_level->get_width() - DEFAULT_SCREEN_WIDTH));
+			x = -1 * std::min((std::max(0.0f, player->get_x() - al_get_display_width(display) / 2)), (float)(current_level->get_width() - al_get_display_width(display)));
 		}
-		if (current_level->get_height() <= DEFAULT_SCREEN_HEIGHT)
+		if (current_level->get_height() <= al_get_display_height(display))
 			y = 0;
 		else {
-			y = -1 * std::min((std::max(0.0f, player->get_y() - DEFAULT_SCREEN_HEIGHT / 2)), (float)(current_level->get_height() - DEFAULT_SCREEN_HEIGHT));
+			y = -1 * std::min((std::max(0.0f, player->get_y() - al_get_display_height(display) / 2)), (float)(current_level->get_height() - al_get_display_height(display)));
 		}
 	}
 	std::pair<int,int> off = std::make_pair(x, y);
@@ -51,11 +51,9 @@ GameImageManager::~GameImageManager()
 void GameImageManager::load_content()
 {
 	current_level = world.get_current_dungeon()->level_at(0, 0);
-	//load_player();
-	load_level_content("resources/load/player.txt", "", PLAYER);
+	load_player("resources/load/player.txt");
+	//load_level_content("resources/load/player.txt", "", PLAYER);
 	//TEMP
-	//load_level(0, 0);
-	//load_level_from_map("" , "temp_map_1");	//TODO: tie this into coord-based level loading
 	//load_level_content("resources/load/temp_level_1.txt", "", PLATFORM);
 	//TEMP
 	//TODO: load dungeon content from somewhere
@@ -63,10 +61,14 @@ void GameImageManager::load_content()
 	//TODO: load content for adjacent levels, or possibly for the current dungeon
 }
 
+void GameImageManager::set_game_mode(int game_mode)
+{
+	this->game_mode = game_mode;
+}
+
 int GameImageManager::get_game_mode()	//temp. figure out game mode some other way
 {
-	return TOP_DOWN;
-	//return SIDE_SCROLLING;	//TEMP
+	return game_mode;
 }
 
 void GameImageManager::load_level(int grid_x, int grid_y)
@@ -74,11 +76,25 @@ void GameImageManager::load_level(int grid_x, int grid_y)
 	Level *level = world.get_current_dungeon()->level_at(grid_x, grid_y);
 	if (level) {
 		load_level_from_map(*level);
-		//load_level_from_map(level->get_id(), level->get_filename());	//TEMP. can store multiple maps in a file, so consider keeping track of a level's ID as well as its filename.
 		current_level = level;
 	}
 	else
 		std::cout << "ERROR: failed to load level." << std::endl; //TODO: error handling
+}
+
+void GameImageManager::load_player(std::string filename)
+{
+	std::vector<std::vector<std::string>> attributes;
+	std::vector<std::vector<std::string>> contents;
+	FileManager file_manager;
+	file_manager.load_content(filename.c_str(), attributes, contents, "gameimage_properties");
+	player = new Player();
+	player->load_content(attributes[0], contents[0]);
+	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
+	attributes.clear(), contents.clear();
+	file_manager.load_content(filename.c_str(), attributes, contents, "additional_masks");
+	player->load_additional_masks(attributes[0], contents[0], "player");
+	current_level->add_being(player);
 }
 
 void GameImageManager::load_level_content(std::string filename, std::string id, int type)
@@ -103,24 +119,7 @@ void GameImageManager::load_level_content(std::string filename, std::string id, 
 			player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
 			current_level->add_being(player);
 			break;
-			/*
-			entities.push_back(dynamic_cast<Entity*>(image));
-			beings.push_back(dynamic_cast<Being*>(image));
-			break;
-			*/
-			/*
-		case BLOCK:
-			image = DBG_NEW Block();
-			entities.push_back(dynamic_cast<Entity*>(image));
-			blocks.push_back(dynamic_cast<Block*>(image));
-			break;
-			*/
 		}
-		/*
-		game_images.push_back(image);
-		game_images.back()->load_content(attributes[i], contents[i]);
-		game_images.back()->set_bitmap(ImageLoader::get_instance().get_current_image(game_images.back()));
-		*/
 	}
 }
 
@@ -132,6 +131,11 @@ void GameImageManager::load_level_from_map(Level level)
 void GameImageManager::load_player()
 {
 	
+}
+
+Player * GameImageManager::get_player()
+{
+	return player;
 }
 
 void GameImageManager::unload_content()
@@ -146,20 +150,18 @@ void GameImageManager::unload_level_content()
 
 void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::pair<float,float>> joystick_map)
 {
-	//TODO: joystick controls
-	//commented out for testing
-	//TODO: if game slows down too much, store beings separately from gameimages and don't update all gameimages, just beings
-	std::pair<int,int> dimensions = current_level->get_dimensions();
+	const int game_mode = get_game_mode();
+	if (game_mode == MAIN_GAME_PAUSED) return;
+	std::pair<int, int> dimensions = current_level->get_dimensions();
 	if (player) {
 		if (player->get_exit_level_flag()) {
 			//TODO: check to make sure there is a next level in the given direction here
 			change_player_level();
 			return;
 		}
-		player->update_input(input_map, joystick_map, get_game_mode());
+		player->update_input(input_map, joystick_map, game_mode);
 	}
-	//std::vector<Entity> interactables = get_player_interactables();		//TODO: instead of just player interactables, get all interactables since other beings may interact with objects.
-	current_level->update(get_game_mode());
+	current_level->update(game_mode);
 
 }
 
@@ -233,6 +235,13 @@ void GameImageManager::change_player_level()
 
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
-	if (current_level) current_level->draw(display, get_camera_offset());
+	if (current_level) current_level->draw(display, get_camera_offset(display));
 }
+
+void GameImageManager::resume()
+{
+	player->clear_input();
+}
+
+
 

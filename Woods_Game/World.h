@@ -1,3 +1,5 @@
+#ifndef WORLD_H
+#define WORLD_H
 #include "Dungeon.h"
 #include <memory>
 class ImageLoader;
@@ -25,3 +27,4 @@ public:
 	//std::pair<int, int> get_current_level_dimensions();
 };
 
+#endif

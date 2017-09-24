@@ -5,6 +5,9 @@
 #include<memory>
 #include "Player.h"
 
+//--
+//#include "World.h"
+
 class ImageLoader
 {
 private:

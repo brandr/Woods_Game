@@ -36,6 +36,6 @@ void TitleScreen::draw(ALLEGRO_DISPLAY * display)
 void TitleScreen::process_event(ALLEGRO_EVENT ev)
 {
 	if (title_input.is_key_pressed(ev, ALLEGRO_KEY_ENTER))
-		screen_flag = CHANGE_TO_MAIN_GAME;
+		screen_flag = FLAG_CHANGE_TO_MAIN_GAME;
 	//	ScreenManager::get_instance().
 }

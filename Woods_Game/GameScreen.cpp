@@ -8,15 +8,7 @@ GameScreen::GameScreen()
 
 GameScreen::~GameScreen()
 {
-	//std::cout << "deleting gamescreen" << std::endl;
-	
-	/*
-	InputManager input;
-	std::vector<std::vector<int>> attributes;
-	std::vector<std::vector<std::string>> contents;
-	std::map<int, controlFunc> control_map;	//TODO: method
-	std::map<int, bool> input_map;
-	int screen_flag = NONE;*/
+
 }
 
 void GameScreen::set_input_map()
@@ -33,6 +25,9 @@ void GameScreen::clear_input()
 {
 	for (auto const &it : joystick_pos_map) {
 		joystick_pos_map[it.first] = std::pair<float, float>(0.0f, 0.0f);
+	}
+	for (auto const &it : input_map) {
+		input_map[it.first] = false;
 	}
 }
 
@@ -59,7 +54,11 @@ void GameScreen::update()
 
 void GameScreen::draw(ALLEGRO_DISPLAY *display)
 {
-	//TODO
+}
+
+int GameScreen::get_game_mode()
+{
+	return 0;
 }
 
 std::list<GameImage> GameScreen::get_images()
@@ -83,24 +82,13 @@ void GameScreen::load_content()
 
 void GameScreen::unload_content()
 {
-	for (std::vector<int> attribute : attributes)
-		attribute.clear();
-	attributes.clear();
-	attributes.swap(std::vector<std::vector<int>>());
-	for (std::vector<std::string> content : contents)
-		content.clear();
-	contents.clear();
-	contents.swap(std::vector<std::vector<std::string>>());
-	for (std::map<std::pair<int,int>, controlFunc>::iterator it = control_map.begin(); it != control_map.end(); ++it) {
-		it->second = NULL;
+	for (std::map<int, ALLEGRO_FONT*>::iterator it = font_map.begin(); it != font_map.end(); ++it) {
+		al_destroy_font(it->second);
 	}
+	font_map.clear();
 	control_map.clear();
 	input_map.clear();
 	joystick_pos_map.clear();
-	//for (auto const &it : joystick_map) {
-	//	delete it.second;
-	//}
-	//joystick_map.clear();
 }
 
 void GameScreen::load_images(ImageLoader& loader)
@@ -114,18 +102,108 @@ void GameScreen::refresh()
 	}
 }
 
+void GameScreen::pause_game()
+{
+}
+
+void GameScreen::cancel_menu()
+{
+}
+
+void GameScreen::resume_game()
+{
+}
+
+void GameScreen::quit_game()
+{
+	screen_flag = FLAG_QUIT_GAME;
+}
+
+void GameScreen::menu_up()
+{
+}
+
+void GameScreen::menu_down()
+{
+}
+
+void GameScreen::menu_left()
+{
+}
+
+void GameScreen::menu_right()
+{
+}
+
+void GameScreen::mouse_cursor_update()
+{
+}
+
+void GameScreen::set_mouse_position(std::pair<int, int> pos)
+{
+	mouse_pos = pos;
+}
+
+void GameScreen::process_mouse_click_left(const int x, const int y)
+{
+}
+
+void GameScreen::update_mouse_position(const int x, const int y)
+{
+	mouse_pos.first = x, mouse_pos.second = y;
+}
+
+void GameScreen::confirm_selection()
+{
+}
+
+void GameScreen::select()
+{
+}
+
+void GameScreen::process_number_input(int num)
+{
+}
+
+void GameScreen::a_button_action()
+{
+}
+
+void GameScreen::b_button_action()
+{
+}
+
+void GameScreen::x_button_action()
+{
+}
+
+void GameScreen::y_button_action()
+{
+}
+
+void GameScreen::left_bumper_action()
+{
+}
+
+void GameScreen::right_bumper_action()
+{
+}
+
 void GameScreen::process_event(ALLEGRO_EVENT ev)
 {
 	//TODO: note that this doesn't necessarily happen every frame
 	//TODO: other types of events
-
-	for (std::map<std::pair<int, int>, controlFunc>::iterator it = control_map.begin(); it != control_map.end(); ++it) {
-		controlFunc f = it->second;
-			if (input.is_input_pressed(ev, it->first.first, it->first.second)) {
+	const int game_mode = get_game_mode();
+	auto it1 = control_map.find(game_mode);
+	if (it1 == control_map.end()) return;
+	std::map<std::pair<int, int>, controlFunc> curr_control_map = it1->second;
+	for (std::map<std::pair<int, int>, controlFunc>::iterator it2 = curr_control_map.begin(); it2 != curr_control_map.end(); ++it2) {
+		controlFunc f = it2->second;
+			if (input.is_input_pressed(ev, it2->first.first, it2->first.second)) {
 				//std::cout << "key press" << std::endl;
 				(*f)(*this, ev, true);
 			}
-			else if (input.is_input_released(ev, it->first.first, it->first.second)) {
+			else if (input.is_input_released(ev, it2->first.first, it2->first.second)) {
 				//std::cout << "key release" << std::endl;
 				(*f)(*this, ev, false);
 			}

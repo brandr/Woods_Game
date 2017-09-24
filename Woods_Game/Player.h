@@ -3,12 +3,16 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
-#include "Being.h"
+//#include "Inventory.h"
 #include<map>
 
-enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT };
+//---
+#include "World.h"
+
+enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAUSE };
 enum PLAYER_DIRECTIONS{DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN};
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
+enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
 //final const int TERMINAL_VELOCITY = 8;
 //final const int GRAVITY = 2;
 class Player :
@@ -22,17 +26,21 @@ private:
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
+	Inventory inventory;
+	int current_action = ACTION_NONE;
 public:
 	Player();
 	virtual ~Player();
 	virtual int get_type();
 	virtual void load_content(std::vector<std::string> attributes, std::vector<std::string> contents);
+	void reset_entity_flags();
 	virtual void update(std::vector<Entity*>, std::vector<Tile>, std::pair<int,int>, int);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
-	void update_top_down(std::vector<Entity*>, std::pair<int, int>);
+	void update_top_down(std::vector<Entity*>, std::vector<Tile>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void shear_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions);
 	float get_walk_speed();
 	void set_direction(int);
 	void queue_move(int);
@@ -44,6 +52,13 @@ public:
 	bool is_jumping();
 	void set_exit_level_flag(bool);
 	bool get_exit_level_flag();
+	void use_selected_item();
+	void hotbar_index_left();
+	void hotbar_index_right();
+	void use_shears();
+	int get_current_action();
+	Item *get_selected_item();
+	Inventory &get_inventory();
 };
 
 #endif

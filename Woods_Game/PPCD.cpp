@@ -108,7 +108,6 @@ int Mask_Collide(const mask_t *a, const mask_t *b, int xoffset, int yoffset)
 
 void Mask_Draw(mask_t *m, int x, int y)
 {
-	std::cout << "drawing mask with dimesions: " << m->w << ", " << m->h << std::endl;
 	//x = x - m->w / 2;
 	//y = y - m->h / 2;
 

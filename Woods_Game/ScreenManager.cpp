@@ -44,8 +44,7 @@ void ScreenManager::refresh()
 void ScreenManager::update()
 {
 	if (current_screen) {
-		if (current_screen->get_screen_flag() == CHANGE_TO_MAIN_GAME) {
-			//std::cout << "adding main game screen" << std::endl;
+		if (current_screen->get_screen_flag() == FLAG_CHANGE_TO_MAIN_GAME) {
 			add_screen(new MainGameScreen());
 			return;
 		}
@@ -90,6 +89,11 @@ void ScreenManager::add_screen(GameScreen *screen)
 	
 	current_screen = screen;
 	current_screen->load_content();
+}
+
+bool ScreenManager::should_close()
+{
+	return current_screen && current_screen->get_screen_flag() == FLAG_QUIT_GAME;
 }
 
 std::list<GameImage> ScreenManager::get_images()

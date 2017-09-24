@@ -122,3 +122,8 @@ std::vector<std::string> FileManager::string_to_parts(std::string str, std::stri
 	parts.push_back(str);
 	return parts;
 }
+
+std::pair<std::string, std::string> FileManager::string_to_pair(std::string str, std::string delimiter)
+{
+	return std::pair<std::string, std::string>(str.substr(0, str.find(delimiter)), str.substr(str.find(delimiter) + 1));
+}
