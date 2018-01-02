@@ -1,7 +1,8 @@
-#include<string>
-#include<vector>
-#include<allegro5/allegro_primitives.h>
-#include "FileManager.h"
+#ifndef ANIMATION_H
+#define ANIMATION_H
+#include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "utility"             // for pair
+#include "xstring"             // for string
 
 enum ANIMATION_DIRECTIONS{ANIM_NEUTRAL = 0, ANIM_RIGHT = 1, ANIM_LEFT = 2, ANIM_UP = 3, ANIM_DOWN = 4};
 enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1, ANIM_STATE_SHEARING = 2};
@@ -53,3 +54,4 @@ protected:
 	int frame_duration = 1;
 };
 
+#endif

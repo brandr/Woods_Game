@@ -1,16 +1,15 @@
 #ifndef LEVEL_H
 #define LEVEL_H
-//#include "Player.h"
-#include<map>
-#include<list>
-#include <iostream>
-#include <utility>
 
-//---
-#include "Inventory.h"
+#include "Tile.h"
+#include "Being.h"
+#include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "utility"             // for pair
+#include "vector"              // for vector
+#include "xstring"             // for string
+#include "EntityGroup.h"
 
 //class ImageLoader;
-class GameImageManager;
 
 class Level
 {

@@ -1,3 +1,5 @@
+#ifndef PPCD_H
+#define PPCD_H
 /*
 
 Allegro 5 Bitmap Masking Library v1.0
@@ -52,3 +54,4 @@ void Mask_Draw(mask_t *m, int x, int y);
 //color helper functions
 int Color_Equiv(ALLEGRO_COLOR col1, ALLEGRO_COLOR col2);
 int Transparent(ALLEGRO_COLOR col1);
+#endif

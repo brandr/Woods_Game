@@ -1,13 +1,16 @@
-#include<allegro5/allegro.h>
-#include<allegro5/allegro_image.h>
-#include<unordered_map>
+#ifndef IMAGELOADER_H
+#define IMAGELOADER_H
+
 #include<map>
-#include<memory>
-#include "Player.h"
+#include "ImageLoader.h"
+#include <string>
+#include <iostream>
+#include "xstring"  
+#include "Animation.h"
+#include "allegro5/allegro5.h"
+//#include "GameImage.h"
 
-//--
-//#include "World.h"
-
+class GameImage;
 class ImageLoader
 {
 private:
@@ -31,3 +34,4 @@ public:
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);
 };
 
+#endif

@@ -5,6 +5,43 @@
 //InputManager main_input;
 
 // functions to be passed along to the level, usually to the player
+void keyboard_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	//TODO: figure out how to check this input against our controls map
+	//TODO: in some cases, use this for a default input
+	//TODO: since remapping enter to another key can cause problems
+	/*
+	GameScreen& input_screen = screen.screen_receiving_input();
+	if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER
+		&& !input_screen.taking_mappable_input()) {
+		if (toggle) {
+			input_screen.confirm_selection();
+		}
+		return;
+	} else {
+		input_screen.call_keyboard_mappable_input(ev, toggle);
+	}
+	*/
+	GameScreen& input_screen = screen.screen_receiving_input();
+	input_screen.call_keyboard_mappable_input(ev, toggle);
+}
+
+void controller_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	//TODO: figure out how to check this input against our controls map
+	//TODO: in some cases, use this for a default input
+	GameScreen& input_screen = screen.screen_receiving_input();
+	if (ev.joystick.button == XC_BUTTON_A
+		&& !input_screen.taking_mappable_input()) {
+		if (toggle) {
+			input_screen.confirm_selection();
+		}
+		return;
+	}
+	else {
+		input_screen.call_controller_mappable_input(ev, toggle);
+	}
+}
+
+// functions to be passed along to the level, usually to the player
 void move_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	screen.set_input(INPUT_UP, toggle);
 }
@@ -24,6 +61,30 @@ void move_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 void number_entry(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if(toggle){
 		screen.process_number_input(ev.keyboard.keycode);
+	}
+}
+
+void use_item(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.use_item_action();
+	}
+}
+
+void open_inventory(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.open_inventory_action();
+	}
+}
+
+void hotbar_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.hotbar_left_action();
+	}
+}
+
+void hotbar_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.hotbar_right_action();
 	}
 }
 
@@ -75,48 +136,51 @@ void resume(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
+// input-sensitive actions that may be passed along
+
 void menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.cancel_menu();
+		screen.screen_receiving_input().cancel_menu();
 	}
 }
 
 void input_menu_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.menu_up();
+		screen.screen_receiving_input().menu_up();
 	}
 }
 
 void input_menu_down(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.menu_down();
+		screen.screen_receiving_input().menu_down();
 	}
 }
 
 void input_menu_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.menu_left();
+		screen.screen_receiving_input().menu_left();
 	}
 }
 
 void input_menu_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.menu_right();
+		screen.screen_receiving_input().menu_right();
 	}
 }
 
 void input_confirm_selection(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.confirm_selection();
+		screen.screen_receiving_input().confirm_selection();
 	}
 }
 
 void input_select(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.select();
+		screen.screen_receiving_input().select();
 	}
 }
 
+//TODO: consider doing this to main game screen when paused to avoid that glitch that can happen
 void move_joystick_axis(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
 		switch (ev.joystick.axis) {
@@ -145,7 +209,6 @@ void register_mouse_click_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle
 
 MainGameScreen::MainGameScreen()
 {
-	set_default_controls();
 	set_input_map();
 }
 
@@ -164,8 +227,6 @@ void MainGameScreen::set_default_controls()
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &move_down);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &move_left);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &move_right);
-			// pause
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &pause);
 			// hotbar hotkeys
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_1), &number_entry);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_2), &number_entry);
@@ -185,17 +246,7 @@ void MainGameScreen::set_default_controls()
 			// movement
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_AXIS, 0), &move_joystick_axis);
 			// pause
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_START), &pause);
-			// A/B/X/Y button
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_a_button);
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &input_b_button);
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_X), &input_x_button);
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_Y), &input_y_button);
-			// hotbar selection
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_LEFT_SHOULDER), &input_left_bumper);
-	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_RIGHT_SHOULDER), &input_right_bumper);
-	
-	
+	//control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_START), &pause);
 	// paused controls	
 	control_map[MAIN_GAME_PAUSED] = std::map<std::pair<int, int>, controlFunc>();
 
@@ -205,11 +256,8 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
-			// resume
-	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
-		// confirm selection
-	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ENTER), &input_confirm_selection);
-
+		// confirm/cancel selection
+	//control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ENTER), &input_confirm_selection);
 		// mouse 
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
@@ -220,21 +268,20 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
-			// resume
-	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_START), &resume);
+			// confirm/cancel selection
+	//control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_confirm_selection);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &menu_cancel);
-			// confirm selection
-	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_confirm_selection);
 
 	// inventory controls
+	control_map[MAIN_GAME_INVENTORY] = std::map<std::pair<int, int>, controlFunc>();
 		// key presses
 			// select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
-	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_select);
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
 			// resume
-	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
+	//control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
 		// mouse
 		// joystick
 			// select
@@ -243,11 +290,111 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
 			// move items
-	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_select);
+	//control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_select);
 			// resume
-	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_Y), &resume);
-	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);
-	
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
+}
+
+void MainGameScreen::set_mappable_controls()
+{
+	// keyboard
+	this->map_keyboard_control_action(TOP_DOWN, "use_item", &use_item);
+	this->map_keyboard_control_action(TOP_DOWN, "open_inventory", &open_inventory);
+	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
+	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
+	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "pause", &resume);
+	this->map_keyboard_control_action(TOP_DOWN, "pause", &pause);
+	this->map_keyboard_control_action(TOP_DOWN, "hotbar_left", &hotbar_left);	
+	this->map_keyboard_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
+	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
+	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
+	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	// controller
+	this->map_controller_control_action(TOP_DOWN, "use_item", &use_item);
+	this->map_controller_control_action(TOP_DOWN, "open_inventory", &open_inventory);
+	this->map_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
+	this->map_controller_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
+	this->map_controller_control_action(MAIN_GAME_PAUSED, "pause", &resume);
+	this->map_controller_control_action(TOP_DOWN, "pause", &pause);
+	this->map_controller_control_action(TOP_DOWN, "hotbar_left", &hotbar_left);
+	this->map_controller_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
+	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
+	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
+	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+}
+
+void MainGameScreen::unset_mappable_controls()
+{
+	//TODO: refactor this so we aren't copying the map method
+	// keyboard
+	this->unmap_keyboard_control_action(TOP_DOWN, "use_item");
+	this->unmap_keyboard_control_action(TOP_DOWN, "open_inventory");
+	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory");
+	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "pause");
+	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "pause");
+	this->unmap_keyboard_control_action(TOP_DOWN, "pause");
+	this->unmap_keyboard_control_action(TOP_DOWN, "hotbar_left");
+	this->unmap_keyboard_control_action(TOP_DOWN, "hotbar_right");
+	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_select");
+	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select");
+	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel");
+	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	// controller
+	this->unmap_controller_control_action(TOP_DOWN, "use_item");
+	this->unmap_controller_control_action(TOP_DOWN, "open_inventory");
+	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory");
+	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "pause");
+	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "pause");
+	this->unmap_controller_control_action(TOP_DOWN, "pause");
+	this->unmap_controller_control_action(TOP_DOWN, "hotbar_left");
+	this->unmap_controller_control_action(TOP_DOWN, "hotbar_right");
+	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_select");
+	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_select");
+	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel");
+	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+}
+
+void MainGameScreen::set_mappable_input_list()
+{
+	std::vector<int> keyboard_mappable_nums = Controls::keyboard_mappable_nums();
+	// set remappable controls
+	for (int keycode : keyboard_mappable_nums) {
+		control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, keycode), &keyboard_mappable_input);
+	}
+	std::vector<int> controller_mappable_nums = Controls::controller_mappable_nums();
+	for (int keycode : controller_mappable_nums) {
+		control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, keycode), &controller_mappable_input);
+	}
+}
+
+void MainGameScreen::map_keyboard_control_action(int game_mode, std::string action_key, controlFunc action_func)
+{
+	const int input_num = this->keyboard_controls.keyboard_input_num_for_action_key(action_key);
+	control_map[game_mode].emplace(std::pair<int,int>(ALLEGRO_EVENT_KEY_DOWN, input_num), action_func);
+}
+
+void MainGameScreen::map_controller_control_action(int game_mode, std::string action_key, controlFunc action_func)
+{
+	const int input_num = this->controller_controls.controller_input_num_for_action_key(action_key);
+	control_map[game_mode].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, input_num), action_func);	
+}
+
+void MainGameScreen::unmap_keyboard_control_action(int game_mode, std::string action_key)
+{
+	const int input_num = this->keyboard_controls.keyboard_input_num_for_action_key(action_key);
+	auto it = control_map[game_mode].find(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, input_num));
+	if (it == control_map[game_mode].end()) return;
+	control_map[game_mode].erase(it);
+}
+
+void MainGameScreen::unmap_controller_control_action(int game_mode, std::string action_key)
+{
+	const int input_num = this->controller_controls.controller_input_num_for_action_key(action_key);
+	auto it = control_map[game_mode].find(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, input_num));
+	if (it == control_map[game_mode].end()) return;
+	control_map[game_mode].erase(it);
 }
 
 void MainGameScreen::set_input_map()
@@ -265,6 +412,9 @@ void MainGameScreen::load_content()
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
 	load_controls();
+	set_default_controls();
+	set_mappable_controls();
+	set_mappable_input_list();
 	load_ui_content();
 }
 
@@ -291,14 +441,20 @@ void MainGameScreen::unload_content()
 void MainGameScreen::load_controls()
 {
 	FileManager file_manager;
-	std::vector<std::vector<std::string>> keyboard_attributes;
-	std::vector<std::vector<std::string>> keyboard_contents;	
-	file_manager.load_content("resources/load/controls", keyboard_attributes, keyboard_contents, "current_controls_keyboard");
-	this->keyboard_controls.load_content(keyboard_attributes, keyboard_contents);
-	std::vector<std::vector<std::string>> controller_attributes;
-	std::vector<std::vector<std::string>> controller_contents;
-	file_manager.load_content("resources/load/controls", controller_attributes, controller_contents, "current_controls_controller");
-	this->controller_controls.load_content(controller_attributes, controller_contents);
+	file_manager.load_xml_content(&this->keyboard_controls, "resources/load/controls",
+		"SerializableClass", "ControlsKey", "current_controls_keyboard");
+	file_manager.load_xml_content(&this->controller_controls, "resources/load/controls",
+		"SerializableClass", "ControlsKey", "current_controls_controller");
+}
+
+void MainGameScreen::reset_controls()
+{
+	this->unset_mappable_controls();
+	this->keyboard_controls.clear();
+	this->controller_controls.clear();
+	this->load_controls();
+	this->set_mappable_controls();
+	this->set_mappable_input_list();
 }
 
 void MainGameScreen::update()
@@ -309,18 +465,29 @@ void MainGameScreen::update()
 			game_image_manager.update(input_map, joystick_pos_map);
 			break;
 		case MAIN_GAME_PAUSED:
-			pause_screen.set_mouse_position(mouse_pos);
-			pause_screen.update();
-			if (pause_screen.get_screen_flag() == FLAG_RESUME_GAME) {
-				resume_game();
-			}
-			else if (pause_screen.get_screen_flag() == FLAG_QUIT_GAME) {
-				quit_game();
-			}
+			pause_screen_update();
+			break;
+		case TAKING_MAPPABLE_INPUT:
+			pause_screen_update();
 			break;
 	}
 	
 	GameScreen::update();
+}
+
+void MainGameScreen::pause_screen_update()
+{
+	pause_screen.set_mouse_position(mouse_pos);
+	pause_screen.update();
+	if (pause_screen.get_screen_flag() == FLAG_RESUME_GAME) {
+		resume_game();
+	} else if (pause_screen.get_screen_flag() == FLAG_QUIT_GAME) {
+		quit_game();
+	} else if (pause_screen.taking_mappable_input()) {
+		game_image_manager.set_game_mode(TAKING_MAPPABLE_INPUT);
+	} else {
+		game_image_manager.set_game_mode(MAIN_GAME_PAUSED);
+	}
 }
 
 void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
@@ -333,6 +500,9 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 {
 	switch (get_game_mode()) {
 	case MAIN_GAME_PAUSED:
+		draw_ui_paused(display);
+		break;
+	case TAKING_MAPPABLE_INPUT:
 		draw_ui_paused(display);
 		break;
 	case MAIN_GAME_INVENTORY:
@@ -408,6 +578,26 @@ void MainGameScreen::refresh()
 
 }
 
+GameScreen & MainGameScreen::screen_receiving_input()
+{
+	switch (get_game_mode()) {
+		case MAIN_GAME_PAUSED:
+			return pause_screen;
+		case TAKING_MAPPABLE_INPUT:
+			return pause_screen;
+		case MAIN_GAME_INVENTORY:
+			return inventory_screen;
+		
+		default:
+			return *this;
+	}
+}
+
+void MainGameScreen::load_keyboard_input(std::string action_key)
+{
+	//TODO
+}
+
 void MainGameScreen::pause_game()
 {
 	if (game_image_manager.get_player()->get_current_action() != ACTION_NONE) return;
@@ -439,6 +629,7 @@ void MainGameScreen::resume_game()
 	clear_input();
 	game_image_manager.resume();
 	game_image_manager.set_game_mode(TOP_DOWN);	
+	reset_controls();
 }
 
 void MainGameScreen::menu_up()
@@ -566,6 +757,7 @@ void MainGameScreen::b_button_action()
 
 void MainGameScreen::x_button_action()
 {
+	/*
 	Item* item = game_image_manager.get_player()->get_selected_item();
 	if (item) {
 		switch (get_game_mode()) {
@@ -574,9 +766,39 @@ void MainGameScreen::x_button_action()
 			break;
 		}
 	}
+	*/
 }
 
 void MainGameScreen::y_button_action()
+{
+	/*
+	if (game_image_manager.get_player()->get_current_action() != ACTION_NONE) return;
+	else {
+	switch (get_game_mode()) {
+	case TOP_DOWN:
+	game_image_manager.set_game_mode(MAIN_GAME_INVENTORY);
+	//TODO: any action necessary regarding the inventory screen
+	break;
+	case MAIN_GAME_INVENTORY:
+	resume_game();
+	game_image_manager.set_game_mode(TOP_DOWN);
+	break;
+	}
+	}
+	*/
+}
+
+void MainGameScreen::left_bumper_action()
+{
+	//game_image_manager.get_player()->hotbar_index_left();
+}
+
+void MainGameScreen::right_bumper_action()
+{
+	//game_image_manager.get_player()->hotbar_index_right();
+}
+
+void MainGameScreen::open_inventory_action()
 {
 	if (game_image_manager.get_player()->get_current_action() != ACTION_NONE) return;
 	else {
@@ -593,12 +815,34 @@ void MainGameScreen::y_button_action()
 	}
 }
 
-void MainGameScreen::left_bumper_action()
+void MainGameScreen::hotbar_left_action()
 {
-	game_image_manager.get_player()->hotbar_index_left();//get_inventory().hotbar_index_left();
+	game_image_manager.get_player()->hotbar_index_left();
 }
 
-void MainGameScreen::right_bumper_action()
+void MainGameScreen::hotbar_right_action()
 {
-	game_image_manager.get_player()->hotbar_index_right();//get_inventory().hotbar_index_right();
+	game_image_manager.get_player()->hotbar_index_right();
+}
+
+void MainGameScreen::use_item_action()
+{
+	Item* item = game_image_manager.get_player()->get_selected_item();
+	if (item) {
+		switch (get_game_mode()) {
+		case TOP_DOWN:
+			game_image_manager.get_player()->use_selected_item();
+			break;
+		}
+	}
+}
+
+void MainGameScreen::call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle)
+{
+	switch (get_game_mode()) {
+	case MAIN_GAME_PAUSED:
+		pause_screen.call_keyboard_mappable_input(ev, toggle);
+		break;
+	}
+	//TODO: if not paused, use whatever action the key is mapped to, if any
 }

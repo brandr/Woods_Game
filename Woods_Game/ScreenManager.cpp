@@ -96,9 +96,9 @@ bool ScreenManager::should_close()
 	return current_screen && current_screen->get_screen_flag() == FLAG_QUIT_GAME;
 }
 
-std::list<GameImage> ScreenManager::get_images()
+std::vector<GameImage> ScreenManager::get_images()
 {
 	if (current_screen)
 		return current_screen->get_images();
-	return std::list<GameImage>();
+	return std::vector<GameImage>();
 }

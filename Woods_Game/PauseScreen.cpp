@@ -29,60 +29,96 @@ ALLEGRO_BITMAP * PauseScreen::current_backdrop()
 
 MenuManager& PauseScreen::current_menu_manager()
 {
-	return menus[menu_key];
+	return *menus[menu_key];
 }
 
 void PauseScreen::load_content()
 {
-	load_config_settings();
+	//load_config_settings();
 	//main menu
-	MenuManager main_menu;
-	main_menu.load_content("pause_main_menu");
+	menus[PAUSE_MAIN_MENU] = std::make_unique<MenuManager>();
+	//menus[PAUSE_MAIN_MENU]->load_content("pause_main_menu");
+	menus[PAUSE_MAIN_MENU]->load_xml_content("pause_main_menu");
 	ImageLoader::get_instance().load_image("ui/pause_main_backdrop");
 	backdrops[PAUSE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/pause_main_backdrop");
-	menus[PAUSE_MAIN_MENU] = main_menu;
 	//video settings
-	MenuManager video_settings;
-	video_settings.load_content("pause_video_menu");
-	menus[PAUSE_VIDEO_MENU] = video_settings;
+	menus[PAUSE_VIDEO_MENU] = std::make_unique<MenuManager>();
+	//menus[PAUSE_VIDEO_MENU]->load_content("pause_video_menu");
+	menus[PAUSE_VIDEO_MENU]->load_xml_content("pause_video_menu");
 	ImageLoader::get_instance().load_image("ui/pause_video_backdrop");
 	backdrops[PAUSE_VIDEO_MENU] = ImageLoader::get_instance().get_image("ui/pause_video_backdrop");
-	std::vector<MenuItem*> video_items = video_settings.get_menu_items();
-	std::vector<std::string> &resolutions = video_items[0]->get_text_options();
+	//std::vector<MenuItem*> video_items = menus[PAUSE_VIDEO_MENU]->get_menu_items();
+	
+	//xmls::Collection<MenuItem> video_items = menus[PAUSE_VIDEO_MENU]->get_menu_items();
+	//xmls::Collection<TextOption> &resolutions = video_items.getItem(0)->get_text_options();
+	/*
 	for (int i = 0; i < resolutions.size(); i++) {
-		if (resolutions[i] == config_settings[CONFIG_SCREEN_RESOLUTION]) {
-			video_items[0]->set_options_index(i);
+		if (resolutions.getItem(i)->Option.value() == config_settings[CONFIG_SCREEN_RESOLUTION]) {
+			video_items.getItem(0)->set_options_index(i);
 		}
 	}
-	std::vector<std::string> &screen_styles = video_items[1]->get_text_options();
+	xmls::Collection<TextOption> &screen_styles = video_items.getItem(1)->get_text_options();
 	for (int i = 0; i < screen_styles.size(); i++) {
-		if (screen_styles[i] == config_settings[CONFIG_SCREEN_STYLE]) {
-			video_items[1]->set_options_index(i);
+		if (screen_styles.getItem(i)->Option.value() == config_settings[CONFIG_SCREEN_STYLE]) {
+			video_items.getItem(1)->set_options_index(i);
 		}
 	}
+	
+	
+	//temp
+	std::string xmlString = menus[PAUSE_VIDEO_MENU]->toXML();
+	std::ofstream out("resources/load/pause_video_menu.xml");
+	out << xmlString;
+	out.close();
+	//temp
+	*/
 	// controls settings
-	MenuManager controls_settings;
-	controls_settings.load_content("pause_controls_menu");
+	menus[PAUSE_CONTROLS_MENU] = std::make_unique<MenuManager>();
+	//menus[PAUSE_CONTROLS_MENU]->load_content("pause_controls_menu");
+	menus[PAUSE_CONTROLS_MENU]->load_xml_content("pause_controls_menu");
 	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU] = ImageLoader::get_instance().get_image("ui/pause_controls_backdrop");
-	menus[PAUSE_CONTROLS_MENU] = controls_settings;
+	//temp
+	/*
+	std::string xmlString1 = menus[PAUSE_CONTROLS_MENU]->toXML();
+	std::ofstream out1("resources/load/pause_controls_menu.xml");
+	out1 << xmlString1;
+	out1.close();
+	*/
+	//temp
 	// keyboard controls settings
-	MenuManager controls_settings_keyboard;
-	controls_settings_keyboard.load_content("pause_controls_menu_keyboard");
+	menus[PAUSE_CONTROLS_MENU_KEYBOARD] = std::make_unique<ControlsMenuManager>();
+	//menus[PAUSE_CONTROLS_MENU_KEYBOARD]->load_content("pause_controls_menu_keyboard");
+	menus[PAUSE_CONTROLS_MENU_KEYBOARD]->load_xml_content("pause_controls_menu_keyboard");
 	ImageLoader::get_instance().load_image("ui/pause_controls_keyboard_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU_KEYBOARD] = ImageLoader::get_instance().get_image("ui/pause_controls_keyboard_backdrop");
-	menus[PAUSE_CONTROLS_MENU_KEYBOARD] = controls_settings_keyboard;
+	//temp
+	/*
+	std::string xmlString2 = menus[PAUSE_CONTROLS_MENU_KEYBOARD]->toXML();
+	std::ofstream out2("resources/load/pause_controls_menu_keyboard.xml");
+	out2 << xmlString2;
+	out2.close();
+	*/
+	//temp
 	// controller controls settings
-	ControlsMenuManager controls_settings_controller;
-	controls_settings_controller.load_content("pause_controls_menu_controller");
+	menus[PAUSE_CONTROLS_MENU_CONTROLLER] = std::make_unique<ControlsMenuManager>();
+	//menus[PAUSE_CONTROLS_MENU_CONTROLLER]->load_content("pause_controls_menu_controller");
+	menus[PAUSE_CONTROLS_MENU_CONTROLLER]->load_xml_content("pause_controls_menu_controller");
 	ImageLoader::get_instance().load_image("ui/pause_controls_controller_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU_CONTROLLER] = ImageLoader::get_instance().get_image("ui/pause_controls_controller_backdrop");
-	menus[PAUSE_CONTROLS_MENU_CONTROLLER] = controls_settings_controller;
-	//TODO: figure out how to store and load controls from a config file
+	/*
+	//temp
+	std::string xmlString3 = menus[PAUSE_CONTROLS_MENU_CONTROLLER]->toXML();
+	std::ofstream out3("resources/load/pause_controls_menu_controller.xml");
+	out3 << xmlString3;
+	out3.close();
+	//temp
+	*/
 }
 
 void PauseScreen::load_config_settings()
 {
+	//TODO: change to new xml loading
 	FileManager filemanager;
 	std::vector<std::vector<std::string>> attributes, contents;
 	filemanager.load_content("resources/config.ini", attributes, contents);
@@ -129,6 +165,9 @@ void PauseScreen::process_mouse_click_left(const int x, const int y)
 {
 	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
 	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	if (current_menu_manager().is_selecting_input()) {
+		return;
+	}
 	if (current_menu_manager().is_selecting_options()) {
 		const int direction_index = current_menu_manager().mouse_selected_options_direction_index(x, y,
 			x_off, y_off,
@@ -212,78 +251,116 @@ void PauseScreen::menu_right()
 
 void PauseScreen::confirm_selection()
 {
-	std::string action_key = current_menu_manager().get_selected_action_key();
-	if (action_key == SELECTION_KEY_RETURN_TO_MAIN_PAUSE) {
-		current_menu_manager().reset();
-		menu_key = PAUSE_MAIN_MENU;
-	}
-	// confirm actions (for options selected from some scrollable list)
-	else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
-		if (current_menu_manager().is_selecting_options()) {
-			std::string confirm_key = current_menu_manager().get_confirm_action_key();
-			// video settings confirm actions
-			if (confirm_key == SELECTION_KEY_SET_RESOLUTION) {
-				//TODO: write the new resolution to the config file if necessary.
-				std::string res_string = current_menu_manager().get_menu_items()[0]->get_selected_text_option();
+std::string action_key = current_menu_manager().get_selected_action_key();
+if (action_key == SELECTION_KEY_RETURN_TO_MAIN_PAUSE) {
+	current_menu_manager().reset();
+	menu_key = PAUSE_MAIN_MENU;
+}
+// confirm actions (for options selected from some scrollable list)
+else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
+	if (current_menu_manager().is_selecting_options()) {
+		std::string confirm_key = current_menu_manager().get_confirm_action_key();
+		// video settings confirm actions
+		if (confirm_key == SELECTION_KEY_SET_RESOLUTION) {
+			//TODO: write the new resolution to the config file if necessary.
+			std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
+			al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
+		}
+		else if (confirm_key == SELECTION_KEY_SET_SCREEN_STYLE) {
+			std::string style_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
+			if (style_string == SCREEN_STYLE_FULLSCREEN) {
+				ALLEGRO_DISPLAY_MODE   disp_data;
+				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
+				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
+			}
+			else if (style_string == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+				//std::cout << "setting windowed fullscreen\n";
+				ALLEGRO_DISPLAY_MODE   disp_data;
+				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
+				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
+			}
+			else if (style_string == SCREEN_STYLE_WINDOWED) {
+				std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
 				std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
 				al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
 			}
-			else if (confirm_key == SELECTION_KEY_SET_SCREEN_STYLE) {
-				std::string style_string = current_menu_manager().get_menu_items()[1]->get_selected_text_option();
-				if (style_string == SCREEN_STYLE_FULLSCREEN) {
-					ALLEGRO_DISPLAY_MODE   disp_data;
-					al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-					//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
-					al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
-					al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
-				}
-				else if (style_string == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
-					//std::cout << "setting windowed fullscreen\n";
-					ALLEGRO_DISPLAY_MODE   disp_data;
-					al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-					//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
-					al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
-					al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
-				}
-				else if (style_string == SCREEN_STYLE_WINDOWED) {
-					std::string res_string = current_menu_manager().get_menu_items()[0]->get_selected_text_option();
-					std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
-					al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
-					al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
-					al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
-				}
-				//TODO: write the screen style to the config file in necessary.
-				//TODO: set screen style
-			}
-			current_menu_manager().confirm_option_select();
+			//TODO: write the screen style to the config file if necessary.
+			//TODO: set screen style
 		}
-		else {
-			current_menu_manager().select_options();
-		}
+		current_menu_manager().confirm_option_select();
 	}
-	// main pause menu actions
-	else if (action_key == SELECTION_KEY_RESUME_GAME) {
-		current_menu_manager().reset();
-		screen_flag = FLAG_RESUME_GAME;
+	else {
+		current_menu_manager().select_options();
 	}
-	else if (action_key == SELECTION_KEY_QUIT_GAME) {
-		current_menu_manager().reset();
-		screen_flag = FLAG_QUIT_GAME;
+}
+// main pause menu actions
+else if (action_key == SELECTION_KEY_RESUME_GAME) {
+	current_menu_manager().reset();
+	screen_flag = FLAG_RESUME_GAME;
+}
+else if (action_key == SELECTION_KEY_QUIT_GAME) {
+	current_menu_manager().reset();
+	screen_flag = FLAG_QUIT_GAME;
+}
+else if (action_key == SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
+	menu_key = PAUSE_VIDEO_MENU;
+}
+else if (action_key == SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
+	menu_key = PAUSE_CONTROLS_MENU;
+}
+else if (action_key == SELECTION_KEY_OPEN_KEYBOARD_CONTROLS) {
+	menu_key = PAUSE_CONTROLS_MENU_KEYBOARD;
+}
+else if (action_key == SELECTION_KEY_OPEN_CONTROLLER_CONTROLS) {
+	menu_key = PAUSE_CONTROLS_MENU_CONTROLLER;
+}
+else if (action_key == SELECTION_KEY_RETURN_TO_MAIN_CONTROLS) {
+	current_menu_manager().reset();
+	menu_key = PAUSE_CONTROLS_MENU;
+}
+else if (action_key == SELECTION_KEY_SET_CONTROL_INPUT) {
+	if (!current_menu_manager().is_selecting_input()) {
+		current_menu_manager().set_selecting_input(true);
+	} else {
+		current_menu_manager().set_selecting_input(false);
 	}
-	else if (action_key == SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
-		menu_key = PAUSE_VIDEO_MENU;
-	}
-	else if (action_key == SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
-		menu_key = PAUSE_CONTROLS_MENU;
-	}
-	else if (action_key == SELECTION_KEY_OPEN_KEYBOARD_CONTROLS) {
-		menu_key = PAUSE_CONTROLS_MENU_KEYBOARD;
-	}
-	else if (action_key == SELECTION_KEY_OPEN_CONTROLLER_CONTROLS) {
-		menu_key = PAUSE_CONTROLS_MENU_CONTROLLER;
-	}
-	else if (action_key == SELECTION_KEY_RETURN_TO_MAIN_CONTROLS) {
-		current_menu_manager().reset();
-		menu_key = PAUSE_CONTROLS_MENU;
-	}
+}
+else if (action_key == SELECTION_KEY_CANCEL_CONTROLS_CHANGES) {
+	current_menu_manager().reset();
+	menu_key = PAUSE_CONTROLS_MENU;
+}
+else if (action_key == SELECTION_KEY_REVERT_CONTROLS_DEFAULT) {
+	current_menu_manager().revert_controls_default();
+}
+else if (action_key == SELECTION_KEY_SAVE_CONTROLS_CHANGES) {
+	current_menu_manager().save_controls();
+	current_menu_manager().reset();
+	menu_key = PAUSE_CONTROLS_MENU;
+	screen_flag = FLAG_RESUME_GAME;
+}
+}
+
+void PauseScreen::call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle)
+{
+	if (!toggle || this->menu_key != PAUSE_CONTROLS_MENU_KEYBOARD) return;
+	current_menu_manager().set_keyboard_mappable_input(ev.keyboard.keycode);
+}
+
+void PauseScreen::call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle)
+{
+	if (!toggle || this->menu_key != PAUSE_CONTROLS_MENU_CONTROLLER) return;
+	current_menu_manager().set_controller_mappable_input(ev.joystick.button);
+}
+
+bool PauseScreen::taking_mappable_input()
+{
+	return (this->menu_key == PAUSE_CONTROLS_MENU_KEYBOARD || this->menu_key == PAUSE_CONTROLS_MENU_CONTROLLER) 
+		&& this->current_menu_manager().is_selecting_input();
 }

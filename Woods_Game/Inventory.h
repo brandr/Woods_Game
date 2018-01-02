@@ -1,4 +1,11 @@
+#ifndef INVENTORY_H
+#define INVENTORY_H
+
 #include "Item.h"
+#include "vector"  // for vector
+#include <memory>  // for allocator
+#include <iostream>
+
 const static int HOTBAR_SIZE = 10;
 const static int INVENTORY_COLS = 10, INVENTORY_ROWS = 3;
 
@@ -27,3 +34,4 @@ public:
 	int get_hotbar_index();
 };
 
+#endif

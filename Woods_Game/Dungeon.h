@@ -2,6 +2,9 @@
 #define DUNGEON_H
 
 #include "Level.h"
+#include "vector"  // for vector
+#include <memory>  // for allocator
+#include "ImageLoader.h"
 
 class Dungeon
 {

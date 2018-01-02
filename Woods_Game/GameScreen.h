@@ -1,11 +1,14 @@
 #ifndef GAMESCREEN_H
 #define GAMESCREEN_H
-#include <list>
-#include<allegro5/allegro_primitives.h>
-#include<allegro5/allegro_ttf.h>
-#include<allegro5/allegro_font.h>
-#include "ImageLoader.h"
+
 #include "InputManager.h"
+#include "xstring"             // for string
+#include "utility"  // for pair
+#include <allegro5/allegro_font.h>
+#include "GameImage.h"
+#include "ImageLoader.h"
+
+class ImageLoader;
 
 enum SCREEN_FLAGS { FLAG_NONE, FLAG_CHANGE_TO_MAIN_GAME, FLAG_CHANGE_TO_TITLE, FLAG_RESUME_GAME, FLAG_QUIT_GAME };
 enum NUMBER_KEYS {NUM_0 = 27, NUM_1 = 28, NUM_2 = 29, NUM_3 = 30, NUM_4 = 31, 
@@ -45,17 +48,21 @@ public:
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	virtual int get_game_mode();
+	virtual GameScreen& screen_receiving_input();
 	virtual void set_input_map();
 	virtual void set_input(int, bool);
 	virtual void clear_input();
+	virtual void call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle);
+	virtual void call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual void set_joystick_pos(int stick, float x, float y);
 	virtual std::pair<float, float> get_joystick_pos(int stick);
 	virtual std::map<int, std::pair<float, float>> get_joystick_pos_map();
-	virtual std::list<GameImage> get_images();
+	virtual std::vector<GameImage> get_images();
 	virtual int get_camera_offset_x();
 	virtual int get_camera_offset_y();
 	virtual void load_images(ImageLoader&);
 	virtual void refresh();
+	virtual bool taking_mappable_input();
 	// controls
 	virtual void pause_game();
 	virtual void cancel_menu();
@@ -72,6 +79,10 @@ public:
 	virtual void confirm_selection();
 	virtual void select();
 	virtual void process_number_input(int num);
+	virtual void use_item_action();
+	virtual void open_inventory_action();
+	virtual void hotbar_left_action();
+	virtual void hotbar_right_action();
 	virtual void a_button_action();
 	virtual void b_button_action();
 	virtual void x_button_action();

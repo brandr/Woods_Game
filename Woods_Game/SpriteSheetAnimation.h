@@ -1,3 +1,6 @@
+#ifndef SPRITESHEETANIMATION_H
+#define SPRITESHEETANIMATION_H
+
 #include "ControlsMenuManager.h"
 class SpriteSheetAnimation //:public Animation
 {
@@ -11,3 +14,4 @@ public:
 	void reset();
 };
 
+#endif

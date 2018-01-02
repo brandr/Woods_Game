@@ -4,13 +4,20 @@
 #define JOYSTICK_DEADZONE 0.1f
 
 //#include "Inventory.h"
-#include<map>
-
-//---
+#include "Inventory.h"
+#include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
+#include "allegro5/bitmap_draw.h"  // for al_draw_bitmap
+#include "FileManager.h"           // for FileManager
+#include "ImageLoader.h"
+#include "SpriteSheetAnimation.h"  // for SpriteSheetAnimation
+#include "stdlib.h"                // for atoi
+#include "vcruntime_new.h"         // for operator delete, operator new
 #include "World.h"
+#include "xtree"                   // for _Tree_iterator, _Tree<>::iterator, _Tree_const_iterator
+#include <map>
 
 enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAUSE };
-enum PLAYER_DIRECTIONS{DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN};
+//enum PLAYER_DIRECTIONS{DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN};
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
 enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
 //final const int TERMINAL_VELOCITY = 8;

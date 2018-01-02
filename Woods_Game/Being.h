@@ -1,6 +1,9 @@
-//#include "Entity.h"
+#ifndef BEING_H
+#define BEING_H
 #include "Tile.h"
-#include<vector>
+#include "Entity.h"  // for Entity
+#include "utility"   // for pair
+
 class Being:public Entity
 {
 protected:
@@ -28,3 +31,4 @@ public:
 	void set_yvel(int);
 };
 
+#endif

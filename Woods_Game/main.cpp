@@ -6,7 +6,31 @@
 #include<allegro5/allegro_primitives.h>
 
 #include "ScreenManager.h"
-#include<iostream>
+#include "allegro5/allegro_font.h"           // for al_init_font_addon
+#include "allegro5/allegro_ttf.h"           
+#include "allegro5/allegro_image.h"
+#include "allegro5/blender.h"                // for al_set_blender, ALLEGRO_BLEND_MODE::ALLEGRO_ALPHA, ALLEGRO_BLEND_MODE::ALLEGRO_INVERSE_ALPHA, ALLEGRO_BLEND_OPERATIONS::ALLEGRO_ADD
+#include "allegro5/color.h"                  // for al_map_rgb
+#include "allegro5/display.h"                // for al_create_display, al_get_display_event_source, al_set_new_display_flags, al_destroy_display, al_flip_display, al_set_window_title, ::ALLEGRO_FULLSCREEN, ::ALLEGRO_FULLSCREEN_WINDOW, ALLEGRO_DISPLAY
+#include "allegro5/drawing.h"                // for al_clear_to_color
+#include "allegro5/events.h"                 // for al_register_event_source, al_unregister_event_source, ALLEGRO_EVENT, al_create_event_queue, al_destroy_event_queue, al_wait_for_event, ::ALLEGRO_EVENT_DISPLAY_CLOSE, ::ALLEGRO_EVENT_TIMER, ALLEGRO_EVENT_QUEUE
+#include "allegro5/fullscreen_mode.h"        // for ALLEGRO_DISPLAY_MODE, al_get_display_mode, al_get_num_display_modes
+#include "allegro5/joystick.h"               // for al_get_joystick_event_source, al_install_joystick, al_uninstall_joystick
+#include "allegro5/keyboard.h"               // for al_get_keyboard_event_source, al_install_keyboard, al_uninstall_keyboard
+#include "allegro5/mouse.h"                  // for al_get_mouse_event_source, al_install_mouse, al_uninstall_mouse
+#include "allegro5/system.h"                 // for al_uninstall_system, al_init
+#include "allegro5/timer.h"                  // for al_get_timer_event_source, al_create_timer, al_destroy_timer, al_start_timer, ALLEGRO_TIMER
+#include "FileManager.h"                     // for FileManager
+#include "GameScreen.h"                      // for SCREEN_STYLE_FULLSCREEN, SCREEN_STYLE_WINDOWED, SCREEN_STYLE_WINDOWED_FULLSCREEN
+#include "ImageLoader.h"                     // for ImageLoader
+#include "InputManager.h"                    // for InputManager
+#include "MainGameScreen.h"                  // for DEFAULT_SCREEN_HEIGHT, DEFAULT_SCREEN_WIDTH
+#include "TitleScreen.h"                     // for TitleScreen
+#include "utility"                           // for pair
+#include "vcruntime_new.h"                   // for operator new
+#include "vector"                            // for vector
+#include "xstring"                           // for string, operator==, basic_string
+#include <memory>                            // for allocator
 
 
 int main()
@@ -104,6 +128,7 @@ int main()
 	ScreenManager::get_instance().initilaize(new TitleScreen());
 	ScreenManager::get_instance().load_content();
 	ImageLoader::get_instance().load_content();
+	//Controls::load_input_key_to_label_map();
 	InputManager input;
 	al_start_timer(timer);
 	// game loop

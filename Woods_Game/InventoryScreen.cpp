@@ -1,7 +1,5 @@
 #include "InventoryScreen.h"
 
-
-
 InventoryScreen::InventoryScreen()
 {
 }
@@ -31,7 +29,6 @@ void InventoryScreen::load_content()
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 {
-	//TODO: draw the rest of the inventory and figure out where to put the hotbar
 	const int x = (al_get_display_width(display) - al_get_bitmap_width(inventory_backdrop))/2;
 	const int y = (al_get_display_height(display) - al_get_bitmap_height(inventory_backdrop)) / 2;
 	al_draw_bitmap(inventory_backdrop, x, y, NULL);

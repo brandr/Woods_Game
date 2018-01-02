@@ -1,3 +1,6 @@
+#ifndef INPUTMANAGER_H
+#define INPUTMANAGER_H
+
 #include<allegro5/allegro.h>
 #include<allegro5/keyboard.h>
 #include<vector>
@@ -19,7 +22,6 @@ enum XC_BUTTONS {
 	XC_BUTTON_PAD_LEFT = 11,
 	XC_BUTTON_PAD_DOWN = 12,
 	XC_BUTTON_PAD_UP = 13
-	
 };
 /*
 typedef struct XC_STATE {
@@ -70,3 +72,4 @@ public:
 	bool is_input_released(ALLEGRO_EVENT ev, int evtype, int key);
 };
 
+#endif

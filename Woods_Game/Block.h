@@ -1,4 +1,12 @@
-#include "EntityGroup.h"
+#ifndef BLOCK_H
+#define BLOCK_H
+
+#include "Entity.h"  // for Entity
+#include "utility"   // for pair
+#include "xstring"   // for string
+
+struct Rect;
+
 class Block :
 	public Entity
 {
@@ -10,3 +18,4 @@ public:
 	virtual int get_type();
 };
 
+#endif

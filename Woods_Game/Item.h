@@ -1,4 +1,13 @@
-#include "Being.h"
+#ifndef ITEM_H
+#define ITEM_H
+
+#include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
+#include "allegro5/allegro5.h"
+#include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "map"                 // for map
+#include "xstddef"             // for less
+#include "xstring"             // for string
+#include <memory>              // for allocator
 
 enum ITEM_KEYS{ITEM_SHEARS, ITEM_MALLET};
 enum ITEM_ATTRIBUTES{ITEM_ATTR_POWER};
@@ -26,3 +35,4 @@ public:
 	const int get_item_attribute(int attr_key);
 };
 
+#endif

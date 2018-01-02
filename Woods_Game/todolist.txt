@@ -1,23 +1,31 @@
 Woods game todolist
 
+Refactor all file loading to xml
+	-in each case, do saving first while loading normally
+	-config settings	
+		*might be able to store these in the same place we store menus and make the pausescreen content loading simpler
+	-levels/world
+divide the project into smaller packages/folders
 NOTES:
 *whenever adding new counters, be sure to check how they all interact 
 	(i.e., what happens if you use shears right as you collide with thorns and bounce)
 
 TODOS
 
--implement control settings
-	*start with screen that allows user to navigate to keyboard or controller controls
-	-have some keyboard button also map to shearing
--add wasd controls
-
--fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
-	*make sure this fix applies to both inventory and pause
+-make video settings save to some XML config file
+	*no need to associate this with video menu, but do need to save new config settings when they're changed through the video menu
+-fix the issue where it's impossible  to get out of the controller controls menu when using only a keyboard (and vice versa)
+	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
 -make some tool (mallet?) to break rocks and an animation for them being hit/destroyed
--make it so the game can detect when a controller is plugged in and respond properly
+-make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
-	*might want to do this for mouse too
+	*might need to do this for mouse too, need to test
+-add wasd controls for movement (not sure about this)
+-fix analog stick issue that sometimes happens when controller is in some weird configuration (needs repro)
+-fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
+	*make sure this fix applies to both inventory and pause
+
 -make custom mouse cursor
 
 -make effects for the player touching vegetation

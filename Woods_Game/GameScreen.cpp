@@ -1,8 +1,8 @@
 #include "GameScreen.h"
+//class ImageLoader;
 
 GameScreen::GameScreen()
 {
-	//TODO: set default values for control map
 }
 
 
@@ -29,6 +29,14 @@ void GameScreen::clear_input()
 	for (auto const &it : input_map) {
 		input_map[it.first] = false;
 	}
+}
+
+void GameScreen::call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle)
+{
+}
+
+void GameScreen::call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle)
+{
 }
 
 void GameScreen::set_joystick_pos(int stick, float x, float y)
@@ -61,9 +69,14 @@ int GameScreen::get_game_mode()
 	return 0;
 }
 
-std::list<GameImage> GameScreen::get_images()
+GameScreen & GameScreen::screen_receiving_input()
 {
-	return std::list<GameImage>();
+	return *this;
+}
+
+std::vector<GameImage> GameScreen::get_images()
+{
+	return std::vector<GameImage>();
 }
 int GameScreen::get_camera_offset_x()
 {
@@ -76,8 +89,6 @@ int GameScreen::get_camera_offset_y()
 
 void GameScreen::load_content()
 {
-	//joystick_map[LEFT_STICK] = al_get_joystick(LEFT_STICK);
-	//joystick_map[RIGHT_STICK] = al_get_joystick(RIGHT_STICK);
 }
 
 void GameScreen::unload_content()
@@ -100,6 +111,11 @@ void GameScreen::refresh()
 	for (std::map<int, bool>::iterator it = input_map.begin(); it != input_map.end(); ++it) {
 		it->second = false;
 	}
+}
+
+bool GameScreen::taking_mappable_input()
+{
+	return false;
 }
 
 void GameScreen::pause_game()
@@ -165,6 +181,22 @@ void GameScreen::process_number_input(int num)
 {
 }
 
+void GameScreen::use_item_action()
+{
+}
+
+void GameScreen::open_inventory_action()
+{
+}
+
+void GameScreen::hotbar_left_action()
+{
+}
+
+void GameScreen::hotbar_right_action()
+{
+}
+
 void GameScreen::a_button_action()
 {
 }
@@ -200,11 +232,9 @@ void GameScreen::process_event(ALLEGRO_EVENT ev)
 	for (std::map<std::pair<int, int>, controlFunc>::iterator it2 = curr_control_map.begin(); it2 != curr_control_map.end(); ++it2) {
 		controlFunc f = it2->second;
 			if (input.is_input_pressed(ev, it2->first.first, it2->first.second)) {
-				//std::cout << "key press" << std::endl;
 				(*f)(*this, ev, true);
 			}
 			else if (input.is_input_released(ev, it2->first.first, it2->first.second)) {
-				//std::cout << "key release" << std::endl;
 				(*f)(*this, ev, false);
 			}
 

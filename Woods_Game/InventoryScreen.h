@@ -1,4 +1,13 @@
-#include "PauseScreen.h"
+#ifndef INVENTORYSCREEN_H
+#define INVENTORYSCREEN_H
+
+#include "Inventory.h"
+#include "GameScreen.h"
+#include "ImageLoader.h"
+#include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
+#include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "utility"             // for pair
+
 class InventoryScreen :
 	public GameScreen
 {
@@ -38,3 +47,4 @@ public:
 	Item* dragging_item();
 };
 
+#endif

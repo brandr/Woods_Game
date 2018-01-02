@@ -1,3 +1,7 @@
+#ifndef TILE_H
+#define TILE_H
+
+#include "GameImage.h"
 #include "Block.h"
 
 enum TILE_DIRS { TILE_UP_LEFT = 0, TILE_UP = 1, TILE_UP_RIGHT = 2, TILE_LEFT = 3, TILE_CENTER = 4,  TILE_RIGHT = 5, TILE_DOWN_LEFT = 6, TILE_DOWN = 7, TILE_DOWN_RIGHT = 8 };
@@ -30,3 +34,4 @@ public:
 	int get_edge_priority();
 };
 
+#endif

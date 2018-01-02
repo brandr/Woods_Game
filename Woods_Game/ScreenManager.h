@@ -1,4 +1,7 @@
-//#include "MainGameScreen.h"
+#ifndef SCREENMANAGER_H
+#define SCREENMANAGER_H
+
+#include "MainGameScreen.h"
 #include "TitleScreen.h"
 
 class ScreenManager
@@ -23,6 +26,7 @@ public:
 	void process_joystick(ALLEGRO_JOYSTICK_STATE joy_state);
 	void add_screen(GameScreen *screen);
 	bool should_close();
-	std::list<GameImage> get_images();
+	std::vector<GameImage> get_images();
 };
 
+#endif

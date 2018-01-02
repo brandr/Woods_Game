@@ -68,10 +68,10 @@ void Inventory::hotbar_index_right()
 
 void Inventory::swap_items(int x1, int y1, int x2, int y2)
 {
+	if (x1 == x2 && y1 == y2) return;
 	Item *item_1 = get_item(x1, y1);
 	Item *item_2 = get_item(x2, y2);
 	if (!item_1 || !item_2) return;
-	std::cout << "found items\n";
 	Item *swapped_item_1 = new Item(item_1);
 	Item *swapped_item_2 = new Item(item_2);
 	item_1->unload_content(), item_2->unload_content();

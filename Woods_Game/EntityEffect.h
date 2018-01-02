@@ -2,9 +2,8 @@
 #define ENTITY_EFFECT_H
 
 #include "GameImage.h"
-
-//const static std::string EFFECT_BREAK = "break";
-//std::vector<std::string> ENTITY_EFFECT_NAMES{ EFFECT_BREAK };
+#include "utility"      // for pair
+#include "xstring"      // for string
 
 class EntityEffect :
 	public GameImage

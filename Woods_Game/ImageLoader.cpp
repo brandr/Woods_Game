@@ -1,6 +1,5 @@
 #include "ImageLoader.h"
-#include <iostream>
-
+#include "GameImage.h"
 
 /*
 ImageLoader::ImageLoader()

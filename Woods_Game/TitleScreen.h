@@ -1,6 +1,11 @@
-#include "MainGameScreen.h"
+#ifndef TITLESCREEN_H
+#define TITLESCREEN_H
 
-//class ScreenManager;
+#include "GameScreen.h"
+#include "allegro5/allegro_font.h"  // for ALLEGRO_FONT
+#include "allegro5/display.h"       // for ALLEGRO_DISPLAY
+#include "allegro5/events.h"        // for ALLEGRO_EVENT
+#include "allegro5/allegro_ttf.h"    
 
 class TitleScreen:
 	public GameScreen
@@ -17,3 +22,4 @@ public:
 	virtual void process_event(ALLEGRO_EVENT ev);
 };
 
+#endif

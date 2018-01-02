@@ -1,8 +1,11 @@
+#ifndef GAMEIMAGEMANAGER_H
+#define GAMEIMAGEMANAGER_H
+
 #include<string>
-#include<algorithm>
-//#include "World.h"
-#include"GameScreen.h"
-#include <memory>
+#include "utility"  // for pair
+#include "xstring"  // for string
+#include "World.h"
+#include "Player.h"
 
 class GameImageManager
 {
@@ -34,3 +37,4 @@ public:
 	void resume();
 };
 
+#endif

@@ -1,7 +1,15 @@
 #ifndef ENTITY_H
 #define ENTITY_H
-//#include "Tile.h"
+
 #include "EntityEffect.h"
+#include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "GameImage.h"         // for GameImage
+#include "map"                 // for map
+#include "utility"             // for pair, swap
+#include "vector"              // for vector
+#include "xstddef"             // for addressof, less
+#include "xstring"             // for string
+#include <memory>              // for allocator
 
 struct EntityData {
 	std::pair<int, int> root_offset;
