@@ -14,6 +14,7 @@
 #include "vcruntime_new.h"         // for operator delete, operator new
 #include "World.h"
 #include "xtree"                   // for _Tree_iterator, _Tree<>::iterator, _Tree_const_iterator
+#include "XMLSerialization.h"
 #include <map>
 
 enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAUSE };
@@ -41,13 +42,13 @@ public:
 	virtual int get_type();
 	virtual void load_content(std::vector<std::string> attributes, std::vector<std::string> contents);
 	void reset_entity_flags();
-	virtual void update(std::vector<Entity*>, std::vector<Tile>, std::pair<int,int>, int);
+	virtual void update(std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
-	void update_top_down(std::vector<Entity*>, std::vector<Tile>, std::pair<int, int>);
+	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
-	void shear_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions);
+	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	float get_walk_speed();
 	void set_direction(int);
 	void queue_move(int);

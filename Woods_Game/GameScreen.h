@@ -6,7 +6,9 @@
 #include "utility"  // for pair
 #include <allegro5/allegro_font.h>
 #include "GameImage.h"
+#include "Configurations.h"
 #include "ImageLoader.h"
+#include <memory>
 
 class ImageLoader;
 
@@ -19,10 +21,11 @@ enum FONT_KEYS {FONT_HOTBAR};
 const static std::string FONT_COLOR_HOTBAR = "333333";
 
 // screen styles
+/*
 const static std::string SCREEN_STYLE_WINDOWED = "Windowed";
 const static std::string SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
 const static std::string SCREEN_STYLE_FULLSCREEN = "Fullscreen";
-
+*/
 class GameScreen
 {
 //do this so we can call key press methods
@@ -30,6 +33,8 @@ class GameScreen
 protected:
 	typedef void(*controlFunc)(GameScreen&, ALLEGRO_EVENT, bool);
 	InputManager input;
+	FileManager file_manager;
+	std::unique_ptr<Configurations> config;
 	/*
 	std::vector<std::vector<int>> attributes;
 	std::vector<std::vector<std::string>> contents;
@@ -63,6 +68,7 @@ public:
 	virtual void load_images(ImageLoader&);
 	virtual void refresh();
 	virtual bool taking_mappable_input();
+	virtual void save_configurations();
 	// controls
 	virtual void pause_game();
 	virtual void cancel_menu();

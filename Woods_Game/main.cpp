@@ -31,6 +31,7 @@
 #include "vector"                            // for vector
 #include "xstring"                           // for string, operator==, basic_string
 #include <memory>                            // for allocator
+#include "Configurations.h"
 
 
 int main()
@@ -54,47 +55,27 @@ int main()
 	const float FPS = 60.0f;
 
 	FileManager filemanager;
-	std::vector<std::vector<std::string>> attributes, contents;
-	filemanager.load_content("resources/config.ini", attributes, contents);
-
-	//TODO: handle config settings here
-
-	int screen_width = DEFAULT_SCREEN_WIDTH, screen_height = DEFAULT_SCREEN_HEIGHT;
-	ALLEGRO_DISPLAY *display;// = al_create_display(screen_width, screen_height);
-	std::string display_style;
-	for (int i = 0; i < attributes.size(); i++) {
-		for (int j = 0; j < attributes[i].size(); j++) {
-			if (attributes[i][j] == "screen_resolution") {
-				std::pair <std::string, std::string> resolution = FileManager::string_to_pair(contents[i][j], "x");
-				screen_width = ::atoi(resolution.first.c_str()), screen_height = ::atoi(resolution.second.c_str());
-			}
-			else if (attributes[i][j] == "screen_style") {
-				display_style = contents[i][j];
-			}
-		}
-	}
-
-	if (display_style == SCREEN_STYLE_FULLSCREEN) {
+	ALLEGRO_DISPLAY *display;
+	Configurations *config = new Configurations();
+	std::string filename = "resources/config";
+	filemanager.load_xml_content(config, filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
+	//TODO: make config accessible for screenmanager/screens and change it as necessary when settings are changed through the menus
+	if (config->get_screen_mode() == SCREEN_STYLE_FULLSCREEN) {
 		ALLEGRO_DISPLAY_MODE   disp_data;
 		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
 		display = al_create_display(disp_data.width, disp_data.height);
-	}
-	else if (display_style == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+	} else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
 		ALLEGRO_DISPLAY_MODE   disp_data;
 		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 		display = al_create_display(disp_data.width, disp_data.height);
 	}
-	else if (display_style == SCREEN_STYLE_WINDOWED) {
-		display = al_create_display(screen_width, screen_height);
+	else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED) {
+		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
+	} else {	//windowed by default, but the above block is included for the sake of consistency.
+		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
 	}
-	else {	//windowed by default, but the above block is included for the sake of consistency.
-		display = al_create_display(screen_width, screen_height);
-	}
-
-	//ALLEGRO_DISPLAY *display = al_create_display(screen_width, screen_height);
-	
 	// make usre the display was created correctly
 	if (!display) {
 		al_show_native_message_box(display, "Title", "settings", "Could not create Allegro window.", NULL, NULL);
@@ -128,7 +109,6 @@ int main()
 	ScreenManager::get_instance().initilaize(new TitleScreen());
 	ScreenManager::get_instance().load_content();
 	ImageLoader::get_instance().load_content();
-	//Controls::load_input_key_to_label_map();
 	InputManager input;
 	al_start_timer(timer);
 	// game loop

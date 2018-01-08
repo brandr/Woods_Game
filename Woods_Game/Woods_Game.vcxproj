@@ -173,6 +173,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Being.h" />
+    <ClInclude Include="Configurations.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Dungeon.h" />
@@ -197,9 +198,12 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PPCD.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SpriteSheetAnimation.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileSet.h" />
+    <ClInclude Include="TileType.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="TitleScreen.h" />
     <ClInclude Include="World.h" />
@@ -208,6 +212,7 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Being.cpp" />
+    <ClCompile Include="Configurations.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
@@ -235,6 +240,8 @@
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="SpriteSheetAnimation.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileSet.cpp" />
+    <ClCompile Include="TileType.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="TitleScreen.cpp" />
     <ClCompile Include="World.cpp" />
@@ -245,6 +252,56 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="todolist.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\OpenSans-Regular.ttf" />
+    <Font Include="resources\fonts\Xeranthemum.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\effects\block_tile_sheet_2_break.png" />
+    <Image Include="resources\images\item_icons\mallet.png" />
+    <Image Include="resources\images\item_icons\shears.png" />
+    <Image Include="resources\images\sprite_sheets\effect_spritesheet_shearing_original.png" />
+    <Image Include="resources\images\sprite_sheets\player_slicing_spritesheet_mask.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_mask.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_neutral.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_neutral_template.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_shearing.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_swinging.png" />
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_walking.png" />
+    <Image Include="resources\images\sprite_sheets\temp_player_spritesheet.png" />
+    <Image Include="resources\images\sprite_sheets\temp_player_spritesheet_2.png" />
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_1.png" />
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_2.png" />
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_2_edges.png" />
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_1.png" />
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2.png" />
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2_break.png" />
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2_hit.png" />
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_leaves.png" />
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_mask.png" />
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_trunk.png" />
+    <Image Include="resources\images\tile_sheets\tile_sheet_1.png" />
+    <Image Include="resources\images\ui\brackets\bracket_1L.png" />
+    <Image Include="resources\images\ui\brackets\bracket_1R.png" />
+    <Image Include="resources\images\ui\hotbar_box_1.png" />
+    <Image Include="resources\images\ui\hotbar_box_1_selected.png" />
+    <Image Include="resources\images\ui\inventory_backdrop.png" />
+    <Image Include="resources\images\ui\item_box_1.png" />
+    <Image Include="resources\images\ui\item_box_1_dark.png" />
+    <Image Include="resources\images\ui\item_box_1_grey.png" />
+    <Image Include="resources\images\ui\item_box_1_light.png" />
+    <Image Include="resources\images\ui\item_selection_1.png" />
+    <Image Include="resources\images\ui\pause_controls_backdrop.png" />
+    <Image Include="resources\images\ui\pause_controls_controller_backdrop.png" />
+    <Image Include="resources\images\ui\pause_controls_keyboard_backdrop.png" />
+    <Image Include="resources\images\ui\pause_main_backdrop.png" />
+    <Image Include="resources\images\ui\pause_video_backdrop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\load\controls.xml" />
+    <Xml Include="resources\load\menus.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

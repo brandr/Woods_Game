@@ -143,6 +143,139 @@ std::vector<std::string> Entity::get_entity_effect_names()
 	return names;
 }
 
+// EntityData
+
 EntityData::EntityData()
 {
+	setClassName("EntityData");
+	Register("attributes", &attributes);
+	Register("components", &components);
+	Register("root_offset_x", &root_offset_x);
+	Register("root_offset_y", &root_offset_y);
+	Register("center_offset_x", &center_offset_x);
+	Register("center_offset_y", &center_offset_y);
+	Register("solid", &solid);
+	solid = false;
+}
+
+void EntityData::set_attributes(std::map<std::string, int> attributes)
+{
+	this->attributes.Clear();
+	for (auto const &it : attributes) {
+		EntityAttribute *attr = new EntityAttribute();
+		attr->attribute_key = it.first;
+		attr->attribute_value = it.second;
+		this->attributes.addItem(attr);
+	}
+}
+
+std::map<std::string, int> EntityData::attribute_map()
+{
+	std::map<std::string, int> attr_map;
+	const int size = this->attributes.size();
+	for (int i = 0; i < size; i++) {
+		EntityAttribute *attr = this->attributes.getItem(i);
+		attr_map[attr->attribute_key.value()] = attr->attribute_value.value();
+	}
+	return attr_map;
+}
+
+void EntityData::set_root_offset(std::pair<int, int> offset)
+{
+	this->root_offset_x = offset.first;
+	this->root_offset_y = offset.second;
+}
+
+void EntityData::set_center_offset(std::pair<int, int> offset)
+{
+	this->center_offset_x = offset.first;
+	this->center_offset_y = offset.second;
+}
+
+void EntityData::set_components(std::vector<EntityComponentData*> components)
+{
+	this->components.Clear();
+	const int size = components.size();
+	for (int i = 0; i < size; i++) {
+		this->components.addItem(components[i]);
+	}
+}
+
+std::pair<int, int> EntityData::get_root_offset()
+{
+	return std::pair<int, int>(this->root_offset_x.value(), this->root_offset_y.value());
+}
+
+std::pair<int, int> EntityData::get_center_offset()
+{
+	return std::pair<int, int>(this->center_offset_x.value(), this->center_offset_y.value());
+}
+
+std::vector<EntityComponentData*> EntityData::get_components()
+{
+	std::vector<EntityComponentData*> components;
+	const int size = this->components.size();
+	for (int i = 0; i < size; i++) {
+		EntityComponentData *comp = this->components.getItem(i);
+		components.push_back(comp);
+	}
+	return components;
+}
+
+EntityAttribute::EntityAttribute()
+{
+	setClassName("EntityAttribute");
+	Register("attribute_key", &attribute_key);
+	Register("attribute_value", &attribute_value);
+}
+
+EntityComponentData::EntityComponentData()
+{
+	this->setClassName("EntityComponentAttribute");
+	this->Register("name", &(this->name));
+	this->Register("attributes", &(this->attributes));
+}
+
+EntityComponentData::EntityComponentData(std::string name, std::vector<std::string> attributes)
+{
+	this->setClassName("EntityComponentAttribute");
+	this->Register("name", &(this->name));
+	this->Register("attributes", &(this->attributes));
+	this->name = name;
+	this->set_attributes(attributes);
+}
+
+void EntityComponentData::set_attributes(std::vector<std::string> attributes)
+{
+	this->attributes.Clear();
+	const int size = attributes.size();
+	for (int i = 0; i < size; i++) {
+		EntityComponentAttribute *attr = new EntityComponentAttribute(attributes[i]);
+		this->attributes.addItem(attr);
+	}
+}
+
+std::vector<std::string> EntityComponentData::get_attributes()
+{
+
+	std::vector<std::string> attributes;
+	const int size = this->attributes.size();
+	for (int i = 0; i < size; i++) {
+		attributes.push_back(this->attributes.getItem(i)->name.value());
+	}
+	return attributes;
+}
+
+EntityComponentAttribute::EntityComponentAttribute()
+{
+	this->setClassName("EntityComponentAttribute");
+	this->Register("name", &(this->name));
+}
+
+
+EntityComponentAttribute::EntityComponentAttribute(std::string name)
+{
+	this->setClassName("EntityComponentAttribute");
+	this->Register("name", &(this->name));
+	this->name = name;
 }

@@ -4,6 +4,7 @@
 
 PauseScreen::PauseScreen()
 {
+	
 }
 
 
@@ -120,11 +121,13 @@ void PauseScreen::load_config_settings()
 {
 	//TODO: change to new xml loading
 	FileManager filemanager;
-	std::vector<std::vector<std::string>> attributes, contents;
-	filemanager.load_content("resources/config.ini", attributes, contents);
+	std::string filename = "resources/config";
+	filemanager.load_xml_content(config.get(), filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
+	//std::vector<std::vector<std::string>> attributes, contents;
+	//filemanager.load_content("resources/config.ini", attributes, contents);
 
 	//TODO: handle config settings here
-
+	/*
 	for (int i = 0; i < attributes.size(); i++) {
 		for (int j = 0; j < attributes[i].size(); j++) {
 			if (attributes[i][j] == "screen_resolution") {
@@ -135,6 +138,7 @@ void PauseScreen::load_config_settings()
 			}
 		}
 	}
+	*/
 }
 
 void PauseScreen::unload_content()
@@ -262,10 +266,13 @@ else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
 		std::string confirm_key = current_menu_manager().get_confirm_action_key();
 		// video settings confirm actions
 		if (confirm_key == SELECTION_KEY_SET_RESOLUTION) {
-			//TODO: write the new resolution to the config file if necessary.
+			//TODO: write the new resolution to the config xml file
 			std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
 			std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
 			al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
+			this->config->set_screen_res_x(::atoi(res_parts.first.c_str()));
+			this->config->set_screen_res_y(::atoi(res_parts.second.c_str()));
+			this->save_configurations();
 		}
 		else if (confirm_key == SELECTION_KEY_SET_SCREEN_STYLE) {
 			std::string style_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
@@ -275,8 +282,8 @@ else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
 				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
 				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
-			}
-			else if (style_string == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+				
+			} else if (style_string == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
 				//std::cout << "setting windowed fullscreen\n";
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
@@ -291,8 +298,9 @@ else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
 				al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
 			}
-			//TODO: write the screen style to the config file if necessary.
-			//TODO: set screen style
+			this->config->set_screen_mode(style_string);
+			this->save_configurations();
+			//TODO: set screen styles properly
 		}
 		current_menu_manager().confirm_option_select();
 	}

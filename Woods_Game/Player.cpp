@@ -6,6 +6,8 @@
 
 Player::Player()
 {
+	// xml serialization attributes
+	
 	//TODO: figure out how animations will 
 	//image_filename = "images/temp_player.png";
 	direction = DIR_NEUTRAL;
@@ -37,7 +39,7 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-void Player::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Player::update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	if (exit_level_check(level_dimensions))
 		return;
@@ -78,7 +80,7 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 }
 
 //TODO: may want to update direction if necessary for animations
-void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions)
+void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (counters[BOUNCE]) return;
 	if (counters[SWING]) {
@@ -173,14 +175,14 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_RIGHT);
 }
 
-void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions)
+void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
 	//auto it = entity_flags.find(E_FLAG_HIT_OTHER);
 	//if (it != entity_flags.end() && it->second) return;
 	const int t_size = nearby_tiles.size();
 	for(int i = 0; i < t_size; i++){
-		Block *b = nearby_tiles[i].get_block();
+		Block *b = nearby_tiles[i]->get_block();
 		if (b) interactables.push_back(b);
 	}
 	const int size = interactables.size();

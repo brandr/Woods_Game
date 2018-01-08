@@ -2,18 +2,23 @@ Woods game todolist
 
 Refactor all file loading to xml
 	-in each case, do saving first while loading normally
-	-config settings	
-		*might be able to store these in the same place we store menus and make the pausescreen content loading simpler
-	-levels/world
-divide the project into smaller packages/folders
+	-levels/world/entities/entitygroups/etc
+		*did this for templates/types through TileSet, but need to do it for level, too
+			#make a new xml level loading method, but keep the current method as it is since maps are easy to make this way
+		*store spritesheet row/col (and possibly sheet name) for tiles/blocks/entity groups in order to grab filename, speed mod, etc.
+		*decide the difference between things that save/load for a level and things that don't
+			#for instance, we might or might not save blocks because these can be temporarily destroyed by the player and "grow back"
+			#once we add NPCs or objects that can move/channge, we likely won't save their exact positions, but things like spawn locations
+		*need a way to decide when a level's content needs to be rewritten in xml
+	-player
+		*consider long-term saving/loading functionality, like items the player has
 NOTES:
 *whenever adding new counters, be sure to check how they all interact 
 	(i.e., what happens if you use shears right as you collide with thorns and bounce)
 
 TODOS
 
--make video settings save to some XML config file
-	*no need to associate this with video menu, but do need to save new config settings when they're changed through the video menu
+-need to make a "restore defaults" (or something similar) button for configurations
 -fix the issue where it's impossible  to get out of the controller controls menu when using only a keyboard (and vice versa)
 	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
 -make some tool (mallet?) to break rocks and an animation for them being hit/destroyed
@@ -26,6 +31,10 @@ TODOS
 -fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
 	*make sure this fix applies to both inventory and pause
 
+-make entityAttributes more flexible by allowing values other than ints
+-once saving/loading is implemented, make sure we have a way to track things that actually need to be saved/loaded
+-instead of storing speed mod for every tile, store an int that tells us its "TileType" and keep speed mod, image, and other attributes there
+-make sure all serializable objects have a unique combination of class name/id so we can save and load them easily
 -make custom mouse cursor
 
 -make effects for the player touching vegetation

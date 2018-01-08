@@ -51,7 +51,10 @@ GameImageManager::~GameImageManager()
 void GameImageManager::load_content()
 {
 	current_level = world.get_current_dungeon()->level_at(0, 0);
+	//TODO: load player through xml (and all other entities that start from tiles)
 	load_player("resources/load/player.txt");
+
+
 	//load_level_content("resources/load/player.txt", "", PLAYER);
 	//TEMP
 	//load_level_content("resources/load/temp_level_1.txt", "", PLATFORM);

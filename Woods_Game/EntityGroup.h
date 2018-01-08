@@ -7,14 +7,10 @@
 #include "xmemory0"            // for _Destroy_range
 #include "xstddef"             // for _Unfancy
 #include "xstring"             // for string
+#include "XMLSerialization.h"
 #include <memory>              // for allocator
 
-struct EntityComponentData {
-	std::string name = "";
-	std::vector<std::string> attributes;
-	EntityComponentData();
-	EntityComponentData(std::string name, std::vector<std::string> attributes);
-};
+
 
 class EntityGroup:
 	public Entity

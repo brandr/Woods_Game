@@ -1,0 +1,12 @@
+<root>
+    <SerializableClass Type="Configurations" Version="1" ConfigurationsKey="current_configurations">
+        <Member Name="screen_res_x">800</Member>
+        <Member Name="screen_res_y">600</Member>
+        <Member Name="screen_mode"/>
+    </SerializableClass>
+    <SerializableClass Type="Configurations" Version="1" ConfigurationsKey="default_configurations">
+        <Member Name="screen_res_x">800</Member>
+        <Member Name="screen_res_y">600</Member>
+        <Member Name="screen_mode">Windowed</Member>
+    </SerializableClass>
+</root>

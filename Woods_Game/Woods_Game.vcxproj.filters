@@ -1,219 +1,335 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="GameImages">
+      <UniqueIdentifier>{b7337292-dd01-402c-9308-9f7d84ff19f0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="GameImages\Header Files">
+      <UniqueIdentifier>{d9f39a06-d019-4091-b48b-2109ba60cca8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
+    <Filter Include="GameImages\Source Files">
+      <UniqueIdentifier>{c325aa2c-1453-4de0-b10e-da0caa57eb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screens">
+      <UniqueIdentifier>{6976a8e7-7f15-4be3-b677-5737722fcc40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screens\Source Files">
+      <UniqueIdentifier>{d6189f48-441c-4a67-b854-3ef182e450c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screens\Header Files">
+      <UniqueIdentifier>{0a063aae-9077-450f-8a7d-4efea143661d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{eb782931-6b94-4531-b9e4-864237cfc335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Header Files">
+      <UniqueIdentifier>{ca006afb-4bc8-49e5-9c3a-b5b91d319589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Source Files">
+      <UniqueIdentifier>{7f8cfe7a-9b49-4f8d-90b5-8bb9d5eac9b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus\Header Files">
+      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus\Source Files">
+      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Header Files">
+      <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Source Files">
+      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Items">
+      <UniqueIdentifier>{093a7900-7b5a-49c1-98ad-01858daca012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Items\Source Files">
+      <UniqueIdentifier>{0a54efcb-c6fb-4e39-a58f-f034c6f5cd53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Items\Header Files">
+      <UniqueIdentifier>{51a709b3-0338-488e-80c2-faeecc3fe496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls">
+      <UniqueIdentifier>{2219ea80-926a-4de1-a959-9ff05d9a93e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Header Files">
+      <UniqueIdentifier>{a6e7e74e-d21a-44e0-9242-abc00c9110e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Controls\Source Files">
+      <UniqueIdentifier>{8df8ee92-7fe5-4e44-b1df-1d5bc60e37d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application">
+      <UniqueIdentifier>{6886cbaa-e26d-43b3-9e5e-98433668b826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="resources\fonts">
+      <UniqueIdentifier>{51ddbd08-81ea-4622-8403-358e37d5903a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images">
+      <UniqueIdentifier>{4e1aa93b-1afe-46e3-8641-d4efd4a9ca85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\load">
+      <UniqueIdentifier>{a879713f-ea7a-4f63-9356-e1d1d244d539}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\effects">
+      <UniqueIdentifier>{9a74ce54-bd65-4d95-85d9-b50b3bad8b77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\item_icons">
+      <UniqueIdentifier>{38135ce9-8bdd-4687-9ef5-b05fe59f1483}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\sprite_sheets">
+      <UniqueIdentifier>{fc1c579a-c22b-4a57-a2ab-9c4d34ffeb19}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\tile_sheets">
+      <UniqueIdentifier>{18a30511-8ab9-4675-8ce4-88421e71b46b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\ui">
+      <UniqueIdentifier>{c6e7e870-6389-476a-be8c-f0c25f129636}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\ui\brackets">
+      <UniqueIdentifier>{c48f3929-4a67-49a7-9a85-ae95fb5429fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\images\ui\menu_image_items">
+      <UniqueIdentifier>{260c512c-762c-493d-86e9-222a81a55ae7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="resources\load\maps">
+      <UniqueIdentifier>{a669f109-d7bd-4e34-80eb-005e29091c77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Source Files">
+      <UniqueIdentifier>{16c82665-6c28-4423-bd32-3b32077d99c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Application\Header Files">
+      <UniqueIdentifier>{3d49d6ab-1071-47b6-bf11-cc9c0f523689}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Animation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Being.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Dungeon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FileManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameImage.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameImageManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameScreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageLoader.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Level.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MainGameScreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteSheetAnimation.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TitleScreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="World.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PPCD.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Being.h">
+      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EntityGroup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PauseScreen.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="MenuItem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Inventory.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Item.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Entity.h">
+      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityEffect.h">
-      <Filter>Header Files</Filter>
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EntityGroup.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameImage.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameImageManager.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TitleScreen.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GameScreen.h">
+      <Filter>Screens\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InventoryScreen.h">
-      <Filter>Header Files</Filter>
+      <Filter>Screens\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Controls.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="PauseScreen.h">
+      <Filter>Screens\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ControlsMenuManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="ScreenManager.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileManager.h">
+      <Filter>Utilities\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader.h">
+      <Filter>Utilities\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PPCD.h">
+      <Filter>Utilities\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Utilities\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tinyxml2.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utilities\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="XMLSerialization.h">
-      <Filter>Header Files</Filter>
+      <Filter>Utilities\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGameScreen.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ControlsMenuManager.h">
+      <Filter>Menus\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuManager.h">
+      <Filter>Menus\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MenuItem.h">
+      <Filter>Menus\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Level.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="World.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dungeon.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Inventory.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheetAnimation.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InputManager.h">
+      <Filter>Controls\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Controls.h">
+      <Filter>Controls\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource1.h" />
+    <ClInclude Include="Configurations.h">
+      <Filter>Application\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileType.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSet.h">
+      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Tile.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Animation.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Being.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Dungeon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="FileManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameImage.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameImageManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ImageLoader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InputManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Level.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainGameScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteSheetAnimation.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TitleScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="World.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PPCD.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EntityGroup.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="PauseScreen.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MenuItem.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Inventory.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Item.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Entity.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EntityEffect.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="InventoryScreen.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="EntityGroup.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Controls.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="GameImage.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ControlsMenuManager.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameImageManager.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGameScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PauseScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TitleScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ScreenManager.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileManager.cpp">
+      <Filter>Utilities\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>Utilities\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PPCD.cpp">
+      <Filter>Utilities\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="tinyxml2.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utilities\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="XMLSerialization.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Utilities\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InventoryScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ControlsMenuManager.cpp">
+      <Filter>Menus\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuItem.cpp">
+      <Filter>Menus\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MenuManager.cpp">
+      <Filter>Menus\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dungeon.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Level.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="World.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Inventory.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSheetAnimation.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InputManager.cpp">
+      <Filter>Controls\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Controls.cpp">
+      <Filter>Controls\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Application\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Configurations.cpp">
+      <Filter>Application\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileType.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileSet.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -221,5 +337,143 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="todolist.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="resources\fonts\OpenSans-Regular.ttf">
+      <Filter>resources\fonts</Filter>
+    </Font>
+    <Font Include="resources\fonts\Xeranthemum.ttf">
+      <Filter>resources\fonts</Filter>
+    </Font>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="resources\images\effects\block_tile_sheet_2_break.png">
+      <Filter>resources\images\effects</Filter>
+    </Image>
+    <Image Include="resources\images\item_icons\mallet.png">
+      <Filter>resources\images\item_icons</Filter>
+    </Image>
+    <Image Include="resources\images\item_icons\shears.png">
+      <Filter>resources\images\item_icons</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\effect_spritesheet_shearing_original.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_slicing_spritesheet_mask.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_mask.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_neutral.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_neutral_template.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_shearing.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_swinging.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\player_spritesheet_1_walking.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\temp_player_spritesheet.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\sprite_sheets\temp_player_spritesheet_2.png">
+      <Filter>resources\images\sprite_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_1.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_2.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\back_tile_sheet_2_edges.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_1.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2_break.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\block_tile_sheet_2_hit.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_leaves.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_mask.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\entity_group_tile_sheet_1_trunk.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\tile_sheets\tile_sheet_1.png">
+      <Filter>resources\images\tile_sheets</Filter>
+    </Image>
+    <Image Include="resources\images\ui\hotbar_box_1.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\hotbar_box_1_selected.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\inventory_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\item_box_1.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\item_box_1_dark.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\item_box_1_grey.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\item_box_1_light.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\item_selection_1.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\pause_controls_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\pause_controls_controller_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\pause_controls_keyboard_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\pause_main_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\pause_video_backdrop.png">
+      <Filter>resources\images\ui</Filter>
+    </Image>
+    <Image Include="resources\images\ui\brackets\bracket_1L.png">
+      <Filter>resources\images\ui\brackets</Filter>
+    </Image>
+    <Image Include="resources\images\ui\brackets\bracket_1R.png">
+      <Filter>resources\images\ui\brackets</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="resources\load\controls.xml">
+      <Filter>resources\load</Filter>
+    </Xml>
+    <Xml Include="resources\load\menus.xml">
+      <Filter>resources\load</Filter>
+    </Xml>
   </ItemGroup>
 </Project>

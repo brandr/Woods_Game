@@ -2,6 +2,7 @@
 
 Block::Block()
 {
+
 }
 
 Block::Block(int x, int y)

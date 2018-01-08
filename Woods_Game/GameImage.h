@@ -2,6 +2,7 @@
 #define GAMEIMAGE_H
 #include "PPCD.h"
 #include "SpriteSheetAnimation.h"
+#include "XMLSerialization.h"
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "Animation.h"         // for Rect
@@ -22,7 +23,6 @@ enum GAME_MODES{TOP_DOWN, SIDE_SCROLLING, MAIN_GAME_PAUSED, TAKING_MAPPABLE_INPU
 enum TYPES{PLAYER, BLOCK, GAME_IMAGE, ENTITY_GROUP};
 enum FACING_DIRECTIONS { DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN };
 enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
-
 enum COUNTERS { BOUNCE, SWING };
 
 //attributes

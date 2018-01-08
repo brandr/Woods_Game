@@ -13,7 +13,6 @@ static const int DEFAULT_EFFECT_FRAME_DURATION = 4;
 //std::vector<std::string> ENTITY_EFFECT_NAMES{ EFFECT_BREAK };
 
 struct Rect {
-	//int x, y, width, height;
 	float x, y, width, height;
 public:
 	Rect();

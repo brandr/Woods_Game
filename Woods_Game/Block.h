@@ -4,6 +4,7 @@
 #include "Entity.h"  // for Entity
 #include "utility"   // for pair
 #include "xstring"   // for string
+#include "XMLSerialization.h"
 
 struct Rect;
 

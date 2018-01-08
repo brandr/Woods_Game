@@ -111,12 +111,10 @@ void ControlsMenuManager::save_controls()
 	std::string controls_key = "";
 	if (this->controls_id.value() == "pause_controls_menu_keyboard") {
 		controls_key = "current_controls_keyboard";
-	}
-	else if (this->controls_id.value() == "pause_controls_menu_controller") {
+	} else if (this->controls_id.value() == "pause_controls_menu_controller") {
 		controls_key = "current_controls_controller";
 	}
 	std::string xml_string = this->current_controls.toXML();
-
 	std::string filename = "resources/load/controls";
 	file_manager.replace_xml_content(filename, "SerializableClass", "ControlsKey", controls_key, xml_string);
 }

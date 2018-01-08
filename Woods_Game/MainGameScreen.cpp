@@ -6,9 +6,7 @@
 
 // functions to be passed along to the level, usually to the player
 void keyboard_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
-	//TODO: figure out how to check this input against our controls map
-	//TODO: in some cases, use this for a default input
-	//TODO: since remapping enter to another key can cause problems
+
 	/*
 	GameScreen& input_screen = screen.screen_receiving_input();
 	if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER
@@ -26,8 +24,7 @@ void keyboard_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) 
 }
 
 void controller_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
-	//TODO: figure out how to check this input against our controls map
-	//TODO: in some cases, use this for a default input
+	/*
 	GameScreen& input_screen = screen.screen_receiving_input();
 	if (ev.joystick.button == XC_BUTTON_A
 		&& !input_screen.taking_mappable_input()) {
@@ -39,6 +36,9 @@ void controller_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle
 	else {
 		input_screen.call_controller_mappable_input(ev, toggle);
 	}
+	*/
+	GameScreen& input_screen = screen.screen_receiving_input();
+	input_screen.call_controller_mappable_input(ev, toggle);
 }
 
 // functions to be passed along to the level, usually to the player

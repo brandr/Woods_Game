@@ -2,6 +2,7 @@
 #define LEVEL_H
 
 #include "Tile.h"
+#include "TileSet.h"
 #include "Being.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "utility"             // for pair
@@ -16,8 +17,9 @@ class Level
 private:
 	std::string filename = "";
 	std::string id = "";
+	TileSet *tileset;
 	//temp
-	std::vector<std::vector<Tile>> tiles;
+	std::vector<std::vector<Tile*>> tiles;
 	std::vector<GameImage*> game_images;
 	std::vector<Entity*> entities;
 	std::vector<Being*> beings;
@@ -35,6 +37,7 @@ public:
 	Level(std::string, int, int, int, int);
 	Level(int, int, int, int);
 	~Level();
+	void load_tileset();
 	void load_from_map();
 	void load_tile_edges(std::string filename);
 	void unload_content();
@@ -48,7 +51,7 @@ public:
 	void remove_entities(int type);
 	void remove_beings(int type);
 	std::vector<Entity*> get_interactables(Entity*);
-	std::vector<Tile> get_nearby_tiles(Entity*);
+	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Entity> get_player_interactables();
 	std::vector<std::string> get_layers();
 	bool passable_at(int, int);

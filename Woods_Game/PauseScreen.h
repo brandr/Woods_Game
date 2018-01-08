@@ -3,6 +3,8 @@
 
 #include "GameImageManager.h"
 #include "GameScreen.h"
+#include <memory>
+//#include "Configurations.h"
 
 enum PAUSE_MENUS{
 	PAUSE_MAIN_MENU, 
@@ -14,11 +16,9 @@ class PauseScreen:
 	public GameScreen
 {
 private:
-	//ALLEGRO_BITMAP* main_backdrop;
 	std::map<int, ALLEGRO_BITMAP*> backdrops;
-	//std::map<int, MenuManager> menus;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
-	std::map<int, std::string> config_settings;
+	//std::map<int, std::string> config_settings;
 	int menu_key = PAUSE_MAIN_MENU;
 public:
 	PauseScreen();
@@ -44,5 +44,4 @@ public:
 	virtual void call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual bool taking_mappable_input();
 };
-
 #endif

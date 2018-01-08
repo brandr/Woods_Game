@@ -25,7 +25,7 @@ void Being::set_yvel(int vel)
 	yvel = vel;
 }
 
-void Being::update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Being::update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	
 	//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to other levels)
@@ -44,10 +44,10 @@ void Being::animation_update(int game_mode)
 	//TODO
 }
 
-void Being::movement_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, int game_mode) {
+void Being::movement_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, int game_mode) {
 	int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
-		Block *b = nearby_tiles[i].get_block();
+		Block *b = nearby_tiles[i]->get_block();
 		if (b) interactables.push_back(b);
 	}
 	switch (game_mode) {
@@ -60,7 +60,7 @@ void Being::movement_update(std::vector<Entity*> interactables, std::vector<Tile
 	}
 }
 
-void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles)
+void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles)
 {
 	Rect* side = NULL;
 	if (xvel < 0) side = new Rect(rect.x + xvel, rect.y, xvel, rect.height);
@@ -126,7 +126,7 @@ void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, s
 	rect.y += yvel;
 }
 
-void Being::movement_update_top_down(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles)
+void Being::movement_update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles)
 {
 	float speed_multiplier = get_speed_multiplier(nearby_tiles);
 	xvel *= speed_multiplier, yvel *= speed_multiplier;
@@ -171,12 +171,12 @@ void Being::movement_update_top_down(std::vector<Entity*> interactables, std::ve
 	rect.y += yvel;
 }
 
-void Being::collision_update(std::vector<Entity*> interactables, std::vector<Tile> nearby_tiles, int game_mode)
+void Being::collision_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, int game_mode)
 {
 	colliding_entities.clear();
 	int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
-		Block *b = nearby_tiles[i].get_block();
+		Block *b = nearby_tiles[i]->get_block();
 		if (b) interactables.push_back(b);
 	}
 	const int size = interactables.size();
@@ -243,15 +243,15 @@ bool Being::precise_empty_at(std::vector<Entity*> interactables, int xoff, int y
 	}
 	return true;
 }
-float Being::get_speed_multiplier(std::vector<Tile> tiles)
+float Being::get_speed_multiplier(std::vector<Tile*> tiles)
 {
 	float mult = 1.0f;
 	int t_size = tiles.size();
 	for (int i = 0; i < t_size; i++) {
-		mask_t *tmask = tiles[i].get_mask();
+		mask_t *tmask = tiles[i]->get_mask();
 		if (tmask) 
-			if (tmask && Mask_Collide(mask, tmask, get_x() - tiles[i].get_x(), get_y() - tiles[i].get_y())) {
-				mult = std::min(mult, tiles[i].get_speed_mod());
+			if (tmask && Mask_Collide(mask, tmask, get_x() - tiles[i]->get_x(), get_y() - tiles[i]->get_y())) {
+				mult = std::min(mult, tiles[i]->get_speed_mod());
 			}
 	}
 	int e_size = colliding_entities.size();
@@ -263,25 +263,3 @@ float Being::get_speed_multiplier(std::vector<Tile> tiles)
 	}
 	return mult;
 }
-/*
-bool Being::empty_at(mask_t *mask, std::vector<Entity> interactables, int axis)
-{
-	const int size = interactables.size();
-	for (int i = 0; i < size; i++) {
-		int x_off = 0, y_off = 0;
-		switch (axis) {
-		case HORIZONTAL:
-			x_off = xvel;
-			break;
-		case VERTICAL:
-			y_off = yvel;
-			break;
-		}
-		if (Mask_Collide(mask, interactables[i].get_mask(), (get_x() + x_off) - interactables[i].get_x(), (get_y() + y_off) - interactables[i].get_y()))
-			return false;
-	}
-	
-	//TODO
-	return true;
-}
-*/

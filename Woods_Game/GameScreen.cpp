@@ -3,6 +3,7 @@
 
 GameScreen::GameScreen()
 {
+	this->config = std::make_unique<Configurations>();
 }
 
 
@@ -116,6 +117,13 @@ void GameScreen::refresh()
 bool GameScreen::taking_mappable_input()
 {
 	return false;
+}
+
+void GameScreen::save_configurations()
+{
+	std::string filename = "resources/config";
+	std::string xml_string = GameScreen::config->toXML();
+	this->file_manager.replace_xml_content(filename, "SerializableClass", "ConfigurationsKey", "current_configurations", xml_string);
 }
 
 void GameScreen::pause_game()

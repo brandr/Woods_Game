@@ -4,6 +4,7 @@
 
 EntityGroup::EntityGroup()
 {
+
 }
 
 
@@ -31,13 +32,4 @@ void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 	//Mask_Draw(mask, rect.x + x_offset, rect.y + y_offset);
 		//al_draw_bitmap(temp_mask_image, rect.x + x_offset, rect.y + y_offset, 0);
 	//temp
-}
-
-EntityComponentData::EntityComponentData()
-{
-}
-
-EntityComponentData::EntityComponentData(std::string name, std::vector<std::string> attributes)
-{
-	this->name = name, this->attributes = attributes;
 }
