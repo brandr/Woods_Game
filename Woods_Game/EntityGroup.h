@@ -11,19 +11,28 @@
 #include <memory>              // for allocator
 
 
-
+//TODO: serializable stuff
 class EntityGroup:
-	public Entity
+	public xmls::Serializable, public Entity
 {
 private:
 	std::vector<Entity*> entities;
+	xmls::xInt root_pos_x;
+	xmls::xInt root_pos_y;
+	xmls::xString entity_group_name;
 public:
 	EntityGroup();
-	//EntityGroup(std::pair<int, int> root_offset, std::vector<EntityComponentData> component_data);
+	EntityGroup(std::pair<int, int> root_offset); //, std::vector<EntityComponentData> component_data);
 	~EntityGroup();
-	virtual int get_type();
-	void set_entities(std::vector<Entity*> entities);
+	//virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position);
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual int get_type();
+	void set_entity_group_name(std::string name);
+	void set_sheet_pos(int col, int row);
+	void set_entities(std::vector<Entity*> entities);
+	void set_root_pos(std::pair<int, int> root_pos);
+	std::string get_entity_group_name();
+	std::pair<int, int> get_root_pos();
 };
 
 #endif

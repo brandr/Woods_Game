@@ -78,7 +78,7 @@ void GameImageManager::load_level(int grid_x, int grid_y)
 {
 	Level *level = world.get_current_dungeon()->level_at(grid_x, grid_y);
 	if (level) {
-		load_level_from_map(*level);
+		load_level_from_map(level);
 		current_level = level;
 	}
 	else
@@ -126,9 +126,9 @@ void GameImageManager::load_level_content(std::string filename, std::string id, 
 	}
 }
 
-void GameImageManager::load_level_from_map(Level level)
+void GameImageManager::load_level_from_map(Level *level)
 {
-
+	//TODO?
 }
 
 void GameImageManager::load_player()
@@ -188,7 +188,7 @@ void GameImageManager::change_player_level()
 
 	//down
 	else if (player->get_y() > height) {
-		x = grid_x, y = grid_y + current_level->grid_height();
+		x = grid_x, y = grid_y + current_level->get_grid_height();
 		direction = DOWN;
 	}
 	//left
@@ -199,7 +199,7 @@ void GameImageManager::change_player_level()
 
 	//right
 	else if (player->get_x() > width) {
-		x = grid_x + current_level->grid_width(), y = grid_y;
+		x = grid_x + current_level->get_grid_width(), y = grid_y;
 		direction = RIGHT;
 	}
 	else

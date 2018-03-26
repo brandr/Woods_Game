@@ -4,21 +4,25 @@
         <Member Name="edge_tile_sheet_name">back_tile_sheet_2_edges</Member>
         <Member Name="block_tile_sheet_name">block_tile_sheet_2</Member>
         <Member Name="entity_group_tile_sheet_name">entity_group_tile_sheet_1</Member>
-        <Member Name="entity_group_image_width">64</Member>
-        <Member Name="entity_group_image_height">192</Member>
         <Collection Name="tile_types">
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">0</Member>
+                <Member Name="tile_sheet_key">grass</Member>
+                <Member Name="tile_sheet_index">0</Member>
                 <Member Name="speed_mod">0.72</Member>
                 <Member Name="edge_priority">3</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">1</Member>
+                <Member Name="tile_sheet_key">dirt</Member>
+                <Member Name="tile_sheet_index">1</Member>
                 <Member Name="speed_mod">0.72</Member>
                 <Member Name="edge_priority">2</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">2</Member>
+                <Member Name="tile_sheet_key">trail</Member>
+                <Member Name="tile_sheet_index">2</Member>
                 <Member Name="speed_mod">1.0</Member>
                 <Member Name="edge_priority">1</Member>
             </Class>
@@ -26,11 +30,15 @@
         <Collection Name="block_types">
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">true</Member>
+                <Member Name="entity_data_key">boulder</Member>
+                <Member Name="entity_data_index">0</Member>
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">false</Member>
+                <Member Name="entity_data_key">fern</Member>
+                <Member Name="entity_data_index">1</Member>
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_slow</Member>
@@ -49,6 +57,8 @@
             </Class>
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">true</Member>
+                <Member Name="entity_data_key">thorns</Member>
+                <Member Name="entity_data_index">2</Member>
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_damage</Member>
@@ -71,11 +81,15 @@
             </Class>
         </Collection>
         <Collection Name="entity_group_types">
-            <Class Type="EntityData" Version="1">
+            <Class Type="EntityGroupData" Version="1">
+                <Member Name="entity_group_name">tree_1</Member>
+                <Member Name="entity_group_index">0</Member>
                 <Member Name="root_offset_x">0</Member>
                 <Member Name="root_offset_y">128</Member>
                 <Member Name="center_offset_x">32</Member>
                 <Member Name="center_offset_y">175</Member>
+                <Member Name="entity_group_image_width">64</Member>
+                <Member Name="entity_group_image_height">192</Member>
                 <Member Name="solid">false</Member>
                 <Collection Name="components">
                     <Class Type="EntityComponentAttribute" Version="1">

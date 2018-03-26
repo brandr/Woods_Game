@@ -1,27 +1,57 @@
 Woods game todolist
 
+XML serialize the player
+
+Make a second level to ensure that connecting levels still work
+
+Make a new entity group of a different size and with different components than trees int order to ensure that entity groups work
+	-could make this a building, but need to plan carefully about how entering/exiting buildings should work
+
+Make a level editor
+	*look into a way to have a different launch class
+
+IDEA: serialize tile edges after they are first generated to make loading faster
+	-currently edges get drawn onto the tiles bitmap after being loaded from a map, so should implement like so:	
+		*edges get generated the long way when loading from map, use this same method to set the serializable values representing edges 
+		*in the case where we load from xml instead of map, draw the edge images onto bitmaps based on serialized values rather than doing the full generation
+
 Refactor all file loading to xml
+	-player
+		*consider long-term saving/loading functionality, like items the player has
 	-in each case, do saving first while loading normally
 	-levels/world/entities/entitygroups/etc
+		*plan this out in notebook
 		*did this for templates/types through TileSet, but need to do it for level, too
 			#make a new xml level loading method, but keep the current method as it is since maps are easy to make this way
-		*store spritesheet row/col (and possibly sheet name) for tiles/blocks/entity groups in order to grab filename, speed mod, etc.
 		*decide the difference between things that save/load for a level and things that don't
 			#for instance, we might or might not save blocks because these can be temporarily destroyed by the player and "grow back"
 			#once we add NPCs or objects that can move/channge, we likely won't save their exact positions, but things like spawn locations
 		*need a way to decide when a level's content needs to be rewritten in xml
-	-player
-		*consider long-term saving/loading functionality, like items the player has
 NOTES:
 *whenever adding new counters, be sure to check how they all interact 
 	(i.e., what happens if you use shears right as you collide with thorns and bounce)
 
 TODOS
 
--need to make a "restore defaults" (or something similar) button for configurations
--fix the issue where it's impossible  to get out of the controller controls menu when using only a keyboard (and vice versa)
+-consider adding plants as a class
+	*LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
+	*this allows plants to have general behavior for growing, spreading, etc.
+	*could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
+-make a distinction between templates (entityData, tileType) and specific objects (entities, tiles)
+	*since serialization is flexible, it will probably work best to make tiles/entities themselves serializable, but only serialize the mininum amount of information
+	*since we have templates to determine what objects should be like, we only need to serialize keys that map to these templates, not things like filenames, speed mods, etc
+-store dungeons per-file, not levels, since individual levels can be loaded/saved with replaceXML
+	*this means there is no need to serialized world or dungeon, though data objects associated with each may be necessary
+-think about how to set up world/dungeon/level serialization such that levels which update while the player isn't there are fully updated by the time the player gets to them
+	*changes include things like plant growth, animals spawning, etc.
+	*could generalize these things as some sort of "world data" that is less detailed than individual levels and gets applied to specific levels when loading them
+	*consider multithreading to load/update levels before the player gets to them
+	*could simply update the entire world as necessary when saving the game
+-fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
 	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
--make some tool (mallet?) to break rocks and an animation for them being hit/destroyed
+	*other idea: only allow selection in each menu through the appropriate selection button (I like this idea better since it's more intuitive)
+-need to make a "restore defaults" (or something similar) button for video configurations
+-make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 -make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
@@ -33,7 +63,7 @@ TODOS
 
 -make entityAttributes more flexible by allowing values other than ints
 -once saving/loading is implemented, make sure we have a way to track things that actually need to be saved/loaded
--instead of storing speed mod for every tile, store an int that tells us its "TileType" and keep speed mod, image, and other attributes there
+	*i.e., don't bother saving a level if nothing about it has changed
 -make sure all serializable objects have a unique combination of class name/id so we can save and load them easily
 -make custom mouse cursor
 
@@ -43,7 +73,7 @@ TODOS
 
 -figure out how trails are going to work with the current tile system
 	*could have them occupy existing tiles as some sort of "contents" and have trail images drawn over them and increase movement modifier
-	-consider allowing hotbar to move to the top of the screen
+-consider allowing hotbar to move to the top of the screen
 -fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
 -figure out how to scale object/ui sizes with resolution
 -consider making a "cleaner" way of storing block entity effects (so that they don't attempt to load the entire spritesheet)
@@ -51,30 +81,31 @@ TODOS
 -finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
 -figure out how to handle discrepancies between a level's width and height as read from the file and the actual size in terms of tiles.
 	*keep in mind that the overall level system should probably allow grid-based levels.
--make it so screen settings are saved properly to the config file after they are changed
 -IDEA: make a separate program to progamatically generate varied tile sheets based on some criteria
--make a small forest level with trails and brush to test basic exploration.
-	*from here, can implement items like shears to make temporary trails (this will require changing the level's tiles from the player class,  
-		which may be difficult)
-	*may also want to implement a HUD and decide how item management will be handled
-	*this may be a good time to implement a stamina system
+-implement a stamina system (need to add to the HUD)
 -fix the issue where the player can go faster while running against a wall than while walking normally.
 -fix the glitch where parts of the player's face sometimes disappear
 -fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
 -idea: consider including animation frame duration in the files from which we load gameimages 
-	*may also want to adjust frame duration ingame in  some cases, such as when tilting the joystick very lightly with a controller
+	*may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
 -make the leaves as a separate sprite and having them turn partly transparent when the player passes behind them.
 	*could also try doing this for the entire trees, since we might have very large trees that obscure the player
 	*first, make sure the leaves have their mask loaded by images. (do this in level when they are created)
 	*since entitygroups are treated as single entities, need some kind of entitygroup overridden entity collision method for when the player rect-collides witth trees.
-		#within this method, have each entity within the group attempt to collide with the other entity (i.e. the player) and check for the transparent_on_contact attribute
+		#within this method, have each entity within the group attempt to mask-collide with the other entity (i.e. the player) and check for the transparent_on_contact attribute
 -idea: put level coords and dimensions in the corresponding files
 	*could also put them in different files and load the dungeon based on this data
 -test large levels to see if there is lag when entering them
--figure out how to handle player leaving the level when there's no corresponding level
+-decide how to handle player leaving the level when there's no corresponding level
 
 LONG TERM PLANS
 
+-make a day and night cycle, along with a date system
+-make a "calendar" UI that also fuctions as saving/loading
+	*eventually want to make reloading from older saves something we subtly nudge the player towards in order to unlock hidden endings
+	*also need to make it so certain things only happen if the player is in the right places at the right times
+-make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
+	*might even use real information about some of these things (like latin name)
 -make destroyed objects (like ferns) drop items sometimes
 -implement a time system and/or a stamina system
 	*make it get dark near the end of the day
@@ -82,8 +113,6 @@ LONG TERM PLANS
 	*consider implementing a "cooking" system
 -figure out a way to handle "buildings" that the player can go inside of, changing the view (and effectively changing the current level.)
 	*consider ways of adding more than one floor.
--consider adding animals
+-add animals
 -if we add faraway backgrounds, implement parallax 
--make video options (and audio when sound is implemented)
-	*allow screen resizing and fullscreen
--make control options (for both keyboard and controller)
+-make audio options

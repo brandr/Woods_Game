@@ -14,8 +14,8 @@ Dungeon::Dungeon(int width, int height)
 	}
 	//TODO: add platforms differently using gameimagemanager
 	//TEMP
-	add_level(new Level("temp_level_1", 0, 0, 1, 1));
-	add_level(new Level("temp_level_2", 1, 0, 2, 1));
+	add_level(new Level("temp_level_A_1", "dungeon_1", "temp_level_A_1", 0, 0, 1, 1));
+	//add_level(new Level("temp_level_2", "dungeon_1", "temp_level_2", 1, 0, 2, 1));	//TODO: fix level 2 map
 	//add_level(new Level("temp_map_1", "Level_1", 0, 0, 1, 1));
 	//add_level(new Level("temp_map_1", "Level_2", 1, 0, 2, 1));
 	//TEMP
@@ -55,10 +55,11 @@ void Dungeon::unload_content()
 		for (int x = 0; x < 0 + dungeon_grid[y].size(); x++) {
 			std::string pos_str = std::to_string(x) + "," + std::to_string(y);
 			//std::cout << "pos_str: " << pos_str << std::endl;
-			if (dungeon_grid[y][x]) {
+			Level *level = dungeon_grid[y][x];
+			if (level) {
 				if (std::find(deleted_level_coords.begin(), deleted_level_coords.end(), pos_str) == deleted_level_coords.end()) {
-					for (int y2 = y; y2 < y + dungeon_grid[y][x]->grid_height(); y2++){
-						for (int x2 = x; x2 < x + dungeon_grid[y][x]->grid_width(); x2++) {
+					for (int y2 = y; y2 < y + level->get_grid_height(); y2++){
+						for (int x2 = x; x2 < x + level->get_grid_width(); x2++) {
 							deleted_level_coords.push_back(std::to_string(x2) + "," + std::to_string(y2));
 						}
 					}
@@ -87,8 +88,8 @@ void Dungeon::add_level(Level* level)
 	//std::cout << "width: " << level.get_dimensions().first << std::endl;
 	int x_pos = level->get_grid_x();
 	int y_pos = level->get_grid_y();
-	int width = level->grid_width();
-	int height = level->grid_height();
+	int width = level->get_grid_width();
+	int height = level->get_grid_height();
 	//TODO: come up with a set of standard dimensions for a "room" and ensure that levels passed here match those dimensions)
 	// multiply by 1.0 to avoid warnings
 	if(y_pos + height >= 1.0*dungeon_grid.size())
@@ -100,10 +101,13 @@ void Dungeon::add_level(Level* level)
 			dungeon_grid[y][x] = level;
 		}
 	}
-	level->load_from_map();
+	bool use_xml = true;	//temp-- set this some other way (maybe temporary menu
+	if (use_xml) {
+		level->load_from_xml();
+	} else {
+		level->load_from_map();
+	}
 
-	//level_list.push_back(*level);
-	//
 	//level.set_dungeon_grid(&dungeon_grid);
 }
 

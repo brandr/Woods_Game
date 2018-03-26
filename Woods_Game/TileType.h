@@ -8,6 +8,8 @@ class TileType : public xmls::Serializable
 private:
 	xmls::xString tile_sheet_name;
 	xmls::xInt tile_sheet_row;
+	xmls::xInt tile_sheet_index;
+	xmls::xString tile_sheet_key;
 	//xmls::xString tile_sheet_col;
 	xmls::xFloat speed_mod = 1.0f;
 	xmls::xInt edge_priority;
@@ -19,6 +21,7 @@ public:
 	void set_tile_sheet_row(int row);
 	void set_speed_mod(float speed_mod);
 	void set_edge_priority(int priority);
+	std::string get_tile_sheet_key();
 	float get_speed_mod();
 	int get_edge_priority();
 };

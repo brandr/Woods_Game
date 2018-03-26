@@ -5,6 +5,8 @@ TileType::TileType()
 	setClassName("TileType");
 	Register("tile_sheet_name", &tile_sheet_name);
 	Register("tile_sheet_row", &tile_sheet_row);
+	Register("tile_type_index", &tile_sheet_index);
+	Register("tile_sheet_key", &tile_sheet_key);
 	Register("speed_mod", &speed_mod);
 	Register("edge_priority", &edge_priority);
 }
@@ -14,6 +16,8 @@ TileType::TileType(std::string name, int row)
 	setClassName("TileType");
 	Register("tile_sheet_name", &tile_sheet_name);
 	Register("tile_sheet_row", &tile_sheet_row);
+	Register("tile_type_index", &tile_sheet_index);
+	Register("tile_sheet_key", &tile_sheet_key);
 	Register("speed_mod", &speed_mod);
 	Register("edge_priority", &edge_priority);
 	this->tile_sheet_name = name;
@@ -27,7 +31,7 @@ TileType::~TileType()
 
 void TileType::set_tile_sheet_name(std::string name)
 {
-	this->tile_sheet_name = name;
+	this->tile_sheet_name = xmls::xString(name);
 }
 
 void TileType::set_tile_sheet_row(int row)
@@ -44,6 +48,11 @@ void TileType::set_speed_mod(float speed_mod)
 void TileType::set_edge_priority(int priority)
 {
 	this->edge_priority = priority;
+}
+
+std::string TileType::get_tile_sheet_key()
+{
+	return tile_sheet_key.value();
 }
 
 float TileType::get_speed_mod()

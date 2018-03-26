@@ -33,64 +33,52 @@
 #include <memory>                            // for allocator
 #include "Configurations.h"
 
+static const std::string RUN_GAME = "RunGame";
+static const std::string LEVEL_EDITOR = "LevelEditor";
+static const float FPS = 60.0f;
 
-int main()
-{
-	//before title screen
-
-	//_CrtSetBreakAlloc(605);		
-	/*
-	known sources of leaks:
-
-	-map allocation in imageloader
-	-gameimage vector allocation
-	*/
-
+int initialize_allegro() {
 	// intialize allegro
 	if (!al_init()) {
 		al_show_native_message_box(NULL, NULL, NULL, "Could not intialize allegro 5.", NULL, NULL);
 		return -1;
 	}
+	return 1;
+}
 
-	const float FPS = 60.0f;
-
-	FileManager filemanager;
+ALLEGRO_DISPLAY * initialize_display(std::string config_path) {
 	ALLEGRO_DISPLAY *display;
+	FileManager filemanager;
 	Configurations *config = new Configurations();
-	std::string filename = "resources/config";
-	filemanager.load_xml_content(config, filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
-	//TODO: make config accessible for screenmanager/screens and change it as necessary when settings are changed through the menus
-	if (config->get_screen_mode() == SCREEN_STYLE_FULLSCREEN) {
-		ALLEGRO_DISPLAY_MODE   disp_data;
-		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
-		display = al_create_display(disp_data.width, disp_data.height);
-	} else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
-		ALLEGRO_DISPLAY_MODE   disp_data;
-		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
-		display = al_create_display(disp_data.width, disp_data.height);
-	}
-	else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED) {
-		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
-	} else {	//windowed by default, but the above block is included for the sake of consistency.
-		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
-	}
-	// make usre the display was created correctly
-	if (!display) {
-		al_show_native_message_box(display, "Title", "settings", "Could not create Allegro window.", NULL, NULL);
-	}
-	al_set_window_title(display, "Game title");
+	filemanager.load_xml_content(config, config_path, "SerializableClass", "ConfigurationsKey", "current_configurations");\
+		if (config->get_screen_mode() == SCREEN_STYLE_FULLSCREEN) {
+			ALLEGRO_DISPLAY_MODE   disp_data;
+			al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+			al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+			display = al_create_display(disp_data.width, disp_data.height);
+		}
+		else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+			ALLEGRO_DISPLAY_MODE   disp_data;
+			al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+			al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
+			display = al_create_display(disp_data.width, disp_data.height);
+		}
+		else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED) {
+			display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
+		}
+		else {	//windowed by default, but the above block is included for the sake of consistency.
+			display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
+		}
+		// make sure the display was created correctly
+		if (!display) {
+			al_show_native_message_box(display, "Title", "settings", "Could not create Allegro window.", NULL, NULL);
+		}
+	return display;
+}
 
-	// intialize fonts, primitives, keyboard,etc.
-	al_init_font_addon();
-	al_init_ttf_addon();
-	al_init_primitives_addon();
-	al_init_image_addon();
-	al_install_keyboard();
-	al_install_joystick();
-	al_install_mouse();
-
+int run_game(int argc, char *argv[], ALLEGRO_DISPLAY *display)
+{
+	//TODO: refactor things out that will also apply to level editor
 	// set up timer/keyboard input
 	ALLEGRO_TIMER *timer = al_create_timer(1.0 / FPS);
 	ALLEGRO_EVENT_QUEUE *event_queue = al_create_event_queue();
@@ -147,6 +135,42 @@ int main()
 		al_uninstall_keyboard();
 		al_uninstall_system();
 	}
-	//_CrtDumpMemoryLeaks();
+	return 0;
+}
+
+int run_level_editor(int argc, char *argv[], ALLEGRO_DISPLAY *display) {
+	// TODO
+	std::cout << "Level editor" << std::endl;
+	return 0;
+}
+
+int initialize_allegro_libraries() {
+	// intialize fonts, primitives, keyboard,etc.
+	al_init_font_addon();
+	al_init_ttf_addon();
+	al_init_primitives_addon();
+	al_init_image_addon();
+	al_install_keyboard();
+	al_install_joystick();
+	al_install_mouse();
+	return 1;
+}
+
+int main(int argc, char *argv[])
+{
+	std::string run_mode = argv[1];
+	ALLEGRO_DISPLAY *display; 
+	if (run_mode == RUN_GAME || run_mode == LEVEL_EDITOR) {
+		if (initialize_allegro()){
+			display = initialize_display("resources/config");	//TODO: map launch mode to display path
+			if (initialize_allegro_libraries()) {
+				if (run_mode == RUN_GAME) {
+					return run_game(argc, argv, display);
+				} else if (run_mode == LEVEL_EDITOR) {
+					return run_level_editor(argc, argv, display);
+				}
+			}
+		}
+	} 
 	return 0;
 }

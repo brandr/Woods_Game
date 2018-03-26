@@ -221,6 +221,9 @@
     <ClInclude Include="TileSet.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TileGroup.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -233,9 +236,6 @@
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Entity.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EntityEffect.cpp">
@@ -329,6 +329,12 @@
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileSet.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileGroup.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Entity.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

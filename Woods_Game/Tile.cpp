@@ -5,13 +5,61 @@
 Tile::Tile()
 {
 	setClassName("Tile");
-	Register("tile_pos_x", &tile_pos_x);
-	Register("tile_pos_y", &tile_pos_y);
-	Register("tile_type_id", &tile_type_id);
+	Register("TilePosX", &tile_pos_x);
+	Register("TilePosY", &tile_pos_y);
+	Register("TileTypeIndex", &tile_type_index);
+	Register("TileSheetCol", &tile_sheet_col);
+	Register("TileSheetRow", &tile_sheet_row);
+	Register("TileEdges", &tile_edges);
+	Register("Block", &block);
+	//Register("BlockData", &(this->block_data));
+	//Register("Block", this->block);
+}
+
+Tile::Tile(TileSet *tileset, int tile_x, int tile_y, int type_index, int sheet_col, int sheet_row)
+{
+	setClassName("Tile");
+	Register("TilePosX", &tile_pos_x);
+	Register("TilePosY", &tile_pos_y);
+	Register("TileTypeIndex", &tile_type_index);
+	Register("TileSheetCol", &tile_sheet_col);
+	Register("TileSheetRow", &tile_sheet_row);
+	Register("TileEdges", &tile_edges);
+	Register("Block", &block);
+	//Register("Block", this->block);
+	this->tile_pos_x = tile_x;
+	this->tile_pos_y = tile_y;
+	this->tile_type_index = type_index;
+	this->tile_sheet_col = sheet_col;
+	this->tile_sheet_row = sheet_row;
+	std::string filename = tileset->get_full_tile_sheet_filename(type_index);
+	Rect* offset_rect = new Rect(sheet_col*TILE_SIZE, sheet_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
+	this->set_content(filename, offset_rect, position);
+	this->set_edge_priority(tileset->get_edge_priority(type_index));
+	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
+	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 Tile::~Tile()
 {
+}
+
+Tile * Tile::null_tile(TileSet *tileset, int tile_x, int tile_y)
+{
+	Tile *tile = new Tile();
+	tile->set_tile_pos_x(tile_x);
+	tile->set_tile_pos_y(tile_y);
+	tile->set_tile_sheet_col(0);
+	tile->set_tile_sheet_row(0);
+	std::string filename = tileset->get_full_tile_sheet_filename(0);
+	Rect* offset_rect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
+	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
+	tile->set_content(filename, offset_rect, position);
+	tile->set_edge_priority(0);
+	tile->set_speed_mod(1.0f);
+	tile->set_bitmap(ImageLoader::get_instance().get_current_image(tile));
+	return tile;
 }
 
 void Tile::set_content(std::string image_filename, Rect * image_subsection, std::pair<int, int> position)
@@ -22,28 +70,45 @@ void Tile::set_content(std::string image_filename, Rect * image_subsection, std:
 
 void Tile::unload_content()
 {
+	/*
 	if (block) {
 		block->unload_content();
 		delete block;
 	}
 	block = NULL;
+	*/
 	GameImage::unload_content();
 }
 
 void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
 	GameImage::draw(display, x_offset, y_offset);
-	if (block) block->draw(display, x_offset, y_offset);
+	if (!block.is_empty()) {
+		block.draw(display, x_offset, y_offset);
+	}
 }
 
-Block * Tile::get_block() const
+void Tile::initialize_block()
 {
-	return block;
+	this->block.set_entity_data_index(0);
 }
 
-void Tile::set_block(Block * b)
+Rect * Tile::get_bitmap_subsection()
 {
-	block = b;
+	return new Rect(this->tile_sheet_col.value()*TILE_SIZE, this->tile_sheet_row.value()*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+}
+
+Block * Tile::get_block()
+{
+	if (this->block.is_empty()) {
+		return NULL;
+	}
+	return &(this->block);
+}
+
+void Tile::set_tile_type_index(int index)
+{
+	tile_type_index = index;
 }
 
 void Tile::set_sheet_row(int sheet_row)
@@ -51,9 +116,19 @@ void Tile::set_sheet_row(int sheet_row)
 	this->sheet_row = sheet_row;
 }
 
-int Tile::get_sheet_row() const
+int Tile::get_tile_type_index()
 {
-	return sheet_row;
+	return this->tile_type_index.value();
+}
+
+int Tile::get_sheet_row()
+{
+	return this->tile_sheet_row.value();
+}
+
+int Tile::get_sheet_col()
+{
+	return tile_sheet_col.value();
 }
 
 void Tile::set_speed_mod(float sm)
@@ -66,6 +141,27 @@ float Tile::get_speed_mod()
 	return speed_mod;
 }
 
+void Tile::add_edge(int row, int dir, std::string tile_key)
+{
+	TileEdge *edge = new TileEdge(row, dir, tile_key);
+	this->tile_edges.addItem(edge);
+}
+
+std::vector<TileEdge*> Tile::get_tile_edges()
+{
+	std::vector<TileEdge*> edges;
+	const int size = this->tile_edges.size();
+	for (int i = 0; i < size; i++) {
+		edges.push_back(this->tile_edges.getItem(i));
+	}
+	return edges;
+}
+
+bool Tile::has_edges()
+{
+	return this->tile_edges.size() > 0;
+}
+
 void Tile::set_edge_priority(int priority)
 {
 	this->edge_priority = priority;
@@ -74,4 +170,56 @@ void Tile::set_edge_priority(int priority)
 int Tile::get_edge_priority()
 {
 	return edge_priority;
+}
+
+void Tile::set_tile_pos_x(int x)
+{
+	this->tile_pos_x = x;
+}
+
+void Tile::set_tile_pos_y(int y)
+{
+	this->tile_pos_y = y;
+}
+
+void Tile::set_tile_sheet_col(int col)
+{
+	this->tile_sheet_col = col;
+}
+
+void Tile::set_tile_sheet_row(int row)
+{
+	this->tile_sheet_row = row;
+}
+
+int Tile::get_tile_pos_x()
+{
+	return this->tile_pos_x.value();
+}
+
+int Tile::get_tile_pos_y()
+{
+	return this->tile_pos_y.value();
+}
+
+TileEdge::TileEdge()
+{
+	setClassName("TileEdge");
+	//Register("Filename", &filename);
+	Register("RowIndex", &row_index);
+	Register("DirectionIndex", &direction_index);
+	Register("TileKey", &tile_key);
+}
+
+TileEdge::TileEdge(int row, int direction, std::string key)
+{
+	setClassName("TileEdge");
+	//Register("Filename", &filename);
+	Register("RowIndex", &row_index);
+	Register("DirectionIndex", &direction_index);
+	Register("TileKey", &tile_key);
+	//this->filename = edge_filename;
+	this->row_index = row;
+	this->direction_index = direction;
+	this->tile_key = key;
 }

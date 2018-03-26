@@ -5,6 +5,14 @@
       <Configuration>Debug</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="LevelEditor|Win32">
+      <Configuration>LevelEditor</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="LevelEditor|x64">
+      <Configuration>LevelEditor</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|Win32">
       <Configuration>Release</Configuration>
       <Platform>Win32</Platform>
@@ -31,6 +39,12 @@
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
@@ -39,6 +53,12 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
@@ -59,10 +79,16 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -85,7 +111,28 @@
     <Allegro_AddonFont>true</Allegro_AddonFont>
     <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|Win32'">
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_LibraryType>DynamicDebug</Allegro_LibraryType>
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Allegro_AddonImage>true</Allegro_AddonImage>
+    <Allegro_AddonTTF>true</Allegro_AddonTTF>
+    <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
+    <Allegro_AddonAudio>true</Allegro_AddonAudio>
+    <Allegro_AddonAcodec>true</Allegro_AddonAcodec>
+    <Allegro_AddonPhysfs>true</Allegro_AddonPhysfs>
+    <Allegro_AddonDialog>true</Allegro_AddonDialog>
+    <Allegro_AddonMemfile>true</Allegro_AddonMemfile>
+    <Allegro_AddonFont>true</Allegro_AddonFont>
+    <Allegro_AddonColor>true</Allegro_AddonColor>
+    <Allegro_AddonVideo>true</Allegro_AddonVideo>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|x64'">
     <Allegro_AddonImage>true</Allegro_AddonImage>
     <Allegro_AddonTTF>true</Allegro_AddonTTF>
     <Allegro_AddonPrimitives>true</Allegro_AddonPrimitives>
@@ -128,7 +175,31 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\include;C:\Users\Robert\Documents\VLD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\lib;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>allegro-5.0.10-monolith-md-debug.lib;vld.lib;vldmt.lib;vldmtdll.lib;legacy_stdio_definitions.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Console</SubSystem>
+      <IgnoreSpecificDefaultLibraries>LIBCD.lib</IgnoreSpecificDefaultLibraries>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='LevelEditor|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
@@ -202,6 +273,7 @@
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SpriteSheetAnimation.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileGroup.h" />
     <ClInclude Include="TileSet.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="tinyxml2.h" />
@@ -240,6 +312,7 @@
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="SpriteSheetAnimation.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileGroup.cpp" />
     <ClCompile Include="TileSet.cpp" />
     <ClCompile Include="TileType.cpp" />
     <ClCompile Include="tinyxml2.cpp" />

@@ -26,7 +26,7 @@ public:
 	void load_level(int, int);
 	void load_player(std::string filename);
 	void load_level_content(std::string filename, std::string id, int type);
-	void load_level_from_map(Level level);
+	void load_level_from_map(Level *level);
 	void load_player();
 	Player* get_player();
 	void unload_content();
