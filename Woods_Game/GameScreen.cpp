@@ -231,8 +231,6 @@ void GameScreen::right_bumper_action()
 
 void GameScreen::process_event(ALLEGRO_EVENT ev)
 {
-	//TODO: note that this doesn't necessarily happen every frame
-	//TODO: other types of events
 	const int game_mode = get_game_mode();
 	auto it1 = control_map.find(game_mode);
 	if (it1 == control_map.end()) return;
@@ -247,7 +245,6 @@ void GameScreen::process_event(ALLEGRO_EVENT ev)
 			}
 
 	}
-	//TODO: need to handle different control schemes
 }
 
 void GameScreen::set_screen_flag(int flag)

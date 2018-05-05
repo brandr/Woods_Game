@@ -7,13 +7,22 @@
 Player::Player()
 {
 	// xml serialization attributes
-	
-	//TODO: figure out how animations will 
-	//image_filename = "images/temp_player.png";
+	setClassName("Player");
+	Register("start_pos_x", &entity_starting_pos_x);
+	Register("start_pos_y", &entity_starting_pos_y);
+	Register("animation_spritesheet_key", &animation_spritesheet_key);
+	Register("center_offset_x", &center_offset_x);
+	Register("center_offset_y", &center_offset_y);
+	Register("spritesheet_frame_width", &spritesheet_frame_width);
+	Register("spritesheet_frame_height", &spritesheet_frame_height);
+	Register("base_walk_speed", &base_walk_speed);
+	Register("jump_speed", &jump_speed);
+	Register("animation_data", &animation_data);
+	Register("additional_mask_data", &additional_mask_data);
+	Register("inventory", &inventory);
+	//Register("inventory_key", &inventory_key);
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
-	base_walk_speed = 5;
-	jump_speed = 30;
 }
 
 Player::~Player()
@@ -30,8 +39,15 @@ void Player::load_content(std::vector<std::string> attributes, std::vector<std::
 {
 	GameImage::load_content(attributes, contents);
 	inventory.load_content();
-	//TODO: load inventory depending on what items the player should have
+	//TODO: load inventory from xml depending on what items the player should have
 	//TODO: if necessary, map player direction to different animations
+}
+
+void Player::load_content_from_attributes()
+{
+	Entity::load_content_from_attributes();
+	inventory.load_content_from_attributes();
+	//inventory->load_content_from_xml(this->inventory_key.value());
 }
 
 void Player::reset_entity_flags()
@@ -213,7 +229,7 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 			get_y() + y_off - interactables[i]->get_y())) {
 				Entity* e = interactables[i];
 				if (e->has_entity_attribute(E_ATTR_SHEARABLE) 
-					&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {	//TEMP: replace with shearable check
+					&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
 					set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 					Item *shears = get_selected_item();
 					const int shear_power = shears->get_item_attribute(ITEM_ATTR_POWER);
@@ -222,14 +238,13 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 				}
 			}
 	}
-	//TODO
 }
 
 float Player::get_walk_speed()
 {
 	//TODO: get tile modifier
 
-	return base_walk_speed;
+	return base_walk_speed.value();
 }
 
 void Player::set_direction(int dir)
@@ -267,7 +282,7 @@ void Player::attempt_jump(std::vector<Entity*> interactables)
 {
 	if (on_ground(interactables)) {
 		jumping = true;
-		yvel = -1 * jump_speed;
+		yvel = -1 * jump_speed.value();
 	}
 }
 

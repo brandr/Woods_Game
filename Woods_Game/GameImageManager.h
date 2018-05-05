@@ -15,6 +15,8 @@ private:
 	std::pair<int, int> get_camera_offset(ALLEGRO_DISPLAY *display);
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
+	void load_player();
+	void load_player_from_xml(std::string filepath, std::string player_key);
 public:
 	Level* current_level;
 	Player* player;
@@ -27,7 +29,6 @@ public:
 	void load_player(std::string filename);
 	void load_level_content(std::string filename, std::string id, int type);
 	void load_level_from_map(Level *level);
-	void load_player();
 	Player* get_player();
 	void unload_content();
 	void unload_level_content();

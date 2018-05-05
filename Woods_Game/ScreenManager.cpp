@@ -5,12 +5,7 @@
 ScreenManager::ScreenManager()
 {
 }
-/*
-ScreenManager::~ScreenManager()
-{
-	//delete this;
-}
-*/
+
 void ScreenManager::load_content()
 {
 	if (current_screen)
@@ -62,17 +57,7 @@ void ScreenManager::process_event(ALLEGRO_EVENT ev)
 	if (current_screen)
 		current_screen->process_event(ev);
 }
-/*
-void ScreenManager::process_joysticks(ALLEGRO_JOYSTICK_STATE left_stick, ALLEGRO_JOYSTICK_STATE right_stick)
-{
-	if (current_screen) {
-		current_screen->set_joystick_pos(LEFT_STICK, left_stick.stick->axis[0], left_stick.stick->axis[1]);
-		//current_screen->set_joystick_pos(RIGHT_STICK, right_stick.stick->axis[0], right_stick.stick->axis[1]);
-	}
-		//current_screen->process_joysticks(ev);
-	//TODO
-}
-*/
+
 void ScreenManager::process_joystick(ALLEGRO_JOYSTICK_STATE joy_state)
 {
 	//if (current_screen)
@@ -81,7 +66,6 @@ void ScreenManager::process_joystick(ALLEGRO_JOYSTICK_STATE joy_state)
 
 void ScreenManager::add_screen(GameScreen *screen)
 {
-	//new_screen = screen;
 	if (current_screen) {
 		current_screen->unload_content();
 		delete current_screen;

@@ -6,42 +6,15 @@
 
 // functions to be passed along to the level, usually to the player
 void keyboard_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
-
-	/*
-	GameScreen& input_screen = screen.screen_receiving_input();
-	if (ev.keyboard.keycode == ALLEGRO_KEY_ENTER
-		&& !input_screen.taking_mappable_input()) {
-		if (toggle) {
-			input_screen.confirm_selection();
-		}
-		return;
-	} else {
-		input_screen.call_keyboard_mappable_input(ev, toggle);
-	}
-	*/
 	GameScreen& input_screen = screen.screen_receiving_input();
 	input_screen.call_keyboard_mappable_input(ev, toggle);
 }
 
 void controller_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
-	/*
-	GameScreen& input_screen = screen.screen_receiving_input();
-	if (ev.joystick.button == XC_BUTTON_A
-		&& !input_screen.taking_mappable_input()) {
-		if (toggle) {
-			input_screen.confirm_selection();
-		}
-		return;
-	}
-	else {
-		input_screen.call_controller_mappable_input(ev, toggle);
-	}
-	*/
 	GameScreen& input_screen = screen.screen_receiving_input();
 	input_screen.call_controller_mappable_input(ev, toggle);
 }
 
-// functions to be passed along to the level, usually to the player
 void move_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	screen.set_input(INPUT_UP, toggle);
 }

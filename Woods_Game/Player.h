@@ -24,13 +24,13 @@ enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
 //final const int TERMINAL_VELOCITY = 8;
 //final const int GRAVITY = 2;
 class Player :
-	public Being
+	public Being, public xmls::Serializable
 {
 private:
+	xmls::xFloat base_walk_speed;
+	xmls::xFloat jump_speed;
 	std::map<int, bool> move_map;
 	std::pair<float, float> move_joystick_pos;
-	float base_walk_speed;
-	float jump_speed;
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
@@ -41,6 +41,7 @@ public:
 	virtual ~Player();
 	virtual int get_type();
 	virtual void load_content(std::vector<std::string> attributes, std::vector<std::string> contents);
+	virtual void load_content_from_attributes();
 	void reset_entity_flags();
 	virtual void update(std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);

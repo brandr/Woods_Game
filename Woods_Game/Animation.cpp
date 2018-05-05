@@ -131,3 +131,21 @@ int Animation::get_frame_duration()
 {
 	return frame_duration;
 }
+
+AnimationData::AnimationData()
+{
+	setClassName("AnimationData");
+	Register("animation_key", &animation_key);
+	Register("animation_frame_width", &animation_frame_width);
+	Register("animation_frame_height", &animation_frame_height);
+	Register("animation_frame_duration", &animation_frame_duration);
+}
+
+MaskData::MaskData()
+{
+	setClassName("MaskData");
+	Register("mask_key", &mask_key);
+	Register("mask_width", &mask_width);
+	Register("mask_height", &mask_height);
+	Register("mask_frame_count", &mask_frame_count);
+}

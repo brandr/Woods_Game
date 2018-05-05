@@ -52,8 +52,8 @@ void GameImageManager::load_content()
 {
 	current_level = world.get_current_dungeon()->level_at(0, 0);
 	//TODO: load player through xml (and all other entities that start from tiles)
-	load_player("resources/load/player.txt");
-
+	//load_player("resources/load/player.txt");
+	load_player_from_xml("resources/load/player", "default_player");
 
 	//load_level_content("resources/load/player.txt", "", PLAYER);
 	//TEMP
@@ -134,6 +134,18 @@ void GameImageManager::load_level_from_map(Level *level)
 void GameImageManager::load_player()
 {
 	
+}
+
+void GameImageManager::load_player_from_xml(std::string filepath, std::string player_key)
+{
+	FileManager file_manager;
+	player = new Player();
+	file_manager.load_xml_content(player, filepath, "SerializableClass", "PlayerKey", player_key);
+	player->load_content_from_attributes();
+	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
+	//file_manager.load_content(filename.c_str(), attributes, contents, "additional_masks");
+	player->load_additional_masks_from_attributes("player");	//TODO: make this method
+	current_level->add_being(player);
 }
 
 Player * GameImageManager::get_player()

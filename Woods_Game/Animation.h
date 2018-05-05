@@ -3,6 +3,7 @@
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "utility"             // for pair
 #include "xstring"             // for string
+#include "XMLSerialization.h"
 
 enum ANIMATION_DIRECTIONS{ANIM_NEUTRAL = 0, ANIM_RIGHT = 1, ANIM_LEFT = 2, ANIM_UP = 3, ANIM_DOWN = 4};
 enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1, ANIM_STATE_SHEARING = 2};
@@ -20,6 +21,22 @@ public:
 	bool intersects_rect(Rect);
 	float right();
 	float bottom();	
+};
+
+struct MaskData : xmls::Serializable {
+	xmls::xString mask_key;
+	xmls::xInt mask_width;
+	xmls::xInt mask_height;
+	xmls::xInt mask_frame_count;
+	MaskData();
+};
+
+struct AnimationData : xmls::Serializable {
+	xmls::xString animation_key;
+	xmls::xInt animation_frame_width;
+	xmls::xInt animation_frame_height;
+	xmls::xInt animation_frame_duration;
+	AnimationData();
 };
 
 class Animation

@@ -299,7 +299,7 @@ void Level::load_from_xml()
 	this->load_tileset();
 	FileManager file_manager;
 	const std::string filename = "resources/load/dungeons/" + this->dungeon_filename;
-	file_manager.load_xml_content(this, filename, "SerializableClass", "LevelKey", this->id);	//What is the level key?
+	file_manager.load_xml_content(this, filename, "SerializableClass", "LevelKey", this->id);
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
 	//this->generate_blocks();

@@ -2,13 +2,19 @@ Woods game todolist
 
 XML serialize the player
 
+Make a level editor
+	*look into a way to have a different launch class
+
 Make a second level to ensure that connecting levels still work
+	*need to load from map, then save
+
+IDEA: make buildings as entitygroups that have a collision rect, but also a door component with an attribute that sends the player to another level on contact.
+	*make the inside of buildings levels that are uniquely identified by id but not part of the normal level grids
+	*also need to be able to id levels on the grid this way, since this is how players will exit the building
+	*also need to uniquely identify the building entitygroup so that the player can appear in front of the door after leaving the level
 
 Make a new entity group of a different size and with different components than trees int order to ensure that entity groups work
 	-could make this a building, but need to plan carefully about how entering/exiting buildings should work
-
-Make a level editor
-	*look into a way to have a different launch class
 
 IDEA: serialize tile edges after they are first generated to make loading faster
 	-currently edges get drawn onto the tiles bitmap after being loaded from a map, so should implement like so:	

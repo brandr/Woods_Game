@@ -9,4 +9,9 @@
         <Member Name="screen_res_y">600</Member>
         <Member Name="screen_mode">Windowed</Member>
     </SerializableClass>
+    <SerializableClass Type="Configurations" Version="1" ConfigurationsKey="level_editor_configurations">
+        <Member Name="screen_res_x">1200</Member>
+        <Member Name="screen_res_y">800</Member>
+        <Member Name="screen_mode">Windowed</Member>
+    </SerializableClass>
 </root>

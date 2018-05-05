@@ -224,6 +224,9 @@
     <ClInclude Include="TileGroup.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditorScreen.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -252,9 +255,6 @@
     </ClCompile>
     <ClCompile Include="GameImageManager.cpp">
       <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainGameScreen.cpp">
       <Filter>Screens\Source Files</Filter>
@@ -336,6 +336,12 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditorScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -64,7 +64,9 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 			ss_animation = new SpriteSheetAnimation();
 		}
 		else if (attributes[i] == "center_offset") {
-			center_offset = FileManager::string_to_pair(contents[i]);
+			std::pair<int,int> center_offset = FileManager::string_to_pair(contents[i]);
+			this->center_offset_x = center_offset.first;
+			this->center_offset_y = center_offset.second;
 		}
 		else if (attributes[i] == "anim_keys") {
 			std::string keys_string = contents[i];
@@ -137,6 +139,30 @@ void GameImage::load_content(std::vector<std::string> attributes, std::vector<st
 	}
 }
 
+void GameImage::load_content_from_attributes() {
+
+	std::vector<std::string> anim_keys;
+	std::string anim_filename = "sprite_sheets/" + this->animation_spritesheet_key.value();
+	ss_animation = new SpriteSheetAnimation();
+	const int anim_data_count = this->animation_data.size();
+	for (int i = 0; i < anim_data_count; i++) {
+		Animation *anim = new Animation();
+		AnimationData *anim_data = this->animation_data.getItem(i);
+		std::string anim_key = anim_data->animation_key.value();
+		int frame_count_x = anim_data->animation_frame_width.value();
+		int frame_count_y = anim_data->animation_frame_height.value();
+		std::pair<int, int> frame_count(frame_count_x, frame_count_y);
+		std::pair<int, int> ss_frame_dimensions(this->spritesheet_frame_width.value()
+			, this->spritesheet_frame_height.value());
+		anim->load_content(anim_filename + "_" + anim_key, frame_count
+			, std::pair<int, int>(0, 0), ss_frame_dimensions, anim_data->animation_frame_duration.value());
+		ImageLoader::get_instance().load_spritesheet(*anim);
+		animations[anim_key] = anim;
+	}
+	this->mask = NULL;
+	load_mask(anim_filename);
+}
+
 void GameImage::set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position)
 {
 	this->image_filename = image_filename;
@@ -186,6 +212,28 @@ void GameImage::load_additional_masks(std::vector<std::string> attributes, std::
 		additional_masks[std::pair<std::string, int>(mask_key, row)] = Mask_New(mask_image);
 	}
 	mask_image = NULL;
+}
+
+void GameImage::load_additional_masks_from_attributes(std::string prefix)
+{
+	const int additional_mask_count = this->additional_mask_data.size();
+	for (int i = 0; i < additional_mask_count; i++) {
+		MaskData *mask_data = this->additional_mask_data.getItem(i);
+		std::string mask_key = mask_data->mask_key.value();
+		int mask_width = mask_data->mask_width.value();
+		int mask_height = mask_data->mask_height.value();
+		ALLEGRO_BITMAP* mask_image;
+		std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
+		int frame_count = mask_data->mask_frame_count.value();
+		std::pair<int, int> frame_dimensions(mask_width, mask_height);
+		for (int row = 0; row < frame_count; row++) {
+			Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
+			ImageLoader::get_instance().load_image(filename, sub);
+			mask_image = ImageLoader::get_instance().get_image(filename, sub);
+			additional_masks[std::pair<std::string, int>(mask_key, row)] = Mask_New(mask_image);
+		}
+		mask_image = NULL;
+	}
 }
 
 
@@ -256,12 +304,16 @@ void GameImage::set_rect(int x, int y, int width, int height)
 
 void GameImage::set_center_offset(std::pair<int, int> offset)
 {
-	this->center_offset = offset;
+	this->center_offset_x = offset.first;
+	this->center_offset_y = offset.second;
 }
 
-const std::pair<int, int> GameImage::get_center() const
+const std::pair<int, int> GameImage::get_center()
 {
-	return std::pair<int, int>(static_cast<int>(rect.x) + center_offset.first, static_cast<int>(rect.y) + center_offset.second);
+	int offset_x = this->center_offset_x.value();
+	int offset_y = this->center_offset_y.value();
+	return std::pair<int, int>(static_cast<int>(rect.x) + offset_x
+		, static_cast<int>(rect.y) + offset_y);
 }
 
 void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)

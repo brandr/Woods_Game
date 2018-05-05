@@ -261,6 +261,7 @@
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelEditorScreen.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="MenuItem.h" />
@@ -301,6 +302,7 @@
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelEditorScreen.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
     <ClCompile Include="Block.cpp" />

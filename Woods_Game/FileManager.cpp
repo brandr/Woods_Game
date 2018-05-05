@@ -62,7 +62,7 @@ void FileManager::load_xml_content(Serializable *serializable, std::string const
 	if ( Serializable::fromXML(serializable_str, serializable)) {
 		std::cout << "deserialized file\n";
 	} else {
-		std::cout << "FAILED to deserialize file\n";
+		std::cout << "FAILED to deserialize file: " + filename + "\n";
 	}
 }
 

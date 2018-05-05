@@ -98,6 +98,7 @@ public:
 	virtual void set_solid(bool solid);
 	virtual bool is_solid();
 	virtual void load_entity_effects(std::string filename, int row, std::pair<int, int> frame_dimensions);
+	virtual void load_content_from_attributes();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void update();
 	void counter_update();

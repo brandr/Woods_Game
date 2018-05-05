@@ -46,6 +46,13 @@ void Entity::load_entity_effects(std::string filename, int row, std::pair<int,in
 	}
 }
 
+void Entity::load_content_from_attributes()
+{
+	GameImage::load_content_from_attributes();
+	this->rect.x = this->entity_starting_pos_x.value();
+	this->rect.y = this->entity_starting_pos_y.value();
+}
+
 void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	for (auto &it : entity_effects) {

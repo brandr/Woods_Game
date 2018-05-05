@@ -39,12 +39,21 @@ class ImageLoader;
 class GameImage
 {
 protected:
+	// serializable attributes
+	xmls::xString animation_spritesheet_key;
+	xmls::xInt center_offset_x;
+	xmls::xInt center_offset_y;
+	xmls::xInt spritesheet_frame_width;
+	xmls::xInt spritesheet_frame_height;
+	xmls::Collection<AnimationData> animation_data;
+	xmls::Collection<MaskData> additional_mask_data;
+	// attributes we use (consider getting rid of center offset and just serializing it)
 	ALLEGRO_BITMAP *bitmap;
 	std::string image_filename;
 	Rect* image_subsection = NULL;
 	std::vector<ALLEGRO_BITMAP*> additional_image_layers;
 	Rect rect;
-	std::pair<int, int> center_offset = std::pair<int,int>(0,0);
+	//std::pair<int, int> center_offset = std::pair<int,int>(0,0);
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
@@ -58,16 +67,18 @@ public:
 	virtual int get_type();
 	std::string get_image_filename();
 	virtual void load_content(std::vector<std::string>, std::vector<std::string>);
+	virtual void load_content_from_attributes();
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
 	virtual void load_mask(std::string base_filename);
 	virtual void load_additional_masks(std::vector<std::string> attributes, std::vector<std::string> contents, std::string prefix);
+	virtual void load_additional_masks_from_attributes(std::string prefix);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();	//TEMP, need to figure out what arguments need to be passed
 	void set_position(int, int);
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
-	virtual const std::pair<int,int> get_center() const;
+	virtual const std::pair<int,int> get_center();
 	void set_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void draw_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void refresh_mask();
