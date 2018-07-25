@@ -54,8 +54,9 @@ void ScreenManager::draw(ALLEGRO_DISPLAY* display)
 
 void ScreenManager::process_event(ALLEGRO_EVENT ev)
 {
-	if (current_screen)
+	if (current_screen) {
 		current_screen->process_event(ev);
+	}
 }
 
 void ScreenManager::process_joystick(ALLEGRO_JOYSTICK_STATE joy_state)

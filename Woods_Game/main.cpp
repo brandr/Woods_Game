@@ -96,6 +96,7 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	} else {
 		game_screen = new LevelEditorScreen();
 		al_set_window_title(display, "Level Editor");
+		((LevelEditorScreen*)(game_screen))->initialize();
 	}
 	ScreenManager::get_instance().initilaize(game_screen);
 	ScreenManager::get_instance().load_content();

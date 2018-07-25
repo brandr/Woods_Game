@@ -110,6 +110,15 @@
     <Filter Include="Application\Header Files">
       <UniqueIdentifier>{3d49d6ab-1071-47b6-bf11-cc9c0f523689}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LevelEditor">
+      <UniqueIdentifier>{0bb47399-6fe3-488b-bbd9-153ae10cc8aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelEditor\Header Files">
+      <UniqueIdentifier>{ac19445d-c46a-41f9-9cb1-78aa1d3d4e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelEditor\Source Files">
+      <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -225,7 +234,16 @@
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelEditorScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditorManager.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorActionListener.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FileDialogManager.h">
+      <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -341,7 +359,16 @@
       <Filter>Screens\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditorScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditorManager.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorActionListener.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FileDialogManager.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

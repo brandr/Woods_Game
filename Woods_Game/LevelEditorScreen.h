@@ -2,17 +2,19 @@
 #define LEVEL_EDITOR_SCREEN_H
 
 #include "GameScreen.h"
-#include "allegro5/allegro_font.h"  // for ALLEGRO_FONT
-#include "allegro5/display.h"       // for ALLEGRO_DISPLAY
-#include "allegro5/events.h"        // for ALLEGRO_EVENT
-#include "allegro5/allegro_ttf.h"    
+#include "LevelEditorManager.h"
 
 class LevelEditorScreen :
 	public GameScreen
 {
 private:
 	ALLEGRO_FONT * font;
+	LevelEditorManager * manager;
 public:
+	agui::Gui *gui;
+	agui::Allegro5Input *inputHandler;
+	agui::Allegro5Graphics *graphicsHandler;
+	agui::Font *defaultFont;
 	LevelEditorScreen();
 	~LevelEditorScreen();
 	virtual void load_content();
@@ -20,8 +22,10 @@ public:
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	virtual void process_event(ALLEGRO_EVENT ev);
+
+	void initialize();
+	void initialize_agui();
+	void initialize_widgets(agui::Gui *guiInstance);
 };
 
 #endif
-
-
