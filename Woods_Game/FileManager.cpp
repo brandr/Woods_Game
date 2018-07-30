@@ -87,32 +87,49 @@ void FileManager::replace_xml_content(std::string const & filename,
 				if (attribute == value) {
 					tinyxml2::XMLDocument replaceDocument;
 					replaceDocument.Parse(replaceXML.c_str());
-					//tinyxml2::XMLElement *replaceElement = doc.NewElement(""); //doc.NewUnknown(replaceXML.c_str());
-					//replaceElement->SetValue(replaceXML.c_str());
 					e->DeleteChildren();
 					for (tinyxml2::XMLNode *replaceChild = replaceDocument.RootElement()->FirstChild();
 						replaceChild != NULL;
 						replaceChild = replaceChild->NextSibling())
 					{
 						copy_xml_node(e, replaceChild);
-						//tinyxml2::XMLNode *copyNode = replaceChild->ShallowClone(doc.GetDocument());
-						//e->InsertEndChild(copyNode);
 					}
-
-					//replaceElement->ParseDeep((char *)replaceXML.c_str(), NULL);
-					//tinyxml2::XMLDocument replaceDocument;
-					//replaceDocument.Parse(replaceXML.c_str());
-					//replaceDocument.
-					
-					//root->Insert
-					//root->InsertAfterChild(e, replaceElement);
-					//root->DeleteChild(e);
 					break;
 				}
 			}
 		}
 	}
 	doc.SaveFile(full_filname.c_str());
+}
+
+std::vector<std::string> FileManager::all_xml_keys(std::string const & filename, 
+	std::string const & element_name, 
+	std::string const & type,
+	std::string const & key)
+{
+	std::vector<std::string> all_keys;
+	tinyxml2::XMLDocument doc;
+	std::string full_filname = filename + ".xml";
+	doc.LoadFile(full_filname.c_str());
+	tinyxml2::XMLNode * root = doc.RootElement();
+	std::string serializable_str = "";
+	tinyxml2::XMLPrinter printer;
+	if (root != NULL) {
+		for (tinyxml2::XMLElement *e = root->FirstChildElement(element_name.c_str()); 
+			e != NULL; e = e->NextSiblingElement(element_name.c_str()))
+		{
+			if (e->Attribute("Type") != NULL) {
+				std::string attribute = e->Attribute("Type");
+				if (attribute == type) {
+					if (e->Attribute(key.c_str()) != NULL) {
+						std::string attribute = e->Attribute(key.c_str());
+						all_keys.push_back(attribute);
+					}
+				}
+			}
+		}
+	}
+	return all_keys;
 }
 
 void FileManager::copy_xml_node(tinyxml2::XMLNode * p_dest_parent, const tinyxml2::XMLNode * p_src)

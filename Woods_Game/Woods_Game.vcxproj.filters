@@ -245,6 +245,9 @@
     <ClInclude Include="FileDialogManager.h">
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelEditorGrid.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -368,6 +371,9 @@
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileDialogManager.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditorGrid.cpp">
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

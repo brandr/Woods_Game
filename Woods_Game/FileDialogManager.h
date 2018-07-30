@@ -1,12 +1,14 @@
 #ifndef FILE_DIALOG_MANAGER_H
 #define FILE_DIALOG_MANAGER_H
 
+#include "Dungeon.h"
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_image.h>
 #include <allegro5/allegro_color.h>
+#include <Agui/ActionEvent.hpp>
 
 
 /* To communicate from a separate thread, we need a user event. */
@@ -21,14 +23,20 @@ typedef struct
 	ALLEGRO_THREAD *thread;
 } AsyncDialog;
 
-ALLEGRO_TEXTLOG *textlog;
-
 class FileDialogManager
 {
 private:
-	static ALLEGRO_FILECHOOSER * file_chooser;
+	ALLEGRO_TEXTLOG *textlog;
+	ALLEGRO_FILECHOOSER * file_chooser;
+	bool message_log;
+	AsyncDialog *old_dialog;
+	AsyncDialog *cur_dialog;
+	//static AsyncDialog *message_box;
 public:
 	FileDialogManager();
+	void message(char const * format, ...);
+	void process_action(ALLEGRO_DISPLAY *display);
+	Dungeon * selected_dungeon();
 	static void *async_file_dialog_thread_func(ALLEGRO_THREAD *thread, void *arg);
 	static void *message_box_thread(ALLEGRO_THREAD *thread, void *arg);
 	static AsyncDialog *spawn_async_file_dialog(ALLEGRO_DISPLAY *display, const char *initial_path);

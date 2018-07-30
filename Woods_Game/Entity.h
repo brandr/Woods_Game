@@ -4,7 +4,6 @@
 #include "EntityEffect.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "GameImage.h"         // for GameImage
-//#include "EntityGroup.h"
 #include "map"                 // for map
 #include "utility"             // for pair, swap
 #include "vector"              // for vector
@@ -22,8 +21,6 @@ struct EntityComponentAttribute : xmls::Serializable {
 struct EntityComponentData : xmls::Serializable {
 	xmls::xString name = "";
 	xmls::Collection<EntityComponentAttribute> attributes;
-	//std::string name = "";
-	//std::vector<std::string> attributes;
 	EntityComponentData();
 	EntityComponentData(std::string name, std::vector<std::string> attributes);
 	void set_attributes(std::vector<std::string> attributes);
@@ -115,7 +112,6 @@ public:
 	virtual bool has_entity_attribute(std::string attribute);
 	virtual int get_entity_sheet_col();
 	virtual int get_entity_sheet_row();
-	//virtual bool get_entity_flag(int flag_key);
 	virtual void take_durability_damage(const int damage);
 	static std::vector<std::string> get_entity_effect_names();
 };

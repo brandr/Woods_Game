@@ -23,7 +23,8 @@ private:
 public:
 	FileManager();
 	~FileManager();
-	void load_xml_content(xmls::Serializable *serializable, std::string const & filename,
+	void load_xml_content(xmls::Serializable *serializable, 
+		std::string const & filename,
 		std::string const & element_name,
 		std::string const & key,
 		std::string const & value);
@@ -32,6 +33,10 @@ public:
 		std::string const & key,
 		std::string const & value,
 		std::string const & replaceXML);
+	std::vector<std::string> all_xml_keys(std::string const & filename,
+		std::string const & element_name,
+		std::string const & type,
+		std::string const & key);
 	void copy_xml_node(tinyxml2::XMLNode *p_dest_parent, const tinyxml2::XMLNode *p_src);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents, std::string id);

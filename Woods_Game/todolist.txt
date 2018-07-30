@@ -2,16 +2,29 @@ Woods game todolist
 
 XML serialize the player
 
-Make a level editor
-	*look into a way to have a different launch class
+Work more on level editor
+	*Add a layer for entity images
+	*Add gridlines
+	*UI for editing level, selecting objects from tileset, (grouped into tiles, blocks, etc), saving the level/dungeon, etc.
+
+Make sure I can do what I want with the tile system
+	*Going through brush will be better if there's a tool to make trails but trails get overgrown
+	*This means defining what the tile turns into when the tool is used on it
+		#this could be a property of tile data set in the tileset, or a mapping stored elsewhere
+		#the tool should also have some properties that come into play
+	*also consider how it will work to dig holes
+		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
+		#should holes be saved when the game is saved?
 
 Make a second level to ensure that connecting levels still work
 	*need to load from map, then save
 
 IDEA: make buildings as entitygroups that have a collision rect, but also a door component with an attribute that sends the player to another level on contact.
 	*make the inside of buildings levels that are uniquely identified by id but not part of the normal level grids
+		#could set the level key to -1 or some constant
 	*also need to be able to id levels on the grid this way, since this is how players will exit the building
 	*also need to uniquely identify the building entitygroup so that the player can appear in front of the door after leaving the level
+	*ensure that unused tiles outside the building are displayed as black
 
 Make a new entity group of a different size and with different components than trees int order to ensure that entity groups work
 	-could make this a building, but need to plan carefully about how entering/exiting buildings should work

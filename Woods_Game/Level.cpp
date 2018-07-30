@@ -12,23 +12,32 @@ struct game_image_center_comparison
 Level::Level()
 {
 	this->setClassName("Level");
-	//this->Register("TileSet", tileset);
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
-	//TODO: what else to register?
-	//width = 800;
-	//height = 600;
+}
+
+Level::Level(std::string level_filename, std::string dungeon_filename, std::string id)
+{
+	this->setClassName("Level");
+	this->Register("GridX", &(this->grid_x));
+	this->Register("GridY", &(this->grid_y));
+	this->Register("GridWidth", &(this->grid_width));
+	this->Register("GridHeight", &(this->grid_height));
+	this->Register("TileRows", &(this->tile_rows));
+	this->Register("EntityGroups", &(this->entity_groups));
+	this->map_filename = level_filename;
+	this->dungeon_filename = dungeon_filename;
+	this->id = id;
 }
 
 Level::Level(std::string level_filename, std::string dungeon_filename,  std::string id, int grid_x, int grid_y, int grid_width, int grid_height)
 {
 	//TODO: shouldn't need filename with new level loading system, but may need id
 	this->setClassName("Level");
-	//this->Register("TileSet", tileset);
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -49,7 +58,6 @@ Level::Level(std::string level_filename, std::string dungeon_filename,  std::str
 Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int grid_height)
 {
 	this->setClassName("Level");
-	//this->Register("TileSet", tileset);
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -68,7 +76,6 @@ Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int g
 Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)		
 {
 	this->setClassName("Level");
-	//this->Register("TileSet", tileset);
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -99,7 +106,7 @@ void Level::load_tileset()
 	this->tileset = new TileSet();
 	FileManager filemanager;
 	std::string filename = "resources/load/tilesets";
-	const std::string tileset_key = "tileset_1"; //TODO: need a getter at some point
+	const std::string tileset_key = "tileset_1"; //TODO: get this in a more general way
 	filemanager.load_xml_content(this->tileset, filename, "SerializableClass", "TilesetKey", tileset_key);
 	this->tileset->load_sheet_images();
 }
@@ -119,7 +126,6 @@ void Level::load_from_map()
 	std::vector<std::string> layers = get_layers();
 	int size = layers.size();
 	for (int layer_index = 0; layer_index < size; layer_index++) {
-		//std::string tile_sheet_filename = "";
 		std::string layer_id = layers[layer_index];
 		std::vector<std::vector<std::string>> attributes;
 		std::vector<std::vector<std::string>> contents;
@@ -208,12 +214,6 @@ void Level::load_from_map()
 					else if (layer_id == "entity_group_layer") {
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
-								//TODO: figure out how to do this after xml loading
-								//need a way to store the position of entity groups since they aren't locked to tiles
-								//consider whether things like root_pos, group_pos, etc. should be serialized per group (may not be necessary since tileset does most of the work)
-								//TODO: when reading entityGroups from xml, either A) add them to the entity vector as is done here or B) make sure they are drawn, updated, etc. correctly
-								//std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][k]);
-								
 								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
 								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
 								std::pair<int, int> root_off = tileset->get_entity_group_root_offset(ss_type_key);
@@ -229,15 +229,11 @@ void Level::load_from_map()
 								for (int comp_index = 0; comp_index < comp_size; comp_index++) {
 									EntityComponentData *data = comp_data[comp_index];
 									std::string comp_filename = entity_group_sheet_filename_start + "_" + group_data->get_entity_group_name() +  "_" + data->name.value();
-
 									Rect* ss_offset_rect = new Rect(
 										ss_col*entity_group_image_dimensions.first,
 										ss_row*entity_group_image_dimensions.second,
 										entity_group_image_dimensions.first,
 										entity_group_image_dimensions.second);
-
-									//TODO: how to load component filenames with new system?
-									//ImageLoader::get_instance().load_image(comp_filename, *ss_offset_rect);
 									Entity* e = new Entity();
 									e->set_content(comp_filename, ss_offset_rect, group_pos);
 									e->set_rect(group_pos.first, group_pos.second,
@@ -274,7 +270,7 @@ void Level::load_from_map()
 				}
 			}
 		}
-		this->save_to_xml();	//TODO: uncomment this except when it actually makes sense to save to xml, and consider putting it in a different method
+		//this->save_to_xml();	//TODO: uncomment this except when it actually makes sense to save to xml, and consider putting it in a different method
 	}
 		//TODO
 	// old way of loading
@@ -302,16 +298,18 @@ void Level::load_from_xml()
 	file_manager.load_xml_content(this, filename, "SerializableClass", "LevelKey", this->id);
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
-	//this->generate_blocks();
 	this->initialize_entity_groups();
-	//TODO: keep in mind that I need to set some bitmaps and load masks
+}
+
+void Level::intialize_dimensions()
+{
+	this->width = STANDARD_LEVEL_GRID_WIDTH * this->grid_width.value();
+	this->height = STANDARD_LEVEL_GRID_HEIGHT * this->grid_height.value();
 }
 
 void Level::initialize_tiles()
 {
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
-	
-	//TODO: get the right filename here-- this one is wrong
 	const std::string block_sheet_filename = this->tileset->get_block_tile_sheet_filename();
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
@@ -622,7 +620,6 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	for (int y = start_y; y < end_y; y++) {
 		for (int x = start_x; x < end_x; x++) {
 			this->get_tile(x, y)->draw(display, off.first, off.second);
-			//tiles[y][x]->draw(display, off.first, off.second);
 		}
 	}	
 	//TODO: draw game_images in order from lowest center y to highest center y
@@ -761,6 +758,16 @@ bool Level::passable_at(int x, int y)
 	return true;
 }
 
+std::string Level::get_dungeon_filename()
+{
+	return this->dungeon_filename;
+}
+
+void Level::set_dungeon_filename(std::string value)
+{
+	this->dungeon_filename = value;
+}
+
 std::string Level::get_filename()
 {
 	return this->map_filename;
@@ -798,12 +805,75 @@ int Level::get_grid_y()
 
 int Level::get_grid_width()
 {
-	return width/STANDARD_LEVEL_GRID_WIDTH;	//TEMP
+	return width/STANDARD_LEVEL_GRID_WIDTH;
 }
 
 int Level::get_grid_height()
 {
-	return height/STANDARD_LEVEL_GRID_HEIGHT; //TEMP
+	return height/STANDARD_LEVEL_GRID_HEIGHT;
+}
+
+// level editor methods
+
+void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
+	for (int y = 0; y < y_size; y++) {
+		for (int x = 0; x < x_size; x++) {
+			Tile * t = this->get_tile(x, y);
+			ALLEGRO_BITMAP *tile_bitmap = t->get_bitmap();
+			al_set_target_bitmap(bitmap);
+			float dx = x * TILE_SIZE;
+			float dy = y * TILE_SIZE;
+			al_draw_bitmap(tile_bitmap, dx, dy, 0);
+			// draw tile edges
+			std::vector<ALLEGRO_BITMAP*> additional_image_layers = t->get_additional_image_layers();
+			int size = additional_image_layers.size();
+			for (int i = 0; i < size; i++) {
+				al_draw_bitmap(additional_image_layers[i], dx, dy, 0);
+			}
+		}
+	}
+	al_set_target_bitmap(display);
+}
+
+void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
+	for (int y = 0; y < y_size; y++) {
+		for (int x = 0; x < x_size; x++) {
+			Tile * t = this->get_tile(x, y);
+			Block * b = t->get_block();
+			if (b != NULL) {
+				ALLEGRO_BITMAP *tile_bitmap = b->get_bitmap();
+				al_set_target_bitmap(bitmap);
+				float dx = x * TILE_SIZE;
+				float dy = y * TILE_SIZE;
+				al_draw_bitmap(tile_bitmap, dx, dy, 0);	
+			}
+		}
+	}
+	al_set_target_bitmap(display);
+}
+
+void Level::draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP * bitmap)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	const int size = this->entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		EntityGroup * eg = this->entity_groups.getItem(i);
+		al_set_target_bitmap(bitmap);
+		float dx = eg->get_x();
+		float dy = eg->get_y();
+		std::vector<Entity*> entities = eg->get_entities();
+		for (Entity *e : entities) {
+			ALLEGRO_BITMAP *entity_bitmap = e->get_bitmap();
+			al_draw_bitmap(entity_bitmap, dx, dy, 0);
+		}
+	}
+	al_set_target_bitmap(display);
 }
 
 

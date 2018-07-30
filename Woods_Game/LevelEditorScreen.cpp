@@ -17,10 +17,10 @@ void LevelEditorScreen::load_content()
 	font = al_load_ttf_font("resources/fonts/OpenSans-Regular.ttf", 30, NULL);
 }
 
-void LevelEditorScreen::initialize()
+void LevelEditorScreen::initialize(ALLEGRO_DISPLAY *display)
 {
 	LevelEditorScreen::initialize_agui();
-	LevelEditorScreen::initialize_widgets(gui);
+	LevelEditorScreen::initialize_widgets(gui, display);
 	//TODO
 }
 
@@ -56,9 +56,9 @@ void LevelEditorScreen::initialize_agui()
 	agui::Widget::setGlobalFont(defaultFont);
 }
 
-void LevelEditorScreen::initialize_widgets(agui::Gui * guiInstance)
+void LevelEditorScreen::initialize_widgets(agui::Gui * guiInstance, ALLEGRO_DISPLAY *display)
 {
-	this->manager = new LevelEditorManager(guiInstance);
+	this->manager = new LevelEditorManager(guiInstance, display);
 }
 
 
@@ -70,7 +70,7 @@ void LevelEditorScreen::unload_content()
 
 void LevelEditorScreen::update()
 {
-	//TODO: does anything need togo here?
+	this->manager->update();
 }
 
 void LevelEditorScreen::process_event(ALLEGRO_EVENT ev) {

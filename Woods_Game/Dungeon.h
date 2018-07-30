@@ -9,17 +9,22 @@
 class Dungeon
 {
 private:
-	//std::vector<Level> level_list;	// needed to store level objects since dungeon_grid only has pointers
-	
+	std::vector<Level*> level_list;	// needed to store level objects since dungeon_grid only has pointers
+	std::string dungeon_name;
 public:
 	std::vector<std::vector<Level*>> dungeon_grid;
 	Dungeon();
-	Dungeon(int, int);
+	Dungeon(std::string dungeon_name);
 	~Dungeon();
 	void unload_content();
+	void intialize_levels();
+	static Dungeon * load_dungeon(std::string dungeon_name);
 	void load_images(ImageLoader&);
 	void add_level(Level*);
 	Level* level_at(int, int);
+	Level* level_with_name(std::string name);
+	std::string get_dungeon_name();
+	std::vector<Level*> get_level_list();
 };
 
 #endif

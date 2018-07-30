@@ -53,6 +53,11 @@ void EntityGroup::set_sheet_pos(int col, int row)
 	this->entity_sheet_row = row;
 }
 
+std::vector<Entity*> EntityGroup::get_entities()
+{
+	return this->entities;
+}
+
 void EntityGroup::set_entities(std::vector<Entity*> entities)
 {
 	this->entities = entities;

@@ -20,16 +20,11 @@ private:
 	std::string dungeon_filename;
 	std::string id = "";
 	TileSet *tileset;
-	//temp
-	//TODO: serialize/deserialize tiles
-	//xmls::Collection<Tile> tiles;
 	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
-	//std::vector<std::vector<Tile*>> tiles;
 	std::vector<GameImage*> game_images;
 	std::vector<Entity*> entities;
 	std::vector<Being*> beings;
-	//Player* player;
 	xmls::xInt grid_x;
 	xmls::xInt grid_y;
 	xmls::xInt grid_width;
@@ -40,6 +35,7 @@ public:
 	static const int STANDARD_LEVEL_GRID_WIDTH = 800;
 	static const int STANDARD_LEVEL_GRID_HEIGHT = 600;
 	Level();
+	Level(std::string map_filename, std::string dungeon_filename, std::string level_key);
 	Level(std::string map_filename, std::string dungeon_filename, std::string level_key, int, int, int, int);
 	Level(std::string, int, int, int, int);
 	Level(int, int, int, int);
@@ -47,6 +43,7 @@ public:
 	void load_tileset();
 	void load_from_map();
 	void load_from_xml();
+	void intialize_dimensions();
 	void initialize_tiles();
 	void initialize_blocks();
 	void generate_blocks();
@@ -71,6 +68,8 @@ public:
 	std::vector<std::string> get_layers();
 	Tile *get_tile(int x, int y);
 	bool passable_at(int, int);
+	std::string get_dungeon_filename();
+	void set_dungeon_filename(std::string value);
 	std::string get_filename();
 	std::string get_id();
 	std::pair<int, int> get_dimensions();
@@ -80,5 +79,9 @@ public:
 	int get_grid_y();
 	int get_grid_width();
 	int get_grid_height();
+	// methods for level editor
+	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 };
 #endif

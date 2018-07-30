@@ -79,6 +79,7 @@ public:
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
 	virtual const std::pair<int,int> get_center();
+	virtual ALLEGRO_BITMAP* get_bitmap();
 	void set_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void draw_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void refresh_mask();
@@ -90,6 +91,7 @@ public:
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();
+	std::vector<ALLEGRO_BITMAP*> get_additional_image_layers();
 	std::pair<float, float> get_rect_center();
 	float get_x();
 	float get_y();

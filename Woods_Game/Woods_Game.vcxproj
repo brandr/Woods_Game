@@ -281,6 +281,7 @@
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelEditorGrid.h" />
     <ClInclude Include="LevelEditorManager.h" />
     <ClInclude Include="LevelEditorScreen.h" />
     <ClInclude Include="MainGameScreen.h" />
@@ -325,6 +326,7 @@
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelEditorGrid.cpp" />
     <ClCompile Include="LevelEditorManager.cpp" />
     <ClCompile Include="LevelEditorScreen.cpp" />
     <ClCompile Include="main.cpp" />

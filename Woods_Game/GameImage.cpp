@@ -262,7 +262,9 @@ void GameImage::unload_content()
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
 	ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
-	if (ss_animation) draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+	if (ss_animation) {
+		draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+	}
 	//bitmap = ImageLoader::get_instance().get_current_image(this);
 	if (draw_bitmap && rect.x + x_offset < al_get_display_width(display) && rect.right() + x_offset > 0 && 
 		rect.y + y_offset < al_get_display_height(display) && rect.bottom() + y_offset > 0) {
@@ -314,6 +316,11 @@ const std::pair<int, int> GameImage::get_center()
 	int offset_y = this->center_offset_y.value();
 	return std::pair<int, int>(static_cast<int>(rect.x) + offset_x
 		, static_cast<int>(rect.y) + offset_y);
+}
+
+ALLEGRO_BITMAP* GameImage::get_bitmap()
+{
+	return this->bitmap;
 }
 
 void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)
@@ -405,6 +412,11 @@ SpriteSheetAnimation* GameImage::get_ss_animation()
 Rect * GameImage::get_image_subsection()
 {
 	return image_subsection;
+}
+
+std::vector<ALLEGRO_BITMAP*> GameImage::get_additional_image_layers()
+{
+	return this->additional_image_layers;
 }
 
 std::pair<float, float> GameImage::get_rect_center()

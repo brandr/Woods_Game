@@ -22,10 +22,9 @@ public:
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	virtual void process_event(ALLEGRO_EVENT ev);
-
-	void initialize();
+	void initialize(ALLEGRO_DISPLAY *display);
 	void initialize_agui();
-	void initialize_widgets(agui::Gui *guiInstance);
+	void initialize_widgets(agui::Gui *guiInstance, ALLEGRO_DISPLAY *display);
 };
 
 #endif

@@ -29,6 +29,7 @@ public:
 	virtual int get_type();
 	void set_entity_group_name(std::string name);
 	void set_sheet_pos(int col, int row);
+	std::vector<Entity*> get_entities();
 	void set_entities(std::vector<Entity*> entities);
 	void set_root_pos(std::pair<int, int> root_pos);
 	std::string get_entity_group_name();
