@@ -2,8 +2,15 @@
 #define LEVEL_EDITOR_MANAGER_H
 
 #include "Dungeon.h"
+#include "TileType.h"
+#include "Entity.h"
 #include "EditorActionListener.h"
 #include "LevelEditorGrid.h"
+#include "GameImageDisplay.h"
+#include "DungeonEditorLayout.h"
+#include "LevelEditorLayout.h"
+#include "TilesetEditorLayout.h"
+#include "LevelEditorDataManager.h"
 
 #include <allegro5/display.h>
 
@@ -14,6 +21,9 @@
 #include <Agui/Widgets/ListBox/ListBox.hpp>
 #include <Agui/Widgets/ScrollPane/ScrollPane.hpp>
 #include <Agui/Widgets/CheckBox/CheckBox.hpp>
+#include <Agui/Widgets/Tab/Tab.hpp>
+#include <Agui/Widgets/Tab/TabbedPane.hpp>
+#include <Agui/Widgets/ImageWidget/ImageWidget.hpp>
 
 #include <Agui/Backends/Allegro5/Allegro5.hpp>
 
@@ -22,79 +32,52 @@
 #include <Agui/FlowLayout.hpp>
 #include "Agui/ImageLoader.hpp"
 #include <Agui/EmptyWidget.hpp>
+
 class LevelEditorManager
 {
+	const int DEFAULT_WINDOW_WIDTH = 1200;
+	const int DEFAULT_WINDOW_HEIGHT = 800;
+
 private:
-
 	bool needs_update = false;
-
-	// dungeon data
-	Dungeon * selected_dungeon;
-	Level * selected_level;
-	std::vector<Level*> levels;
+	FileManager file_manager;
 	
 	//gui
 	agui::Gui* editor_gui;
 
+	// tabs
+	agui::TabbedPane tabbed_pane;
+	agui::Tab tabs[3];
+
 	// frames/layouts
-	agui::FlowLayout dungeon_edit_layout;
-	agui::FlowLayout level_edit_layout;
-
-	// dungeon editor
-		//components 
-			// action listeners
-	EditorActionListener load_dungeon_select_listener;
-	EditorActionListener save_dungeon_select_listener;
-	
-			// labels
-	agui::Label selected_dungeon_name_label;
-	agui::Label selected_level_name_label;
-	agui::Label level_x_pos_label;
-	agui::Label level_y_pos_label;
-	agui::Label level_width_label;
-	agui::Label level_height_label;
-
-			// buttons
-	agui::Button load_dungeon_button;
-	agui::Button save_dungeon_button;
-
-			// listbox
-	agui::ListBox level_select_box;
-
-			// text fields
-	agui::TextField selected_dungeon_name_field;
-	agui::TextField selected_level_name_field;
-	agui::TextField level_x_pos_field;
-	agui::TextField level_y_pos_field;
-	agui::TextField level_width_field;
-	agui::TextField level_height_field;
-	
-		// init methods
-	void initialize_dungeon_edit_layout(ALLEGRO_DISPLAY *display);
-	void initialize_level_edit_layout(ALLEGRO_DISPLAY *display);
-
-	void reset_fields();
+	agui::FlowLayout main_layout;
+	DungeonEditorLayout *dungeon_edit_layout;
+	LevelEditorLayout *level_edit_layout;
+	TilesetEditorLayout *tileset_edit_layout;
 
 	void save_dungeon();
+	void update_attributes();
+	void update_level_attributes();
+	void load_all_tilesets();
+
+	void reset_fields();
+	void load_selected_tileset_tiles();
+	void load_selected_tileset_blocks();
+	void load_selected_tileset_entity_groups();
 
 		// update methods
+	void dungeon_update();
+	void level_update();
+	void tileset_update();
 	void update_load_dungeon();
 	void update_selected_level();
 	void update_level_grid();
 	void update_save_dungeon();
-
-	// level editor
-
-		// level grid
-	LevelEditorGrid level_editor_grid;
-	agui::Label level_grid_label;
-	agui::ScrollPane level_grid_scroll_pane;
-	agui::Frame level_grid_frame;
-
-		// checkboxes
-	agui::CheckBox tile_visibility_checkbox;
-	agui::CheckBox block_visibility_checkbox;
-	agui::CheckBox entity_group_visibility_checkbox;
+	void update_add_dungeon();
+	void update_delete_dungeon();
+	void update_add_level();
+	void update_delete_level();
+	void update_selected_tileset();
 public:
 	LevelEditorManager();
 	LevelEditorManager(agui::Gui *guiInstance, ALLEGRO_DISPLAY *display);

@@ -3,31 +3,33 @@
 
 #include <Agui/Widget.hpp>
 #include <Agui/Backends/Allegro5/Allegro5Image.hpp>
-#include "Level.h"
+#include <Agui/Backends/Allegro5/Allegro5Graphics.hpp>
 
-const std::string TILE_LAYER = "tile_layer";
-const std::string BLOCK_LAYER = "block_layer";
-const std::string ENTITY_GROUP_LAYER = "entity_group_layer";
-const std::vector<std::string> LEVEL_LAYERS{ TILE_LAYER, BLOCK_LAYER, ENTITY_GROUP_LAYER};
+#include "LevelEditorDataManager.h"
+#include "LevelGridListener.h"
 
 class LevelEditorGrid : public agui::Widget {
 private:
-	// level properties
-	Level * level;
+	LevelGridListener grid_listener;
+	void update_input();
 	// component properties
-	// TODO: consider making a class that contains this layer
 	std::map<std::string, agui::Allegro5Image*> loaded_image_layers;
 	std::map<std::string, bool> layer_visibility_map;
 	int topMargin;
 	int leftMargin;
 	int rightMargin;
 	int bottomMargin;
+	void add_object(std::pair<float, float> pos);
+	void delete_object(std::pair<float, float> pos);
 	void clear_image_layers();
 	void load_image_layer(std::string layer);
+	void reset_image_layer(int index);
 	void update_image_layer(std::string layer);
 	agui::Allegro5Image *loaded_level_image(std::string prefix, std::string level_name);
 	void set_loaded_level_image(agui::Allegro5Image *image, std::string prefix, std::string level_name);
 	bool is_layer_visible(std::string layer);
+	std::string level_name();
+	bool has_level();
 protected:
 	// component methods
 	virtual void paintComponent(const agui::PaintEvent &paintEvent);
@@ -46,7 +48,6 @@ public:
 	LevelEditorGrid(int, int, int, int);
 	void update();
 	void set_layer_visible(std::string layer, bool visible);
-	void set_level(Level *level);
 };
 
 #endif

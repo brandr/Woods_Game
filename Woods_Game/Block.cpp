@@ -42,6 +42,14 @@ bool Block::is_empty()
 	return this->get_entity_data_index() < 0;
 }
 
+void Block::set_empty()
+{
+	this->entity_data_index = -1;
+	this->entity_sheet_col = 0;
+	this->entity_sheet_row = 0;
+	this->entity_attributes.Clear();
+}
+
 void Block::set_content(std::string image_filename, Rect * image_subsection, std::pair<int, int> position)
 {
 	this->entity_data_index = entity_data_index;

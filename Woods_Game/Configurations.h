@@ -3,9 +3,7 @@
 
 #include "XMLSerialization.h"
 //TODO: make serializable and save an XML config file
-const static std::string SCREEN_STYLE_WINDOWED = "Windowed";
-const static std::string SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
-const static std::string SCREEN_STYLE_FULLSCREEN = "Fullscreen";
+
 
 class Configurations: public xmls::Serializable
 {
@@ -16,6 +14,9 @@ private:
 	xmls::xInt screen_res_y;
 	xmls::xString screen_mode;
 public:
+	static constexpr const char* SCREEN_STYLE_WINDOWED = "Windowed";
+	static constexpr const char* SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
+	static constexpr const char* SCREEN_STYLE_FULLSCREEN = "Fullscreen";
 	Configurations();
 	~Configurations();
 	void set_screen_res_x(int x);

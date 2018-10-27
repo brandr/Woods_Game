@@ -3,20 +3,20 @@
 
 #include<map>
 #include "ImageLoader.h"
+#include "TileType.h"
+#include "Entity.h"
 #include <string>
 #include <iostream>
 #include "xstring"  
 #include "Animation.h"
 #include "allegro5/allegro5.h"
-//#include "GameImage.h"
 
 class GameImage;
 class ImageLoader
 {
 private:
-	ImageLoader() {}//;
+	ImageLoader() {}
 	std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*> image_map;
-	//std::map<std::pair<std::string, std::string>, std::shared_ptr<ALLEGRO_BITMAP>> image_map;
 	std::string rect_to_string(Rect r);
 public:
 	ImageLoader(ImageLoader const&) = delete;
@@ -29,6 +29,9 @@ public:
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);
 	void load_spritesheet(Animation);
+	ALLEGRO_BITMAP* get_default_tile_image(std::string, TileType*);
+	ALLEGRO_BITMAP* get_default_block_image(std::string, EntityData*);
+	ALLEGRO_BITMAP* get_default_entity_group_image(std::string, EntityGroupData*);
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);

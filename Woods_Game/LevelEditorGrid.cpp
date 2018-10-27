@@ -3,20 +3,23 @@
 LevelEditorGrid::LevelEditorGrid()
 {
 	this->setMargins(0, 0, 0, 0);
+	this->addMouseListener(&grid_listener);
 }
 
 LevelEditorGrid::LevelEditorGrid(int topMargin, int leftMargin, int rightMargin, int bottomMargin) {
 	this->setMargins(topMargin, leftMargin, rightMargin, bottomMargin);
+	this->addMouseListener(&grid_listener);
 }
 
 void LevelEditorGrid::update()
 {
-	if (this->level == NULL) { 
+	if (!(this->has_level())) { 
 		this->clear_image_layers();
 	} else {
 		for (std::string layer : LEVEL_LAYERS) {
 			this->update_image_layer(layer);
 		}
+		this->update_input();
 	}
 }
 
@@ -27,10 +30,43 @@ void LevelEditorGrid::set_layer_visible(std::string layer, bool visible)
 
 void LevelEditorGrid::update_image_layer(std::string layer)
 {
-	std::string level_name = this->level->get_filename();
+	const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
 	agui::Allegro5Image  *loaded_tile_layer_image = this->loaded_level_image(layer, level_name);
 	if (loaded_tile_layer_image == NULL) {
 		this->load_image_layer(layer);
+	}
+}
+
+void LevelEditorGrid::update_input()
+{
+	if (this->grid_listener.has_update()) {
+		const std::pair<float, float> pos = this->grid_listener.get_last_event_pos();
+		if (this->grid_listener.has_left_click()) {
+			this->add_object(pos);
+		} else if (this->grid_listener.has_right_click()) {
+			this->delete_object(pos);
+		}
+		this->grid_listener.unset_update();
+	}
+}
+
+void LevelEditorGrid::add_object(std::pair<float, float> pos)
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const bool update = manager.add_level_object(tile_pos);
+	if (update) {
+		this->reset_image_layer(manager.get_selected_object_tab_index());
+	}
+}
+
+void LevelEditorGrid::delete_object(std::pair<float, float> pos)
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const bool update = manager.delete_level_object(tile_pos);
+	if (update) {
+		this->reset_image_layer(manager.get_selected_object_tab_index());
 	}
 }
 
@@ -43,30 +79,21 @@ void LevelEditorGrid::clear_image_layers()
 
 void LevelEditorGrid::load_image_layer(std::string layer)
 {
-	if (this->level != NULL) {
-		std::string level_name = this->level->get_filename();
-		int width = this->level->get_width();
-		int height = this->level->get_height();
-		agui::Allegro5Image *image_layer = new agui::Allegro5Image();
-		ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(width, height);
-		if (TILE_LAYER == layer) {
-			level->draw_tiles_onto_bitmap(image_bitmap);
-		}
-		else if (BLOCK_LAYER == layer) {
-			level->draw_blocks_onto_bitmap(image_bitmap);
-		}
-		else if (ENTITY_GROUP_LAYER == layer) {
-			level->draw_entity_groups_onto_bitmap(image_bitmap);
-		}
-		image_layer->setBitmap(image_bitmap);
-		image_layer->setPixel(5, 5, agui::Color(255, 0, 0));
+	if (this->has_level()) {
+		agui::Allegro5Image *image_layer 
+			= LevelEditorDataManager::get_instance().load_image_layer(layer);
+		std::string level_name = this->level_name();
 		this->set_loaded_level_image(image_layer, layer, level_name);
 	}
 }
 
-void LevelEditorGrid::set_level(Level * level)
+void LevelEditorGrid::reset_image_layer(int index)
 {
-	this->level = level;
+	const std::string layer = LEVEL_LAYERS[index];
+	if (loaded_image_layers[layer] != NULL) {
+		delete loaded_image_layers[layer];
+	}
+	this->load_image_layer(layer);
 }
 
 agui::Allegro5Image * LevelEditorGrid::loaded_level_image(std::string prefix, std::string level_name)
@@ -94,6 +121,16 @@ bool LevelEditorGrid::is_layer_visible(std::string layer)
 	return layer_visibility_map[layer];
 }
 
+std::string LevelEditorGrid::level_name()
+{
+	return LevelEditorDataManager::get_instance().get_selected_level_name();
+}
+
+bool LevelEditorGrid::has_level()
+{
+	return LevelEditorDataManager::get_instance().has_selected_level();
+}
+
 void LevelEditorGrid::paintComponent(const agui::PaintEvent &paintEvent)
 {
 	
@@ -101,9 +138,9 @@ void LevelEditorGrid::paintComponent(const agui::PaintEvent &paintEvent)
 
 void LevelEditorGrid::paintBackground(const agui::PaintEvent &paintEvent)
 {
-	if (this->level != NULL)
+	if (this->has_level())
 	{
-		std::string level_name = this->level->get_filename();
+		std::string level_name = this->level_name();
 		for (std::string layer : LEVEL_LAYERS) {
 			if (this->is_layer_visible(layer)) {
 				agui::Allegro5Image *layer_image = this->loaded_level_image(layer, level_name);

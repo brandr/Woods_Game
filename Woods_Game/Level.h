@@ -13,13 +13,13 @@
 #include "TileGroup.h"
 
 class Level : public xmls::Serializable
-	//TODO: serialize
 {
 private:
 	std::string map_filename = "";
 	std::string dungeon_filename;
 	std::string id = "";
 	TileSet *tileset;
+	xmls::xString tileset_key;
 	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	std::vector<GameImage*> game_images;
@@ -44,10 +44,12 @@ public:
 	void load_from_map();
 	void load_from_xml();
 	void intialize_dimensions();
+	void initialize_empty();
 	void initialize_tiles();
 	void initialize_blocks();
 	void generate_blocks();
 	void initialize_entity_groups();
+	void initialize_entity_group(EntityGroup *eg);
 	void load_tile_edges();
 	void draw_tile_edge_bitmaps();
 	void save_to_xml();
@@ -66,18 +68,33 @@ public:
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Entity> get_player_interactables();
 	std::vector<std::string> get_layers();
+	void remove_tile(std::pair<int, int> pos);
+	void remove_block(std::pair<int, int> pos);
+	void remove_entity_group(std::pair<int, int> pos);
+	void replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	void replace_block(int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	void add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	EntityGroup * create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	void set_tile(Tile * tile, std::pair<int, int> pos);
 	Tile *get_tile(int x, int y);
 	bool passable_at(int, int);
+	TileSet *get_tileset();
+	void set_tileset_key(std::string key);
 	std::string get_dungeon_filename();
 	void set_dungeon_filename(std::string value);
 	std::string get_filename();
+	void set_filename(std::string value);
 	std::string get_id();
 	std::pair<int, int> get_dimensions();
 	int get_width();
 	int get_height();
+	void set_grid_x(const int value);
 	int get_grid_x();
+	void set_grid_y(const int value);
 	int get_grid_y();
+	void set_grid_width(const int value);
 	int get_grid_width();
+	void set_grid_height(const int value);
 	int get_grid_height();
 	// methods for level editor
 	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap);

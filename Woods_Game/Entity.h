@@ -47,7 +47,6 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<EntityAttribute> attributes;
 	xmls::xBool solid = false;
 	xmls::Collection<EntityComponentData> components;
-	//std::map<std::string, int> attributes;
 	EntityData();
 	bool empty = true;
 	void set_attributes(std::map<std::string, int> attributes);
@@ -78,7 +77,6 @@ class Entity :
 {
 protected:
 	xmls::xBool solid = false;
-	//std::map<std::string, int> entity_attributes;
 	xmls::Collection<EntityAttribute> entity_attributes;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;	

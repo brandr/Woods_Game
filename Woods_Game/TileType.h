@@ -10,7 +10,6 @@ private:
 	xmls::xInt tile_sheet_row;
 	xmls::xInt tile_sheet_index;
 	xmls::xString tile_sheet_key;
-	//xmls::xString tile_sheet_col;
 	xmls::xFloat speed_mod = 1.0f;
 	xmls::xInt edge_priority;
 public:
@@ -22,6 +21,7 @@ public:
 	void set_speed_mod(float speed_mod);
 	void set_edge_priority(int priority);
 	std::string get_tile_sheet_key();
+	int get_tile_sheet_row();
 	float get_speed_mod();
 	int get_edge_priority();
 };

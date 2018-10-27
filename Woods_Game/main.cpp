@@ -1,10 +1,17 @@
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>  
+#include <crtdbg.h>
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
 // Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
 // allocations to be of _CLIENT_BLOCK type
-//TODO: replace new with DBG_NEW when it is used
-#include<stdlib.h>
+#else
+#define DBG_NEW new
+#endif
+//#include "vld.h"
+//#include <stdlib.h>  
 #include<allegro5/allegro_native_dialog.h>
 #include<allegro5/allegro_primitives.h>
-
 #include "ScreenManager.h"
 #include "allegro5/allegro_font.h"           // for al_init_font_addon
 #include "allegro5/allegro_ttf.h"           
@@ -28,11 +35,13 @@
 #include "TitleScreen.h"                     // for TitleScreen
 #include "LevelEditorScreen.h"
 #include "utility"                           // for pair
-#include "vcruntime_new.h"                   // for operator new
+//#include "vcruntime_new.h"                   // for operator new
 #include "vector"                            // for vector
 #include "xstring"                           // for string, operator==, basic_string
 #include <memory>                            // for allocator
 #include "Configurations.h"
+
+
 
 static const std::string RUN_GAME = "RunGame";
 static const std::string LEVEL_EDITOR = "LevelEditor";
@@ -48,25 +57,26 @@ int initialize_allegro() {
 }
 
 ALLEGRO_DISPLAY * initialize_display(std::string config_path, std::string run_mode) {
+	
 	ALLEGRO_DISPLAY *display = NULL;
 	FileManager filemanager;
-	Configurations *config = new Configurations();
+	Configurations config;//*config = DBG_NEW Configurations();
 	std::string config_key = run_mode == LEVEL_EDITOR ? "level_editor_configurations" : "current_configurations";
-	filemanager.load_xml_content(config, config_path, "SerializableClass", "ConfigurationsKey", config_key);
-	if (config->get_screen_mode() == SCREEN_STYLE_FULLSCREEN) {
+	filemanager.load_xml_content(&config, config_path, "SerializableClass", "ConfigurationsKey", config_key);
+	if (config.get_screen_mode() == Configurations::SCREEN_STYLE_FULLSCREEN) {
 		ALLEGRO_DISPLAY_MODE   disp_data;
 		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
 		display = al_create_display(disp_data.width, disp_data.height);
-	} else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+	} else if (config.get_screen_mode() == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
 		ALLEGRO_DISPLAY_MODE   disp_data;
 		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 		al_set_new_display_flags(ALLEGRO_FULLSCREEN_WINDOW);
 		display = al_create_display(disp_data.width, disp_data.height);
-	} else if (config->get_screen_mode() == SCREEN_STYLE_WINDOWED) {
-		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());
+	} else if (config.get_screen_mode() == Configurations::SCREEN_STYLE_WINDOWED) {
+		display = al_create_display(config.get_screen_res_x(), config.get_screen_res_y());
 	} else {	//windowed by default, but the above block is included for the sake of consistency.
-		display = al_create_display(config->get_screen_res_x(), config->get_screen_res_y());	
+		display = al_create_display(config.get_screen_res_x(), config.get_screen_res_y());	
 	}
 	// make sure the display was created correctly
 	if (!display) {
@@ -91,10 +101,10 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 
 	GameScreen *game_screen = NULL;
 	if (run_mode == RUN_GAME) {
-		game_screen = new TitleScreen();
+		game_screen = DBG_NEW TitleScreen();
 		al_set_window_title(display, "Woods Game");
 	} else {
-		game_screen = new LevelEditorScreen();
+		game_screen = DBG_NEW LevelEditorScreen();
 		al_set_window_title(display, "Level Editor");
 		((LevelEditorScreen*)(game_screen))->initialize(display);
 	}
@@ -140,6 +150,8 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	al_uninstall_mouse();
 	al_uninstall_keyboard();
 	al_uninstall_system();
+	// show memory leaks
+	_CrtDumpMemoryLeaks();
 }
 
 int initialize_allegro_libraries() {
@@ -156,10 +168,13 @@ int initialize_allegro_libraries() {
 
 int main(int argc, char *argv[])
 {
+	// show memory leaks
+	_CrtDumpMemoryLeaks();
 	std::string run_mode = argv[1];
 	ALLEGRO_DISPLAY *display; 
 	if (run_mode == RUN_GAME || run_mode == LEVEL_EDITOR) {
 		if (initialize_allegro()){
+			
 			display = initialize_display("resources/config", run_mode);
 			if (initialize_allegro_libraries()) {
 				run_main_loop(argc, argv, display, run_mode);

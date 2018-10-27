@@ -8,14 +8,15 @@ EditorActionListener::EditorActionListener()
 void EditorActionListener::actionPerformed(const agui::ActionEvent & evt)
 {
 	switch (get_listener_type()) {
-	case LOAD_DUNGEON:
+	//TODO: refactor the way we check tileset flags
+	case LOAD_TILESET:
 		dialog_manager->process_action(this->display);
 		break;
-	case SAVE_DUNGEON:
-		this->flags[SHOULD_SAVE] = 1;
-		//TODO: save dungeon with changes to level, file, etc
+	case SAVE_TILESET:
+		this->flags[SHOULD_UPDATE] = 1;
 		break;
 	default:
+		this->flags[SHOULD_UPDATE] = 1;
 		break;
 	}
 }
@@ -51,6 +52,7 @@ Dungeon * EditorActionListener::selected_dungeon()
 void EditorActionListener::unset_flag(int flag)
 {
 	this->flags[flag] = 0;
+	this->flags[flag];
 }
 
 bool EditorActionListener::has_flag(int flag)

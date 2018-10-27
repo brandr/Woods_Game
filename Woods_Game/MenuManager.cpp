@@ -1,3 +1,11 @@
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #include "MenuManager.h"
 
 MenuManager::MenuManager()
@@ -57,13 +65,13 @@ void MenuManager::load_content(std::string id)
 		for (int j = 0; j < attributes[i].size(); j++) {
 			if (attributes[i][j] == "text_item") {
 				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(contents[i][j], ",");
-				MenuItem *item = new MenuItem();
+				MenuItem *item = DBG_NEW MenuItem();
 				item -> set_text(text_item_data.first);
 				item -> set_selection_action_key(text_item_data.second);
 				menu_items.addItem(item);
 			}
 			else if (attributes[i][j] == "image_item") {
-				MenuItem *item = new MenuItem();
+				MenuItem *item = DBG_NEW MenuItem();
 				std::pair<std::string, std::string> image_item_data = FileManager::string_to_pair(contents[i][j], ",");
 				std::string filename = "resources/images/ui/menu_image_items/" + image_item_data.first + ".png";
 				item->set_image_filename("ui/menu_image_items/" + image_item_data.first + ".png");
@@ -74,7 +82,7 @@ void MenuManager::load_content(std::string id)
 			else if (attributes[i][j] == "text_item_options") {
 				std::pair<std::string, std::string> text_options_data = FileManager::string_to_pair(contents[i][j], ":");
 				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(text_options_data.first, ",");
-				MenuItem *item = new MenuItem();
+				MenuItem *item = DBG_NEW MenuItem();
 				item->set_text(text_item_data.first);
 				item->set_selection_action_key(SELECTION_KEY_SELECT_OPTIONS);
 				item->set_confirm_action_key(text_item_data.second);
@@ -91,7 +99,7 @@ void MenuManager::load_content(std::string id)
 				menu_items.addItem(item);
 			}
 			else if (attributes[i][j] == "controls_menu_item") {
-				MenuItem *item = new MenuItem();
+				MenuItem *item = DBG_NEW MenuItem();
 				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(contents[i][j], ",");
 				item->set_text(text_item_data.first);
 				item->set_selection_action_key(SELECTION_KEY_SET_CONTROL_INPUT);

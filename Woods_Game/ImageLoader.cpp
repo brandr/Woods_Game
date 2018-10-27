@@ -1,12 +1,8 @@
+
+
 #include "ImageLoader.h"
 #include "GameImage.h"
 
-/*
-ImageLoader::ImageLoader()
-{
-	//image_map = std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>();
-}
-*/
 std::string ImageLoader::rect_to_string(Rect r)
 {
 	return "" + std::to_string(r.x) + "," + std::to_string(r.y) + "," + std::to_string(r.width) + "," + std::to_string(r.height);
@@ -51,10 +47,9 @@ void ImageLoader::load_image(std::string filename)
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
 	if (it != image_map.end()) return;
 	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
-	ALLEGRO_BITMAP *image = al_load_bitmap(full_filename.c_str());	//temp path- change in exe
+	ALLEGRO_BITMAP *image = al_load_bitmap(full_filename.c_str());
 	
 	if (image == NULL) {
-		//TODO: error handling
 		std::cout << filename << std::endl;
 		std::cout << "loader failed to load image" << std::endl;
 	}
@@ -73,7 +68,6 @@ void ImageLoader::load_image(std::string filename, Rect subsection)
 	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
 	ALLEGRO_BITMAP *image = image_map[(std::pair<std::string, std::string>(full_filename, ""))];
 	if (image == NULL) {
-		//TODO: error handling
 		std::cout << filename << std::endl;
 		std::cout << "loader failed to load image" << std::endl;
 	}
@@ -96,7 +90,46 @@ void ImageLoader::load_spritesheet(Animation anim)
 	}
 }
 
-//TODO: modify this to allow for spritesheets
+ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string sheet_filename, TileType * tile_type)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + tile_type->get_tile_sheet_key());
+	Rect * subsection = DBG_NEW Rect(0, 0,
+		TILE_SIZE, TILE_SIZE);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else { return it->second; }
+}
+
+ALLEGRO_BITMAP * ImageLoader::get_default_block_image(std::string sheet_filename, EntityData * block_type)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + block_type->get_entity_data_key());
+	Rect * subsection = DBG_NEW Rect(0, 0,
+		TILE_SIZE, TILE_SIZE);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else { return it->second; }
+}
+
+ALLEGRO_BITMAP * ImageLoader::get_default_entity_group_image(std::string sheet_filename, EntityGroupData * eg_type)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + eg_type->get_entity_group_name());
+	Rect * subsection = DBG_NEW Rect(0, 0,
+		eg_type->get_entity_group_image_dimensions().first, 
+		eg_type->get_entity_group_image_dimensions().second);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else { return it->second; }
+}
+
 ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
 {
 	Animation *anim = image->get_animation();

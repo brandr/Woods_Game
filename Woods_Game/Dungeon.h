@@ -21,8 +21,10 @@ public:
 	static Dungeon * load_dungeon(std::string dungeon_name);
 	void load_images(ImageLoader&);
 	void add_level(Level*);
+	void remove_level(int index);
 	Level* level_at(int, int);
 	Level* level_with_name(std::string name);
+	void set_dungeon_name(std::string name);
 	std::string get_dungeon_name();
 	std::vector<Level*> get_level_list();
 };

@@ -1,3 +1,10 @@
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
 
 #include "ScreenManager.h"
 
@@ -40,7 +47,7 @@ void ScreenManager::update()
 {
 	if (current_screen) {
 		if (current_screen->get_screen_flag() == FLAG_CHANGE_TO_MAIN_GAME) {
-			add_screen(new MainGameScreen());
+			add_screen(DBG_NEW MainGameScreen());
 			return;
 		}
 		current_screen->update();

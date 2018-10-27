@@ -33,6 +33,10 @@ public:
 		std::string const & key,
 		std::string const & value,
 		std::string const & replaceXML);
+	void save_xml_content(std::string const & filename,
+		std::string const & element_name,
+		std::map<std::string, std::string> attributes);
+	void create_xml_file(std::string const & filename);
 	std::vector<std::string> all_xml_keys(std::string const & filename,
 		std::string const & element_name,
 		std::string const & type,

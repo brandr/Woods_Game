@@ -55,6 +55,11 @@ std::string TileType::get_tile_sheet_key()
 	return tile_sheet_key.value();
 }
 
+int TileType::get_tile_sheet_row()
+{
+	return this->tile_sheet_row.value();
+}
+
 float TileType::get_speed_mod()
 {
 	return this->speed_mod.value();

@@ -175,12 +175,12 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\include;C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\Programming\Libraries\agui\agui_source\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\include;C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\Programming\Libraries\agui\agui_source\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\Programming\Libraries\agui\build\Debug;C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\lib;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\Programming\Libraries\agui\build\Debug;C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>agui.lib;agui_allegro5.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib</IgnoreSpecificDefaultLibraries>
@@ -192,7 +192,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\Programming\Libraries\allegro5\allegro\include;C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\Programming\Libraries\agui\agui_source\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\Programming\Libraries\agui\agui_source\include;C:\Program Files (x86)\Visual Leak Detector\include;C:\Users\Robert\Documents\Programming\Libraries\allegro5\allegro\include;C:\Users\Robert\Documents\VLD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -202,7 +202,7 @@
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib</IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\Programming\Libraries\agui\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\Programming\Libraries\agui\build\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>agui.lib;agui_allegro5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -266,6 +266,7 @@
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Dungeon.h" />
+    <ClInclude Include="DungeonEditorLayout.h" />
     <ClInclude Include="EditorActionListener.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityEffect.h" />
@@ -273,6 +274,7 @@
     <ClInclude Include="FileDialogManager.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameImage.h" />
+    <ClInclude Include="GameImageDisplay.h" />
     <ClInclude Include="GameImageManager.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="ImageLoader.h" />
@@ -281,9 +283,12 @@
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Level.h" />
+    <ClInclude Include="LevelEditorDataManager.h" />
     <ClInclude Include="LevelEditorGrid.h" />
+    <ClInclude Include="LevelEditorLayout.h" />
     <ClInclude Include="LevelEditorManager.h" />
     <ClInclude Include="LevelEditorScreen.h" />
+    <ClInclude Include="LevelGridListener.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="MenuItem.h" />
@@ -298,6 +303,7 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileGroup.h" />
     <ClInclude Include="TileSet.h" />
+    <ClInclude Include="TilesetEditorLayout.h" />
     <ClInclude Include="TileType.h" />
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="TitleScreen.h" />
@@ -311,6 +317,7 @@
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
+    <ClCompile Include="DungeonEditorLayout.cpp" />
     <ClCompile Include="EditorActionListener.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityEffect.cpp" />
@@ -318,6 +325,7 @@
     <ClCompile Include="FileDialogManager.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameImage.cpp" />
+    <ClCompile Include="GameImageDisplay.cpp" />
     <ClCompile Include="GameImageManager.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
@@ -326,9 +334,12 @@
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="Level.cpp" />
+    <ClCompile Include="LevelEditorDataManager.cpp" />
     <ClCompile Include="LevelEditorGrid.cpp" />
+    <ClCompile Include="LevelEditorLayout.cpp" />
     <ClCompile Include="LevelEditorManager.cpp" />
     <ClCompile Include="LevelEditorScreen.cpp" />
+    <ClCompile Include="LevelGridListener.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
     <ClCompile Include="Block.cpp" />
@@ -342,6 +353,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileGroup.cpp" />
     <ClCompile Include="TileSet.cpp" />
+    <ClCompile Include="TilesetEditorLayout.cpp" />
     <ClCompile Include="TileType.cpp" />
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="TitleScreen.cpp" />

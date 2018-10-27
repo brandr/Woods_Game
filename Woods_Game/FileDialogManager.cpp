@@ -18,70 +18,10 @@ void FileDialogManager::message(char const *format, ...)
 
 void FileDialogManager::process_action(ALLEGRO_DISPLAY *display)
 {
-	//temp
 	file_chooser = al_create_native_file_dialog("resources/load/dungeon", "Select Dungeon", "*.*", ALLEGRO_FILECHOOSER_FILE_MUST_EXIST);
 	if (al_get_native_file_dialog_count(file_chooser) < 1) {
 		al_show_native_file_dialog(display, file_chooser);
 	}
-	
-	//TODO: try relying on the refresh/draw functionality and see if we can refresh the dungeon without doing anything else in this method
-	//temp
-
-	//...
-	/* When a mouse button is pressed, and no native dialog is
-	* shown already, we show a new one.
-	*/
-	/*
-	if (event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN) {
-		message("Mouse clicked at %d,%d.\n", event.mouse.x, event.mouse.y);
-		if (event.mouse.y > 30) {
-			if (event.mouse.y > h - 30) {
-				message_log = !message_log;
-				if (message_log) {
-					textlog = al_open_native_text_log("Log", 0);
-					if (textlog) {
-						al_register_event_source(queue,
-							al_get_native_text_log_event_source(textlog));
-					}
-				}
-				else {
-					close_log = true;
-				}
-			}
-			else if (!message_box) {
-				message_box = spawn_async_message_dialog(display);
-				al_register_event_source(queue, &message_box->event_source);
-			}
-		}
-		else if (!cur_dialog) {
-			const char *last_path = NULL;
-			if (old_dialog) {
-				last_path = al_get_native_file_dialog_path(
-					old_dialog->file_dialog, 0);
-			}
-			cur_dialog = spawn_async_file_dialog(display, last_path);
-			al_register_event_source(queue, &cur_dialog->event_source);
-		}
-	}
-	if (event.type == ASYNC_DIALOG_EVENT1) {
-		al_unregister_event_source(queue, &cur_dialog->event_source);
-		if (al_get_native_file_dialog_count(cur_dialog->file_dialog) > 0) {
-			if (old_dialog)
-				stop_async_dialog(old_dialog);
-			old_dialog = cur_dialog;
-		}
-		else {
-			stop_async_dialog(cur_dialog);
-		}
-		cur_dialog = NULL;
-	}
-	if (event.type == ASYNC_DIALOG_EVENT2) {
-		al_unregister_event_source(queue, &message_box->event_source);
-		stop_async_dialog(message_box);
-		message_box = NULL;
-	}
-	*/
-	//...
 }
 
 Dungeon * FileDialogManager::selected_dungeon()

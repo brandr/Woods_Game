@@ -99,7 +99,7 @@ void Inventory::swap_items(int x1, int y1, int x2, int y2)
 	Item *swapped_item_1 = new Item(item_1);
 	Item *swapped_item_2 = new Item(item_2);
 	item_1->unload_content(), item_2->unload_content();
-	delete item_1, delete item_2;
+	//delete item_1, delete item_2;
 	set_item(swapped_item_1, x2, y2);
 	set_item(swapped_item_2, x1, y1);
 }

@@ -1,5 +1,6 @@
 <root>
-    <SerializableClass Type="Level" Version="1" LevelKey="temp_level_A_1">
+    <SerializableClass LevelKey="temp_level_A_1" Type="Level" Version="1">
+        <Member Name="TilesetKey">tileset_1</Member>
         <Member Name="GridX">0</Member>
         <Member Name="GridY">0</Member>
         <Member Name="GridWidth">1</Member>
@@ -438,7 +439,7 @@
                             <Member Name="Solid">false</Member>
                             <Member Name="EntityStartingPosX">128</Member>
                             <Member Name="EntityStartingPosY">0</Member>
-                            <Member Name="EntityDataIndex">1</Member>
+                            <Member Name="EntityDataIndex">-1</Member>
                             <Member Name="EntitySheetCol">2</Member>
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes">
@@ -468,7 +469,7 @@
                             <Member Name="Solid">false</Member>
                             <Member Name="EntityStartingPosX">64</Member>
                             <Member Name="EntityStartingPosY">0</Member>
-                            <Member Name="EntityDataIndex">1</Member>
+                            <Member Name="EntityDataIndex">-1</Member>
                             <Member Name="EntitySheetCol">1</Member>
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes">
@@ -531,7 +532,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">5</Member>
                         <Member Name="TilePosY">1</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -848,7 +849,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
                         <Member Name="TilePosY">2</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -911,7 +912,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">4</Member>
                         <Member Name="TilePosY">2</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -928,7 +929,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">5</Member>
                         <Member Name="TilePosY">2</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -1257,7 +1258,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
                         <Member Name="TilePosY">3</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -1301,26 +1302,13 @@
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid">false</Member>
-                            <Member Name="EntityStartingPosX">0</Member>
-                            <Member Name="EntityStartingPosY">0</Member>
-                            <Member Name="EntityDataIndex">1</Member>
+                            <Member Name="Solid">true</Member>
+                            <Member Name="EntityStartingPosX">192</Member>
+                            <Member Name="EntityStartingPosY">192</Member>
+                            <Member Name="EntityDataIndex">0</Member>
                             <Member Name="EntitySheetCol">0</Member>
                             <Member Name="EntitySheetRow">0</Member>
-                            <Collection Name="EntityAttributes">
-                                <Class Type="EntityAttribute" Version="1">
-                                    <Member Name="attribute_key">contact_slow</Member>
-                                    <Member Name="attribute_value">2</Member>
-                                </Class>
-                                <Class Type="EntityAttribute" Version="1">
-                                    <Member Name="attribute_key">durability</Member>
-                                    <Member Name="attribute_value">2</Member>
-                                </Class>
-                                <Class Type="EntityAttribute" Version="1">
-                                    <Member Name="attribute_key">shearable</Member>
-                                    <Member Name="attribute_value">1</Member>
-                                </Class>
-                            </Collection>
+                            <Collection Name="EntityAttributes"/>
                         </Class>
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
@@ -1337,12 +1325,12 @@
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
+                            <Member Name="Solid">true</Member>
+                            <Member Name="EntityStartingPosX">256</Member>
+                            <Member Name="EntityStartingPosY">192</Member>
+                            <Member Name="EntityDataIndex">0</Member>
+                            <Member Name="EntitySheetCol">0</Member>
+                            <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
                         <Collection Name="TileEdges">
@@ -1360,12 +1348,12 @@
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
+                            <Member Name="Solid">true</Member>
+                            <Member Name="EntityStartingPosX">320</Member>
+                            <Member Name="EntityStartingPosY">192</Member>
+                            <Member Name="EntityDataIndex">0</Member>
+                            <Member Name="EntitySheetCol">0</Member>
+                            <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
                         <Collection Name="TileEdges">
@@ -1383,12 +1371,12 @@
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
+                            <Member Name="Solid">true</Member>
+                            <Member Name="EntityStartingPosX">384</Member>
+                            <Member Name="EntityStartingPosY">192</Member>
+                            <Member Name="EntityDataIndex">0</Member>
+                            <Member Name="EntitySheetCol">0</Member>
+                            <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
                         <Collection Name="TileEdges">
@@ -1765,7 +1753,7 @@
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
                         <Member Name="TilePosY">4</Member>
-                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileTypeIndex">1</Member>
                         <Member Name="TileSheetCol">0</Member>
                         <Member Name="TileSheetRow">0</Member>
                         <Class Name="Block" Type="Block" Version="1">
@@ -4379,6 +4367,62 @@
                 <Member Name="EntitySheetRow">0</Member>
                 <Member Name="RootPosX">256</Member>
                 <Member Name="RootPosY">384</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">28672</Member>
+                <Member Name="RootPosY">4096</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">28672</Member>
+                <Member Name="RootPosY">12288</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">448</Member>
+                <Member Name="RootPosY">64</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">448</Member>
+                <Member Name="RootPosY">192</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">320</Member>
+                <Member Name="RootPosY">128</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">256</Member>
+                <Member Name="RootPosY">128</Member>
+                <Member Name="EntityGroupName">tree_1</Member>
+            </Class>
+            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">192</Member>
+                <Member Name="RootPosY">128</Member>
                 <Member Name="EntityGroupName">tree_1</Member>
             </Class>
         </Collection>

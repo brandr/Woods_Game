@@ -12,8 +12,6 @@ Tile::Tile()
 	Register("TileSheetRow", &tile_sheet_row);
 	Register("TileEdges", &tile_edges);
 	Register("Block", &block);
-	//Register("BlockData", &(this->block_data));
-	//Register("Block", this->block);
 }
 
 Tile::Tile(TileSet *tileset, int tile_x, int tile_y, int type_index, int sheet_col, int sheet_row)
@@ -26,7 +24,6 @@ Tile::Tile(TileSet *tileset, int tile_x, int tile_y, int type_index, int sheet_c
 	Register("TileSheetRow", &tile_sheet_row);
 	Register("TileEdges", &tile_edges);
 	Register("Block", &block);
-	//Register("Block", this->block);
 	this->tile_pos_x = tile_x;
 	this->tile_pos_y = tile_y;
 	this->tile_type_index = type_index;
@@ -50,6 +47,7 @@ Tile * Tile::null_tile(TileSet *tileset, int tile_x, int tile_y)
 	Tile *tile = new Tile();
 	tile->set_tile_pos_x(tile_x);
 	tile->set_tile_pos_y(tile_y);
+	tile->set_tile_type_index(0);
 	tile->set_tile_sheet_col(0);
 	tile->set_tile_sheet_row(0);
 	std::string filename = tileset->get_full_tile_sheet_filename(0);
@@ -80,6 +78,27 @@ void Tile::unload_content()
 	GameImage::unload_content();
 }
 
+void Tile::reset(TileSet *tileset, Tile * t)
+{
+	const int tile_x = t->get_tile_pos_x();
+	const int tile_y = t->get_tile_pos_y();
+	const int sheet_col = t->tile_sheet_col.value();
+	const int sheet_row = t->tile_sheet_row.value();
+	const int type_index = t->get_tile_type_index();
+	this->tile_pos_x = tile_x;
+	this->tile_pos_y = tile_y;
+	this->tile_type_index = type_index;
+	this->tile_sheet_col = t->tile_sheet_col;
+	this->tile_sheet_row = sheet_row;
+	std::string filename = tileset->get_full_tile_sheet_filename(t->get_tile_type_index());
+	Rect* offset_rect = new Rect(sheet_col*TILE_SIZE, sheet_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
+	this->set_content(filename, offset_rect, position);
+	this->set_edge_priority(tileset->get_edge_priority(type_index));
+	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
+	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+}
+
 void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
 	GameImage::draw(display, x_offset, y_offset);
@@ -91,6 +110,30 @@ void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 void Tile::initialize_block()
 {
 	this->block.set_entity_data_index(0);
+}
+
+void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
+	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
+	const bool solid = tileset->get_block_solid(block_index);
+	this->block.set_entity_data_index(block_index);
+	this->block.set_content(filename, offset_rect, pixel_pos);
+	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
+	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
+	this->block.set_solid(solid);							//will be serialized
+	this->block.set_entity_attributes(block_attributes);	//will be serialized
+	this->block.load_entity_effects(filename, ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+	this->block.refresh_mask();
+}
+
+void Tile::remove_block()
+{
+	//TODO: delete other stuff from block if necessary
+	this->block.set_empty();
 }
 
 Rect * Tile::get_bitmap_subsection()

@@ -37,15 +37,6 @@
     <Filter Include="Menus\Source Files">
       <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
     </Filter>
-    <Filter Include="World">
-      <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="World\Header Files">
-      <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="World\Source Files">
-      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Items">
       <UniqueIdentifier>{093a7900-7b5a-49c1-98ad-01858daca012}</UniqueIdentifier>
     </Filter>
@@ -118,6 +109,15 @@
     </Filter>
     <Filter Include="LevelEditor\Source Files">
       <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Header Files">
+      <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Source Files">
+      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -248,6 +248,24 @@
     <ClInclude Include="LevelEditorGrid.h">
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GameImageDisplay.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DungeonEditorLayout.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditorLayout.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TilesetEditorLayout.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelEditorDataManager.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelGridListener.h">
+      <Filter>LevelEditor\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -374,6 +392,24 @@
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditorGrid.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameImageDisplay.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DungeonEditorLayout.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditorLayout.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TilesetEditorLayout.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelEditorDataManager.cpp">
+      <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelGridListener.cpp">
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

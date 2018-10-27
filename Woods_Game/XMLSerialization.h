@@ -185,6 +185,7 @@ namespace xmls
 		T *newElement(); 
 		void addItem(T *item) { m_vCollection.push_back(item); m_mOwner[item]=false;};
 		T *getItem(int itemID) { return (T*)m_vCollection.at(itemID); }; 
+		void removeItem(int index) { m_vCollection.erase(m_vCollection.begin() + index); };
 	};
 
 /**

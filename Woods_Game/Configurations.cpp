@@ -13,6 +13,7 @@ Configurations::Configurations()
 
 Configurations::~Configurations()
 {
+
 }
 
 void Configurations::set_screen_res_x(int x)

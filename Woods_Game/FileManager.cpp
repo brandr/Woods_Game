@@ -1,3 +1,11 @@
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #include "FileManager.h"
 
 using namespace xmls;
@@ -73,8 +81,8 @@ void FileManager::replace_xml_content(std::string const & filename,
 	std::string const & replaceXML)
 {
 	tinyxml2::XMLDocument doc;
-	std::string full_filname = filename + ".xml";
-	doc.LoadFile(full_filname.c_str());
+	std::string full_filename = filename + ".xml";
+	doc.LoadFile(full_filename.c_str());
 	tinyxml2::XMLElement * root = doc.RootElement();
 	std::string serializable_str = "";
 	tinyxml2::XMLPrinter printer;
@@ -99,7 +107,50 @@ void FileManager::replace_xml_content(std::string const & filename,
 			}
 		}
 	}
-	doc.SaveFile(full_filname.c_str());
+	doc.SaveFile(full_filename.c_str());
+}
+
+void FileManager::save_xml_content(std::string const & filename, 
+	std::string const & element_name,
+	std::map<std::string, std::string> attributes)
+{
+	tinyxml2::XMLDocument doc;
+	const std::string full_filename = filename + ".xml";
+	doc.LoadFile(full_filename.c_str());
+	tinyxml2::XMLElement * root = doc.RootElement();
+	tinyxml2::XMLElement *save_element = doc.NewElement(element_name.c_str());
+	for (auto const &it : attributes) {
+		save_element->SetAttribute(it.first.c_str(), it.second.c_str());
+	}
+	//tinyxml2::XMLDocument save_document;
+	//save_document.Parse(saveXML.c_str());
+	/*
+	save_element->DeleteChildren();
+	for (tinyxml2::XMLNode *save_child = save_document.RootElement()->FirstChild();
+		save_child != NULL;
+		save_child = save_child->NextSibling())
+	{
+		copy_xml_node(save_element, save_child);
+	}
+	*/
+	tinyxml2::XMLNode *last_child = root->LastChild();
+	if (last_child != NULL) {
+		root->InsertAfterChild(last_child, save_element);
+	}
+	else {
+		root->InsertFirstChild(save_element);
+	}
+	doc.SaveFile(full_filename.c_str());
+}
+
+void FileManager::create_xml_file(std::string const & filename)
+{
+	tinyxml2::XMLDocument doc;
+	const std::string full_filename = filename + ".xml";
+	doc.NewElement("root");
+	tinyxml2::XMLNode *root_element = doc.NewElement("root");
+	doc.InsertFirstChild(root_element);
+	doc.SaveFile(full_filename.c_str());
 }
 
 std::vector<std::string> FileManager::all_xml_keys(std::string const & filename, 
@@ -251,16 +302,14 @@ void FileManager::load_content(const char * filename,
 	}
 }
 
-//TODO: make this  write to file
 void FileManager::replace_content(const char * filename, 
 	std::vector<std::vector<std::string>>& attributes, 
 	std::vector<std::vector<std::string>>& contents, 
 	std::string id)
 {
-	std::string line, new_line;//, write_line;
+	std::string line, new_line;
 	std::ifstream openfile(filename);
 	std::stringstream write_str;
-	//int attr_line_index = 0;
 	if (openfile.is_open()) {
 		while (!openfile.eof()) {
 			std::stringstream str;
@@ -292,43 +341,6 @@ void FileManager::replace_content(const char * filename,
 						write_str << "[" + cont + "]";
 					}
 				}
-				
-				/*
-				if (line.find("Load=") != std::string::npos) {
-					type = ATTRIBUTES;
-					line = line.erase(0, line.find("=") + 1);
-					temp_attributes.clear();
-				}
-				else {
-					type = CONTENT;
-					temp_contents.clear();
-				}
-				str << line;
-				while (std::getline(str, new_line, ']')) {
-
-					//char remove[] = "[]";
-					new_line.erase(std::remove(new_line.begin(), new_line.end(), '['), new_line.end());
-					std::string erase = " \t\n\r";
-					new_line.erase(new_line.find_last_not_of(erase) + 1);
-					if (type == ATTRIBUTES) {
-						std::vector<std::string> attr_line = attributes[attr_line_index];
-						const int attr_size = attr_line.size();
-						for (int i = 0; i < attr_size; i++) {
-							if (attr_line[i] == new_line) {
-								//TODO
-								break;
-							}
-						}
-						//temp_attributes.push_back(new_line);
-					} else {
-						//temp_contents.push_back(new_line);
-					}
-				}
-				if (type == CONTENT && temp_contents.size() > 0) {
-					//attributes.push_back(temp_attributes);
-					//contents.push_back(temp_contents);
-				}
-				*/
 			}
 		}
 	}

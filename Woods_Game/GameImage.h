@@ -1,3 +1,11 @@
+#ifdef _DEBUG
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
+// allocations to be of _CLIENT_BLOCK type
+#else
+#define DBG_NEW new
+#endif
+
 #ifndef GAMEIMAGE_H
 #define GAMEIMAGE_H
 #include "PPCD.h"
@@ -25,19 +33,21 @@ enum FACING_DIRECTIONS { DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN };
 enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
 enum COUNTERS { BOUNCE, SWING };
 
-//attributes
-const static std::string E_ATTR_HIT_OTHER = "hit_other";
-const static std::string E_ATTR_DURABILITY = "durability";
-const static std::string E_ATTR_CURRENT_DURABILITY = "current_durability";
-const static std::string E_ATTR_BROKEN = "broken";
-const static std::string E_ATTR_CONTACT_SLOW = "contact_slow";
-const static std::string E_ATTR_CONTACT_DAMAGE = "contact_damage";
-const static std::string E_ATTR_KNOCKBACK = "knockback";
-const static std::string E_ATTR_SHEARABLE = "shearable";
+
 
 class ImageLoader;
 class GameImage
 {
+public:
+	//attributes
+	static constexpr const char* E_ATTR_HIT_OTHER = "hit_other";
+	static constexpr const char* E_ATTR_DURABILITY = "durability";
+	static constexpr const char* E_ATTR_CURRENT_DURABILITY = "current_durability";
+	static constexpr const char* E_ATTR_BROKEN = "broken";
+	static constexpr const char* E_ATTR_CONTACT_SLOW = "contact_slow";
+	static constexpr const char* E_ATTR_CONTACT_DAMAGE = "contact_damage";
+	static constexpr const char* E_ATTR_KNOCKBACK = "knockback";
+	static constexpr const char* E_ATTR_SHEARABLE = "shearable";
 protected:
 	// serializable attributes
 	xmls::xString animation_spritesheet_key;

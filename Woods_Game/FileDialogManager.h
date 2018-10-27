@@ -2,6 +2,7 @@
 #define FILE_DIALOG_MANAGER_H
 
 #include "Dungeon.h"
+#include "TileSet.h"
 #include <stdio.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_native_dialog.h>

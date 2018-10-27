@@ -15,6 +15,7 @@ public:
 	~TileGroup();
 	void add_tile(Tile *t);
 	Tile *get_tile(int index);
+	void set_tile(TileSet *tileset, Tile *t, int index);
 	int get_size();
 };
 

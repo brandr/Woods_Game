@@ -10,7 +10,6 @@ Dungeon::Dungeon(std::string dungeon_name)
 	this->intialize_levels();
 }
 
-
 Dungeon::~Dungeon()
 {
 	
@@ -97,6 +96,11 @@ void Dungeon::add_level(Level* level)
 	}
 }
 
+void Dungeon::remove_level(int index)
+{
+	this->level_list.erase(this->level_list.begin() + index);
+}
+
 Level * Dungeon::level_at(int x, int y)
 {
 	//TODO: out of bounds check
@@ -116,6 +120,11 @@ Level * Dungeon::level_with_name(std::string name)
 		}
 	}
 	return NULL;
+}
+
+void Dungeon::set_dungeon_name(std::string name)
+{
+	this->dungeon_name = name;
 }
 
 std::string Dungeon::get_dungeon_name()

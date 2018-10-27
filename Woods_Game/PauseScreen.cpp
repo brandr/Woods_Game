@@ -256,34 +256,34 @@ void PauseScreen::menu_right()
 void PauseScreen::confirm_selection()
 {
 std::string action_key = current_menu_manager().get_selected_action_key();
-if (action_key == SELECTION_KEY_RETURN_TO_MAIN_PAUSE) {
+if (action_key == MenuManager::SELECTION_KEY_RETURN_TO_MAIN_PAUSE) {
 	current_menu_manager().reset();
 	menu_key = PAUSE_MAIN_MENU;
 }
 // confirm actions (for options selected from some scrollable list)
-else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
+else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 	if (current_menu_manager().is_selecting_options()) {
-		std::string confirm_key = current_menu_manager().get_confirm_action_key();
+		const std::string confirm_key = current_menu_manager().get_confirm_action_key();
 		// video settings confirm actions
-		if (confirm_key == SELECTION_KEY_SET_RESOLUTION) {
+		if (confirm_key == MenuManager::SELECTION_KEY_SET_RESOLUTION) {
 			//TODO: write the new resolution to the config xml file
-			std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
-			std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
+			const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			const std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
 			al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
 			this->config->set_screen_res_x(::atoi(res_parts.first.c_str()));
 			this->config->set_screen_res_y(::atoi(res_parts.second.c_str()));
 			this->save_configurations();
 		}
-		else if (confirm_key == SELECTION_KEY_SET_SCREEN_STYLE) {
-			std::string style_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
-			if (style_string == SCREEN_STYLE_FULLSCREEN) {
+		else if (confirm_key == MenuManager::SELECTION_KEY_SET_SCREEN_STYLE) {
+			const std::string style_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
+			if (style_string == Configurations::SCREEN_STYLE_FULLSCREEN) {
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
 				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
 				
-			} else if (style_string == SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
 				//std::cout << "setting windowed fullscreen\n";
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
@@ -291,8 +291,8 @@ else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
 				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
 			}
-			else if (style_string == SCREEN_STYLE_WINDOWED) {
-				std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			else if (style_string == Configurations::SCREEN_STYLE_WINDOWED) {
+				const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
 				std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
@@ -309,45 +309,45 @@ else if (action_key == SELECTION_KEY_SELECT_OPTIONS) {
 	}
 }
 // main pause menu actions
-else if (action_key == SELECTION_KEY_RESUME_GAME) {
+else if (action_key == MenuManager::SELECTION_KEY_RESUME_GAME) {
 	current_menu_manager().reset();
 	screen_flag = FLAG_RESUME_GAME;
 }
-else if (action_key == SELECTION_KEY_QUIT_GAME) {
+else if (action_key == MenuManager::SELECTION_KEY_QUIT_GAME) {
 	current_menu_manager().reset();
 	screen_flag = FLAG_QUIT_GAME;
 }
-else if (action_key == SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
 	menu_key = PAUSE_VIDEO_MENU;
 }
-else if (action_key == SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
 	menu_key = PAUSE_CONTROLS_MENU;
 }
-else if (action_key == SELECTION_KEY_OPEN_KEYBOARD_CONTROLS) {
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_KEYBOARD_CONTROLS) {
 	menu_key = PAUSE_CONTROLS_MENU_KEYBOARD;
 }
-else if (action_key == SELECTION_KEY_OPEN_CONTROLLER_CONTROLS) {
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_CONTROLLER_CONTROLS) {
 	menu_key = PAUSE_CONTROLS_MENU_CONTROLLER;
 }
-else if (action_key == SELECTION_KEY_RETURN_TO_MAIN_CONTROLS) {
+else if (action_key == MenuManager::SELECTION_KEY_RETURN_TO_MAIN_CONTROLS) {
 	current_menu_manager().reset();
 	menu_key = PAUSE_CONTROLS_MENU;
 }
-else if (action_key == SELECTION_KEY_SET_CONTROL_INPUT) {
+else if (action_key == MenuManager::SELECTION_KEY_SET_CONTROL_INPUT) {
 	if (!current_menu_manager().is_selecting_input()) {
 		current_menu_manager().set_selecting_input(true);
 	} else {
 		current_menu_manager().set_selecting_input(false);
 	}
 }
-else if (action_key == SELECTION_KEY_CANCEL_CONTROLS_CHANGES) {
+else if (action_key == MenuManager::SELECTION_KEY_CANCEL_CONTROLS_CHANGES) {
 	current_menu_manager().reset();
 	menu_key = PAUSE_CONTROLS_MENU;
 }
-else if (action_key == SELECTION_KEY_REVERT_CONTROLS_DEFAULT) {
+else if (action_key == MenuManager::SELECTION_KEY_REVERT_CONTROLS_DEFAULT) {
 	current_menu_manager().revert_controls_default();
 }
-else if (action_key == SELECTION_KEY_SAVE_CONTROLS_CHANGES) {
+else if (action_key == MenuManager::SELECTION_KEY_SAVE_CONTROLS_CHANGES) {
 	current_menu_manager().save_controls();
 	current_menu_manager().reset();
 	menu_key = PAUSE_CONTROLS_MENU;

@@ -12,6 +12,7 @@ struct game_image_center_comparison
 Level::Level()
 {
 	this->setClassName("Level");
+	this->Register("TilesetKey", &(this->tileset_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -23,6 +24,7 @@ Level::Level()
 Level::Level(std::string level_filename, std::string dungeon_filename, std::string id)
 {
 	this->setClassName("Level");
+	this->Register("TilesetKey", &(this->tileset_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -36,8 +38,8 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 
 Level::Level(std::string level_filename, std::string dungeon_filename,  std::string id, int grid_x, int grid_y, int grid_width, int grid_height)
 {
-	//TODO: shouldn't need filename with new level loading system, but may need id
 	this->setClassName("Level");
+	this->Register("TilesetKey", &(this->tileset_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -58,6 +60,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename,  std::str
 Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int grid_height)
 {
 	this->setClassName("Level");
+	this->Register("TilesetKey", &(this->tileset_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -76,6 +79,7 @@ Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int g
 Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)		
 {
 	this->setClassName("Level");
+	this->Register("TilesetKey", &(this->tileset_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -90,15 +94,12 @@ Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)
 	this->height = STANDARD_LEVEL_GRID_HEIGHT * grid_height;
 }
 
-
 Level::~Level()
 {
-	/*
-	this->entity_groups.Clear();
-	this->tile_rows.Clear();
-	this->tileset->unload_content();
-	delete this->tileset;
-	*/
+	//this->entity_groups.Clear();
+	//this->tile_rows.Clear();
+	//this->tileset->unload_content();
+	//delete this->tileset;
 }
 
 void Level::load_tileset()
@@ -106,23 +107,22 @@ void Level::load_tileset()
 	this->tileset = new TileSet();
 	FileManager filemanager;
 	std::string filename = "resources/load/tilesets";
-	const std::string tileset_key = "tileset_1"; //TODO: get this in a more general way
-	filemanager.load_xml_content(this->tileset, filename, "SerializableClass", "TilesetKey", tileset_key);
+	filemanager.load_xml_content(this->tileset, filename, "SerializableClass", "TilesetKey", this->tileset_key.value());
+	this->tileset->set_tileset_key(this->tileset_key.value());
 	this->tileset->load_sheet_images();
 }
 
 void Level::load_from_map()
 {
 	// new XML loading
-	// TODO: once this is done, use it as the "old" map loading method (in case I want to draw maps manually) and use XML loading in a different method
-	//TODO: do the ImageLoader::load_image stuff for all offsets using tileset
+	// TODO: once this is done, use it as the "old" map loading method 
+	// (in case I want to draw maps manually) and use XML loading in a different method
 	this->load_tileset();
 	FileManager file_manager;
 	std::string filename = "resources/load/maps/" + get_filename() + ".txt";
 	const std::string tile_sheet_filename_start = this->tileset->get_tile_sheet_filename();
 	const std::string block_sheet_filename_start = this->tileset->get_block_tile_sheet_filename();
 	const std::string entity_group_sheet_filename_start = this->tileset->get_entity_group_tile_sheet_filename();
-	
 	std::vector<std::string> layers = get_layers();
 	int size = layers.size();
 	for (int layer_index = 0; layer_index < size; layer_index++) {
@@ -144,29 +144,21 @@ void Level::load_from_map()
 				// entity loading
 				else if (attributes[i][j] == "StartLayer") {
 					const int contents_size = contents[i].size();
-
 					if (layer_id == "tile_layer") {
 						TileGroup *tile_group = new TileGroup(indexY);
 						tile_rows.addItem(tile_group);
-						//tiles.push_back(std::vector<Tile*>());
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
-								//std::pair<int, int> tile_offset = FileManager::string_to_pair(contents[i][k]);
 								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
 								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
 								Rect* offset_rect = new Rect(ss_col*TILE_SIZE, ss_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 								const int edge_priority = this->tileset->get_edge_priority(ss_type_key);
 								const float speed_mod = this->tileset->get_tile_speed_mod(ss_type_key);
-								//ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
 								Tile *t = new Tile(tileset, k, indexY, ss_type_key, ss_col, ss_row);
 								tile_group->add_tile(t);
-								//tile_rows.getItem(indexY)->add_tile(t);
-							}
-							else {
+							} else {
 								Rect* offset_rect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
-								//TODO: do the ImageLoader::load_image stuff for all offsets using tileset
-								//ImageLoader::get_instance().load_image(tile_sheet_filename, *offset_rect);
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
 								std::string tile_sheet_filename = this->tileset->get_full_tile_sheet_filename(0);
 								Tile *t = Tile::null_tile(tileset, k, indexY);
@@ -174,19 +166,16 @@ void Level::load_from_map()
 								t->set_tile_type_index(0);
 								t->set_edge_priority(0);
 								t->set_speed_mod(1.0f);
-								//t->set_bitmap(ImageLoader::get_instance().get_current_image(t));
-								//NOTE: currently all default tiles have a speed mod of 1.0 and an edge priority of 0.
-								//this->tile_rows.getItem(indexY)->add_tile(t);
 								tile_group->add_tile(t);
-								//tiles.addItem(t);
 							}
 						}
 					}
 					// block loading
 					else if (layer_id == "block_layer") {
 						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {	//TODO: allow for animated blocks if necessary
-								//TODO: make a method that will load content, entity effects, etc. without having to read the map
+							if (contents[i][k] != null_tile) {	
+								//TODO: allow for animated blocks if necessary
+								//TODO: consider refactoring to another method
 								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
 								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
 								Rect* offset_rect = new Rect(ss_col*TILE_SIZE, ss_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -194,7 +183,6 @@ void Level::load_from_map()
 								std::string block_sheet_filename = this->tileset->get_full_block_sheet_filename(ss_type_key);
 								const bool solid = tileset->get_block_solid(ss_type_key);
 								std::map<std::string, int> block_attributes = tileset->get_block_attributes(ss_type_key);
-								//Block* b = new Block();
 								Tile *t = this->tile_rows.getItem(indexY)->get_tile(k);
 								t->initialize_block();
 								Block *b = t->get_block();
@@ -214,8 +202,14 @@ void Level::load_from_map()
 					else if (layer_id == "entity_group_layer") {
 						for (int k = 0; k < contents_size; k++) {
 							if (contents[i][k] != null_tile) {
+								//...
 								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
-								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
+								const int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
+								const std::pair<int, int> eg_ss_pos(ss_col, ss_row);
+								const std::pair<int, int> pixel_pos(k*TILE_SIZE, indexY*TILE_SIZE);
+								EntityGroup * e_group = this->create_entity_group(entity_group_sheet_filename_start, ss_type_key, eg_ss_pos, pixel_pos);
+								/*
+
 								std::pair<int, int> root_off = tileset->get_entity_group_root_offset(ss_type_key);
 								std::pair<int, int> center_off = tileset->get_entity_group_center_offset(ss_type_key);
 								EntityGroupData* group_data = tileset->get_entity_group_data_by_index(ss_type_key);
@@ -253,6 +247,8 @@ void Level::load_from_map()
 								e_group->set_root_pos(root_pos);
 								e_group->load_mask(entity_group_sheet_filename_start + "_" + group_data->get_entity_group_name());
 								add_entity(e_group);
+								*/
+								this->add_entity(e_group);
 								this->entity_groups.addItem(e_group); //allows serialization
 							}
 						}
@@ -295,7 +291,6 @@ void Level::load_from_xml()
 	this->load_tileset();
 	FileManager file_manager;
 	const std::string filename = "resources/load/dungeons/" + this->dungeon_filename;
-	file_manager.load_xml_content(this, filename, "SerializableClass", "LevelKey", this->id);
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
 	this->initialize_entity_groups();
@@ -305,6 +300,18 @@ void Level::intialize_dimensions()
 {
 	this->width = STANDARD_LEVEL_GRID_WIDTH * this->grid_width.value();
 	this->height = STANDARD_LEVEL_GRID_HEIGHT * this->grid_height.value();
+}
+
+void Level::initialize_empty()
+{
+	const int tile_width = this->width / TILE_SIZE, tile_height = this->height / TILE_SIZE;
+	for (int y = 0; y < tile_height; y++) {
+		TileGroup *group = new TileGroup();
+		for (int x = 0; x < tile_width; x++) {
+			group->add_tile(Tile::null_tile(this->tileset, x, y));
+		}
+		this->tile_rows.addItem(group);
+	}
 }
 
 void Level::initialize_tiles()
@@ -390,73 +397,55 @@ void Level::initialize_entity_groups()
 	const int size = this->entity_groups.size();
 	for (int i = 0; i < size; i++) {
 		EntityGroup *eg = this->entity_groups.getItem(i);
-		std::pair<int, int> ss_offset(eg->get_entity_sheet_col(), eg->get_entity_sheet_row());
-		std::pair<int, int> root_off = this->tileset->get_entity_group_root_offset(ss_offset.second);
-		std::pair<int, int> center_off = this->tileset->get_entity_group_center_offset(ss_offset.second);
-		std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_offset.second);
-		std::pair<int, int> root_pos = eg->get_root_pos();
-		std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
-		std::vector<Entity*> entity_list;
-		std::string entity_group_sheet_filename = this->tileset->get_entity_group_tile_sheet_filename();
-		std::string entity_group_name = eg->get_entity_group_name();
-		const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions(entity_group_name);
-		const int comp_size = comp_data.size();
-		for (int comp_index = 0; comp_index < comp_size; comp_index++) {
-			EntityComponentData *data = comp_data[comp_index];
-			std::string comp_filename = entity_group_sheet_filename + "_" + entity_group_name + "_" + data->name.value();
-
-			Rect* ss_offset_rect = new Rect(
-				ss_offset.first*entity_group_image_dimensions.first,
-				ss_offset.second*entity_group_image_dimensions.second,
-				entity_group_image_dimensions.first,
-				entity_group_image_dimensions.second);
-
-			//TODO: how to load component filenames with new system?
-			ImageLoader::get_instance().load_image(comp_filename, *ss_offset_rect);
-			Entity* e = new Entity();
-			e->set_content(comp_filename, ss_offset_rect, group_pos);
-			e->set_rect(group_pos.first, group_pos.second,
-				entity_group_image_dimensions.first, entity_group_image_dimensions.second);
-			e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
-			e->set_entity_attributes(data->get_attributes());
-			//e->load_mask(comp_filename);
-			entity_list.push_back(e);
-		}
-		eg->set_entities(entity_list);
-		eg->set_solid(true); //temp. consider making a set of attributes for the entire group and including solid if necessary
-		eg->set_rect(group_pos.first, group_pos.second,
-			entity_group_image_dimensions.first, entity_group_image_dimensions.second);
-		eg->set_center_offset(center_off);
-		eg->load_mask(entity_group_sheet_filename + "_" + eg->get_entity_group_name());
-		add_entity(eg); //allows serialization
+		this->initialize_entity_group(eg);
 	}
-	//TODO
-	// ...
-	//TODO: figure out how to do this after xml loading
-	//need a way to store the position of entity groups since they aren't locked to tiles
-	//consider whether things like root_pos, group_pos, etc. should be serialized per group (may not be necessary since tileset does most of the work)
-	//TODO: when reading entityGroups from xml, either A) add them to the entity vector as is done here or B) make sure they are drawn, updated, etc. correctly
-	//std::pair<int, int> ss_offset = FileManager::string_to_pair(contents[i][k]);
-	//std::pair<int, int> root_off = tileset->get_entity_group_root_offset(ss_offset.second);
-	//std::pair<int, int> center_off = tileset->get_entity_group_center_offset(ss_offset.second);
-	//std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_offset.second);
-	//std::pair<int, int> root_pos(k*TILE_SIZE, indexY*TILE_SIZE);
-	//std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
-	//std::vector<Entity*> entity_list;
-	// load the images separately for each component
-	/*
-	e_group->load_mask(entity_group_sheet_filename);
-	add_entity(e_group);
-	this->entity_groups.addItem(e_group); //allows serialization
-	*/
-	// ...
+}
+
+void Level::initialize_entity_group(EntityGroup *eg)
+{
+	std::pair<int, int> ss_offset(eg->get_entity_sheet_col(), eg->get_entity_sheet_row());
+	std::pair<int, int> root_off = this->tileset->get_entity_group_root_offset(ss_offset.second);
+	std::pair<int, int> center_off = this->tileset->get_entity_group_center_offset(ss_offset.second);
+	std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_offset.second);
+	std::pair<int, int> root_pos = eg->get_root_pos();
+	std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
+	std::vector<Entity*> entity_list;
+	std::string entity_group_sheet_filename = this->tileset->get_entity_group_tile_sheet_filename();
+	std::string entity_group_name = eg->get_entity_group_name();
+	const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions(entity_group_name);
+	const int comp_size = comp_data.size();
+	for (int comp_index = 0; comp_index < comp_size; comp_index++) {
+		EntityComponentData *data = comp_data[comp_index];
+		std::string comp_filename = entity_group_sheet_filename + "_" + entity_group_name + "_" + data->name.value();
+		Rect* ss_offset_rect = new Rect(
+			ss_offset.first*entity_group_image_dimensions.first,
+			ss_offset.second*entity_group_image_dimensions.second,
+			entity_group_image_dimensions.first,
+			entity_group_image_dimensions.second);
+
+		//TODO: how to load component filenames with new system?
+		ImageLoader::get_instance().load_image(comp_filename, *ss_offset_rect);
+		Entity* e = new Entity();
+		e->set_content(comp_filename, ss_offset_rect, group_pos);
+		e->set_rect(group_pos.first, group_pos.second,
+			entity_group_image_dimensions.first, entity_group_image_dimensions.second);
+		e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
+		e->set_entity_attributes(data->get_attributes());
+		entity_list.push_back(e);
+	}
+	eg->set_entities(entity_list);
+	eg->set_solid(true); //temp. consider making a set of attributes for the entire group and including solid if necessary
+	eg->set_rect(group_pos.first, group_pos.second,
+		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
+	eg->set_center_offset(center_off);
+	eg->load_mask(entity_group_sheet_filename + "_" + eg->get_entity_group_name());
+	add_entity(eg); //allows serialization
 }
 
 void Level::load_tile_edges()
 {
 	int tile_rows = this->tile_rows.size();
 	int tile_cols = this->tile_rows.getItem(0)->get_size();
-	//std::string edge_filename = this->tileset->get_edge_tile_sheet_filename();
 	// map of sheet row/priority to groups of tiles with that priority
 	std::map<std::vector<int>, std::map<int, bool> > edge_map;
 	for (int y = 0; y < tile_rows; y++) {
@@ -472,7 +461,6 @@ void Level::load_tile_edges()
 					if (y_off == 0 && x_off == 0) continue;
 					Tile *check_tile = this->get_tile(x + x_off, y + y_off);
 					int priority = check_tile->get_edge_priority();
-					//const int row = check_tile->get_sheet_row();	//is it row that's always wrong?
 					const int row = 0; //temp
 					const int tile_index = check_tile->get_tile_type_index();
 					std::vector<int> edge_map_key{ priority, row, tile_index};
@@ -488,14 +476,11 @@ void Level::load_tile_edges()
 			}
 			// each iteration of this loop represents a different priority
 			for (const auto& edge_data: edge_map) {
-				//std::vector<int> edge_data = edge_data.first;
 				std::vector<int> edge_key = edge_data.first;
 				std::map<int, bool> sub_map = edge_data.second;
 				int row = edge_key[1];
 				int tile_index = edge_key[2];
 				std::string tile_key = this->tileset->get_tile_key(tile_index);
-				//TODO: change this part to set serializable edges 
-
 				if (sub_map[TILE_UP] && sub_map[TILE_DOWN] && sub_map[TILE_LEFT] && sub_map[TILE_RIGHT]) add_edge_to_tile(t, row, TILE_CENTER, tile_key);
 				else {
 					if (sub_map[TILE_UP]) add_edge_to_tile(t, row, TILE_UP, tile_key);
@@ -533,18 +518,14 @@ void Level::save_to_xml()
 {
 	FileManager file_manager;
 	const std::string filename = "resources/load/dungeons/" + this->dungeon_filename;
-	//TODO: figure out why this causes an exception (try saving more and more minor things to xml, starting with tileset)
-	file_manager.replace_xml_content(filename, "SerializableClass", "LevelKey", this->id, this->toXML());	//What is the level key?
-	//this->S
-	//TODO: manually make replaceable tags first
-	//TODO: in the long run, will probably need new filemanager method since we are replacing, not saving
+	file_manager.replace_xml_content(filename, "SerializableClass", "LevelKey", this->id, this->toXML());
 }
 
-
+//TODO: how to unload level to avoid memory leak?
 void Level::unload_content()
 {
-	this->tile_rows.Clear();
-	this->entity_groups.Clear();
+	//this->tile_rows.Clear();
+	//this->entity_groups.Clear();
 	/*
 	for (int i = 0; i < game_images.size(); i++) {
 		if (game_images[i]) {
@@ -592,7 +573,7 @@ void Level::update(int game_mode)
 	for (int y = 0; y < height; y++) {
 		const int width = tile_rows.getItem(y)->get_size();
 		for (int x = 0; x < width; x++) {
-			Block *b = this->get_tile(x, y)->get_block();// tiles[y][x]->get_block();
+			Block *b = this->get_tile(x, y)->get_block();
 			if (b) {
 				b->update();
 			}
@@ -614,7 +595,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	std::pair<int, int> off = offset;
 	const int start_x = std::max(0, (-1 * off.first) / TILE_SIZE - 1);
 	const int start_y = std::max(0, (-1 * off.second) / TILE_SIZE - 1);
-	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size(); // tiles[0].size(), y_size = tiles.size();
+	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
 	const int end_x = std::min(x_size, start_x + al_get_display_width(display) / TILE_SIZE + 3);
 	const int end_y = std::min(y_size, start_y + al_get_display_height(display) / TILE_SIZE + 3);
 	for (int y = start_y; y < end_y; y++) {
@@ -622,7 +603,6 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 			this->get_tile(x, y)->draw(display, off.first, off.second);
 		}
 	}	
-	//TODO: draw game_images in order from lowest center y to highest center y
 	std::sort(game_images.begin(), game_images.end(), game_image_center_comparison());
 	int size = game_images.size();
 	for (int i = 0; i < size; i++) {
@@ -738,6 +718,108 @@ std::vector<std::string> Level::get_layers()
 	return {"tile_layer", "block_layer", "entity_group_layer"}; //temp. figure out where to store the different lists of layers for t he level, or how to get them efficiently when reading the text file
 }
 
+void Level::remove_tile(std::pair<int, int> pos)
+{
+	Tile * replacing_tile = Tile::null_tile(this->tileset, pos.first, pos.second);
+	this->set_tile(replacing_tile, pos);
+}
+
+void Level::remove_block(std::pair<int, int> pos)
+{
+	Tile * tile = this->get_tile(pos.first, pos.second);
+	if (tile != NULL) {
+		tile->remove_block();
+	}
+}
+
+void Level::remove_entity_group(std::pair<int, int> pos)
+{
+	const int size = this->entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		EntityGroup *eg = this->entity_groups.getItem(i);
+		if (eg != NULL && eg->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			this->entity_groups.removeItem(i);
+			break;
+		}
+	}
+}
+
+void Level::replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	Tile * replacing_tile = new Tile(this->tileset, pos.first, pos.second, 
+		tile_index, ss_pos.first, ss_pos.second);
+	this->set_tile(replacing_tile, pos);
+}
+
+void Level::replace_block(int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	Tile * tile = this->get_tile(pos.first, pos.second);
+	if (tile != NULL) {
+		tile->replace_block(this->tileset, block_index, ss_pos, pos);
+	}
+}
+
+void Level::add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	//TODO: figure out if create_entity_group() is redundant given initialize_entity_group()
+	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::string filename_start = this->tileset->get_entity_group_tile_sheet_filename();
+	EntityGroup * eg = this->create_entity_group(filename_start, eg_index, ss_pos, pixel_pos);
+	this->initialize_entity_group(eg);
+	//this->add_entity(eg);
+	this->entity_groups.addItem(eg);
+}
+
+EntityGroup * Level::create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	std::pair<int, int> root_off = tileset->get_entity_group_root_offset(index);
+	std::pair<int, int> center_off = tileset->get_entity_group_center_offset(index);
+	EntityGroupData* group_data = tileset->get_entity_group_data_by_index(index);
+	std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(index);
+	std::pair<int, int> root_pos(pos.first, pos.second);
+	std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
+	const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions_by_index(index);
+	std::vector<Entity*> entity_list;
+	// load the images separately for each component
+	int comp_size = comp_data.size();
+	for (int comp_index = 0; comp_index < comp_size; comp_index++) {
+		EntityComponentData *data = comp_data[comp_index];
+		std::string comp_filename = filename_start + "_" + group_data->get_entity_group_name() + "_" + data->name.value();
+		Rect* ss_offset_rect = new Rect(
+			ss_pos.first*entity_group_image_dimensions.first,
+			ss_pos.second*entity_group_image_dimensions.second,
+			entity_group_image_dimensions.first,
+			entity_group_image_dimensions.second);
+		Entity* e = new Entity();
+		e->set_content(comp_filename, ss_offset_rect, group_pos);
+		e->set_rect(group_pos.first, group_pos.second,
+			entity_group_image_dimensions.first, entity_group_image_dimensions.second);
+		e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
+		e->set_entity_attributes(data->get_attributes());
+		entity_list.push_back(e);
+	}
+	EntityGroup *e_group = new EntityGroup();
+	e_group->set_sheet_pos(ss_pos.first, ss_pos.second);
+	e_group->set_entity_group_name(group_data->get_entity_group_name());
+	e_group->set_entities(entity_list);
+	e_group->set_solid(true);	//temp. 
+	//consider making a set of attributes for the entire group and including solid if necessary
+	e_group->set_rect(group_pos.first, group_pos.second,
+		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
+	e_group->set_center_offset(center_off);
+	e_group->set_root_pos(root_pos);
+	e_group->load_mask(filename_start + "_" + group_data->get_entity_group_name());
+	return e_group;
+}
+
+void Level::set_tile(Tile * tile, std::pair<int, int> pos)
+{
+	TileGroup * tg = this->tile_rows.getItem(pos.second);
+	if (tg != NULL) {
+		tg->set_tile(this->tileset, tile, pos.first);
+	}
+}
+
 Tile * Level::get_tile(int x, int y)
 {
 	if (y < 0 || y > this->tile_rows.size()) {
@@ -758,6 +840,16 @@ bool Level::passable_at(int x, int y)
 	return true;
 }
 
+TileSet * Level::get_tileset()
+{
+	return this->tileset;
+}
+
+void Level::set_tileset_key(std::string value)
+{
+	this->tileset_key = value.c_str();
+}
+
 std::string Level::get_dungeon_filename()
 {
 	return this->dungeon_filename;
@@ -771,6 +863,11 @@ void Level::set_dungeon_filename(std::string value)
 std::string Level::get_filename()
 {
 	return this->map_filename;
+}
+
+void Level::set_filename(std::string value)
+{
+	this->map_filename = value;
 }
 
 std::string Level::get_id()
@@ -793,9 +890,19 @@ int Level::get_height()
 	return height;
 }
 
+void Level::set_grid_x(const int value)
+{
+	this->grid_x = value;
+}
+
 int Level::get_grid_x()
 {
 	return this->grid_x.value();
+}
+
+void Level::set_grid_y(const int value)
+{
+	this->grid_y = value;
 }
 
 int Level::get_grid_y()
@@ -803,9 +910,21 @@ int Level::get_grid_y()
 	return this->grid_y.value();
 }
 
+void Level::set_grid_width(const int value)
+{
+	this->grid_width = value;
+	this->width = value * STANDARD_LEVEL_GRID_WIDTH;
+}
+
 int Level::get_grid_width()
 {
 	return width/STANDARD_LEVEL_GRID_WIDTH;
+}
+
+void Level::set_grid_height(const int value)
+{
+	this->grid_height = value;
+	this->height = value * STANDARD_LEVEL_GRID_HEIGHT;
 }
 
 int Level::get_grid_height()
@@ -818,12 +937,12 @@ int Level::get_grid_height()
 void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
 	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
 	for (int y = 0; y < y_size; y++) {
 		for (int x = 0; x < x_size; x++) {
 			Tile * t = this->get_tile(x, y);
 			ALLEGRO_BITMAP *tile_bitmap = t->get_bitmap();
-			al_set_target_bitmap(bitmap);
 			float dx = x * TILE_SIZE;
 			float dy = y * TILE_SIZE;
 			al_draw_bitmap(tile_bitmap, dx, dy, 0);
@@ -841,6 +960,7 @@ void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
 	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
 	for (int y = 0; y < y_size; y++) {
 		for (int x = 0; x < x_size; x++) {
@@ -848,7 +968,6 @@ void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 			Block * b = t->get_block();
 			if (b != NULL) {
 				ALLEGRO_BITMAP *tile_bitmap = b->get_bitmap();
-				al_set_target_bitmap(bitmap);
 				float dx = x * TILE_SIZE;
 				float dy = y * TILE_SIZE;
 				al_draw_bitmap(tile_bitmap, dx, dy, 0);	
@@ -861,10 +980,10 @@ void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 void Level::draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
 	const int size = this->entity_groups.size();
 	for (int i = 0; i < size; i++) {
 		EntityGroup * eg = this->entity_groups.getItem(i);
-		al_set_target_bitmap(bitmap);
 		float dx = eg->get_x();
 		float dy = eg->get_y();
 		std::vector<Entity*> entities = eg->get_entities();

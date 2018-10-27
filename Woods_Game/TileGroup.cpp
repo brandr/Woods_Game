@@ -32,6 +32,14 @@ Tile * TileGroup::get_tile(int index)
 	return this->tiles.getItem(index);
 }
 
+void TileGroup::set_tile(TileSet * tileset, Tile * t, int index)
+{
+	Tile * tile = this->tiles.getItem(index);
+	if (tile != NULL) {
+		tile->reset(tileset, t);
+	}
+}
+
 int TileGroup::get_size()
 {
 	return tiles.size();

@@ -1,11 +1,42 @@
 Woods game todolist
 
-XML serialize the player
+Draw the creepy guy from the story in paint
 
-Work more on level editor
-	*Add a layer for entity images
-	*Add gridlines
-	*UI for editing level, selecting objects from tileset, (grouped into tiles, blocks, etc), saving the level/dungeon, etc.
+Level editor
+--------------------
+
+Allow left clicking to add objects to the level grid and right clicking to delete
+	* implement delete functionality
+		# make it clear what object types are getting deleted
+		# deleting tiles should replace with null tile
+		# deleting blocks should replace with empty block
+		# deleting entity groups should just delete
+		# might be complicated for entity groups-- should only delete one per click
+
+Make a second level to ensure that connecting levels still work
+
+make it possible to select objects in level editor and adjust their attributes
+		
+IDEA: could make button to delete all tile edges and re-generate them
+	* part of the problem seems to be that leftover tile edges are still in the xml
+
+Fix memory leak in level editor
+	*adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
+		# we probably reserve it in the update method (in level grid) after deletion, not the deletion itself
+	*might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
+	*this is also a good time to fix memory leaks in general
+consider how/whether to delete objects when resizing levels
+
+make it so levels can store their selected tileset key 
+so we know which tileset to set if we change the level in LevelEditorManager.update_selected_level()
+	* could use a dropdown or listbox in dungeon editor layout
+
+Figure out how to set player start
+
+---------------------------------------------------
+
+fix the crashes that can happen when using items after switching them
+	*has something to do with bad memory management
 
 Make sure I can do what I want with the tile system
 	*Going through brush will be better if there's a tool to make trails but trails get overgrown
@@ -16,9 +47,6 @@ Make sure I can do what I want with the tile system
 		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
 		#should holes be saved when the game is saved?
 
-Make a second level to ensure that connecting levels still work
-	*need to load from map, then save
-
 IDEA: make buildings as entitygroups that have a collision rect, but also a door component with an attribute that sends the player to another level on contact.
 	*make the inside of buildings levels that are uniquely identified by id but not part of the normal level grids
 		#could set the level key to -1 or some constant
@@ -26,13 +54,33 @@ IDEA: make buildings as entitygroups that have a collision rect, but also a door
 	*also need to uniquely identify the building entitygroup so that the player can appear in front of the door after leaving the level
 	*ensure that unused tiles outside the building are displayed as black
 
+IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
+	-implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
+	-for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
+	-allow these conditions to be "anded" together and give them ordinals so calculation is either
+		*might be able to do something with | and flags corresponding to the orders
+	-weight some options to be more likely than others using integer values
+	-when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
+	-a dialog options should be a set of panes which are divided into lines.
+
+IDEA: Make NPCs walk around outside programatically and have varying habits throughout the day.
+	-for instance, they should usually stay close to trails
+	-need to figure out how to process NPC movements when they're not on the same Level as the player
+		*maybe get less fine-grain and just process what level they're in at any given time based on time of day,
+			what they're doing, the weather, etc
+
 Make a new entity group of a different size and with different components than trees int order to ensure that entity groups work
 	-could make this a building, but need to plan carefully about how entering/exiting buildings should work
 
 IDEA: serialize tile edges after they are first generated to make loading faster
-	-currently edges get drawn onto the tiles bitmap after being loaded from a map, so should implement like so:	
+	- did I already implement this?
+	- currently edges get drawn onto the tiles bitmap after being loaded from a map, so should implement like so:	
 		*edges get generated the long way when loading from map, use this same method to set the serializable values representing edges 
 		*in the case where we load from xml instead of map, draw the edge images onto bitmaps based on serialized values rather than doing the full generation
+
+Add a shovel and allow the player to dig up items
+	- implement picking up items off the ground and fix inventory bugs first
+
 
 Refactor all file loading to xml
 	-player
@@ -49,8 +97,6 @@ Refactor all file loading to xml
 NOTES:
 *whenever adding new counters, be sure to check how they all interact 
 	(i.e., what happens if you use shears right as you collide with thorns and bounce)
-
-TODOS
 
 -consider adding plants as a class
 	*LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block

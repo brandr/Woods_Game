@@ -3,17 +3,20 @@
 
 #include "FileDialogManager.h"
 #include "Dungeon.h"
+#include "TileSet.h"
 
 #include <Agui/ActionListener.hpp>
 
 enum ListenerTypes
 {
-	LOAD_DUNGEON, SAVE_DUNGEON
+	LOAD_DUNGEON, SAVE_DUNGEON, ADD_DUNGEON, DELETE_DUNGEON, 
+	ADD_LEVEL, DELETE_LEVEL,
+	LOAD_TILESET, SAVE_TILESET
 };
 
 enum FlagTypes
 {
-	SHOULD_SAVE
+	SHOULD_UPDATE
 };
 
 class EditorActionListener : public agui::ActionListener

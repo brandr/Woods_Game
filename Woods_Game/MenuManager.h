@@ -6,30 +6,30 @@
 #include "FileManager.h"
 #include <iostream>
 
-// pause menu options
-const static std::string SELECTION_KEY_RETURN_TO_MAIN_PAUSE = "return_to_main_pause";
-const static std::string SELECTION_KEY_SELECT_OPTIONS = "select_options";
-	// main pause menu
-const static std::string SELECTION_KEY_RESUME_GAME = "resume_game";
-const static std::string SELECTION_KEY_QUIT_GAME = "quit_game";
-const static std::string SELECTION_KEY_OPEN_VIDEO_SETTINGS = "open_video_settings";
-const static std::string SELECTION_KEY_OPEN_CONTROL_SETTINGS = "open_control_settings";
-	// pause video settings	
-const static std::string SELECTION_KEY_SET_RESOLUTION = "set_resolution";
-const static std::string SELECTION_KEY_SET_SCREEN_STYLE = "set_screen_style";
-	// pause controls settings
-const static std::string SELECTION_KEY_OPEN_KEYBOARD_CONTROLS = "open_keyboard_controls";
-const static std::string SELECTION_KEY_OPEN_CONTROLLER_CONTROLS = "open_controller_controls";
-const static std::string SELECTION_KEY_RETURN_TO_MAIN_CONTROLS = "return_to_main_controls";
-const static std::string SELECTION_KEY_SET_CONTROL_INPUT = "set_control_input";
-const static std::string SELECTION_KEY_CANCEL_CONTROLS_CHANGES = "cancel_controls_changes";
-const static std::string SELECTION_KEY_REVERT_CONTROLS_DEFAULT = "revert_controls_default";
-const static std::string SELECTION_KEY_SAVE_CONTROLS_CHANGES = "save_controls_changes";
-
 const int MENU_ITEM_SPACING = 30;
 
 class MenuManager: public xmls::Serializable
 {
+public:
+	// pause menu options
+	static constexpr const char* SELECTION_KEY_RETURN_TO_MAIN_PAUSE = "return_to_main_pause";
+	static constexpr const char* SELECTION_KEY_SELECT_OPTIONS = "select_options";
+	// main pause menu
+	static constexpr const char* SELECTION_KEY_RESUME_GAME = "resume_game";
+	static constexpr const char* SELECTION_KEY_QUIT_GAME = "quit_game";
+	static constexpr const char* SELECTION_KEY_OPEN_VIDEO_SETTINGS = "open_video_settings";
+	static constexpr const char* SELECTION_KEY_OPEN_CONTROL_SETTINGS = "open_control_settings";
+	// pause video settings	
+	static constexpr const char* SELECTION_KEY_SET_RESOLUTION = "set_resolution";
+	static constexpr const char* SELECTION_KEY_SET_SCREEN_STYLE = "set_screen_style";
+	// pause controls settings
+	static constexpr const char* SELECTION_KEY_OPEN_KEYBOARD_CONTROLS = "open_keyboard_controls";
+	static constexpr const char* SELECTION_KEY_OPEN_CONTROLLER_CONTROLS = "open_controller_controls";
+	static constexpr const char* SELECTION_KEY_RETURN_TO_MAIN_CONTROLS = "return_to_main_controls";
+	static constexpr const char* SELECTION_KEY_SET_CONTROL_INPUT = "set_control_input";
+	static constexpr const char* SELECTION_KEY_CANCEL_CONTROLS_CHANGES = "cancel_controls_changes";
+	static constexpr const char* SELECTION_KEY_REVERT_CONTROLS_DEFAULT = "revert_controls_default";
+	static constexpr const char* SELECTION_KEY_SAVE_CONTROLS_CHANGES = "save_controls_changes";
 protected:
 	xmls::Collection<MenuItem> menu_items;
 	std::string menu_key;

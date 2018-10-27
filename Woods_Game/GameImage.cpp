@@ -8,7 +8,6 @@ GameImage::GameImage(std::string filename)
 
 GameImage::GameImage()
 {
-	//TEMP: actually set width and height upon loading image
 	rect = Rect(0.0f, 0.0f, 64.0f, 64.0f);
 }
 
@@ -168,7 +167,6 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 	this->image_filename = image_filename;
 	this->image_subsection = image_subsection;
 	rect.x = position.first, rect.y = position.second;
-	//refresh_mask();
 }
 
 void GameImage::load_mask(std::string base_filename)

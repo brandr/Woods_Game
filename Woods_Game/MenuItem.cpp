@@ -181,7 +181,7 @@ void MenuItem::set_text_options(std::vector<std::string> options)
 	text_options.Clear();
 	Register("TextOptions", &text_options);
 	for (int i = 0; i < options.size(); i++) {
-		text_options.addItem(new TextOption(options[i]));
+		text_options.addItem(DBG_NEW TextOption(options[i]));
 	}
 	//text_options = options;
 }
