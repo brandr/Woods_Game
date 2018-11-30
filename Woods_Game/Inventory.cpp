@@ -4,13 +4,6 @@ Inventory::Inventory()
 {
 	setClassName("Inventory");
 	Register("inventory_items", &inventory_items);
-	//for (int y = 0; y < INVENTORY_ROWS; y++) {
-		//inventory_items.push_back(std::vector<Item*>());
-		//for (int x = 0; x < INVENTORY_COLS; x++) {
-			//inventory_items.addItem(NULL);
-			//inventory_items[y].push_back(NULL);
-		//}
-	//}
 }
 
 Inventory::~Inventory()
@@ -19,75 +12,36 @@ Inventory::~Inventory()
 
 void Inventory::load_content()
 {
-	for (int i = 0; i < HOTBAR_SIZE; i++) {
-		hotbar.push_back(NULL);
-	}
-	
-	//TEMP
-	// shears
-	/*
-	Item *shears = new Item();
-	shears->load_content("shears", ITEM_SHEARS);
-	shears->set_item_attribute(ITEM_ATTR_POWER, 1);
-	hotbar[0] = shears;
 
-	// mallet
-	Item *mallet = new Item();
-	mallet->load_content("mallet", ITEM_MALLET);
-	mallet->set_item_attribute(ITEM_ATTR_POWER, 1);
-	hotbar[1] = mallet;
-	*/
-	//TODO: figure out a more long-term item loading system
-	//TEMP
 }
-
 
 void Inventory::load_content_from_attributes()
 {
-	for (int i = 0; i < HOTBAR_SIZE; i++) {
-		hotbar.push_back(NULL);
-	}
 	const int size = this->inventory_items.size();
 	for (int i = 0; i < size; i++) {
 		Item *item = this->inventory_items.getItem(i);
 		item->load_content_from_attributes();
-		if (item->get_inventory_pos_y() < 0) {
-			hotbar[item->get_inventory_pos_x()] = item;
-		}
 	}
 }
 
 void Inventory::unload_content()
 {
-	/*
-	for (int i = 0; i < hotbar.size(); i++) {
-		if (hotbar[i]) {
-			hotbar[i]->unload_content();
-			delete hotbar[i];
-		}
-	}
-	hotbar.clear();
-	*/
-}
 
-std::vector<Item*> &Inventory::get_hotbar()
-{
-	return hotbar;
 }
 
 void Inventory::set_hotbar_index(int num)
 {
-	if (num >= 0 && num < hotbar.size()) hotbar_index = num;
+	hotbar_index = num;
 }
 
 void Inventory::hotbar_index_left()
 {
-	hotbar_index = hotbar_index > 0 ? hotbar_index - 1 : hotbar.size() - 1;
+	hotbar_index = hotbar_index > 0 ? hotbar_index - 1 : HOTBAR_SIZE - 1;
 }
 
 void Inventory::hotbar_index_right()
 {
-	hotbar_index = (hotbar_index + 1) % hotbar.size();
+	hotbar_index = (hotbar_index + 1) % HOTBAR_SIZE;
 }
 
 void Inventory::swap_items(int x1, int y1, int x2, int y2)
@@ -96,12 +50,7 @@ void Inventory::swap_items(int x1, int y1, int x2, int y2)
 	Item *item_1 = get_item(x1, y1);
 	Item *item_2 = get_item(x2, y2);
 	if (!item_1 || !item_2) return;
-	Item *swapped_item_1 = new Item(item_1);
-	Item *swapped_item_2 = new Item(item_2);
-	item_1->unload_content(), item_2->unload_content();
-	//delete item_1, delete item_2;
-	set_item(swapped_item_1, x2, y2);
-	set_item(swapped_item_2, x1, y1);
+	item_1->swap_with_item(item_2);
 }
 
 std::vector<std::vector<Item*>> Inventory::get_inventory_items()
@@ -129,15 +78,30 @@ void Inventory::set_item(Item * item, const int x, const int y)
 	if (item != NULL) {
 		item->set_inventory_pos(x, y);
 	}
-	if (y < 0 && x >= 0) {
-		hotbar[x] = item;
-		return;
-	}
 }
 
 Item * Inventory::get_selected_hotbar_item()
 {
-	return hotbar[hotbar_index];
+	const int size = this->inventory_items.size();
+	for (int i = 0; i < size; i++) {
+		Item * item = this->inventory_items.getItem(i);
+		if (item->get_inventory_pos_y() == -1 && item->get_inventory_pos_x() == this->hotbar_index) {
+			return item;
+		}
+	}
+	return NULL;
+}
+
+Item * Inventory::get_hotbar_item(int index)
+{
+	const int size = this->inventory_items.size();
+	for (int i = 0; i < size; i++) {
+		Item * item = this->inventory_items.getItem(i);
+		if (item->get_inventory_pos_y() == -1 && item->get_inventory_pos_x() == index) {
+			return item;
+		}
+	}
+	return NULL;
 }
 
 Item * Inventory::get_item(const int x, const int y)
@@ -155,11 +119,6 @@ Item * Inventory::get_item(const int x, const int y)
 	} else {
 		return get_hotbar_item(x);
 	}
-}
-
-Item * Inventory::get_hotbar_item(const int index)
-{
-	return hotbar[index];
 }
 
 int Inventory::get_hotbar_index()

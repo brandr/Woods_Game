@@ -561,7 +561,6 @@ void Level::update(int game_mode)
 	for (int i = 0; i < b_size; i++) {
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
 			std::vector<Entity*> interactables = get_interactables(beings[i]);
-
 			std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
 			beings[i]->update(interactables, tiles, dimensions, game_mode);	//TEMP. need to handle gamemode some other way, maybe by accessing it from level or storing it in GameImageManager
 			beings[i]->set_bitmap(ImageLoader::get_instance().get_current_image(beings[i]));
@@ -632,7 +631,6 @@ void Level::add_entity(Entity * e)
 
 void Level::add_being(Being * b)
 {
-	
 	beings.push_back(b);
 	entities.push_back(b);
 	game_images.push_back(b);

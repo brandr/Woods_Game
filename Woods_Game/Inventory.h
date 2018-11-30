@@ -13,9 +13,7 @@ const static int INVENTORY_COLS = 10, INVENTORY_ROWS = 3;
 class Inventory : public xmls::Serializable
 {
 private:
-	std::vector<Item*> hotbar;
 	int hotbar_index = 0;
-	//std::vector<std::vector<Item*>> inventory_items;
 	xmls::Collection<Item> inventory_items;
 public:
 	Inventory();
@@ -23,7 +21,6 @@ public:
 	void load_content();
 	void load_content_from_attributes();
 	void unload_content();
-	std::vector<Item*> &get_hotbar();
 	void set_hotbar_index(int num);
 	void hotbar_index_left();
 	void hotbar_index_right();

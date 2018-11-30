@@ -24,6 +24,11 @@
        	 			</Collection>
 				</Class>
 				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">1</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
 					<Member Name="item_key">1</Member>
 					<Member Name="item_name">mallet</Member>
 					<Member Name="inventory_pos_x">2</Member>
@@ -34,6 +39,191 @@
 							<Member Name="attribute_value">1</Member>
 						</Class>
        	 			</Collection>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">3</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">4</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">5</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">6</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">7</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">8</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">9</Member>
+					<Member Name="inventory_pos_y">-1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">0</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">1</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">2</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">3</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">4</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">5</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">6</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">7</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">8</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">9</Member>
+					<Member Name="inventory_pos_y">0</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">0</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">1</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">2</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">3</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">4</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">5</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">6</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">7</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">8</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">9</Member>
+					<Member Name="inventory_pos_y">1</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">0</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">1</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">2</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">3</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">4</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">5</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">6</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">7</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">8</Member>
+					<Member Name="inventory_pos_y">2</Member>
+				</Class>
+				<Class Type="Item" Version="1">
+					<Member Name="item_key">-1</Member>
+					<Member Name="inventory_pos_x">9</Member>
+					<Member Name="inventory_pos_y">2</Member>
 				</Class>
        	 	</Collection>
 		</Class>

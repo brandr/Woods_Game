@@ -31,6 +31,11 @@ Item::Item(Item * copy)
 	set_item_attributes(copy->get_item_attributes());
 }
 
+Item * Item::empty_item()
+{
+	return new Item();
+}
+
 void Item::load_content(std::string filename, int item_key)
 {
 	std::string full_filename = "resources/images/item_icons/" + filename + ".png";
@@ -42,9 +47,11 @@ void Item::load_content(std::string filename, int item_key)
 
 void Item::load_content_from_attributes()
 {
-	std::string full_filename = "resources/images/item_icons/" + this->get_filename() + ".png";
-	icon = al_load_bitmap(full_filename.c_str());
-	al_convert_mask_to_alpha(icon, al_map_rgb(255, 0, 255));
+	if (!this->is_empty()) {
+		std::string full_filename = "resources/images/item_icons/" + this->get_filename() + ".png";
+		icon = al_load_bitmap(full_filename.c_str());
+		al_convert_mask_to_alpha(icon, al_map_rgb(255, 0, 255));
+	}
 }
 
 void Item::unload_content()
@@ -55,9 +62,40 @@ void Item::unload_content()
 	}
 }
 
+void Item::swap_with_item(Item * other)
+{
+	if (this->is_empty() && other->is_empty()) {
+		return;
+	}
+	const int key1 = this->get_item_key(), key2 = other->get_item_key();
+	const std::string name1 = this->get_item_name(), name2 = other->get_item_name();
+	const int xpos1 = this->get_inventory_pos_x(), xpos2 = other->get_inventory_pos_x();
+	const int ypos1 = this->get_inventory_pos_y(), ypos2 = other->get_inventory_pos_y();
+	const std::vector<ItemAttribute*> attr1 = this->get_item_attributes_vec(),
+		attr2 = other->get_item_attributes_vec();
+	this->unload_content();
+	other->unload_content();
+	// swap values
+	this->item_key = key2, other->item_key = key1;
+	this->item_name = name2, other->item_name = name1;
+	//this->set_inventory_pos(xpos2, ypos2);
+	//other->set_inventory_pos(xpos1, ypos1);
+	this->set_item_attributes(attr2);
+	other->set_item_attributes(attr1);
+	this->load_content_from_attributes();
+	other->load_content_from_attributes();
+}
+
 void Item::draw(ALLEGRO_DISPLAY * display, float x, float y)
 {
-	al_draw_bitmap(icon, x, y, 0);
+	if (!this->is_empty()) {
+		al_draw_bitmap(icon, x, y, 0);
+	}
+}
+
+bool Item::is_empty()
+{
+	return this->get_item_key() < 0;
 }
 
 void Item::set_inventory_pos(int x, int y)
@@ -102,6 +140,15 @@ void Item::set_item_attributes(xmls::Collection<ItemAttribute> attributes)
 	this->item_attributes = attributes;
 }
 
+void Item::set_item_attributes(std::vector<ItemAttribute*> attributes)
+{
+	this->item_attributes.Clear();
+	const int size = attributes.size();
+	for (int i = 0; i < size; i++) {
+		this->item_attributes.addItem(attributes[i]);
+	}
+}
+
 /*void Item::set_item_attribute(int attr_key, int attr_val)
 {
 	item_attributes[attr_key] = attr_val;
@@ -110,6 +157,16 @@ void Item::set_item_attributes(xmls::Collection<ItemAttribute> attributes)
 const xmls::Collection<ItemAttribute> Item::get_item_attributes()
 {
 	return this->item_attributes;
+}
+
+const std::vector<ItemAttribute*> Item::get_item_attributes_vec()
+{
+	std::vector<ItemAttribute*> attributes;
+	const int size = this->item_attributes.size();
+	for (int i = 0; i < size; i++) {
+		attributes.push_back(this->item_attributes.getItem(i));
+	}
+	return attributes;
 }
 
 const int Item::get_item_attribute(std::string attr_key)

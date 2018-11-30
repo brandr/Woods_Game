@@ -501,13 +501,13 @@ void MainGameScreen::draw_ui_main_game(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 {
 	Inventory& inventory = game_image_manager.get_player()->get_inventory();
-	std::vector<Item*> hotbar = inventory.get_hotbar();
+	//std::vector<Item*> hotbar = inventory.get_hotbar();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(hotbar_box);
 	const int box_height = al_get_bitmap_height(hotbar_box);
 	const int hotbar_index = inventory.get_hotbar_index();
-	const int size = hotbar.size();
+	const int size = HOTBAR_SIZE;//hotbar.size();	//TODO
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size)/2 + i*box_width;
 		const float y = height - box_height - 12;
@@ -520,7 +520,7 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		}
 		const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_HOTBAR);
 		al_draw_text(font_map[FONT_HOTBAR], al_map_rgb(rgb[0], rgb[1], rgb[2]), x + 8.0f, y + 5.0f, 0, std::to_string(num).c_str());
-		Item* item = hotbar[i];
+		Item* item = inventory.get_hotbar_item(i);//hotbar[i];
 		if (item) item->draw(display, x, y);
 		//TODO: draw the item here if the index of the hotbar is not empty
 	}

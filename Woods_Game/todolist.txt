@@ -1,21 +1,13 @@
 Woods game todolist
 
+
 Draw the creepy guy from the story in paint
 
 Level editor
 --------------------
 
-Allow left clicking to add objects to the level grid and right clicking to delete
-	* implement delete functionality
-		# make it clear what object types are getting deleted
-		# deleting tiles should replace with null tile
-		# deleting blocks should replace with empty block
-		# deleting entity groups should just delete
-		# might be complicated for entity groups-- should only delete one per click
-
-Make a second level to ensure that connecting levels still work
-
 make it possible to select objects in level editor and adjust their attributes
+	* probably want a special selection button that can be toggled so we know what left click does
 		
 IDEA: could make button to delete all tile edges and re-generate them
 	* part of the problem seems to be that leftover tile edges are still in the xml

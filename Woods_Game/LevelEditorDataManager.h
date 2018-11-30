@@ -32,6 +32,7 @@ struct TilesetDeleter
 
 class LevelEditorDataManager {
 public:
+	static const std::vector<std::string> LEVEL_LAYERS;
 	static constexpr const char* TILE_LAYER = "tile_layer";
 	static constexpr const char* BLOCK_LAYER = "block_layer";
 	static constexpr const char* ENTITY_GROUP_LAYER = "entity_group_layer";
@@ -115,11 +116,11 @@ public:
 };
 
 //TODO: fix the memory leak by making these a part of the class
-static const std::vector<std::string> LEVEL_LAYERS = {
+const std::vector<std::string> LEVEL_LAYERS({
 	LevelEditorDataManager::TILE_LAYER,
 	LevelEditorDataManager::BLOCK_LAYER,
 	LevelEditorDataManager::ENTITY_GROUP_LAYER,
 	LevelEditorDataManager::GRID_LINES_LAYER
-};
+});
 
 #endif // !1

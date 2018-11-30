@@ -74,14 +74,14 @@ void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
 
 void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 {
-	std::vector<Item*> hotbar = inventory->get_hotbar();
+	//std::vector<Item*> hotbar = inventory->get_hotbar();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(item_box_hotbar);
 	const int box_height = al_get_bitmap_height(item_box_hotbar);
 	const int hotbar_index = inventory->get_hotbar_index();
 	const float y = (height + al_get_bitmap_height(inventory_backdrop))/2 - box_height - 36;
-	const int size = hotbar.size();
+	const int size = HOTBAR_SIZE;//hotbar.size();
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size) / 2 + i*box_width;
 		const int num = i < 9 ? i + 1 : 0;
@@ -94,9 +94,7 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		if (i == dragging_selection.first && dragging_selection.second < 0) {
 			al_draw_bitmap(item_drag_selection, x, y, 0);
 		}
-		//const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_HOTBAR);
-		//al_draw_text(font_map[FONT_HOTBAR], al_map_rgb(rgb[0], rgb[1], rgb[2]), x + 8.0f, y + 5.0f, 0, std::to_string(num).c_str());
-		Item* item = hotbar[i];
+		Item* item = inventory->get_hotbar_item(i);// hotbar[i];
 		if (item && !(dragging_selection.first == i && dragging_selection.second < 0)) 
 			item->draw(display, x, y);
 	}
@@ -163,8 +161,7 @@ void InventoryScreen::select()
 			inventory->set_item(dragging_item(), inventory_selection.first, inventory_selection.second);
 			inventory->set_item(NULL, dragging_selection.first, dragging_selection.second);
 			dragging_selection = std::pair<int, int>(-1, -1);
-		}
-		else {
+		} else {
 			inventory->swap_items(inventory_selection.first, inventory_selection.second, dragging_selection.first, dragging_selection.second);
 			dragging_selection = std::pair<int, int>(-1, -1);
 		}

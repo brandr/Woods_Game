@@ -212,9 +212,9 @@ void GameImageManager::change_player_level()
 		x = grid_x + current_level->get_grid_width(), y = grid_y;
 		direction = RIGHT;
 	}
-	else
+	else {
 		std::cout << "ERROR: no direction " << std::endl;
-	
+	}
 	current_level->remove_player();
 	next_level = world.get_current_dungeon()->level_at(x, y);
 	next_level->add_being(player);

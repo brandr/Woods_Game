@@ -86,13 +86,12 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 		xvel = 0;
 		break;
 	}
-	if (jumping && yvel > 0)
+	if (jumping && yvel > 0) {
 		jumping = false;
-	//std::map<int, bool>::const_iterator it = move_map.find(MOVE_UP);
-	//if (it != move_map.end() && it->second) {
-	if(check_move(MOVE_UP))
+	}
+	if (check_move(MOVE_UP)) {
 		attempt_jump(interactables);
-	//}
+	}
 }
 
 //TODO: may want to update direction if necessary for animations
@@ -109,7 +108,6 @@ void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Til
 	}
 	current_action = ACTION_NONE;
 	reset_entity_flags();
-	//if (countres[])
 	//TODO: figure out how best to handle joystick and keyboard inputs that occur at the same time
 	xvel = 0, yvel = 0;
 	anim_state = ANIM_NEUTRAL;
@@ -194,8 +192,6 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
-	//auto it = entity_flags.find(E_FLAG_HIT_OTHER);
-	//if (it != entity_flags.end() && it->second) return;
 	const int t_size = nearby_tiles.size();
 	for(int i = 0; i < t_size; i++){
 		Block *b = nearby_tiles[i]->get_block();
@@ -232,7 +228,7 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 					&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
 					set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 					Item *shears = get_selected_item();
-					const int shear_power = shears->get_item_attribute(ITEM_ATTR_POWER);
+					const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
 					e->take_durability_damage(shear_power);
 					return;
 				}

@@ -63,7 +63,6 @@ protected:
 	Rect* image_subsection = NULL;
 	std::vector<ALLEGRO_BITMAP*> additional_image_layers;
 	Rect rect;
-	//std::pair<int, int> center_offset = std::pair<int,int>(0,0);
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;

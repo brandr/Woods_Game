@@ -101,15 +101,6 @@
     <Filter Include="Application\Header Files">
       <UniqueIdentifier>{3d49d6ab-1071-47b6-bf11-cc9c0f523689}</UniqueIdentifier>
     </Filter>
-    <Filter Include="LevelEditor">
-      <UniqueIdentifier>{0bb47399-6fe3-488b-bbd9-153ae10cc8aa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LevelEditor\Header Files">
-      <UniqueIdentifier>{ac19445d-c46a-41f9-9cb1-78aa1d3d4e9e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="LevelEditor\Source Files">
-      <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="World">
       <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
     </Filter>
@@ -118,6 +109,15 @@
     </Filter>
     <Filter Include="World\Source Files">
       <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelEditor">
+      <UniqueIdentifier>{0bb47399-6fe3-488b-bbd9-153ae10cc8aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelEditor\Header Files">
+      <UniqueIdentifier>{ac19445d-c46a-41f9-9cb1-78aa1d3d4e9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="LevelEditor\Source Files">
+      <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
