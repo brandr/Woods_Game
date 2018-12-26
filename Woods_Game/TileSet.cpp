@@ -4,12 +4,16 @@ TileSet::TileSet()
 {
 	setClassName("TileSet");
 	Register("tile_sheet_name", &tile_sheet_name);
+	//sheet filenames
 	Register("edge_tile_sheet_name", &edge_tile_sheet_name);
 	Register("block_tile_sheet_name", &block_tile_sheet_name);
 	Register("entity_group_tile_sheet_name", &entity_group_tile_sheet_name);
+	Register("tiled_image_tile_sheet_name", &tiled_image_tile_sheet_name);	
+	//object types
 	Register("tile_types", &tile_types);
 	Register("block_types", &block_types);
 	Register("entity_group_types", &entity_group_types);
+	Register("tiled_image_types", &tiled_image_types);
 }
 
 
@@ -22,6 +26,7 @@ void TileSet::unload_content()
 	this->tile_types.Clear();
 	this->block_types.Clear();
 	this->entity_group_types.Clear();
+	this->tiled_image_types.Clear();
 }
 
 void TileSet::load_sheet_images(std::string filename, int sub_width, int sub_height)
@@ -83,6 +88,13 @@ void TileSet::load_sheet_images()
 			std::string comp_filename = group_filename + "_" + ecd->get_name();		
 			TileSet::load_sheet_images(comp_filename, image_dimensions.first, image_dimensions.second);
 		}
+	}
+
+	const int tiled_image_type_count = this->tiled_image_types.size();
+	for (int i = 0; i < tiled_image_type_count; i++) {
+		TiledImageData *tid = this->tiled_image_types.getItem(i);
+		std::string filename = this->tiled_image_tile_sheet_name.value() + "_" + tid->get_image_data_key();
+		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
 	}
 }
 
@@ -177,6 +189,11 @@ std::string TileSet::get_block_tile_sheet_filename()
 std::string TileSet::get_entity_group_tile_sheet_filename()
 {
 	return "tile_sheets/" + this->entity_group_tile_sheet_name.value();
+}
+
+std::string TileSet::get_tiled_image_tile_sheet_filename()
+{
+	return "tile_sheets/" + this->tiled_image_tile_sheet_name.value();
 }
 
 // tile types
@@ -305,10 +322,6 @@ std::vector<std::string> TileSet::all_block_keys()
 
 ALLEGRO_BITMAP * TileSet::get_default_entity_group_bitmap(const int index)
 {
-	//TODO: this is almost definitely not getting the image because
-	// there is no "main" image for an entitygroup. 
-	// debug, figure out filename and make a main image
-	//TODO: ensure that we actually load the full group image
 	return ImageLoader::get_instance().get_default_entity_group_image(this->get_entity_group_tile_sheet_filename(), this->entity_group_types.getItem(index));
 }
 
@@ -419,4 +432,10 @@ std::vector<std::string> TileSet::all_entity_group_keys()
 		entity_group_keys.push_back(entity_group_type->entity_group_name.value());
 	}
 	return entity_group_keys;
+}
+
+ALLEGRO_BITMAP * TileSet::get_default_tiled_image_bitmap(const int index)
+{
+	//TODO: pass in TiledImageData
+	return ImageLoader::get_instance().get_default_tiled_image_image(this->get_tiled_image_tile_sheet_filename(), this->tiled_image_types.getItem(index));
 }

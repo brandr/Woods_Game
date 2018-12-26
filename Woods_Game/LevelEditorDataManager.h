@@ -36,6 +36,7 @@ public:
 	static constexpr const char* TILE_LAYER = "tile_layer";
 	static constexpr const char* BLOCK_LAYER = "block_layer";
 	static constexpr const char* ENTITY_GROUP_LAYER = "entity_group_layer";
+	static constexpr const char* TILED_IMAGE_LAYER = "tiled_image_layer";
 	static constexpr const char* GRID_LINES_LAYER = "grid_lines_layer";
 	
 private:
@@ -49,6 +50,7 @@ private:
 	int selected_tileset_tile_index = -1;
 	int selected_tileset_block_index = -1;
 	int selected_tileset_entity_group_index = -1;
+	int selected_tileset_tile_image_index = -1;
 	// for level editor layout
 	int selected_object_tab_index = -1;
 	int selected_object_select_index = -1;
@@ -104,6 +106,7 @@ public:
 	bool update_selected_tileset(int index);
 	bool update_selected_tileset_tile(int index);
 	bool update_selected_tileset_block(int index);
+	bool update_selected_tileset_tiled_image(int index);
 	bool update_selected_tileset_entity_group(int index);
 	void set_selected_tileset_index(int index);
 	std::vector<std::string> all_tileset_names();
@@ -115,6 +118,7 @@ public:
 	ALLEGRO_BITMAP * get_default_tile_bitmap(int index);
 	ALLEGRO_BITMAP * get_default_block_bitmap(int index);
 	ALLEGRO_BITMAP * get_default_entity_group_bitmap(int index);
+	ALLEGRO_BITMAP * get_default_tiled_image_bitmap(int index);
 	std::pair<int, int> get_entity_group_image_dimensions_by_index(int index);
 	bool has_selected_tileset();
 };
@@ -124,6 +128,7 @@ const std::vector<std::string> LEVEL_LAYERS({
 	LevelEditorDataManager::TILE_LAYER,
 	LevelEditorDataManager::BLOCK_LAYER,
 	LevelEditorDataManager::ENTITY_GROUP_LAYER,
+	LevelEditorDataManager::TILED_IMAGE_LAYER,
 	LevelEditorDataManager::GRID_LINES_LAYER
 });
 

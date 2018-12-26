@@ -266,6 +266,15 @@
     <ClInclude Include="LevelGridListener.h">
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DungeonData.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledImage.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledImageLayer.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -412,6 +421,11 @@
     <ClCompile Include="LevelGridListener.cpp">
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="DungeonData.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TiledImage.cpp" />
+    <ClCompile Include="TiledImageLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

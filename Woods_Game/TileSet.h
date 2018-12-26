@@ -11,7 +11,7 @@ class TileSet : public xmls::Serializable
 	
 {
 	enum TYPE_KEYS {
-		TILESET_TILE_TYPES, TILESET_BLOCK_TYPES, TILESET_ENTITY_GROUP_TYPES
+		TILESET_TILE_TYPES, TILESET_BLOCK_TYPES, TILESET_ENTITY_GROUP_TYPES, TILESET_TILED_IMAGE_TYPES
 	};
 private:
 	std::string tileset_key;
@@ -19,9 +19,11 @@ private:
 	xmls::xString edge_tile_sheet_name;
 	xmls::xString block_tile_sheet_name;
 	xmls::xString entity_group_tile_sheet_name;
+	xmls::xString tiled_image_tile_sheet_name;
 	xmls::Collection<TileType> tile_types;
 	xmls::Collection<EntityData> block_types;
 	xmls::Collection<EntityGroupData> entity_group_types;
+	xmls::Collection<TiledImageData> tiled_image_types;
 	void ensure_room_for_type(const int type_key, const int row);
 public:
 	TileSet();
@@ -42,6 +44,8 @@ public:
 	std::string get_edge_tile_sheet_filename();
 	std::string get_block_tile_sheet_filename();
 	std::string get_entity_group_tile_sheet_filename();
+	std::string get_tiled_image_tile_sheet_filename();
+	
 	// tile types	
 	ALLEGRO_BITMAP * get_default_tile_bitmap(const int index);
 	void set_tile_speed_mod(const int row, float speed_mod);
@@ -77,6 +81,10 @@ public:
 	std::pair<int, int> get_entity_group_center_offset(const int row);
 	std::vector<EntityComponentData*> get_entity_group_components(const int row);
 	std::vector<std::string> all_entity_group_keys();
+	// tiled image types
+	ALLEGRO_BITMAP * get_default_tiled_image_bitmap(const int index);
+	
+	
 	
 };
 #endif

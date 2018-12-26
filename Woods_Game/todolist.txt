@@ -6,10 +6,11 @@ Draw the creepy guy from the story in paint
 Level editor
 --------------------
 
-Figure out how to set player start
+make it so levels can store their selected tileset key 
+so we know which tileset to set if we change the level in LevelEditorManager.update_selected_level()
+	* could use a dropdown or listbox in dungeon editor layout
 
-Fix bug with tile edge generation button
-	* saving and reloading seems to fix the issue, so the problem likely has to do with the "draw edges onto bitmap" function
+make a UI for setting tileset tile/entity data attributes (on tileset tab)
 
 make it possible to select objects in level editor and adjust their attributes
 	* probably want a special selection button that can be toggled so we know what left click does
@@ -24,16 +25,29 @@ Fix memory leak in level editor
 	*this is also a good time to fix memory leaks in general
 consider how/whether to delete objects when resizing levels
 
-make it so levels can store their selected tileset key 
-so we know which tileset to set if we change the level in LevelEditorManager.update_selected_level()
-	* could use a dropdown or listbox in dungeon editor layout
-
-
-
 ---------------------------------------------------
 
-fix the crashes that can happen when using items after switching them
-	*has something to do with bad memory management
+Tiled Images
+	*investigate warning that pops up in console
+		# probably need to re-save images
+	*figure out UI for selecting tiled images from sheets
+		# need to be able to choose sheets-- should be duplicated per tiled image
+		# IDEA: on level edit grid, don't have tiled images as another object select tab,
+		  use the empty space to the right of the grid for a separate UI
+	*figure out how to select tiled image layers (remember, only relevant on editor grid, not tilesets)
+	*out of room on tileset tab-- need to reorganize it (tabs?)
+
+Buildings
+	*finish tiled images first
+	*collisions we care about (should probably be with invisible blocks)
+	*how do interactables like doors fit in?
+		#doors should probably be a type of block that sends players to another level
+		#need button to interact?
+	*make the inside of buildings levels that are uniquely identified by string id but not part of the normal level grids
+		#could set the level key to -1 or some constant
+	*also need to be able to id levels on the grid this way, since this is how players will exit the building
+	*also need to uniquely identify the door from outside so that the player can appear in front of the door after leaving the level
+	*ensure that unused tiles outside the building are displayed as black
 
 Make sure I can do what I want with the tile system
 	*Going through brush will be better if there's a tool to make trails but trails get overgrown
@@ -44,12 +58,6 @@ Make sure I can do what I want with the tile system
 		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
 		#should holes be saved when the game is saved?
 
-IDEA: make buildings as entitygroups that have a collision rect, but also a door component with an attribute that sends the player to another level on contact.
-	*make the inside of buildings levels that are uniquely identified by id but not part of the normal level grids
-		#could set the level key to -1 or some constant
-	*also need to be able to id levels on the grid this way, since this is how players will exit the building
-	*also need to uniquely identify the building entitygroup so that the player can appear in front of the door after leaving the level
-	*ensure that unused tiles outside the building are displayed as black
 
 IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
 	-implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection

@@ -25,7 +25,8 @@ class LevelEditorLayout : public agui::FlowLayout {
 	enum OBJECT_SELECT_TABS {
 		TILE_SELECT_TAB = 0,
 		BLOCK_SELECT_TAB = 1,
-		ENTITY_GROUP_SELECT_TAB = 2
+		ENTITY_GROUP_SELECT_TAB = 2,
+		TILED_IMAGE_SELECT_TAB = 3
 	};
 private:
 
@@ -35,19 +36,22 @@ private:
 	agui::Label level_grid_label;
 	agui::ScrollPane level_grid_scroll_pane;
 	agui::Frame level_grid_frame;
-	agui::Tab level_edit_object_tabs[3];
+	agui::Tab level_edit_object_tabs[4];
 	agui::ScrollPane level_edit_object_tile_scroll_pane;
 	agui::ScrollPane level_edit_object_block_scroll_pane;
 	agui::ScrollPane level_edit_object_entity_group_scroll_pane;
+	agui::ScrollPane level_edit_object_tiled_image_scroll_pane;
 	agui::ListBox level_edit_object_tile_select_box;
 	agui::ListBox level_edit_object_block_select_box;
 	agui::ListBox level_edit_object_entity_group_select_box;
+	agui::ListBox level_edit_object_tiled_image_select_box;
 	agui::Button level_edit_reset_tile_edges_button;
 
 	// checkboxes
 	agui::CheckBox tile_visibility_checkbox;
 	agui::CheckBox block_visibility_checkbox;
 	agui::CheckBox entity_group_visibility_checkbox;
+	agui::CheckBox tiled_image_visibility_checkbox;
 	agui::CheckBox grid_lines_visibility_checkbox;
 
 	// listeners
@@ -71,6 +75,7 @@ public:
 	void load_selected_tileset_tiles();
 	void load_selected_tileset_blocks();
 	void load_selected_tileset_entity_groups();
+	void load_selected_tileset_tiled_images();
 	void update();
 	void update_selected_level_object();
 	bool should_reset_tile_edges();

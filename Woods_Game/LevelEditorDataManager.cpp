@@ -218,6 +218,18 @@ bool LevelEditorDataManager::update_selected_tileset_entity_group(int index)
 	return update_eg;
 }
 
+bool LevelEditorDataManager::update_selected_tileset_tiled_image(int index)
+{
+	bool update_image = false;
+	if (index >= 0) {
+		if (index != this->selected_tileset_tile_image_index) {
+			update_image = true;
+			this->selected_tileset_tile_image_index = index;
+		}
+	}
+	return update_image;
+}
+
 agui::Allegro5Image * LevelEditorDataManager::load_image_layer(std::string layer)
 {
 	const std::string level_name = this->get_selected_level_name();
@@ -233,6 +245,9 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(std::string layer
 	}
 	else if (ENTITY_GROUP_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_entity_groups_onto_bitmap(image_bitmap);
+	}
+	else if (TILED_IMAGE_LAYER == layer) {
+		this->active_levels[this->selected_level_index]->draw_tiled_images_onto_bitmap(image_bitmap);
 	}
 	else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
@@ -522,6 +537,14 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_default_entity_group_bitmap(int ind
 {
 	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
 		return this->active_tilesets[this->selected_tileset_index]->get_default_entity_group_bitmap(index);
+	}
+	return NULL;
+}
+
+ALLEGRO_BITMAP * LevelEditorDataManager::get_default_tiled_image_bitmap(int index)
+{
+	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_default_tiled_image_bitmap(index);
 	}
 	return NULL;
 }

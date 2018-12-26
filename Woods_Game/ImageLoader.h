@@ -5,6 +5,7 @@
 #include "ImageLoader.h"
 #include "TileType.h"
 #include "Entity.h"
+#include "TiledImage.h"
 #include <string>
 #include <iostream>
 #include "xstring"  
@@ -32,6 +33,7 @@ public:
 	ALLEGRO_BITMAP* get_default_tile_image(std::string, TileType*);
 	ALLEGRO_BITMAP* get_default_block_image(std::string, EntityData*);
 	ALLEGRO_BITMAP* get_default_entity_group_image(std::string, EntityGroupData*);
+	ALLEGRO_BITMAP* get_default_tiled_image_image(std::string, TiledImageData*);
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);

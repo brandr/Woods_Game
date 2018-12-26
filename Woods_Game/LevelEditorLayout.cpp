@@ -77,6 +77,14 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	entity_group_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	entity_group_visibility_checkbox.setChecked(true);
 
+	// tiled images layer
+	this->add(&tiled_image_visibility_checkbox);
+	tiled_image_visibility_checkbox.setAutosizing(true);
+	tiled_image_visibility_checkbox.setText("Show tiled images");
+	tiled_image_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
+	tiled_image_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
+	tiled_image_visibility_checkbox.setChecked(true);
+
 	// gridlines
 	this->add(&grid_lines_visibility_checkbox);
 	grid_lines_visibility_checkbox.setAutosizing(true);
@@ -110,6 +118,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	level_edit_object_tabs[0].setText("Tiles");
 	level_edit_object_tabs[1].setText("Blocks");
 	level_edit_object_tabs[2].setText("EntityGroups");
+	level_edit_object_tabs[3].setText("TiledImages");
 
 	// tabs for selecting objects to place in the level
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILE_SELECT_TAB],
@@ -118,18 +127,24 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 		&level_edit_object_block_scroll_pane);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB],
 		&level_edit_object_entity_group_scroll_pane);
+	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILED_IMAGE_SELECT_TAB],
+		&level_edit_object_tiled_image_scroll_pane);
+
 	// add select boxes to scroll panes
 	level_edit_object_tile_scroll_pane.add(&level_edit_object_tile_select_box);
 	level_edit_object_block_scroll_pane.add(&level_edit_object_block_select_box);
 	level_edit_object_entity_group_scroll_pane.add(&level_edit_object_entity_group_select_box);
+	level_edit_object_tiled_image_scroll_pane.add(&level_edit_object_tiled_image_select_box);
 	// set scroll pane sizes
 	level_edit_object_tile_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_block_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_entity_group_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_tiled_image_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	// set select box sizes
 	level_edit_object_tile_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_block_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_entity_group_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_tiled_image_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	// selected object display
 	this->add(&selected_level_object_display);
 	this->add(new agui::EmptyWidget());
@@ -175,6 +190,25 @@ void LevelEditorLayout::load_selected_tileset_entity_groups()
 	}
 }
 
+void LevelEditorLayout::load_selected_tileset_tiled_images()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	this->level_edit_object_tiled_image_select_box.clearItems();
+	if (manager.has_selected_tileset()) {
+		//TODO: what should the select box show for tiled images?
+		// can't just do a find and replace, UI should be different since there are aesthetic only
+		/*
+		std::vector<std::string> entity_group_keys = manager.all_selected_entity_group_keys();
+		for (std::string entity_group_key : entity_group_keys) {
+			// level editor tab selection
+			this->level_edit_object_entity_group_select_box.addItem(entity_group_key);
+		}
+		*/
+	}
+}
+
+
+
 void LevelEditorLayout::update()
 {
 	this->level_editor_grid.update();
@@ -187,6 +221,7 @@ void LevelEditorLayout::update()
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::TILE_LAYER, this->tile_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::BLOCK_LAYER, this->block_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::ENTITY_GROUP_LAYER, this->entity_group_visibility_checkbox.checked());
+		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::TILED_IMAGE_LAYER, this->tiled_image_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::GRID_LINES_LAYER, this->grid_lines_visibility_checkbox.checked());
 		this->level_editor_grid.set_select_mode(this->level_edit_select_mode_checkbox.checked() ? 1 : 0);
 	}
@@ -212,6 +247,9 @@ void LevelEditorLayout::update_selected_level_object()
 		break;
 	case ENTITY_GROUP_SELECT_TAB:
 		object_box = &(this->level_edit_object_entity_group_select_box);
+		break;
+	case TILED_IMAGE_SELECT_TAB:
+		object_box = &(this->level_edit_object_tiled_image_select_box);
 		break;
 	default:
 		break;

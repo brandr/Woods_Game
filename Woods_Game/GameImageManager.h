@@ -6,6 +6,7 @@
 #include "xstring"  // for string
 #include "World.h"
 #include "Player.h"
+#include "FileManager.h"
 
 class GameImageManager
 {

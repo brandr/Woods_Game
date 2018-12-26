@@ -3,7 +3,6 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
-//#include "Inventory.h"
 #include "Inventory.h"
 #include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
 #include "allegro5/bitmap_draw.h"  // for al_draw_bitmap

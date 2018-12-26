@@ -11,6 +11,7 @@
 #include "EntityGroup.h"
 #include "XMLSerialization.h"
 #include "TileGroup.h"
+#include "TiledImageLayer.h"
 
 class Level : public xmls::Serializable
 {
@@ -22,6 +23,7 @@ private:
 	xmls::xString tileset_key;
 	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
+	xmls::Collection<TiledImageLayer> tiled_image_layers;
 	std::vector<GameImage*> game_images;
 	std::vector<Entity*> entities;
 	std::vector<Being*> beings;
@@ -101,5 +103,6 @@ public:
 	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 };
 #endif

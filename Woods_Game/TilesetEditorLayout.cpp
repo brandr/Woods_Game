@@ -110,6 +110,31 @@ TilesetEditorLayout::TilesetEditorLayout(ALLEGRO_DISPLAY * display)
 	selected_entity_group_name_field.setSize(200, 30);
 	tileset_entity_group_layout.add(&entity_group_image_display);
 	tileset_entity_group_layout.add(new agui::EmptyWidget());
+
+	//entitygroup select window
+
+	this->add(&tileset_tiled_image_frame);
+	tileset_tiled_image_frame.setSize(380, 600);
+	tileset_tiled_image_frame.add(&tileset_tiled_image_layout);
+
+	tileset_tiled_image_layout.add(&tileset_tiled_image_label);
+	tileset_tiled_image_label.setText("TiledImages");
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+
+	tileset_tiled_image_layout.add(&tileset_tiled_image_select_box);
+	tileset_tiled_image_select_box.setSize(380, 180);
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+
+	tileset_tiled_image_layout.add(&selected_tiled_image_name_label);
+	selected_tiled_image_name_label.setText("TiledImage Name");
+	tileset_tiled_image_layout.add(&selected_tiled_image_name_field);
+	selected_tiled_image_name_field.setSize(200, 30);
+	tileset_tiled_image_layout.add(&tiled_image_image_display);
+	tileset_tiled_image_layout.add(new agui::EmptyWidget());
 }
 
 void TilesetEditorLayout::load_tilesets()
@@ -158,6 +183,23 @@ void TilesetEditorLayout::load_selected_tileset_entity_groups()
 			// tileset tab selection
 			this->tileset_entity_group_select_box.addItem(entity_group_key);
 		}
+	}
+}
+
+void TilesetEditorLayout::load_selected_tileset_tiled_images()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	this->tileset_entity_group_select_box.clearItems();
+	if (manager.has_selected_tileset()) {
+		//TODO: draw whatever we draw in the other place
+		/*
+		std::vector<std::string> entity_group_keys
+			= manager.all_selected_entity_group_keys();
+		for (std::string entity_group_key : entity_group_keys) {
+			// tileset tab selection
+			this->tileset_entity_group_select_box.addItem(entity_group_key);
+		}
+		*/
 	}
 }
 
@@ -217,6 +259,21 @@ void TilesetEditorLayout::update_selected_tileset_entity_groups()
 		const std::pair<float, float> eg_dimensions
 			= manager.get_entity_group_image_dimensions_by_index(eg_index);
 		this->entity_group_image_display.setSize(eg_dimensions.first, eg_dimensions.second);
+	}
+}
+
+void TilesetEditorLayout::update_selected_tileset_tiled_images()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	const int ti_index = this->tileset_tiled_image_select_box.getSelectedIndex();
+	const bool should_update = manager.update_selected_tileset_tiled_image(ti_index);
+	if (should_update) {
+		const std::string ti_name
+			= this->tileset_tiled_image_select_box.getItemAt(ti_index);
+		this->selected_tiled_image_name_field.setText(ti_name);
+		ALLEGRO_BITMAP * ti_bitmap = manager.get_default_tiled_image_bitmap(ti_index);
+		this->tiled_image_image_display.set_bitmap(ti_bitmap);
+		this->tiled_image_image_display.setSize(TILE_SIZE, TILE_SIZE);
 	}
 }
 

@@ -266,6 +266,7 @@
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Dungeon.h" />
+    <ClInclude Include="DungeonData.h" />
     <ClInclude Include="DungeonEditorLayout.h" />
     <ClInclude Include="EditorActionListener.h" />
     <ClInclude Include="Entity.h" />
@@ -301,6 +302,8 @@
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="SpriteSheetAnimation.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TiledImage.h" />
+    <ClInclude Include="TiledImageLayer.h" />
     <ClInclude Include="TileGroup.h" />
     <ClInclude Include="TileSet.h" />
     <ClInclude Include="TilesetEditorLayout.h" />
@@ -317,6 +320,7 @@
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Dungeon.cpp" />
+    <ClCompile Include="DungeonData.cpp" />
     <ClCompile Include="DungeonEditorLayout.cpp" />
     <ClCompile Include="EditorActionListener.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -351,6 +355,8 @@
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="SpriteSheetAnimation.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TiledImage.cpp" />
+    <ClCompile Include="TiledImageLayer.cpp" />
     <ClCompile Include="TileGroup.cpp" />
     <ClCompile Include="TileSet.cpp" />
     <ClCompile Include="TilesetEditorLayout.cpp" />

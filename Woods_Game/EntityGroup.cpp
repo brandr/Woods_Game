@@ -11,10 +11,9 @@ EntityGroup::EntityGroup()
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
 	this->Register("EntityGroupName", &entity_group_name);
-	//this->Register("EntityAttributes", &entity_attributes);	//not sure if these are actually necessary for entitygroups
 }
 
-EntityGroup::EntityGroup(std::pair<int, int> root_offset)//, std::vector<EntityComponentData> component_data)
+EntityGroup::EntityGroup(std::pair<int, int> root_offset)
 {
 	this->setClassName("EntityGroup");
 	this->Register("Solid", &(this->solid));

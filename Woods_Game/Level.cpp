@@ -19,6 +19,7 @@ Level::Level()
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 }
 
 Level::Level(std::string level_filename, std::string dungeon_filename, std::string id)
@@ -31,6 +32,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = level_filename;
 	this->dungeon_filename = dungeon_filename;
 	this->id = id;
@@ -46,6 +48,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename,  std::str
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = level_filename;
 	this->dungeon_filename = dungeon_filename;
 	this->id = id;
@@ -67,6 +70,7 @@ Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int g
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = filename;
 	this->grid_x = grid_x;
 	this->grid_y = grid_y;
@@ -86,6 +90,7 @@ Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->grid_x = grid_x;
 	this->grid_y = grid_y;
 	this->grid_width = grid_width;
@@ -516,8 +521,8 @@ void Level::draw_tile_edge_bitmaps()
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			Tile *t = this->get_tile(x, y);
+			t->reset(this->tileset, t);
 			if (t->has_edges()) {
-				t->reset(this->tileset, t);
 				std::vector<TileEdge*> tile_edges = t->get_tile_edges();
 				for (TileEdge *edge : tile_edges) {
 					std::string filename = this->tileset->get_edge_tile_sheet_filename() + "_" + edge->tile_key.c_str();
@@ -1006,5 +1011,27 @@ void Level::draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 	}
 	al_set_target_bitmap(display);
 }
+
+void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
+	//TODO: draw tiled images from layers in order of layers
+	/*
+	const int size = this->buildings.size();
+	for (int i = 0; i < size; i++) {
+		EntityGroup * eg = this->entity_groups.getItem(i);
+		float dx = eg->get_x();
+		float dy = eg->get_y();
+		std::vector<Entity*> entities = eg->get_entities();
+		for (Entity *e : entities) {
+			ALLEGRO_BITMAP *entity_bitmap = e->get_bitmap();
+			al_draw_bitmap(entity_bitmap, dx, dy, 0);
+		}
+	}
+	*/
+	al_set_target_bitmap(display);
+}
+
 
 

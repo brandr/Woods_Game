@@ -4,6 +4,7 @@
         <Member Name="edge_tile_sheet_name">back_tile_sheet_2_edges</Member>
         <Member Name="block_tile_sheet_name">block_tile_sheet_2</Member>
         <Member Name="entity_group_tile_sheet_name">entity_group_tile_sheet_1</Member>
+        <Member Name="tiled_image_tile_sheet_name">tiled_images</Member>
         <Collection Name="tile_types">
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">0</Member>
@@ -105,6 +106,19 @@
                         </Collection>
                     </Class>
                 </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="tiled_image_types">
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_walls_1</Member>
+                <Member Name="image_data_index">0</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_doors_1</Member>
+                <Member Name="image_data_index">1</Member>
+            </Class><Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_windows_1</Member>
+                <Member Name="image_data_index">2</Member>
             </Class>
         </Collection>
     </SerializableClass>

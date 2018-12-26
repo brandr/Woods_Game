@@ -130,6 +130,19 @@ ALLEGRO_BITMAP * ImageLoader::get_default_entity_group_image(std::string sheet_f
 	else { return it->second; }
 }
 
+ALLEGRO_BITMAP * ImageLoader::get_default_tiled_image_image(std::string sheet_filename, TiledImageData *image_type)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + image_type->get_image_data_key());
+	Rect * subsection = new Rect(0, 0,
+		TILE_SIZE, TILE_SIZE);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else { return it->second; }
+}
+
 ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
 {
 	Animation *anim = image->get_animation();

@@ -50,16 +50,13 @@ GameImageManager::~GameImageManager()
 
 void GameImageManager::load_content()
 {
-	current_level = world.get_current_dungeon()->level_at(0, 0);
-	load_player_from_xml("resources/load/player", "default_player");
-
-	//load_level_content("resources/load/player.txt", "", PLAYER);
-	//TEMP
-	//load_level_content("resources/load/temp_level_1.txt", "", PLATFORM);
-	//TEMP
-	//TODO: load dungeon content from somewhere
-	//IDEA: put dungeon grid in this class instead of the dungeon class, and change it when changing world
-	//TODO: load content for adjacent levels, or possibly for the current dungeon
+	const std::string world_name = "world_1"; //TEMP
+	FileManager filemanager;
+	const std::string filename = "resources/load/worlds";
+	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", world_name);
+	this->world.load_dungeons();
+	this->current_level = world.get_current_level();
+	load_player_from_xml("resources/load/player", this->world.get_player_key());
 }
 
 void GameImageManager::set_game_mode(int game_mode)

@@ -55,17 +55,28 @@ private:
 	agui::Label selected_entity_group_name_label;
 	agui::TextField selected_entity_group_name_field;
 	GameImageDisplay entity_group_image_display;
+
+	// tiled images
+	agui::Frame tileset_tiled_image_frame;
+	agui::FlowLayout tileset_tiled_image_layout;
+	agui::Label tileset_tiled_image_label;
+	agui::ListBox tileset_tiled_image_select_box;
+	agui::Label selected_tiled_image_name_label;
+	agui::TextField selected_tiled_image_name_field;
+	GameImageDisplay tiled_image_image_display;
 public:
 	TilesetEditorLayout(ALLEGRO_DISPLAY *display);
 	void load_tilesets();
 	void load_selected_tileset_tiles();
 	void load_selected_tileset_blocks();
 	void load_selected_tileset_entity_groups();
+	void load_selected_tileset_tiled_images();
 	void update_selected_tileset();
 	void update_selected_tileset_fields();
 	void update_selected_tileset_tiles();
 	void update_selected_tileset_blocks();
 	void update_selected_tileset_entity_groups();
+	void update_selected_tileset_tiled_images();
 	void set_selected_tileset_index(int value);
 	int get_selected_tileset_index();
 	std::string get_tileset_name(int index);

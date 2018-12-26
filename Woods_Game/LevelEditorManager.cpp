@@ -110,6 +110,7 @@ void LevelEditorManager::update_selected_level()
 		this->level_edit_layout->load_selected_tileset_tiles();
 		this->level_edit_layout->load_selected_tileset_blocks();
 		this->level_edit_layout->load_selected_tileset_entity_groups();
+		this->level_edit_layout->load_selected_tileset_tiled_images();
 		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
 		this->tileset_edit_layout->update_selected_tileset_fields();
 		this->tileset_edit_layout->load_selected_tileset_tiles();
@@ -206,6 +207,12 @@ void LevelEditorManager::load_selected_tileset_entity_groups()
 {
 	this->level_edit_layout->load_selected_tileset_entity_groups();
 	this->tileset_edit_layout->load_selected_tileset_entity_groups();
+}
+
+void LevelEditorManager::load_selected_tileset_tiled_images()
+{
+	this->level_edit_layout->load_selected_tileset_tiled_images();
+	this->tileset_edit_layout->load_selected_tileset_tiled_images();
 }
 
 void LevelEditorManager::draw(ALLEGRO_DISPLAY * display)
