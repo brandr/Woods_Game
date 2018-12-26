@@ -44,6 +44,7 @@ public:
 	void initialize_block();
 	void replace_block(TileSet * tileset, int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void remove_block();
+	void remove_edges();
 	Rect *get_bitmap_subsection();
 	Block *get_block();
 	void set_tile_type_index(int index);

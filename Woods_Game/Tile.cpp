@@ -136,6 +136,12 @@ void Tile::remove_block()
 	this->block.set_empty();
 }
 
+void Tile::remove_edges()
+{
+	this->tile_edges.Clear();
+	//TODO: do we need to reload image?
+}
+
 Rect * Tile::get_bitmap_subsection()
 {
 	return new Rect(this->tile_sheet_col.value()*TILE_SIZE, this->tile_sheet_row.value()*TILE_SIZE, TILE_SIZE, TILE_SIZE);

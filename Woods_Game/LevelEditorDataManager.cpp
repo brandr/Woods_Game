@@ -132,12 +132,22 @@ void LevelEditorDataManager::add_level(std::string level_name)
 	}
 }
 
+//FIXME: are we actually using the level name?
 void LevelEditorDataManager::delete_level(std::string level_name)
 {
 	if (level_name.length() > 0 && this->has_active_dungeon()) {
 		const int size = this->active_levels.size();
 		this->active_dungeon->remove_level(this->selected_level_index);
 		this->reset_active_levels();
+	}
+}
+
+void LevelEditorDataManager::reset_tile_edges()
+{
+	if (this->has_selected_level()) {
+		this->active_levels[this->selected_level_index]->remove_tile_edges();
+		this->active_levels[this->selected_level_index]->load_tile_edges();
+		this->active_levels[this->selected_level_index]->draw_tile_edge_bitmaps();
 	}
 }
 
@@ -341,6 +351,13 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 		}
 	}
 	return update;
+}
+
+void LevelEditorDataManager::select_level_object(std::pair<int, int> tile_pos)
+{
+	//TODO: need to track both selected pos (-1, -1 if nothing) and selected entity type
+	this->selected_object_grid_index = this->selected_object_tab_index;
+	this->selected_object_grid_pos = tile_pos;
 }
 
 

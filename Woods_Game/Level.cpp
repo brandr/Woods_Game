@@ -442,6 +442,19 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	add_entity(eg); //allows serialization
 }
 
+void Level::remove_tile_edges()
+{
+	int tile_rows = this->tile_rows.size();
+	int tile_cols = this->tile_rows.getItem(0)->get_size();
+	for (int y = 0; y < tile_rows; y++) {
+		for (int x = 0; x < tile_cols; x++) {
+			Tile *t = this->get_tile(x, y);
+			//remove any edges we already have
+			t->remove_edges();
+		}
+	}
+}
+
 void Level::load_tile_edges()
 {
 	int tile_rows = this->tile_rows.size();
@@ -504,6 +517,7 @@ void Level::draw_tile_edge_bitmaps()
 		for (int x = 0; x < width; x++) {
 			Tile *t = this->get_tile(x, y);
 			if (t->has_edges()) {
+				t->reset(this->tileset, t);
 				std::vector<TileEdge*> tile_edges = t->get_tile_edges();
 				for (TileEdge *edge : tile_edges) {
 					std::string filename = this->tileset->get_edge_tile_sheet_filename() + "_" + edge->tile_key.c_str();

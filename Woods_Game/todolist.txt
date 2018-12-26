@@ -6,11 +6,16 @@ Draw the creepy guy from the story in paint
 Level editor
 --------------------
 
+Figure out how to set player start
+
+Fix bug with tile edge generation button
+	* saving and reloading seems to fix the issue, so the problem likely has to do with the "draw edges onto bitmap" function
+
 make it possible to select objects in level editor and adjust their attributes
 	* probably want a special selection button that can be toggled so we know what left click does
-		
-IDEA: could make button to delete all tile edges and re-generate them
-	* part of the problem seems to be that leftover tile edges are still in the xml
+	* look at LevelEditorDataManager.select_level_object() for where we set pos and entity type
+	   # idea: make an interface (how to do in C++?) for entities that dispay extra data when selected in editor
+	   # default implementation is just entity attributes, but there might be special cases for NPC speech and stuff
 
 Fix memory leak in level editor
 	*adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
@@ -23,7 +28,7 @@ make it so levels can store their selected tileset key
 so we know which tileset to set if we change the level in LevelEditorManager.update_selected_level()
 	* could use a dropdown or listbox in dungeon editor layout
 
-Figure out how to set player start
+
 
 ---------------------------------------------------
 

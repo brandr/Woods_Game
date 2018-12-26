@@ -24,16 +24,44 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">dirt</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
+                        <Member Name="TilePosY">0</Member>
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Class Name="Block" Type="Block" Version="1">
+                            <Member Name="Solid"/>
+                            <Member Name="EntityStartingPosX"/>
+                            <Member Name="EntityStartingPosY"/>
+                            <Member Name="EntityDataIndex">-1</Member>
+                            <Member Name="EntitySheetCol"/>
+                            <Member Name="EntitySheetRow"/>
+                            <Collection Name="EntityAttributes"/>
+                        </Class>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TilePosX">2</Member>
+                        <Member Name="TilePosY">0</Member>
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Class Name="Block" Type="Block" Version="1">
+                            <Member Name="Solid"/>
+                            <Member Name="EntityStartingPosX"/>
+                            <Member Name="EntityStartingPosY"/>
+                            <Member Name="EntityDataIndex">-1</Member>
+                            <Member Name="EntitySheetCol"/>
+                            <Member Name="EntitySheetRow"/>
+                            <Collection Name="EntityAttributes"/>
+                        </Class>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TilePosX">3</Member>
                         <Member Name="TilePosY">0</Member>
                         <Member Name="TileTypeIndex">0</Member>
                         <Member Name="TileSheetCol">0</Member>
@@ -51,49 +79,19 @@
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
                                 <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">dirt</Member>
+                                <Member Name="TileKey">grass</Member>
                             </Class>
-                        </Collection>
-                    </Class>
-                    <Class Type="Tile" Version="1">
-                        <Member Name="TilePosX">2</Member>
-                        <Member Name="TilePosY">0</Member>
-                        <Member Name="TileTypeIndex">0</Member>
-                        <Member Name="TileSheetCol">0</Member>
-                        <Member Name="TileSheetRow">0</Member>
-                        <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
-                            <Collection Name="EntityAttributes"/>
-                        </Class>
-                        <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">dirt</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
-                    </Class>
-                    <Class Type="Tile" Version="1">
-                        <Member Name="TilePosX">3</Member>
-                        <Member Name="TilePosY">0</Member>
-                        <Member Name="TileTypeIndex">0</Member>
-                        <Member Name="TileSheetCol">0</Member>
-                        <Member Name="TileSheetRow">0</Member>
-                        <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
-                            <Collection Name="EntityAttributes"/>
-                        </Class>
-                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">4</Member>
@@ -161,7 +159,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -421,13 +425,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">dirt</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
@@ -457,7 +455,23 @@
                                 </Class>
                             </Collection>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">2</Member>
@@ -487,13 +501,7 @@
                                 </Class>
                             </Collection>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">dirt</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">3</Member>
@@ -544,7 +552,23 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">6</Member>
@@ -578,7 +602,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">8</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -595,7 +630,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -612,7 +653,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -629,7 +676,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -646,7 +699,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">6</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -838,13 +897,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
-                                <Member Name="TileKey">dirt</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
@@ -864,8 +917,13 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">dirt</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
                     </Class>
@@ -884,13 +942,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">dirt</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">3</Member>
@@ -924,7 +976,23 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">5</Member>
@@ -941,7 +1009,23 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">0</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">6</Member>
@@ -975,7 +1059,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -992,13 +1087,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -1015,13 +1104,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -1038,13 +1121,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -1061,7 +1138,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -1095,7 +1178,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">8</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">14</Member>
@@ -1112,7 +1201,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -1129,7 +1224,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
@@ -1146,7 +1247,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">17</Member>
@@ -1163,7 +1270,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">6</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">18</Member>
@@ -1270,7 +1383,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">2</Member>
@@ -1287,13 +1411,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">3</Member>
@@ -1310,13 +1428,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">4</Member>
@@ -1333,13 +1445,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">5</Member>
@@ -1356,13 +1462,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">6</Member>
@@ -1379,18 +1479,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">7</Member>
@@ -1410,7 +1499,12 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -1430,18 +1524,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -1475,7 +1558,23 @@
                                 </Class>
                             </Collection>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -1492,18 +1591,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -1523,7 +1611,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="DirectionIndex">3</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -1543,13 +1631,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -1569,7 +1651,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -1589,13 +1671,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -1612,13 +1688,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
@@ -1635,13 +1705,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">17</Member>
@@ -1658,7 +1722,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">18</Member>
@@ -1765,7 +1835,23 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">2</Member>
@@ -1795,13 +1881,7 @@
                                 </Class>
                             </Collection>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">3</Member>
@@ -1872,12 +1952,12 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="DirectionIndex">1</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="DirectionIndex">3</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -1897,7 +1977,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">0</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -1914,18 +2005,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -1959,7 +2039,18 @@
                                 </Class>
                             </Collection>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -1976,18 +2067,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -2004,7 +2084,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">8</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -2021,7 +2112,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -2041,7 +2138,12 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2061,13 +2163,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -2084,10 +2180,33 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">4</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
+                        <Member Name="TilePosY">4</Member>
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Class Name="Block" Type="Block" Version="1">
+                            <Member Name="Solid"/>
+                            <Member Name="EntityStartingPosX"/>
+                            <Member Name="EntityStartingPosY"/>
+                            <Member Name="EntityDataIndex">-1</Member>
+                            <Member Name="EntitySheetCol"/>
+                            <Member Name="EntitySheetRow"/>
+                            <Collection Name="EntityAttributes"/>
+                        </Class>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TilePosX">17</Member>
                         <Member Name="TilePosY">4</Member>
                         <Member Name="TileTypeIndex">0</Member>
                         <Member Name="TileSheetCol">0</Member>
@@ -2105,26 +2224,9 @@
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
                                 <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
+                                <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
-                    </Class>
-                    <Class Type="Tile" Version="1">
-                        <Member Name="TilePosX">17</Member>
-                        <Member Name="TilePosY">4</Member>
-                        <Member Name="TileTypeIndex">0</Member>
-                        <Member Name="TileSheetCol">0</Member>
-                        <Member Name="TileSheetRow">0</Member>
-                        <Class Name="Block" Type="Block" Version="1">
-                            <Member Name="Solid"/>
-                            <Member Name="EntityStartingPosX"/>
-                            <Member Name="EntityStartingPosY"/>
-                            <Member Name="EntityDataIndex">-1</Member>
-                            <Member Name="EntitySheetCol"/>
-                            <Member Name="EntitySheetRow"/>
-                            <Collection Name="EntityAttributes"/>
-                        </Class>
-                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">18</Member>
@@ -2248,13 +2350,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">3</Member>
@@ -2331,17 +2427,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
                                 <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2364,12 +2450,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2389,23 +2470,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -2442,7 +2507,12 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2462,18 +2532,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -2493,7 +2552,12 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2513,18 +2577,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">8</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -2541,18 +2594,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">7</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">14</Member>
@@ -2569,18 +2611,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">6</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -2597,13 +2628,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
@@ -2620,13 +2645,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">17</Member>
@@ -2643,7 +2662,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">18</Member>
@@ -2733,7 +2758,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">1</Member>
@@ -2750,7 +2781,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">2</Member>
@@ -2768,6 +2805,11 @@
                             <Collection Name="EntityAttributes"/>
                         </Class>
                         <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
                                 <Member Name="DirectionIndex">5</Member>
@@ -2841,7 +2883,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">7</Member>
@@ -2858,7 +2906,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -2895,7 +2949,17 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">7</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
                                 <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -2915,13 +2979,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -2938,7 +2996,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -2955,13 +3024,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">5</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -2978,7 +3041,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">4</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">14</Member>
@@ -2995,13 +3064,7 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">3</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -3018,7 +3081,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
@@ -3035,7 +3109,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">17</Member>
@@ -3052,7 +3132,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">0</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">18</Member>
@@ -3271,7 +3357,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="DirectionIndex">0</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -3294,7 +3380,7 @@
                         <Collection Name="TileEdges">
                             <Class Type="TileEdge" Version="1">
                                 <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="DirectionIndex">5</Member>
                                 <Member Name="TileKey">grass</Member>
                             </Class>
                         </Collection>
@@ -3314,18 +3400,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -3342,18 +3417,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">grass</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -3370,13 +3434,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -3393,7 +3451,18 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">5</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -3410,13 +3479,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">2</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -3433,13 +3496,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">1</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">14</Member>
@@ -3456,13 +3513,7 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges">
-                            <Class Type="TileEdge" Version="1">
-                                <Member Name="RowIndex">0</Member>
-                                <Member Name="DirectionIndex">0</Member>
-                                <Member Name="TileKey">trail</Member>
-                            </Class>
-                        </Collection>
+                        <Collection Name="TileEdges"/>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -3479,7 +3530,13 @@
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">3</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>
@@ -3722,7 +3779,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">2</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">8</Member>
@@ -3739,7 +3802,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">9</Member>
@@ -3756,7 +3825,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">10</Member>
@@ -3773,7 +3848,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">11</Member>
@@ -3790,7 +3871,18 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">0</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">2</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">12</Member>
@@ -3807,7 +3899,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">13</Member>
@@ -3824,7 +3922,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">14</Member>
@@ -3841,7 +3945,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">1</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">15</Member>
@@ -3858,7 +3968,13 @@
                             <Member Name="EntitySheetRow"/>
                             <Collection Name="EntityAttributes"/>
                         </Class>
-                        <Collection Name="TileEdges"/>
+                        <Collection Name="TileEdges">
+                            <Class Type="TileEdge" Version="1">
+                                <Member Name="RowIndex">0</Member>
+                                <Member Name="DirectionIndex">0</Member>
+                                <Member Name="TileKey">grass</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Tile" Version="1">
                         <Member Name="TilePosX">16</Member>

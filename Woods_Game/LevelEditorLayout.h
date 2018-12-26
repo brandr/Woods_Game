@@ -3,6 +3,7 @@
 
 #include "LevelEditorGrid.h"
 #include "GameImageDisplay.h"
+#include "EditorActionListener.h"
 
 #include <Agui/FlowLayout.hpp>
 #include <Agui/EmptyWidget.hpp>
@@ -41,6 +42,7 @@ private:
 	agui::ListBox level_edit_object_tile_select_box;
 	agui::ListBox level_edit_object_block_select_box;
 	agui::ListBox level_edit_object_entity_group_select_box;
+	agui::Button level_edit_reset_tile_edges_button;
 
 	// checkboxes
 	agui::CheckBox tile_visibility_checkbox;
@@ -48,8 +50,11 @@ private:
 	agui::CheckBox entity_group_visibility_checkbox;
 	agui::CheckBox grid_lines_visibility_checkbox;
 
+	// listeners
+	EditorActionListener reset_tile_edges_select_listener;
+
 	// object select
-	agui::Label level_edit_object_label;
+	agui::CheckBox level_edit_select_mode_checkbox;
 	agui::TabbedPane level_edit_object_tabbed_pane;
 	agui::ScrollPane level_edit_object_select_pane;
 	agui::Frame edit_object_select_frame;
@@ -60,6 +65,7 @@ private:
 	int selected_object_tab_index();
 	void set_selected_object_select_index(int index);
 	int selected_object_select_index();
+	bool check_level_listener_flag(EditorActionListener * listener, int flag);
 public:
 	LevelEditorLayout(ALLEGRO_DISPLAY *display);
 	void load_selected_tileset_tiles();
@@ -67,6 +73,8 @@ public:
 	void load_selected_tileset_entity_groups();
 	void update();
 	void update_selected_level_object();
+	bool should_reset_tile_edges();
+	void reset_grid_image_layer(std::string layer);
 };
 
 #endif // !LEVEL_EDITOR_LAYOUT_H

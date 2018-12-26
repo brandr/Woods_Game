@@ -20,9 +20,17 @@ int LevelEditorLayout::selected_object_select_index()
 	return LevelEditorDataManager::get_instance().get_selected_object_select_index();
 }
 
+bool LevelEditorLayout::check_level_listener_flag(EditorActionListener * listener, int flag)
+{
+	bool value = listener->has_flag(flag);
+	if (value) {
+		listener->unset_flag(flag);
+	}
+	return value;
+}
+
 LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 {
-	// TODO: button for adding levels
 	this->setMaxOnRow(4);
 
 	// level grid label
@@ -39,7 +47,6 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	level_grid_scroll_pane.add(&level_grid_frame);
 	level_grid_frame.setSize(LEVEL_EDITOR_GRID_WIDTH, LEVEL_EDITOR_GRID_HEIGHT);
 	level_grid_frame.add(&level_editor_grid);
-	// TODO: action listener for level editor grid to add/remove/edit tiles
 	this->add(new agui::EmptyWidget());
 	this->add(new agui::EmptyWidget());
 	this->add(new agui::EmptyWidget());
@@ -79,10 +86,20 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	grid_lines_visibility_checkbox.setChecked(true);
 
 	// object select
-	this->add(&level_edit_object_label);
-	level_edit_object_label.setText("Select object");
-	level_edit_object_label.setFontColor(agui::Color(0, 0, 0));
-	this->add(new agui::EmptyWidget());
+	this->add(&level_edit_select_mode_checkbox);
+	level_edit_select_mode_checkbox.setAutosizing(true);
+	level_edit_select_mode_checkbox.setText("Select objects");
+	level_edit_select_mode_checkbox.setFontColor(agui::Color(0, 0, 0));
+	level_edit_select_mode_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
+	level_edit_select_mode_checkbox.setChecked(false);
+	
+	// reset tile edges button
+	this->add(&level_edit_reset_tile_edges_button);
+	level_edit_reset_tile_edges_button.setSize(200, 40);
+	level_edit_reset_tile_edges_button.setText("Reset tile edges");
+	reset_tile_edges_select_listener.set_listener_type(RESET_TILE_EDGES);
+	reset_tile_edges_select_listener.set_display(display);
+	level_edit_reset_tile_edges_button.addActionListener(&reset_tile_edges_select_listener);
 	this->add(new agui::EmptyWidget());
 	this->add(new agui::EmptyWidget());
 
@@ -171,6 +188,7 @@ void LevelEditorLayout::update()
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::BLOCK_LAYER, this->block_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::ENTITY_GROUP_LAYER, this->entity_group_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::GRID_LINES_LAYER, this->grid_lines_visibility_checkbox.checked());
+		this->level_editor_grid.set_select_mode(this->level_edit_select_mode_checkbox.checked() ? 1 : 0);
 	}
 	// resize if necessary
 	if (width != this->level_grid_frame.getWidth() || height != this->level_grid_frame.getHeight()) {
@@ -237,4 +255,14 @@ void LevelEditorLayout::update_selected_level_object()
 			this->selected_level_object_display.setSize(dim.first, dim.second);
 		}
 	}
+}
+
+bool LevelEditorLayout::should_reset_tile_edges()
+{
+	return this->check_level_listener_flag(&reset_tile_edges_select_listener, SHOULD_UPDATE);
+}
+
+void LevelEditorLayout::reset_grid_image_layer(std::string layer)
+{
+	this->level_editor_grid.reset_image_layer(layer);
 }

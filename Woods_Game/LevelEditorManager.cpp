@@ -81,10 +81,13 @@ void LevelEditorManager::dungeon_update()
 
 void LevelEditorManager::level_update()
 {
+	// dungeon view
 	this->update_selected_level();
 	this->update_level_grid();
 	this->update_add_level();
 	this->update_delete_level();
+	// level view
+	this->update_reset_tile_edges();
 }
 
 void LevelEditorManager::tileset_update()
@@ -176,6 +179,15 @@ void LevelEditorManager::update_selected_tileset()
 		this->tileset_edit_layout->update_selected_tileset_fields();
 	}
 	this->tileset_edit_layout->update_selected_tileset();
+}
+
+void LevelEditorManager::update_reset_tile_edges()
+{
+	if (this->level_edit_layout->should_reset_tile_edges()) {
+		const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
+		LevelEditorDataManager::get_instance().reset_tile_edges();
+		this->level_edit_layout->reset_grid_image_layer(LevelEditorDataManager::TILE_LAYER);
+	}
 }
 
 void LevelEditorManager::load_selected_tileset_tiles()

@@ -10,6 +10,7 @@
 
 class LevelEditorGrid : public agui::Widget {
 private:
+	int select_mode = 0;
 	LevelGridListener grid_listener;
 	void update_input();
 	// component properties
@@ -21,9 +22,9 @@ private:
 	int bottomMargin;
 	void add_object(std::pair<float, float> pos);
 	void delete_object(std::pair<float, float> pos);
+	void select_object(std::pair<float, float> pos);
 	void clear_image_layers();
 	void load_image_layer(std::string layer);
-	void reset_image_layer(int index);
 	void update_image_layer(std::string layer);
 	agui::Allegro5Image *loaded_level_image(std::string prefix, std::string level_name);
 	void set_loaded_level_image(agui::Allegro5Image *image, std::string prefix, std::string level_name);
@@ -48,6 +49,9 @@ public:
 	LevelEditorGrid(int, int, int, int);
 	void update();
 	void set_layer_visible(std::string layer, bool visible);
+	void set_select_mode(int value);
+	void reset_image_layer(std::string layer);
+	void reset_image_layer(int index);
 };
 
 #endif

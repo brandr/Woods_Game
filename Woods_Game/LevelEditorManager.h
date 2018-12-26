@@ -78,6 +78,7 @@ private:
 	void update_add_level();
 	void update_delete_level();
 	void update_selected_tileset();
+	void update_reset_tile_edges();
 public:
 	LevelEditorManager();
 	LevelEditorManager(agui::Gui *guiInstance, ALLEGRO_DISPLAY *display);

@@ -50,6 +50,7 @@ public:
 	void generate_blocks();
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
+	void remove_tile_edges();
 	void load_tile_edges();
 	void draw_tile_edge_bitmaps();
 	void save_to_xml();

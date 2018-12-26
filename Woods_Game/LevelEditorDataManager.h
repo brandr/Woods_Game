@@ -52,6 +52,8 @@ private:
 	// for level editor layout
 	int selected_object_tab_index = -1;
 	int selected_object_select_index = -1;
+	int selected_object_grid_index = -1;
+	std::pair<int, int> selected_object_grid_pos;
 	void reset_active_levels();
 	void set_selected_level_tile(int index, std::pair<int, int> pos);
 	void set_selected_level_block(int index, std::pair<int, int> pos);
@@ -78,6 +80,7 @@ public:
 		::pair<int, int> pos, std::pair<int, int> dimensions);
 	void add_level(std::string level_name);
 	void delete_level(std::string level_name);
+	void reset_tile_edges();
 	std::vector<std::string> get_active_level_names();
 	std::string get_selected_level_name();
 	std::pair<int, int> selected_level_grid_pos();
@@ -94,6 +97,7 @@ public:
 	int get_selected_object_select_index();
 	bool add_level_object(std::pair<int, int> tile_pos);
 	bool delete_level_object(std::pair<int, int> tile_pos);
+	void select_level_object(std::pair<int, int> tile_pos);
 
 	// tileset
 	void load_all_tilesets();
