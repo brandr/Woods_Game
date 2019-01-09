@@ -58,9 +58,16 @@ void LevelEditorGrid::add_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
-	const bool update = manager.add_level_object(tile_pos);
-	if (update) {
-		this->reset_image_layer(manager.get_selected_object_tab_index());
+	if (manager.has_tiled_image_grid_selection()) {
+		const bool update = manager.add_tiled_image(tile_pos);
+		if (update) {
+			this->reset_image_layer(LevelEditorDataManager::TILED_IMAGE_LAYER);
+		}
+	} else {
+		const bool update = manager.add_level_object(tile_pos);
+		if (update) {
+			this->reset_image_layer(manager.get_selected_object_tab_index());
+		}
 	}
 }
 
@@ -68,9 +75,17 @@ void LevelEditorGrid::delete_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
-	const bool update = manager.delete_level_object(tile_pos);
-	if (update) {
-		this->reset_image_layer(manager.get_selected_object_tab_index());
+	if (manager.has_tiled_image_grid_selection()) {
+		const bool update = manager.delete_tiled_image(tile_pos);
+		if (update) {
+			this->reset_image_layer(LevelEditorDataManager::TILED_IMAGE_LAYER);
+		}
+	}
+	else {
+		const bool update = manager.delete_level_object(tile_pos);
+		if (update) {
+			this->reset_image_layer(manager.get_selected_object_tab_index());
+		}
 	}
 }
 
@@ -78,6 +93,10 @@ void LevelEditorGrid::select_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	//TODO: tell the manager to select object at that location
+	//TODO: use selected entity type (or tiledImage?) to determine layer
+	//TODO: draw red border around selected thing
+	//TODO: view to show entity attributes (new tab?)
 }
 
 void LevelEditorGrid::clear_image_layers()

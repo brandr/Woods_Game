@@ -289,6 +289,7 @@
     <ClInclude Include="LevelEditorLayout.h" />
     <ClInclude Include="LevelEditorManager.h" />
     <ClInclude Include="LevelEditorScreen.h" />
+    <ClInclude Include="LevelGridKeyboardListener.h" />
     <ClInclude Include="LevelGridListener.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
@@ -303,6 +304,7 @@
     <ClInclude Include="SpriteSheetAnimation.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TiledImage.h" />
+    <ClInclude Include="TiledImageGrid.h" />
     <ClInclude Include="TiledImageLayer.h" />
     <ClInclude Include="TileGroup.h" />
     <ClInclude Include="TileSet.h" />
@@ -343,6 +345,7 @@
     <ClCompile Include="LevelEditorLayout.cpp" />
     <ClCompile Include="LevelEditorManager.cpp" />
     <ClCompile Include="LevelEditorScreen.cpp" />
+    <ClCompile Include="LevelGridKeyboardListener.cpp" />
     <ClCompile Include="LevelGridListener.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
@@ -356,6 +359,7 @@
     <ClCompile Include="SpriteSheetAnimation.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TiledImage.cpp" />
+    <ClCompile Include="TiledImageGrid.cpp" />
     <ClCompile Include="TiledImageLayer.cpp" />
     <ClCompile Include="TileGroup.cpp" />
     <ClCompile Include="TileSet.cpp" />

@@ -111,8 +111,9 @@ TilesetEditorLayout::TilesetEditorLayout(ALLEGRO_DISPLAY * display)
 	tileset_entity_group_layout.add(&entity_group_image_display);
 	tileset_entity_group_layout.add(new agui::EmptyWidget());
 
-	//entitygroup select window
+	//tiled image select window
 
+	/*
 	this->add(&tileset_tiled_image_frame);
 	tileset_tiled_image_frame.setSize(380, 600);
 	tileset_tiled_image_frame.add(&tileset_tiled_image_layout);
@@ -135,6 +136,7 @@ TilesetEditorLayout::TilesetEditorLayout(ALLEGRO_DISPLAY * display)
 	selected_tiled_image_name_field.setSize(200, 30);
 	tileset_tiled_image_layout.add(&tiled_image_image_display);
 	tileset_tiled_image_layout.add(new agui::EmptyWidget());
+	*/
 }
 
 void TilesetEditorLayout::load_tilesets()
@@ -264,6 +266,8 @@ void TilesetEditorLayout::update_selected_tileset_entity_groups()
 
 void TilesetEditorLayout::update_selected_tileset_tiled_images()
 {
+	//TODO: different UI
+	/*
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const int ti_index = this->tileset_tiled_image_select_box.getSelectedIndex();
 	const bool should_update = manager.update_selected_tileset_tiled_image(ti_index);
@@ -275,6 +279,7 @@ void TilesetEditorLayout::update_selected_tileset_tiled_images()
 		this->tiled_image_image_display.set_bitmap(ti_bitmap);
 		this->tiled_image_image_display.setSize(TILE_SIZE, TILE_SIZE);
 	}
+	*/
 }
 
 void TilesetEditorLayout::set_selected_tileset_index(int value)

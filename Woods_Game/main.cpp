@@ -101,10 +101,10 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 
 	GameScreen *game_screen = NULL;
 	if (run_mode == RUN_GAME) {
-		game_screen = DBG_NEW TitleScreen();
+		game_screen = new TitleScreen();
 		al_set_window_title(display, "Woods Game");
-	} else {
-		game_screen = DBG_NEW LevelEditorScreen();
+	} else {	//TODO: actually check that we're in level editor mode
+		game_screen = new LevelEditorScreen();
 		al_set_window_title(display, "Level Editor");
 		((LevelEditorScreen*)(game_screen))->initialize(display);
 	}
@@ -174,7 +174,6 @@ int main(int argc, char *argv[])
 	ALLEGRO_DISPLAY *display; 
 	if (run_mode == RUN_GAME || run_mode == LEVEL_EDITOR) {
 		if (initialize_allegro()){
-			
 			display = initialize_display("resources/config", run_mode);
 			if (initialize_allegro_libraries()) {
 				run_main_loop(argc, argv, display, run_mode);

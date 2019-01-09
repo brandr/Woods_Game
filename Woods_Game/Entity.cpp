@@ -18,15 +18,25 @@ Rect * Entity::get_bitmap_subsection()
 	return nullptr;
 }
 
-void Entity::set_solid(bool solid)
+void Entity::set_solid(const bool solid)
 {
 	this->solid = solid;
+}
+
+void Entity::set_visible(const bool visible)
+{
+	this->visible = visible;
 }
 
 bool Entity::is_solid()
 {
 	if (get_entity_attribute(E_ATTR_BROKEN) > 0) return false;
 	return solid.value();
+}
+
+bool Entity::is_visible()
+{
+	return visible.value();
 }
 
 void Entity::load_entity_effects(std::string filename, int row, std::pair<int,int> frame_dimensions)
@@ -233,8 +243,9 @@ EntityData::EntityData()
 	Register("center_offset_x", &center_offset_x);
 	Register("center_offset_y", &center_offset_y);
 	Register("solid", &solid);
+	Register("visible", &visible);
 	solid = false;
-	//this->entity_data_index = -1;
+	visible = true;
 }
 
 void EntityData::set_attributes(std::map<std::string, int> attributes)
@@ -396,7 +407,9 @@ EntityGroupData::EntityGroupData()
 	Register("entity_group_image_width", &entity_group_image_width);
 	Register("entity_group_image_height", &entity_group_image_height);
 	Register("solid", &solid);
+	Register("visible", &visible);
 	solid = false;
+	visible = true;
 }
 
 std::string EntityGroupData::get_entity_group_name()

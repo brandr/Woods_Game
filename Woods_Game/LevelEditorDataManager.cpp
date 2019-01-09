@@ -225,6 +225,8 @@ bool LevelEditorDataManager::update_selected_tileset_tiled_image(int index)
 		if (index != this->selected_tileset_tile_image_index) {
 			update_image = true;
 			this->selected_tileset_tile_image_index = index;
+			this->selected_tiled_image_grid_index = -1;
+			this->selected_tiled_image_grid_pos = std::pair<int, int>(-1, -1);
 		}
 	}
 	return update_image;
@@ -276,6 +278,43 @@ void LevelEditorDataManager::set_selected_level_index(int index)
 int LevelEditorDataManager::get_selected_level_index()
 {
 	return this->selected_level_index;
+}
+
+void LevelEditorDataManager::set_selected_object_sheet_col(const int col)
+{
+	this->selected_object_sheet_col = col;
+}
+
+bool LevelEditorDataManager::decrement_sheet_col()
+{
+	if (this->selected_object_sheet_col > 0) {
+		this->selected_object_sheet_col--;
+		return true;
+	}
+	return false;
+}
+
+bool LevelEditorDataManager::increment_sheet_col()
+{
+	int max_sheet_size = 0;
+	switch (this->selected_object_tab_index) {
+	case OBJECT_TYPE_TILE:
+		max_sheet_size = this->get_tile_sheet_image_cols_by_index(this->selected_object_select_index);
+		break;
+	case OBJECT_TYPE_BLOCK:
+		max_sheet_size = this->get_block_sheet_image_cols_by_index(this->selected_object_select_index);
+		break;
+	case OBJECT_TYPE_ENTITY_GROUP:
+		max_sheet_size = this->get_entity_group_sheet_image_cols_by_index(this->selected_object_select_index);
+		break;
+	default:
+		break;
+	}
+	if (this->selected_object_sheet_col < max_sheet_size - 1) {
+		this->selected_object_sheet_col++;
+		return true;
+	}
+	return false;
 }
 
 void LevelEditorDataManager::set_selected_object_tab_index(int index)
@@ -370,7 +409,6 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 
 void LevelEditorDataManager::select_level_object(std::pair<int, int> tile_pos)
 {
-	//TODO: need to track both selected pos (-1, -1 if nothing) and selected entity type
 	this->selected_object_grid_index = this->selected_object_tab_index;
 	this->selected_object_grid_pos = tile_pos;
 }
@@ -378,20 +416,17 @@ void LevelEditorDataManager::select_level_object(std::pair<int, int> tile_pos)
 
 void LevelEditorDataManager::set_selected_level_tile(int index, std::pair<int, int> pos)
 {
-	//TEMP: need to set spritesheet pos here
-	this->active_levels[this->selected_level_index]->replace_tile(index, std::pair<int, int>(0, 0), pos);
+	this->active_levels[this->selected_level_index]->replace_tile(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
 void LevelEditorDataManager::set_selected_level_block(int index, std::pair<int, int> pos)
 {
-	//TEMP: need to set spritesheet pos here
-	this->active_levels[this->selected_level_index]->replace_block(index, std::pair<int, int>(0, 0), pos);
+	this->active_levels[this->selected_level_index]->replace_block(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
 void LevelEditorDataManager::add_selected_level_entity_group(int index, std::pair<int, int> pos)
 {
-	//TEMP: need to set spritesheet pos here
-	this->active_levels[this->selected_level_index]->add_entity_group(index, std::pair<int, int>(0, 0), pos);
+	this->active_levels[this->selected_level_index]->add_entity_group(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
 void LevelEditorDataManager::delete_level_tile(std::pair<int, int> pos)
@@ -407,6 +442,11 @@ void LevelEditorDataManager::delete_level_block(std::pair<int, int> pos)
 void LevelEditorDataManager::delete_level_entity_group(std::pair<int, int> pos)
 {
 	this->active_levels[this->selected_level_index]->remove_entity_group(pos);
+}
+
+bool LevelEditorDataManager::delete_level_tiled_image(const std::pair<int, int> pos)
+{
+	return this->active_levels[this->selected_level_index]->remove_tiled_image(pos, this->tiled_image_layer_index);
 }
 
 std::string LevelEditorDataManager::get_active_dungeon_name()
@@ -503,6 +543,14 @@ std::vector<std::string> LevelEditorDataManager::all_selected_entity_group_keys(
 	return std::vector<std::string>();
 }
 
+std::vector<std::string> LevelEditorDataManager::all_selected_tiled_image_keys()
+{
+	if (this->has_selected_tileset()) {
+		return this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys();
+	}
+	return std::vector<std::string>();
+}
+
 std::string LevelEditorDataManager::get_selected_tileset_name()
 {
 	return this->get_tileset_name(this->selected_tileset_index);
@@ -525,6 +573,15 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_default_tile_bitmap(int index)
 	return NULL;
 }
 
+ALLEGRO_BITMAP * LevelEditorDataManager::get_tile_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_tile_bitmap_for_col(index, this->selected_object_sheet_col);
+	}
+	return NULL;
+}
+
 ALLEGRO_BITMAP * LevelEditorDataManager::get_default_block_bitmap(int index)
 {
 	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
@@ -533,10 +590,28 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_default_block_bitmap(int index)
 	return NULL;
 }
 
+ALLEGRO_BITMAP * LevelEditorDataManager::get_block_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_block_bitmap_for_col(index, this->selected_object_sheet_col);
+	}
+	return NULL;
+}
+
 ALLEGRO_BITMAP * LevelEditorDataManager::get_default_entity_group_bitmap(int index)
 {
 	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
 		return this->active_tilesets[this->selected_tileset_index]->get_default_entity_group_bitmap(index);
+	}
+	return NULL;
+}
+
+ALLEGRO_BITMAP * LevelEditorDataManager::get_entity_group_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_entity_group_bitmap_for_col(index, this->selected_object_sheet_col);
 	}
 	return NULL;
 }
@@ -558,6 +633,33 @@ std::pair<int, int> LevelEditorDataManager::get_entity_group_image_dimensions_by
 	return std::pair<int, int>();
 }
 
+const int LevelEditorDataManager::get_tile_sheet_image_cols_by_index(const int index)
+{
+	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]
+			->get_tile_sheet_image_cols_by_index(index);
+	}
+	return 0;
+}
+
+const int LevelEditorDataManager::get_block_sheet_image_cols_by_index(const int index)
+{
+	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]
+			->get_block_sheet_image_cols_by_index(index);
+	}
+	return 0;
+}
+
+const int LevelEditorDataManager::get_entity_group_sheet_image_cols_by_index(const int index)
+{
+	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]
+			->get_entity_group_sheet_image_cols_by_index(index);
+	}
+	return 0;
+}
+
 bool LevelEditorDataManager::has_selected_level()
 {
 	return this->selected_level_index >= 0 
@@ -568,6 +670,140 @@ bool LevelEditorDataManager::has_selected_tileset()
 {
 	return this->selected_tileset_index >= 0
 		&& this->active_tilesets[this->selected_tileset_index] != NULL;
+}
+
+bool LevelEditorDataManager::add_tiled_image(std::pair<int, int> grid_pos)
+{
+	bool update = false;
+	if (this->has_active_dungeon()
+		&& this->has_selected_level()
+		&& this->has_selected_tileset()) {
+		const std::pair<int, int> level_pixel_dim = this->selected_level_pixel_dimensions();
+		const std::pair<int, int> level_tile_dim(level_pixel_dim.first / TILE_SIZE,
+			level_pixel_dim.second / TILE_SIZE);
+		if (grid_pos.first >= 0 && grid_pos.first < level_tile_dim.first
+			&& grid_pos.second >= 0 && grid_pos.second < level_tile_dim.second) {
+			if (this->has_tiled_image_grid_selection() && this->tiled_image_layer_index >= 0) {
+				this->add_selected_level_tiled_image(this->selected_tileset_tile_image_index, 
+					this->selected_tiled_image_grid_pos, grid_pos);
+				update = true;
+			}
+		}
+	}
+	return update;
+}
+
+bool LevelEditorDataManager::delete_tiled_image(std::pair<int, int> grid_pos)
+{
+	bool update = false;
+	if (this->has_active_dungeon()
+		&& this->has_selected_level()
+		&& this->has_selected_tileset()) {
+		const std::pair<int, int> level_pixel_dim = this->selected_level_pixel_dimensions();
+		const std::pair<int, int> level_tile_dim(level_pixel_dim.first / TILE_SIZE,
+			level_pixel_dim.second / TILE_SIZE);
+		if (grid_pos.first >= 0 && grid_pos.first < level_tile_dim.first
+			&& grid_pos.second >= 0 && grid_pos.second < level_tile_dim.second) {
+			if (this->has_selected_tiled_image_key() && this->tiled_image_layer_index >= 0) {
+				update = this->delete_level_tiled_image(grid_pos);
+			}
+		}
+	}
+	return update;
+}
+
+void LevelEditorDataManager::add_selected_level_tiled_image(const int tiled_image_index, const std::pair<int, int> tiled_image_grid_pos, const std::pair<int, int> level_grid_pos)
+{
+	const int layer_index = this->tiled_image_layer_index;
+	this->active_levels[this->selected_level_index]->add_tiled_image(tiled_image_index, tiled_image_grid_pos, level_grid_pos, layer_index);
+}
+
+void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)
+{
+	this->selected_tiled_image_grid_index = this->selected_tileset_tile_image_index;
+	this->selected_tiled_image_grid_pos = grid_pos;
+}
+
+std::pair<int, int> LevelEditorDataManager::selected_tiled_image_sheet_dimensions()
+{
+	ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
+	const int width = al_get_bitmap_width(tileset_sheet), height = al_get_bitmap_height(tileset_sheet);
+	return std::pair<int, int>(width, height);
+}
+
+agui::Allegro5Image * LevelEditorDataManager::load_tiled_image_select_layer(std::string layer)
+{
+	const std::string image_key = this->get_selected_tiled_image_key();
+	agui::Allegro5Image *image_layer = new agui::Allegro5Image();
+	ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
+	const int pixel_width = al_get_bitmap_width(tileset_sheet);
+	const int pixel_height = al_get_bitmap_height(tileset_sheet);
+	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
+	if (TILED_IMAGE_LAYER == layer) {
+		ALLEGRO_BITMAP *display = al_get_target_bitmap();
+		al_set_target_bitmap(image_bitmap);
+		al_draw_bitmap(tileset_sheet, 0, 0, 0);
+		al_set_target_bitmap(display);
+	}
+	else if (GRID_LINES_LAYER == layer) {
+		ALLEGRO_BITMAP *display = al_get_target_bitmap();
+		al_set_target_bitmap(image_bitmap);
+		const int grid_width = pixel_width / TILE_SIZE;
+		const int grid_height = pixel_height / TILE_SIZE;
+		// vertical lines
+		for (int x = 0; x <= grid_width; x++) {
+			al_draw_line(x*TILE_SIZE, 0, x*TILE_SIZE, pixel_height, al_map_rgb(20, 20, 20), 2.0);
+		}
+		// horizontal lines
+		for (int y = 0; y <= grid_height; y++) {
+			al_draw_line(0, y*TILE_SIZE, pixel_width, y*TILE_SIZE, al_map_rgb(20, 20, 20), 2.0);
+		}
+		// red box for selection
+		if (this->has_tiled_image_grid_selection()) {
+			const int x1 = this->selected_tiled_image_grid_pos.first*TILE_SIZE , y1 = this->selected_tiled_image_grid_pos.second*TILE_SIZE;
+			al_draw_line(x1, y1, x1, y1 + TILE_SIZE, al_map_rgb(220, 0, 0), 2.0);
+			al_draw_line(x1 + TILE_SIZE, y1, x1 + TILE_SIZE, y1 + TILE_SIZE, al_map_rgb(220, 0, 0), 2.0);
+			al_draw_line(x1, y1, x1 + TILE_SIZE, y1, al_map_rgb(220, 0, 0), 2.0);
+			al_draw_line(x1, y1 + TILE_SIZE, x1 + TILE_SIZE, y1 + TILE_SIZE, al_map_rgb(220, 0, 0), 2.0);
+		}
+		al_set_target_bitmap(display);
+	}
+	image_layer->setBitmap(image_bitmap, true);
+	return image_layer;
+}
+
+std::string LevelEditorDataManager::get_selected_tiled_image_key()
+{
+	if (this->has_selected_tiled_image_key()) {
+		const std::vector<std::string> image_keys = this->all_selected_tiled_image_keys();
+		return image_keys[this->selected_tileset_tile_image_index];
+	}
+	return NULL;
+}
+
+bool LevelEditorDataManager::has_selected_tiled_image_key()
+{
+	return this->selected_tileset_tile_image_index >= 0;
+}
+
+void LevelEditorDataManager::set_selected_tiled_image_index(int index)
+{
+	this->selected_tileset_tile_image_index = index;
+}
+
+int LevelEditorDataManager::get_selected_tiled_image_index()
+{
+	return this->selected_tileset_tile_image_index;
+}
+
+bool LevelEditorDataManager::has_tiled_image_grid_selection()
+{
+	return this->selected_tiled_image_grid_index >= 0 && this->selected_tiled_image_grid_pos.first >= 0 && this->selected_tiled_image_grid_pos.second >= 0;
+}
+
+void LevelEditorDataManager::set_tiled_image_layer_index(const int index)
+{
+	this->tiled_image_layer_index = index;
 }
 
 void LevelDeleter::operator()(Level * p)

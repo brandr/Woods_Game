@@ -11,6 +11,7 @@
 #include "LevelEditorLayout.h"
 #include "TilesetEditorLayout.h"
 #include "LevelEditorDataManager.h"
+#include "LevelGridKeyboardListener.h"
 
 #include <allegro5/display.h>
 
@@ -41,6 +42,7 @@ class LevelEditorManager
 private:
 	bool needs_update = false;
 	FileManager file_manager;
+	LevelGridKeyboardListener level_grid_keyboard_listener;
 	
 	//gui
 	agui::Gui* editor_gui;
@@ -80,6 +82,7 @@ private:
 	void update_delete_level();
 	void update_selected_tileset();
 	void update_reset_tile_edges();
+	void update_sheet_col();
 public:
 	LevelEditorManager();
 	LevelEditorManager(agui::Gui *guiInstance, ALLEGRO_DISPLAY *display);

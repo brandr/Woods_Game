@@ -218,6 +218,12 @@ ALLEGRO_BITMAP * TileSet::get_default_tile_bitmap(const int index)
 	return ImageLoader::get_instance().get_default_tile_image(this->get_tile_sheet_filename(), this->tile_types.getItem(index));
 }
 
+ALLEGRO_BITMAP * TileSet::get_tile_bitmap_for_col(const int index, const int col)
+{
+	return ImageLoader::get_instance().get_tile_image_for_col(this
+		->get_tile_sheet_filename(), this->tile_types.getItem(index), col);
+}
+
 void TileSet::set_tile_speed_mod(const int row, float speed_mod)
 { 
 	this->ensure_room_for_type(TILESET_TILE_TYPES, row);
@@ -246,6 +252,45 @@ int TileSet::get_edge_priority(const int row)
 	return this->tile_types.getItem(row)->get_edge_priority();
 }
 
+const int TileSet::get_tile_sheet_image_cols_by_index(const int index)
+{
+	if (index >= 0 && index < this->tile_types.size()) {
+		const std::string filename = this->get_full_tile_sheet_filename(index);
+		ALLEGRO_BITMAP * bitmap = ImageLoader::get_instance().get_image(filename);
+		return al_get_bitmap_width(bitmap) / TILE_SIZE;
+	}
+	return 0;
+}
+
+const int TileSet::get_block_sheet_image_cols_by_index(const int index)
+{
+	if (index >= 0 && index < this->block_types.size()) {
+		const std::string filename = this->get_full_block_sheet_filename(index);
+		ALLEGRO_BITMAP * bitmap = ImageLoader::get_instance().get_image(filename);
+		return al_get_bitmap_width(bitmap) / TILE_SIZE;
+	}
+	return 0;
+}
+
+const int TileSet::get_entity_group_sheet_image_cols_by_index(const int index)
+{
+	if (index >= 0 && index < this->entity_group_types.size()) {
+		std::vector<EntityComponentData*> comp_data = this->get_entity_group_components(index);
+		if (comp_data.size() > 0) {
+			EntityComponentData * comp = comp_data[0];
+			EntityGroupData* group_data = this->get_entity_group_data_by_index(index);
+			const std::string filename = get_entity_group_tile_sheet_filename()
+				+ "_" + group_data->get_entity_group_name() + "_"
+				+ comp->name.value();
+			ALLEGRO_BITMAP * bitmap = ImageLoader::get_instance().get_image(filename);
+			const std::pair<int, int> dim 
+				= this->get_entity_group_image_dimensions_by_index(index);
+			return al_get_bitmap_width(bitmap) / dim.first;
+		}
+	}
+	return 0;
+}
+
 std::vector<std::string> TileSet::all_tile_keys()
 {
 	std::vector<std::string> tile_keys;
@@ -262,6 +307,12 @@ std::vector<std::string> TileSet::all_tile_keys()
 ALLEGRO_BITMAP * TileSet::get_default_block_bitmap(const int index)
 {
 	return ImageLoader::get_instance().get_default_block_image(this->get_block_tile_sheet_filename(), this->block_types.getItem(index));
+}
+
+ALLEGRO_BITMAP * TileSet::get_block_bitmap_for_col(const int index, const int col)
+{
+	return ImageLoader::get_instance().get_block_image_for_col(this
+		->get_block_tile_sheet_filename(), this->block_types.getItem(index), col);
 }
 
 void TileSet::set_block_solid(const int row, bool solid)
@@ -299,6 +350,14 @@ bool TileSet::get_block_solid(const int row)
 	return this->block_types.getItem(row)->solid.value();
 }
 
+bool TileSet::get_block_visible(const int row)
+{
+	if (row < 0 || row > this->block_types.size()) {
+		return false;
+	}
+	return this->block_types.getItem(row)->visible.value();
+}
+
 std::map<std::string, int> TileSet::get_block_attributes(const int row)
 {
 	if (row < 0 || row > this->block_types.size()) {
@@ -323,6 +382,12 @@ std::vector<std::string> TileSet::all_block_keys()
 ALLEGRO_BITMAP * TileSet::get_default_entity_group_bitmap(const int index)
 {
 	return ImageLoader::get_instance().get_default_entity_group_image(this->get_entity_group_tile_sheet_filename(), this->entity_group_types.getItem(index));
+}
+
+ALLEGRO_BITMAP * TileSet::get_entity_group_bitmap_for_col(const int index, const int col)
+{
+	return ImageLoader::get_instance().get_entity_group_image_for_col(this
+		->get_entity_group_tile_sheet_filename(), this->entity_group_types.getItem(index), col);
 }
 
 void TileSet::set_entity_group_image_dimensions(std::string entity_group_name, std::pair<int, int> dimensions)
@@ -434,8 +499,52 @@ std::vector<std::string> TileSet::all_entity_group_keys()
 	return entity_group_keys;
 }
 
+ALLEGRO_BITMAP * TileSet::get_full_tiled_image_sheet(const int index)
+{
+	return ImageLoader::get_instance().get_full_tiled_image_sheet(this->get_tiled_image_tile_sheet_filename(), this->tiled_image_types.getItem(index));
+}
+
 ALLEGRO_BITMAP * TileSet::get_default_tiled_image_bitmap(const int index)
 {
-	//TODO: pass in TiledImageData
 	return ImageLoader::get_instance().get_default_tiled_image_image(this->get_tiled_image_tile_sheet_filename(), this->tiled_image_types.getItem(index));
+}
+
+TiledImageData * TileSet::get_tiled_image_data_by_index(const int index)
+{
+	const int size = this->tiled_image_types.size();
+	for (int i = 0; i < size; i++) {
+		TiledImageData *tid = this->tiled_image_types.getItem(i);
+		if (tid->get_image_data_index() == index) {
+			return tid;
+		}
+	}
+	return NULL;
+}
+
+const std::string TileSet::get_tiled_image_name_by_index(const int index)
+{
+	const int size = this->tiled_image_types.size();
+	for (int i = 0; i < size; i++) {
+		TiledImageData *tid = this->tiled_image_types.getItem(i);
+		if (tid->get_image_data_index() == index) {
+			return tid->get_image_data_key();
+		}
+	}
+	return NULL;
+}
+
+const std::string TileSet::get_full_tiled_image_sheet_filename(const int index)
+{
+	return this->get_tiled_image_tile_sheet_filename() + "_" + this->tiled_image_types.getItem(index)->get_image_data_key();
+}
+
+std::vector<std::string> TileSet::all_tiled_image_keys()
+{
+	std::vector<std::string> tiled_image_keys;
+	const int size = this->tiled_image_types.size();
+	for (int i = 0; i < size; i++) {
+		TiledImageData * tiled_image_type = this->tiled_image_types.getItem(i);
+		tiled_image_keys.push_back(tiled_image_type->get_image_data_key());
+	}
+	return tiled_image_keys;
 }

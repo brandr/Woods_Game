@@ -31,6 +31,7 @@
         <Collection Name="block_types">
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">boulder</Member>
                 <Member Name="entity_data_index">0</Member>
                 <Collection Name="attributes"/>
@@ -38,6 +39,7 @@
             </Class>
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">fern</Member>
                 <Member Name="entity_data_index">1</Member>
                 <Collection Name="attributes">
@@ -58,6 +60,7 @@
             </Class>
             <Class Type="EntityData" Version="1">
                 <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">thorns</Member>
                 <Member Name="entity_data_index">2</Member>
                 <Collection Name="attributes">
@@ -80,6 +83,14 @@
                 </Collection>
                 <Collection Name="components"/>
             </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block</Member>
+                <Member Name="entity_data_index">3</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
         <Collection Name="entity_group_types">
             <Class Type="EntityGroupData" Version="1">
@@ -92,6 +103,7 @@
                 <Member Name="entity_group_image_width">64</Member>
                 <Member Name="entity_group_image_height">192</Member>
                 <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
                 <Collection Name="components">
                     <Class Type="EntityComponentAttribute" Version="1">
                         <Member Name="name">trunk</Member>

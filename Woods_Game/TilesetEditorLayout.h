@@ -60,7 +60,7 @@ private:
 	agui::Frame tileset_tiled_image_frame;
 	agui::FlowLayout tileset_tiled_image_layout;
 	agui::Label tileset_tiled_image_label;
-	agui::ListBox tileset_tiled_image_select_box;
+	//agui::ListBox tileset_tiled_image_select_box;
 	agui::Label selected_tiled_image_name_label;
 	agui::TextField selected_tiled_image_name_field;
 	GameImageDisplay tiled_image_image_display;

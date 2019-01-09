@@ -12,11 +12,14 @@ so we know which tileset to set if we change the level in LevelEditorManager.upd
 
 make a UI for setting tileset tile/entity data attributes (on tileset tab)
 
-make it possible to select objects in level editor and adjust their attributes
+make it possible to select objects in level editor and adjust their attributes (will be part of implementing buildings)
 	* probably want a special selection button that can be toggled so we know what left click does
 	* look at LevelEditorDataManager.select_level_object() for where we set pos and entity type
 	   # idea: make an interface (how to do in C++?) for entities that dispay extra data when selected in editor
 	   # default implementation is just entity attributes, but there might be special cases for NPC speech and stuff
+
+Tiled Images
+	*out of room on tileset tab-- need to reorganize it (tabs?)
 
 Fix memory leak in level editor
 	*adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
@@ -27,27 +30,34 @@ consider how/whether to delete objects when resizing levels
 
 ---------------------------------------------------
 
-Tiled Images
-	*investigate warning that pops up in console
-		# probably need to re-save images
-	*figure out UI for selecting tiled images from sheets
-		# need to be able to choose sheets-- should be duplicated per tiled image
-		# IDEA: on level edit grid, don't have tiled images as another object select tab,
-		  use the empty space to the right of the grid for a separate UI
-	*figure out how to select tiled image layers (remember, only relevant on editor grid, not tilesets)
-	*out of room on tileset tab-- need to reorganize it (tabs?)
+Look into getting rid of "gameImages" list in Level
+	*I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
+		#Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
 
 Buildings
-	*finish tiled images first
-	*collisions we care about (should probably be with invisible blocks)
+	*first, allow editing block attributes
+		#use ctrl-click to select, but need to figure out where to put UI
+		#allow editing xml attributes in a very general way (add by string, set type, etc.)
+		#use this editing to set "destination" attributes for door blocks
+			* "door blocks" are the invisble doors, not the tiled images that actually look like doors
 	*how do interactables like doors fit in?
 		#doors should probably be a type of block that sends players to another level
-		#need button to interact?
+		#need button to interact? Or just walk into?
+		#animation? (no other blocks are animated, might need to be a new thing)
 	*make the inside of buildings levels that are uniquely identified by string id but not part of the normal level grids
 		#could set the level key to -1 or some constant
 	*also need to be able to id levels on the grid this way, since this is how players will exit the building
 	*also need to uniquely identify the door from outside so that the player can appear in front of the door after leaving the level
 	*ensure that unused tiles outside the building are displayed as black
+	*can use tiledImages and invisible blocks to make furniture, sink, etc
+	*make roofs
+
+Implement "pickup-able" items, like seeds from ferns
+	*Should probably be a % drop chance rolled on breaking plant so player can't savescum
+	*probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
+	*Make sure these disappear properly from level-- do not store them in xml collections as there is no need
+
+
 
 Make sure I can do what I want with the tile system
 	*Going through brush will be better if there's a tool to make trails but trails get overgrown

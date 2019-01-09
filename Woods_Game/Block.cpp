@@ -4,6 +4,7 @@ Block::Block()
 {
 	this->setClassName("Block");
 	this->Register("Solid", &(this->solid));
+	this->Register("Visible", &(this->visible));
 	this->Register("EntityStartingPosX", &entity_starting_pos_x);
 	this->Register("EntityStartingPosY", &entity_starting_pos_y);
 	this->Register("EntityDataIndex", &entity_data_index);
@@ -19,6 +20,7 @@ Block::Block(int x, int y)
 {
 	this->setClassName("Block");
 	this->Register("Solid", &(this->solid));
+	this->Register("Visible", &(this->visible));
 	this->Register("EntityStartingPosX", &entity_starting_pos_x);
 	this->Register("EntityStartingPosY", &entity_starting_pos_y);
 	this->Register("EntityDataIndex", &entity_data_index);

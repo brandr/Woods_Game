@@ -102,7 +102,11 @@ void Tile::reset(TileSet *tileset, Tile * t)
 void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
 	GameImage::draw(display, x_offset, y_offset);
-	if (!block.is_empty()) {
+}
+
+void Tile::draw_block(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
+{
+	if (!block.is_empty() && block.is_visible()) {
 		block.draw(display, x_offset, y_offset);
 	}
 }
@@ -119,12 +123,14 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
 	const bool solid = tileset->get_block_solid(block_index);
+	const bool visible = tileset->get_block_visible(block_index);
 	this->block.set_entity_data_index(block_index);
 	this->block.set_content(filename, offset_rect, pixel_pos);
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
 	this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
 	this->block.set_solid(solid);							//will be serialized
+	this->block.set_visible(visible);						//will be serialized
 	this->block.set_entity_attributes(block_attributes);	//will be serialized
 	this->block.load_entity_effects(filename, ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();

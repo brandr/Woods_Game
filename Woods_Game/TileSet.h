@@ -48,6 +48,7 @@ public:
 	
 	// tile types	
 	ALLEGRO_BITMAP * get_default_tile_bitmap(const int index);
+	ALLEGRO_BITMAP * get_tile_bitmap_for_col(const int index, const int col);
 	void set_tile_speed_mod(const int row, float speed_mod);
 	void set_edge_priority(const int row, int edge_priority);
 	std::string get_full_tile_sheet_filename(int index);
@@ -55,19 +56,24 @@ public:
 	std::string get_tile_key(const int index);
 	float get_tile_speed_mod(const int row);
 	int get_edge_priority(const int row);
+	const int get_tile_sheet_image_cols_by_index(const int index);
 	std::vector<std::string> all_tile_keys();
 	// block types
 	ALLEGRO_BITMAP * get_default_block_bitmap(const int index);
+	ALLEGRO_BITMAP * get_block_bitmap_for_col(const int index, const int col);
 	void set_block_solid(const int row, bool solid);
 	void set_block_attributes(const int row, std::map<std::string, int> attributes);
 	EntityData *get_block_data(const int index);
 	std::string get_full_block_sheet_filename(int index);
 	std::string get_block_key(const int index);
 	bool get_block_solid(const int row);
+	bool get_block_visible(const int row);
 	std::map<std::string, int> get_block_attributes(const int row);
+	const int get_block_sheet_image_cols_by_index(const int index);
 	std::vector<std::string> all_block_keys();
 	// entity group types
 	ALLEGRO_BITMAP * get_default_entity_group_bitmap(const int index);
+	ALLEGRO_BITMAP * get_entity_group_bitmap_for_col(const int index, const int col);
 	void set_entity_group_image_dimensions(std::string name, std::pair<int, int> dimensions);
 	void set_entity_group_root_offset(const int row, std::pair<int, int> offset);
 	void set_entity_group_center_offset(const int row, std::pair<int, int> offset);
@@ -80,11 +86,14 @@ public:
 	std::pair<int, int> get_entity_group_root_offset(const int row);
 	std::pair<int, int> get_entity_group_center_offset(const int row);
 	std::vector<EntityComponentData*> get_entity_group_components(const int row);
+	const int get_entity_group_sheet_image_cols_by_index(const int index);
 	std::vector<std::string> all_entity_group_keys();
 	// tiled image types
+	ALLEGRO_BITMAP * get_full_tiled_image_sheet(const int index);
 	ALLEGRO_BITMAP * get_default_tiled_image_bitmap(const int index);
-	
-	
-	
+	TiledImageData * get_tiled_image_data_by_index(const int index);
+	const std::string get_tiled_image_name_by_index(const int index);
+	const std::string get_full_tiled_image_sheet_filename(const int index);
+	std::vector<std::string> all_tiled_image_keys();
 };
 #endif

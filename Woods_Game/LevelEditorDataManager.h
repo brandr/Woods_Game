@@ -55,14 +55,20 @@ private:
 	int selected_object_tab_index = -1;
 	int selected_object_select_index = -1;
 	int selected_object_grid_index = -1;
+	int selected_tiled_image_grid_index = -1;
+	int tiled_image_layer_index = -1;
+	int selected_object_sheet_col = 0;
 	std::pair<int, int> selected_object_grid_pos;
+	std::pair<int, int> selected_tiled_image_grid_pos = std::pair<int, int>(-1, -1);
 	void reset_active_levels();
 	void set_selected_level_tile(int index, std::pair<int, int> pos);
 	void set_selected_level_block(int index, std::pair<int, int> pos);
 	void add_selected_level_entity_group(int index, std::pair<int, int> pos);
+	void add_selected_level_tiled_image(const int tiled_image_index, const std::pair<int, int> tiled_image_grid_pos, const std::pair<int, int> level_grid_pos);
 	void delete_level_tile(std::pair<int, int> pos);
 	void delete_level_block(std::pair<int, int> pos);
 	void delete_level_entity_group(std::pair<int, int> pos);
+	bool delete_level_tiled_image(const std::pair<int, int> pos);
 public:
 	LevelEditorDataManager(LevelEditorDataManager const&) = delete;
 	void operator=(LevelEditorDataManager const&) = delete;
@@ -91,8 +97,11 @@ public:
 	bool has_selected_level();
 	void set_selected_level_index(int index);
 	int get_selected_level_index();
+	void set_selected_object_sheet_col(const int col);
 
 	// level objects
+	bool decrement_sheet_col();
+	bool increment_sheet_col();
 	void set_selected_object_tab_index(int index);
 	int get_selected_object_tab_index();
 	void set_selected_object_select_index(int index);
@@ -113,14 +122,35 @@ public:
 	std::vector<std::string> all_selected_tile_keys();
 	std::vector<std::string> all_selected_block_keys();
 	std::vector<std::string> all_selected_entity_group_keys();
+	std::vector<std::string> all_selected_tiled_image_keys();
 	std::string get_selected_tileset_name();
 	std::string get_tileset_name(int index);
 	ALLEGRO_BITMAP * get_default_tile_bitmap(int index);
+	ALLEGRO_BITMAP * get_tile_bitmap_for_selected_col(const int index);
 	ALLEGRO_BITMAP * get_default_block_bitmap(int index);
+	ALLEGRO_BITMAP * get_block_bitmap_for_selected_col(const int index);
 	ALLEGRO_BITMAP * get_default_entity_group_bitmap(int index);
+	ALLEGRO_BITMAP * get_entity_group_bitmap_for_selected_col(const int index);
 	ALLEGRO_BITMAP * get_default_tiled_image_bitmap(int index);
+
 	std::pair<int, int> get_entity_group_image_dimensions_by_index(int index);
+	const int get_tile_sheet_image_cols_by_index(const int index);
+	const int get_block_sheet_image_cols_by_index(const int index);
+	const int get_entity_group_sheet_image_cols_by_index(const int index);
 	bool has_selected_tileset();
+
+	//tiled images
+	bool add_tiled_image(std::pair<int, int> grid_pos);
+	bool delete_tiled_image(std::pair<int, int> grid_pos);
+	void select_tiled_image(std::pair<int, int> grid_pos);
+	std::pair<int, int> selected_tiled_image_sheet_dimensions();
+	agui::Allegro5Image * load_tiled_image_select_layer(std::string layer);
+	std::string get_selected_tiled_image_key();
+	bool has_selected_tiled_image_key();
+	void set_selected_tiled_image_index(int index);
+	int get_selected_tiled_image_index();
+	bool has_tiled_image_grid_selection();
+	void set_tiled_image_layer_index(const int index);
 };
 
 //TODO: fix the memory leak by making these a part of the class
@@ -131,5 +161,10 @@ const std::vector<std::string> LEVEL_LAYERS({
 	LevelEditorDataManager::TILED_IMAGE_LAYER,
 	LevelEditorDataManager::GRID_LINES_LAYER
 });
+
+const std::vector<std::string> TILED_IMAGE_SELECT_LAYERS({
+	LevelEditorDataManager::TILED_IMAGE_LAYER,
+	LevelEditorDataManager::GRID_LINES_LAYER
+	});
 
 #endif // !1

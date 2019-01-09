@@ -1,7 +1,7 @@
 #ifndef IMAGELOADER_H
 #define IMAGELOADER_H
 
-#include<map>
+#include <map>
 #include "ImageLoader.h"
 #include "TileType.h"
 #include "Entity.h"
@@ -34,6 +34,10 @@ public:
 	ALLEGRO_BITMAP* get_default_block_image(std::string, EntityData*);
 	ALLEGRO_BITMAP* get_default_entity_group_image(std::string, EntityGroupData*);
 	ALLEGRO_BITMAP* get_default_tiled_image_image(std::string, TiledImageData*);
+	ALLEGRO_BITMAP* get_tile_image_for_col(const std::string, TileType*, const int col);
+	ALLEGRO_BITMAP* get_block_image_for_col(const std::string, EntityData*, const int col);
+	ALLEGRO_BITMAP* get_entity_group_image_for_col(const std::string, EntityGroupData*, const int col);
+	ALLEGRO_BITMAP* get_full_tiled_image_sheet(std::string, TiledImageData*);
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);

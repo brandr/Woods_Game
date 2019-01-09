@@ -33,9 +33,14 @@ private:
 	xmls::xInt grid_height;
 	int width;
 	int height;
+	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer);
 public:
 	static const int STANDARD_LEVEL_GRID_WIDTH = 800;
 	static const int STANDARD_LEVEL_GRID_HEIGHT = 600;
+	//draw layers
+	static const int LAYER_INDEX_TILES = 0;
+	static const int LAYER_INDEX_BLOCKS = 10;
+	static const int LAYER_INDEX_BEINGS = 20;
 	Level();
 	Level(std::string map_filename, std::string dungeon_filename, std::string level_key);
 	Level(std::string map_filename, std::string dungeon_filename, std::string level_key, int, int, int, int);
@@ -52,6 +57,7 @@ public:
 	void generate_blocks();
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
+	void initialize_tiled_images();
 	void remove_tile_edges();
 	void load_tile_edges();
 	void draw_tile_edge_bitmaps();
@@ -74,10 +80,13 @@ public:
 	void remove_tile(std::pair<int, int> pos);
 	void remove_block(std::pair<int, int> pos);
 	void remove_entity_group(std::pair<int, int> pos);
+	bool remove_tiled_image(const std::pair<int, int> pos, const int layer_index);
 	void replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void replace_block(int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	EntityGroup * create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	void add_tiled_image(const int ti_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos, const int layer_index);
+	TiledImage * create_tiled_image(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void set_tile(Tile * tile, std::pair<int, int> pos);
 	Tile *get_tile(int x, int y);
 	bool passable_at(int, int);

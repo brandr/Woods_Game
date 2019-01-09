@@ -12,9 +12,11 @@ LevelEditorManager::LevelEditorManager(agui::Gui * guiInstance, ALLEGRO_DISPLAY 
 	this->level_edit_layout = new LevelEditorLayout(display);
 	this->tileset_edit_layout = new TilesetEditorLayout(display);
 
+	//TODO: how to handle keyboard input? editor gui? tabs?
 	// tabs
 	tabbed_pane.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 	main_layout.add(&tabbed_pane);
+	//main_layout.addKeyboardListener(&level_grid_keyboard_listener);
 	tabs[0].setText("Dungeon");
 	tabs[1].setText("Level");
 	tabs[2].setText("Tileset");
@@ -22,6 +24,7 @@ LevelEditorManager::LevelEditorManager(agui::Gui * guiInstance, ALLEGRO_DISPLAY 
 	tabbed_pane.addTab(&tabs[1], level_edit_layout);
 	tabbed_pane.addTab(&tabs[2], tileset_edit_layout);
 	editor_gui->add(&main_layout);
+	editor_gui->addKeyPreviewListener(&level_grid_keyboard_listener);
 
 	// load
 	this->load_all_tilesets();
@@ -83,11 +86,12 @@ void LevelEditorManager::level_update()
 {
 	// dungeon view
 	this->update_selected_level();
-	this->update_level_grid();
 	this->update_add_level();
 	this->update_delete_level();
 	// level view
 	this->update_reset_tile_edges();
+	this->update_sheet_col();
+	this->update_level_grid();
 }
 
 void LevelEditorManager::tileset_update()
@@ -121,6 +125,7 @@ void LevelEditorManager::update_selected_level()
 
 void LevelEditorManager::update_level_grid()
 {
+	this->level_edit_layout->set_selecting_objects(this->level_grid_keyboard_listener.has_control_held());
 	this->level_edit_layout->update();
 }
 
@@ -188,6 +193,19 @@ void LevelEditorManager::update_reset_tile_edges()
 		const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
 		LevelEditorDataManager::get_instance().reset_tile_edges();
 		this->level_edit_layout->reset_grid_image_layer(LevelEditorDataManager::TILE_LAYER);
+	}
+}
+
+void LevelEditorManager::update_sheet_col()
+{
+	bool update = false;
+	if (this->level_edit_layout->should_decrement_sheet_col()) {
+		update = LevelEditorDataManager::get_instance().decrement_sheet_col();
+	} else if (this->level_edit_layout->should_increment_sheet_col()) {
+		update = LevelEditorDataManager::get_instance().increment_sheet_col();
+	}
+	if (update) {
+		this->level_edit_layout->update_sheet_col();
 	}
 }
 

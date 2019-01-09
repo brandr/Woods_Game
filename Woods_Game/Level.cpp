@@ -9,6 +9,15 @@ struct game_image_center_comparison
 	}
 };
 
+void Level::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset, const int layer_index)
+{
+	const int layer_count = this->tiled_image_layers.size();
+	if (layer_count >= 0 && layer_index < layer_count) {
+		TiledImageLayer * layer = this->tiled_image_layers.getItem(layer_index);
+		layer->draw_tiled_images(display, offset);
+	}
+}
+
 Level::Level()
 {
 	this->setClassName("Level");
@@ -187,6 +196,7 @@ void Level::load_from_map()
 								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
 								std::string block_sheet_filename = this->tileset->get_full_block_sheet_filename(ss_type_key);
 								const bool solid = tileset->get_block_solid(ss_type_key);
+								const bool visible = tileset->get_block_visible(ss_type_key);
 								std::map<std::string, int> block_attributes = tileset->get_block_attributes(ss_type_key);
 								Tile *t = this->tile_rows.getItem(indexY)->get_tile(k);
 								t->initialize_block();
@@ -196,8 +206,9 @@ void Level::load_from_map()
 								b->set_entity_data_index(ss_type_key);
 								b->set_entity_sheet_offset(ss_col, ss_row);
 								b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
-								b->set_solid(solid);						//will be serialized
-								b->set_entity_attributes(block_attributes);	//will be serialized
+								b->set_solid(solid); //will be serialized
+								b->set_visible(visible);
+								b->set_entity_attributes(block_attributes);
 								b->load_entity_effects(block_sheet_filename, ss_row, std::pair<int, int>(TILE_SIZE, TILE_SIZE));	//temp. want to get a different filename eventually
 								b->refresh_mask();
 							}
@@ -299,6 +310,7 @@ void Level::load_from_xml()
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
 	this->initialize_entity_groups();
+	this->initialize_tiled_images();
 }
 
 void Level::intialize_dimensions()
@@ -428,7 +440,6 @@ void Level::initialize_entity_group(EntityGroup *eg)
 			entity_group_image_dimensions.first,
 			entity_group_image_dimensions.second);
 
-		//TODO: how to load component filenames with new system?
 		ImageLoader::get_instance().load_image(comp_filename, *ss_offset_rect);
 		Entity* e = new Entity();
 		e->set_content(comp_filename, ss_offset_rect, group_pos);
@@ -445,6 +456,15 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	eg->set_center_offset(center_off);
 	eg->load_mask(entity_group_sheet_filename + "_" + eg->get_entity_group_name());
 	add_entity(eg); //allows serialization
+}
+
+void Level::initialize_tiled_images()
+{
+	const int layer_count = this->tiled_image_layers.size();
+	for (int i = 0; i < layer_count; i++) {
+		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
+		layer->initialize_tiled_images(this->tileset->get_tiled_image_tile_sheet_filename());
+	}
 }
 
 void Level::remove_tile_edges()
@@ -610,22 +630,47 @@ void Level::update(int game_mode)
 
 void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
+	const int max_layer_index = this->tiled_image_layers.size();
 	std::pair<int, int> off = offset;
 	const int start_x = std::max(0, (-1 * off.first) / TILE_SIZE - 1);
 	const int start_y = std::max(0, (-1 * off.second) / TILE_SIZE - 1);
 	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
 	const int end_x = std::min(x_size, start_x + al_get_display_width(display) / TILE_SIZE + 3);
 	const int end_y = std::min(y_size, start_y + al_get_display_height(display) / TILE_SIZE + 3);
+	// tiles: layer 0
 	for (int y = start_y; y < end_y; y++) {
 		for (int x = start_x; x < end_x; x++) {
 			this->get_tile(x, y)->draw(display, off.first, off.second);
 		}
-	}	
+	}
+	// layers 1-9
+	for (int layer_index = Level::LAYER_INDEX_TILES + 1; 
+		layer_index < std::min(Level::LAYER_INDEX_BLOCKS, max_layer_index); layer_index++) {
+		this->draw_tiled_images(display, offset, layer_index);
+	}
+	// blocks: layer 10
+	for (int y = start_y; y < end_y; y++) {
+		for (int x = start_x; x < end_x; x++) {
+			this->get_tile(x, y)->draw_block(display, off.first, off.second);
+		}
+	}
+	// layers 11-19
+	for (int layer_index = Level::LAYER_INDEX_BLOCKS + 1;
+		layer_index < std::min(Level::LAYER_INDEX_BEINGS, max_layer_index); layer_index++) {
+		this->draw_tiled_images(display, offset, layer_index);
+	}
+	// game images: layer 20
 	std::sort(game_images.begin(), game_images.end(), game_image_center_comparison());
 	int size = game_images.size();
 	for (int i = 0; i < size; i++) {
 		game_images[i]->draw(display, off.first, off.second);
 	}
+	// layers 21+
+	for (int layer_index = Level::LAYER_INDEX_BEINGS + 1;
+		layer_index < max_layer_index; layer_index++) {
+		this->draw_tiled_images(display, offset, layer_index);
+	}
+	
 }
 
 void Level::draw_edge_tile_onto_bitmap(Tile &tile, std::string edge_filename, int edge_row, int dir_key)
@@ -761,6 +806,17 @@ void Level::remove_entity_group(std::pair<int, int> pos)
 	}
 }
 
+bool Level::remove_tiled_image(const std::pair<int, int> pos, const int layer_index)
+{
+	bool did_remove = false;
+	const int layer_count = this->tiled_image_layers.size();
+	if (layer_index >= 0 && layer_index < layer_count) {
+		TiledImageLayer * layer = this->tiled_image_layers.getItem(layer_index);
+		did_remove = layer->remove_tiled_image(pos);
+	}
+	return did_remove;
+}
+
 void Level::replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	Tile * replacing_tile = new Tile(this->tileset, pos.first, pos.second, 
@@ -783,8 +839,40 @@ void Level::add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair
 	const std::string filename_start = this->tileset->get_entity_group_tile_sheet_filename();
 	EntityGroup * eg = this->create_entity_group(filename_start, eg_index, ss_pos, pixel_pos);
 	this->initialize_entity_group(eg);
-	//this->add_entity(eg);
 	this->entity_groups.addItem(eg);
+}
+
+void Level::add_tiled_image(const int ti_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos, const int layer_index)
+{
+	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::string filename_start = this->tileset->get_tiled_image_tile_sheet_filename();
+	TiledImage * ti = this->create_tiled_image(filename_start, ti_index, ss_pos, pixel_pos);	//TODO: need filename start?
+	const std::string full_filename = this->tileset->get_full_tiled_image_sheet_filename(ti_index);
+	Rect *subsection = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	ti->set_content(full_filename, subsection, pixel_pos);
+	ti->set_bitmap(ImageLoader::get_instance().get_current_image(ti));
+	ti->set_not_empty();
+	int layer_count = this->tiled_image_layers.size();
+	while (layer_count <= layer_index) {
+		this->tiled_image_layers.addItem(new TiledImageLayer());
+		layer_count++;
+	}
+	TiledImageLayer * layer = this->tiled_image_layers.getItem(layer_index);
+	layer->add_tiled_image(ti);
+}
+
+TiledImage * Level::create_tiled_image(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	//TiledImageData* ti_data = tileset->get_tiled_image_data_by_index(index);
+	TiledImage * tiled_image = new TiledImage();
+	tiled_image->set_starting_pos(pos.first, pos.second);
+	tiled_image->set_sheet_pos(ss_pos.first, ss_pos.second);
+	tiled_image->set_tiled_image_key(index);
+	const std::string name = this->tileset->get_tiled_image_name_by_index(index);
+	tiled_image->set_tiled_image_name(name);
+	//this->initialize_tiled_image(tiled_image);
+	//TODO
+	return tiled_image;
 }
 
 EntityGroup * Level::create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
@@ -853,7 +941,7 @@ Tile * Level::get_tile(int x, int y)
 bool Level::passable_at(int x, int y)
 {
 	if (x < 0 || x > width || y < 0 || y > width) return false;
-	//TODO: check for collisions
+	//TODO: check for collisions (is this actually necessary?)
 	return true;
 }
 
@@ -1016,6 +1104,12 @@ void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
 	al_set_target_bitmap(bitmap);
+	const int size = this->tiled_image_layers.size();
+	for (int i = 0; i < size; i++) {
+		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
+		layer->draw_tiled_images_onto_bitmap(bitmap);
+		//TODO
+	}
 	//TODO: draw tiled images from layers in order of layers
 	/*
 	const int size = this->buildings.size();

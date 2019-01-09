@@ -3,22 +3,23 @@
 
 #include "XMLSerialization.h"
 #include "TiledImage.h"
+#include "allegro5/display.h"
+#include "ImageLoader.h"
 
 class TiledImageLayer :
 	public xmls::Serializable
 {
 private:
 	xmls::Collection<TiledImage> tiled_images;
-	xmls::xInt starting_pos_x;
-	xmls::xInt starting_pos_y;
-	xmls::xInt tiled_image_key;
-	xmls::xInt tiled_image_sheet_col;
-	xmls::xInt tiled_image_sheet_row;
 public:
 	TiledImageLayer();
 	~TiledImageLayer();
+	void initialize_tiled_images(const std::string filename_start);
+	void add_tiled_image(TiledImage * ti);
+	bool remove_tiled_image(const std::pair<int, int> pos);
+	void draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
+	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap);
 };
 
 #endif
-//TODO: store tiledImages here
 

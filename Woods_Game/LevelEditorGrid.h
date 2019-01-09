@@ -7,6 +7,7 @@
 
 #include "LevelEditorDataManager.h"
 #include "LevelGridListener.h"
+#include "LevelGridKeyboardListener.h"
 
 class LevelEditorGrid : public agui::Widget {
 private:

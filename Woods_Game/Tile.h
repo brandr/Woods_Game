@@ -41,6 +41,7 @@ public:
 	virtual void unload_content();
 	void reset(TileSet *tileset, Tile *t);
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
+	void draw_block(ALLEGRO_DISPLAY*, int, int);
 	void initialize_block();
 	void replace_block(TileSet * tileset, int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void remove_block();

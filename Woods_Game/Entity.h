@@ -46,6 +46,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::xInt center_offset_y;
 	xmls::Collection<EntityAttribute> attributes;
 	xmls::xBool solid = false;
+	xmls::xBool visible = true;
 	xmls::Collection<EntityComponentData> components;
 	EntityData();
 	bool empty = true;
@@ -77,6 +78,7 @@ class Entity :
 {
 protected:
 	xmls::xBool solid = false;
+	xmls::xBool visible = true;
 	xmls::Collection<EntityAttribute> entity_attributes;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;	
@@ -90,8 +92,10 @@ public:
 	Entity();
 	~Entity();
 	virtual Rect *get_bitmap_subsection();
-	virtual void set_solid(bool solid);
+	virtual void set_solid(const bool solid);
+	virtual void set_visible(const bool visible);
 	virtual bool is_solid();
+	virtual bool is_visible();
 	virtual void load_entity_effects(std::string filename, int row, std::pair<int, int> frame_dimensions);
 	virtual void load_content_from_attributes();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
