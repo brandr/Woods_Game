@@ -35,8 +35,8 @@ private:
 	int height;
 	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer);
 public:
-	static const int STANDARD_LEVEL_GRID_WIDTH = 800;
-	static const int STANDARD_LEVEL_GRID_HEIGHT = 600;
+	static const int STANDARD_LEVEL_GRID_WIDTH = 832;
+	static const int STANDARD_LEVEL_GRID_HEIGHT = 640;
 	//draw layers
 	static const int LAYER_INDEX_TILES = 0;
 	static const int LAYER_INDEX_BLOCKS = 10;
@@ -58,6 +58,7 @@ public:
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
 	void initialize_tiled_images();
+	void clear_level();
 	void remove_tile_edges();
 	void load_tile_edges();
 	void draw_tile_edge_bitmaps();
@@ -92,6 +93,8 @@ public:
 	bool passable_at(int, int);
 	TileSet *get_tileset();
 	void set_tileset_key(std::string key);
+	const std::string get_tileset_key();
+	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos);
 	std::string get_dungeon_filename();
 	void set_dungeon_filename(std::string value);
 	std::string get_filename();

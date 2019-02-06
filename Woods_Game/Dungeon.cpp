@@ -76,15 +76,17 @@ void Dungeon::add_level(Level* level)
 	int height = level->get_grid_height();
 	//TODO: come up with a set of standard dimensions for a "room" and ensure that levels passed here match those dimensions)
 	// multiply by 1.0 to avoid warnings
-	while (y_pos + height >= 1.0*dungeon_grid.size()) {
-		dungeon_grid.push_back(std::vector<Level*>());
-	}
-	for (int y = y_pos; y < y_pos + height; y++) {
-		while (x_pos + width >= 1.0*dungeon_grid[y].size()) {
-			dungeon_grid[y].push_back(NULL);
+	if (x_pos >= 0 && y_pos >= 0) {
+		while (y_pos + height >= 1.0*dungeon_grid.size()) {
+			dungeon_grid.push_back(std::vector<Level*>());
 		}
-		for (int x = x_pos; x < x_pos + width; x++) {
-			dungeon_grid[y][x] = level;
+		for (int y = y_pos; y < y_pos + height; y++) {
+			while (x_pos + width >= 1.0*dungeon_grid[y].size()) {
+				dungeon_grid[y].push_back(NULL);
+			}
+			for (int x = x_pos; x < x_pos + width; x++) {
+				dungeon_grid[y][x] = level;
+			}
 		}
 	}
 	this->level_list.push_back(level);

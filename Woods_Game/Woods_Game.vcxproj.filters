@@ -281,6 +281,12 @@
     <ClInclude Include="LevelGridKeyboardListener.h">
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InteractAction.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractActionManager.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -441,6 +447,12 @@
     </ClCompile>
     <ClCompile Include="LevelGridKeyboardListener.cpp">
       <Filter>LevelEditor\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractAction.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractActionManager.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

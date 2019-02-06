@@ -178,69 +178,78 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 void GameImageManager::change_player_level()
 {
 	Level* next_level = NULL;
-	int x = 0;
-	int y = 0;
-	int grid_x = current_level->get_grid_x();
-	int grid_y = current_level->get_grid_y();
-	int width = current_level->get_width();
-	int height = current_level->get_height();
-
-	enum { UP, DOWN, LEFT, RIGHT };
-	int direction = 0;
-	//up
-	if (player->get_y() + player->get_height() < 0) {
-		x = grid_x, y = grid_y - 1;
-		direction = UP;
-	}
-
-	//down
-	else if (player->get_y() > height) {
-		x = grid_x, y = grid_y + current_level->get_grid_height();
-		direction = DOWN;
-	}
-	//left
-	else if (player->get_x() + player->get_width() < 0) {
-		x = grid_x - 1, y = grid_y;
-		direction = LEFT;
-	}
-
-	//right
-	else if (player->get_x() > width) {
-		x = grid_x + current_level->get_grid_width(), y = grid_y;
-		direction = RIGHT;
-	}
-	else {
-		std::cout << "ERROR: no direction " << std::endl;
-	}
-	current_level->remove_player();
-	next_level = world.get_current_dungeon()->level_at(x, y);
-	next_level->add_being(player);
 	int px = 0, py = 0;
-	const int level_width = Level::STANDARD_LEVEL_GRID_WIDTH, level_height = Level::STANDARD_LEVEL_GRID_HEIGHT;
-	const float player_offset_x = fmod(player->get_x(), level_width), player_offset_y = fmod(player->get_y(), level_height);
-	int grid_offset_x = next_level->get_grid_x() - current_level->get_grid_x();
-	int grid_offset_y = next_level->get_grid_y() - current_level->get_grid_y();
-	switch (direction) {
+	const std::string level_key_override = player->get_destination_level_key_override();
+	const std::pair<int, int> pos_override = player->get_destination_level_pos_override();
+	if (!level_key_override.empty() && pos_override.first >= 0 && pos_override.second >= 0) {
+		px = pos_override.first, py = pos_override.second;
+		next_level = world.get_current_dungeon()->level_with_name(level_key_override);
+	} else {
+		int x = 0;
+		int y = 0;
+		int grid_x = current_level->get_grid_x();
+		int grid_y = current_level->get_grid_y();
+		int width = current_level->get_width();
+		int height = current_level->get_height();
+
+		enum { UP, DOWN, LEFT, RIGHT };
+		int direction = 0;
+		//up
+		if (player->get_y() + player->get_height() < 0) {
+			x = grid_x, y = grid_y - 1;
+			direction = UP;
+		}
+
+		//down
+		else if (player->get_y() > height) {
+			x = grid_x, y = grid_y + current_level->get_grid_height();
+			direction = DOWN;
+		}
+		//left
+		else if (player->get_x() + player->get_width() < 0) {
+			x = grid_x - 1, y = grid_y;
+			direction = LEFT;
+		}
+
+		//right
+		else if (player->get_x() > width) {
+			x = grid_x + current_level->get_grid_width(), y = grid_y;
+			direction = RIGHT;
+		}
+		else {
+			std::cout << "ERROR: no direction " << std::endl;
+		}
+		next_level = world.get_current_dungeon()->level_at(x, y);
+		const int level_width = Level::STANDARD_LEVEL_GRID_WIDTH, level_height = Level::STANDARD_LEVEL_GRID_HEIGHT;
+		const float player_offset_x = fmod(player->get_x(), level_width), player_offset_y = fmod(player->get_y(), level_height);
+		int grid_offset_x = next_level->get_grid_x() - current_level->get_grid_x();
+		int grid_offset_y = next_level->get_grid_y() - current_level->get_grid_y();
+		switch (direction) {
 		case UP:
-			px = grid_offset_x*level_width + player_offset_x;
+			px = grid_offset_x * level_width + player_offset_x;
 			py = next_level->get_height() - player->get_height();
 			break;
 		case DOWN:
-			px = grid_offset_x*level_width + player_offset_x;
+			px = grid_offset_x * level_width + player_offset_x;
 			py = 0;
 			break;
 		case LEFT:
 			px = next_level->get_width() - player->get_width();
-			py = grid_offset_y*level_height + player_offset_y;
+			py = grid_offset_y * level_height + player_offset_y;
 			break;
 		case RIGHT:
 			px = 0;
-			py = grid_offset_y*level_height + player_offset_y;
+			py = grid_offset_y * level_height + player_offset_y;
 			break;
+		}
 	}
-	player->set_position(px, py);
-	player->set_exit_level_flag(false);
-	current_level = next_level;
+	if (next_level) {
+		current_level->remove_player();
+		next_level->add_being(player);
+		player->set_position(px, py);
+	}
+	player->reset_exit_level();
+	current_level = next_level;	// is this necessary?
 }
 
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)

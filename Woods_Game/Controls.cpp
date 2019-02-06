@@ -105,7 +105,7 @@ void Controls::load_content(std::vector<std::vector<std::string>> attributes, st
 
 	const int mapping_size = labels.size();
 	for (int i = 0; i < mapping_size; i++) {
-		controls_map.addItem(DBG_NEW ControlMapping(action_keys[i], input_keys[i], labels[i]));
+		controls_map.addItem(new ControlMapping(action_keys[i], input_keys[i], labels[i]));
 	}
 	
 }

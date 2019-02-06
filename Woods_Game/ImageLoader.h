@@ -27,6 +27,7 @@ public:
 	~ImageLoader();
 	void load_content();
 	void unload_content();
+	const bool image_exists(const std::string filename);
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);
 	void load_spritesheet(Animation);

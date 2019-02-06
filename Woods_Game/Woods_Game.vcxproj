@@ -280,6 +280,8 @@
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="InteractAction.h" />
+    <ClInclude Include="InteractActionManager.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
@@ -336,6 +338,8 @@
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="InteractAction.cpp" />
+    <ClCompile Include="InteractActionManager.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />

@@ -2,6 +2,11 @@
     <SerializableClass Type="Controls" Version="1" ControlsKey="current_controls_keyboard">
         <Collection Name="ControlsMap">
             <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">interact</Member>
+                <Member Name="InputKey">keyboard_z</Member>
+                <Member Name="Label">Interact</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">use_item</Member>
                 <Member Name="InputKey">keyboard_c</Member>
                 <Member Name="Label">Use Item</Member>
@@ -40,6 +45,11 @@
     </SerializableClass>
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_keyboard">
         <Collection Name="ControlsMap">
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">interact</Member>
+                <Member Name="InputKey">keyboard_z</Member>
+                <Member Name="Label">Interact</Member>
+            </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">use_item</Member>
                 <Member Name="InputKey">keyboard_c</Member>
@@ -80,6 +90,11 @@
     <SerializableClass Type="Controls" Version="1" ControlsKey="current_controls_controller">
         <Collection Name="ControlsMap">
             <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">interact</Member>
+                <Member Name="InputKey">controller_a</Member>
+                <Member Name="Label">Interact</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">use_item</Member>
                 <Member Name="InputKey">controller_x</Member>
                 <Member Name="Label">Use Item</Member>
@@ -118,6 +133,11 @@
     </SerializableClass>
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_controller">
         <Collection Name="ControlsMap">
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">interact</Member>
+                <Member Name="InputKey">controller_a</Member>
+                <Member Name="Label">Interact</Member>
+            </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">use_item</Member>
                 <Member Name="InputKey">controller_x</Member>

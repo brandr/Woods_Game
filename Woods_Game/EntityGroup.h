@@ -22,10 +22,10 @@ private:
 	xmls::xString entity_group_name;
 public:
 	EntityGroup();
-	EntityGroup(std::pair<int, int> root_offset); //, std::vector<EntityComponentData> component_data);
+	EntityGroup(std::pair<int, int> root_offset);
 	~EntityGroup();
-	//virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position);
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	void draw_bitmap_from_entities(std::vector<Entity *> entities);
 	virtual int get_type();
 	void set_entity_group_name(std::string name);
 	void set_sheet_pos(int col, int row);

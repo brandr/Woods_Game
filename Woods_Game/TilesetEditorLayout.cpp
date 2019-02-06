@@ -107,36 +107,9 @@ TilesetEditorLayout::TilesetEditorLayout(ALLEGRO_DISPLAY * display)
 	tileset_entity_group_layout.add(&selected_entity_group_name_label);
 	selected_entity_group_name_label.setText("EntityGroup Name");
 	tileset_entity_group_layout.add(&selected_entity_group_name_field);
-	selected_entity_group_name_field.setSize(200, 30);
+	selected_entity_group_name_field.setSize(250, 60);
 	tileset_entity_group_layout.add(&entity_group_image_display);
 	tileset_entity_group_layout.add(new agui::EmptyWidget());
-
-	//tiled image select window
-
-	/*
-	this->add(&tileset_tiled_image_frame);
-	tileset_tiled_image_frame.setSize(380, 600);
-	tileset_tiled_image_frame.add(&tileset_tiled_image_layout);
-
-	tileset_tiled_image_layout.add(&tileset_tiled_image_label);
-	tileset_tiled_image_label.setText("TiledImages");
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-
-	tileset_tiled_image_layout.add(&tileset_tiled_image_select_box);
-	tileset_tiled_image_select_box.setSize(380, 180);
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-
-	tileset_tiled_image_layout.add(&selected_tiled_image_name_label);
-	selected_tiled_image_name_label.setText("TiledImage Name");
-	tileset_tiled_image_layout.add(&selected_tiled_image_name_field);
-	selected_tiled_image_name_field.setSize(200, 30);
-	tileset_tiled_image_layout.add(&tiled_image_image_display);
-	tileset_tiled_image_layout.add(new agui::EmptyWidget());
-	*/
 }
 
 void TilesetEditorLayout::load_tilesets()

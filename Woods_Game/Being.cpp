@@ -193,6 +193,7 @@ void Being::collision_update(std::vector<Entity*> interactables, std::vector<Til
 
 void Being::collide_with_entity(Entity * e)
 {
+
 	if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_DAMAGE)) {
 		if (counters[BOUNCE] > 0) return;
 		if (counters[SWING] > 0) return;

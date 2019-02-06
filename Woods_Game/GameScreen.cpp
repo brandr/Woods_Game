@@ -189,6 +189,10 @@ void GameScreen::process_number_input(int num)
 {
 }
 
+void GameScreen::interact_action()
+{
+}
+
 void GameScreen::use_item_action()
 {
 }

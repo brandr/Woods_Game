@@ -91,6 +91,7 @@ public:
 	virtual ALLEGRO_BITMAP* get_bitmap();
 	void set_bitmap(ALLEGRO_BITMAP *bitmap);
 	virtual void draw_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	virtual void refresh_bitmap();
 	virtual void refresh_mask();
 	mask_t* get_mask();
 	std::string get_anim_state_key();

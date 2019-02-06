@@ -2,26 +2,19 @@ Woods game todolist
 
 
 Draw the creepy guy from the story in paint
+	* done, but need animations
+	* make this the first NPC to save time
 
 Level editor
 --------------------
 
-make it so levels can store their selected tileset key 
-so we know which tileset to set if we change the level in LevelEditorManager.update_selected_level()
-	* could use a dropdown or listbox in dungeon editor layout
-
-make a UI for setting tileset tile/entity data attributes (on tileset tab)
-
-make it possible to select objects in level editor and adjust their attributes (will be part of implementing buildings)
-	* probably want a special selection button that can be toggled so we know what left click does
-	* look at LevelEditorDataManager.select_level_object() for where we set pos and entity type
-	   # idea: make an interface (how to do in C++?) for entities that dispay extra data when selected in editor
-	   # default implementation is just entity attributes, but there might be special cases for NPC speech and stuff
+Either get rid of tileset select tab inside level tab or make it work
 
 Tiled Images
 	*out of room on tileset tab-- need to reorganize it (tabs?)
 
-Fix memory leak in level editor
+Fix memory leaks in level editor
+	*why does it happen when selecting objects?
 	*adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
 		# we probably reserve it in the update method (in level grid) after deletion, not the deletion itself
 	*might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
@@ -30,44 +23,21 @@ consider how/whether to delete objects when resizing levels
 
 ---------------------------------------------------
 
+Find the cause of the bug where positions of blocks/tiles get multiplied twice (EntityStartingPos)
+
+Make it so we get images through the imageloader whenever possible-- avoid storing the bitmap directly on the gameimage
+
 Look into getting rid of "gameImages" list in Level
 	*I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
 		#Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
 
-Buildings
-	*first, allow editing block attributes
-		#use ctrl-click to select, but need to figure out where to put UI
-		#allow editing xml attributes in a very general way (add by string, set type, etc.)
-		#use this editing to set "destination" attributes for door blocks
-			* "door blocks" are the invisble doors, not the tiled images that actually look like doors
-	*how do interactables like doors fit in?
-		#doors should probably be a type of block that sends players to another level
-		#need button to interact? Or just walk into?
-		#animation? (no other blocks are animated, might need to be a new thing)
-	*make the inside of buildings levels that are uniquely identified by string id but not part of the normal level grids
-		#could set the level key to -1 or some constant
-	*also need to be able to id levels on the grid this way, since this is how players will exit the building
-	*also need to uniquely identify the door from outside so that the player can appear in front of the door after leaving the level
-	*ensure that unused tiles outside the building are displayed as black
-	*can use tiledImages and invisible blocks to make furniture, sink, etc
-	*make roofs
+Implement readable signs before NPCs
 
-Implement "pickup-able" items, like seeds from ferns
-	*Should probably be a % drop chance rolled on breaking plant so player can't savescum
-	*probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
-	*Make sure these disappear properly from level-- do not store them in xml collections as there is no need
-
-
-
-Make sure I can do what I want with the tile system
-	*Going through brush will be better if there's a tool to make trails but trails get overgrown
-	*This means defining what the tile turns into when the tool is used on it
-		#this could be a property of tile data set in the tileset, or a mapping stored elsewhere
-		#the tool should also have some properties that come into play
-	*also consider how it will work to dig holes
-		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
-		#should holes be saved when the game is saved?
-
+Think carefully about updates for NPCs
+	* there should definitely be a per-frame update, but could also have "update clocks" that go off every so often
+	* also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
+		# maybe they never pass between levels?
+			* only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
 
 IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
 	-implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
@@ -84,8 +54,34 @@ IDEA: Make NPCs walk around outside programatically and have varying habits thro
 		*maybe get less fine-grain and just process what level they're in at any given time based on time of day,
 			what they're doing, the weather, etc
 
-Make a new entity group of a different size and with different components than trees int order to ensure that entity groups work
-	-could make this a building, but need to plan carefully about how entering/exiting buildings should work
+Cutscenes
+
+Implement "pickup-able" items, like seeds from ferns
+	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
+	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
+	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
+	
+Buildings
+	* need door animation? (no other blocks are animated, might need to be a new thing)
+	* stairs? (good test of building mechanics, similar to going outside)
+		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+	* can use tiledImages and invisible blocks to make furniture, sink, etc
+	* make roofs
+
+Make sure I can do what I want with the tile system
+	*Going through brush will be better if there's a tool to make trails but trails get overgrown
+	*This means defining what the tile turns into when the tool is used on it
+		#this could be a property of tile data set in the tileset, or a mapping stored elsewhere
+		#the tool should also have some properties that come into play
+	*also consider how it will work to dig holes
+		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
+		#should holes be saved when the game is saved?
+
+IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
+
+IDEA: Stamina upgrades are the only thing you take with you when reloading
+
+Figure out how to load player location and store in world
 
 IDEA: serialize tile edges after they are first generated to make loading faster
 	- did I already implement this?
@@ -94,21 +90,18 @@ IDEA: serialize tile edges after they are first generated to make loading faster
 		*in the case where we load from xml instead of map, draw the edge images onto bitmaps based on serialized values rather than doing the full generation
 
 Add a shovel and allow the player to dig up items
-	- implement picking up items off the ground and fix inventory bugs first
-
+	- implement picking up items off the ground first
 
 Refactor all file loading to xml
 	-player
 		*consider long-term saving/loading functionality, like items the player has
 	-in each case, do saving first while loading normally
 	-levels/world/entities/entitygroups/etc
-		*plan this out in notebook
-		*did this for templates/types through TileSet, but need to do it for level, too
-			#make a new xml level loading method, but keep the current method as it is since maps are easy to make this way
 		*decide the difference between things that save/load for a level and things that don't
 			#for instance, we might or might not save blocks because these can be temporarily destroyed by the player and "grow back"
 			#once we add NPCs or objects that can move/channge, we likely won't save their exact positions, but things like spawn locations
-		*need a way to decide when a level's content needs to be rewritten in xml
+		*need a way to decide exactly which objects needs to be rewritten in xml
+
 NOTES:
 *whenever adding new counters, be sure to check how they all interact 
 	(i.e., what happens if you use shears right as you collide with thorns and bounce)
@@ -117,34 +110,36 @@ NOTES:
 	*LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
 	*this allows plants to have general behavior for growing, spreading, etc.
 	*could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
--make a distinction between templates (entityData, tileType) and specific objects (entities, tiles)
-	*since serialization is flexible, it will probably work best to make tiles/entities themselves serializable, but only serialize the mininum amount of information
-	*since we have templates to determine what objects should be like, we only need to serialize keys that map to these templates, not things like filenames, speed mods, etc
--store dungeons per-file, not levels, since individual levels can be loaded/saved with replaceXML
-	*this means there is no need to serialized world or dungeon, though data objects associated with each may be necessary
+
 -think about how to set up world/dungeon/level serialization such that levels which update while the player isn't there are fully updated by the time the player gets to them
 	*changes include things like plant growth, animals spawning, etc.
 	*could generalize these things as some sort of "world data" that is less detailed than individual levels and gets applied to specific levels when loading them
 	*consider multithreading to load/update levels before the player gets to them
 	*could simply update the entire world as necessary when saving the game
+
 -fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
 	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
 	*other idea: only allow selection in each menu through the appropriate selection button (I like this idea better since it's more intuitive)
+
 -need to make a "restore defaults" (or something similar) button for video configurations
+
 -make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+
 -make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
 	*might need to do this for mouse too, need to test
--add wasd controls for movement (not sure about this)
+
 -fix analog stick issue that sometimes happens when controller is in some weird configuration (needs repro)
+
 -fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
 	*make sure this fix applies to both inventory and pause
 
 -make entityAttributes more flexible by allowing values other than ints
+
 -once saving/loading is implemented, make sure we have a way to track things that actually need to be saved/loaded
 	*i.e., don't bother saving a level if nothing about it has changed
--make sure all serializable objects have a unique combination of class name/id so we can save and load them easily
+
 -make custom mouse cursor
 
 -make effects for the player touching vegetation
@@ -153,46 +148,44 @@ NOTES:
 
 -figure out how trails are going to work with the current tile system
 	*could have them occupy existing tiles as some sort of "contents" and have trail images drawn over them and increase movement modifier
+
 -consider allowing hotbar to move to the top of the screen
+
 -fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
+
 -figure out how to scale object/ui sizes with resolution
+
 -consider making a "cleaner" way of storing block entity effects (so that they don't attempt to load the entire spritesheet)
--make sure the current entity effect system works for things that are not blocks (need some example)
--finish sorting out memory leaks (note that some of them don't actually seem to be real leaks but need to make sure)
--figure out how to handle discrepancies between a level's width and height as read from the file and the actual size in terms of tiles.
-	*keep in mind that the overall level system should probably allow grid-based levels.
--IDEA: make a separate program to progamatically generate varied tile sheets based on some criteria
--implement a stamina system (need to add to the HUD)
+
 -fix the issue where the player can go faster while running against a wall than while walking normally.
+
 -fix the glitch where parts of the player's face sometimes disappear
--fix glitch where player can get stuck inside a block by holding in a direction when traveling between levels
+
 -idea: consider including animation frame duration in the files from which we load gameimages 
 	*may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
+
 -make the leaves as a separate sprite and having them turn partly transparent when the player passes behind them.
 	*could also try doing this for the entire trees, since we might have very large trees that obscure the player
 	*first, make sure the leaves have their mask loaded by images. (do this in level when they are created)
 	*since entitygroups are treated as single entities, need some kind of entitygroup overridden entity collision method for when the player rect-collides witth trees.
 		#within this method, have each entity within the group attempt to mask-collide with the other entity (i.e. the player) and check for the transparent_on_contact attribute
--idea: put level coords and dimensions in the corresponding files
-	*could also put them in different files and load the dungeon based on this data
+
 -test large levels to see if there is lag when entering them
+
 -decide how to handle player leaving the level when there's no corresponding level
 
 LONG TERM PLANS
 
--make a day and night cycle, along with a date system
 -make a "calendar" UI that also fuctions as saving/loading
 	*eventually want to make reloading from older saves something we subtly nudge the player towards in order to unlock hidden endings
 	*also need to make it so certain things only happen if the player is in the right places at the right times
+
 -make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
 	*might even use real information about some of these things (like latin name)
--make destroyed objects (like ferns) drop items sometimes
--implement a time system and/or a stamina system
-	*make it get dark near the end of the day
+
 -make harvestable plants that grow over time
 	*consider implementing a "cooking" system
--figure out a way to handle "buildings" that the player can go inside of, changing the view (and effectively changing the current level.)
-	*consider ways of adding more than one floor.
+
 -add animals
--if we add faraway backgrounds, implement parallax 
--make audio options
+
+-audio

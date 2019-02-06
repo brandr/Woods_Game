@@ -20,8 +20,7 @@ enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAU
 //enum PLAYER_DIRECTIONS{DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN};
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
 enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
-//final const int TERMINAL_VELOCITY = 8;
-//final const int GRAVITY = 2;
+
 class Player :
 	public Being, public xmls::Serializable
 {
@@ -33,8 +32,13 @@ private:
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
+	std::string destination_level_key_override = "";
+	std::pair<int, int> destination_level_pos_override = std::pair<int,int>(-1,-1);
+	bool interacting = false;
 	Inventory inventory;
 	int current_action = ACTION_NONE;
+protected:
+	virtual void collide_with_entity(Entity* e);
 public:
 	Player();
 	virtual ~Player();
@@ -48,6 +52,8 @@ public:
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	const bool interact(Entity* e);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	float get_walk_speed();
 	void set_direction(int);
@@ -58,11 +64,17 @@ public:
 	void attempt_jump(std::vector<Entity*> interactables);
 	void set_jumping(bool);
 	bool is_jumping();
+	void set_destination_level_key_override(const std::string key);
+	const std::string get_destination_level_key_override();
+	void set_destination_level_pos_override(const std::pair<int, int> pos);
+	const std::pair<int, int> get_destination_level_pos_override();
+	void reset_exit_level();
 	void set_exit_level_flag(bool);
 	bool get_exit_level_flag();
 	void use_selected_item();
 	void hotbar_index_left();
 	void hotbar_index_right();
+	void interact();
 	void use_shears();
 	int get_current_action();
 	Item *get_selected_item();

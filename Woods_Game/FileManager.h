@@ -41,6 +41,7 @@ public:
 		std::string const & element_name,
 		std::string const & type,
 		std::string const & key);
+	const std::map<std::string, std::string> all_top_named_attributes(std::string const & xml);
 	void copy_xml_node(tinyxml2::XMLNode *p_dest_parent, const tinyxml2::XMLNode *p_src);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents, std::string id);

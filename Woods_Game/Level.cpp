@@ -282,24 +282,7 @@ void Level::load_from_map()
 				}
 			}
 		}
-		//this->save_to_xml();	//TODO: uncomment this except when it actually makes sense to save to xml, and consider putting it in a different method
-	}
-		//TODO
-	// old way of loading
-
-	//TEMP
-	//TileSet tileset;
-	//tileset.set_tileset_key("tileset_1");
-	//TEMP
-	/*
-	
-	*/
-	//temp
-	//std::string tileset_filename = "resources/load/tilesets";
-	//std::string xml_string = tileset.toXML();
-	//file_manager.replace_xml_content(tileset_filename, "SerializableClass", "TilesetKey", "tileset_1", xml_string);
-	//temp
-	
+	}	
 }
 
 void Level::load_from_xml()
@@ -359,40 +342,7 @@ void Level::initialize_tiles()
 
 void Level::initialize_blocks()
 {
-	//TODO: make this work with new system (it's likely what's keeping things from being shearable)
-	/*
-	const std::string block_sheet_filename = this->tileset->get_block_tile_sheet_filename();
-	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
-	const std::string tile_filename = this->tileset->get_tile_sheet_filename();
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			Tile *t = this->get_tile(x, y);
-			Block *b = t->get_block();
-			if (b == NULL) {
-				continue;
-			}
-			Rect *subsection = b->get_bitmap_subsection();
-			std::pair<int, int> position(x*TILE_SIZE, y*TILE_SIZE);
-			//TODO
-		}
-	}
-	//temp
-	std::pair<int, int>tile_offset = FileManager::string_to_pair(contents[i][k]);
-	Rect* offset_rect = new Rect(tile_offset.first*TILE_SIZE, tile_offset.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-	//ImageLoader::get_instance().load_image(block_sheet_filename, *offset_rect);
-	std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-	//const bool solid = tileset->get_block_solid(tile_offset.second);
-	//std::map<std::string, int> block_attributes = tileset->get_block_attributes(tile_offset.second);
-	Block* b = new Block();
-	b->set_content(block_sheet_filename, offset_rect, position);
-	b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
-	//b->set_solid(solid);	//will be serialized
-	//b->set_entity_attributes(block_attributes);	//will be serialized
-	//...
-	b->load_entity_effects(block_sheet_filename, tile_offset.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
-	//this->tile_rows.getItem(indexY)->get_tile(k)->set_block(b);
-	//temp
-	*/
+
 }
 
 void Level::generate_blocks()
@@ -403,8 +353,6 @@ void Level::generate_blocks()
 		const int cols = row->get_size();
 		for (int x = 0; x < cols; x++) {
 			Tile *t = row->get_tile(x);
-			//TODO: delete this method if we don't use it
-			//t->generate_block();
 		}
 	}
 }
@@ -450,6 +398,7 @@ void Level::initialize_entity_group(EntityGroup *eg)
 		entity_list.push_back(e);
 	}
 	eg->set_entities(entity_list);
+	eg->draw_bitmap_from_entities(entity_list);
 	eg->set_solid(true); //temp. consider making a set of attributes for the entire group and including solid if necessary
 	eg->set_rect(group_pos.first, group_pos.second,
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
@@ -465,6 +414,16 @@ void Level::initialize_tiled_images()
 		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
 		layer->initialize_tiled_images(this->tileset->get_tiled_image_tile_sheet_filename());
 	}
+}
+
+void Level::clear_level()
+{
+	this->tile_rows.Clear();
+	this->entities.clear();
+	this->beings.clear();
+	this->entity_groups.Clear();
+	this->tiled_image_layers.Clear();
+	this->initialize_empty();
 }
 
 void Level::remove_tile_edges()
@@ -757,7 +716,8 @@ std::vector<Tile*> Level::get_nearby_tiles(Entity *entity)
 	std::vector<Tile*> nearby_tiles;
 	//TODO: get interactables that could potentially interact with the entity this frame, based on location and other factors.
 	int xpos = entity->get_x(), ypos = entity->get_y(), width = entity->get_width(), height = entity->get_height();
-	int tx_max = this->tile_rows.getItem(0)->get_size() - 1, ty_max = this->tile_rows.size() - 1; //tiles[0].size() - 1, ty_max = tiles.size() - 1;
+	int tx_max = this->tile_rows.getItem(0)->get_size(), 
+		ty_max = this->tile_rows.size();
 	int tx1 = std::max(0, xpos / TILE_SIZE - 2), ty1 = std::max(0, ypos / TILE_SIZE - 2),
 		tx2 = std::min(tx_max, (xpos + width) / TILE_SIZE + 2), ty2 = std::min(ty_max, (ypos + height) / TILE_SIZE + 2);
 	for (int y = ty1; y < ty2; y++) {
@@ -907,6 +867,7 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 	e_group->set_sheet_pos(ss_pos.first, ss_pos.second);
 	e_group->set_entity_group_name(group_data->get_entity_group_name());
 	e_group->set_entities(entity_list);
+	e_group->draw_bitmap_from_entities(entity_list);
 	e_group->set_solid(true);	//temp. 
 	//consider making a set of attributes for the entire group and including solid if necessary
 	e_group->set_rect(group_pos.first, group_pos.second,
@@ -919,10 +880,15 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 
 void Level::set_tile(Tile * tile, std::pair<int, int> pos)
 {
-	TileGroup * tg = this->tile_rows.getItem(pos.second);
-	if (tg != NULL) {
-		tg->set_tile(this->tileset, tile, pos.first);
+
+	while (pos.second >= this->tile_rows.size()) {
+		this->tile_rows.addItem(new TileGroup());
 	}
+		TileGroup * tg = this->tile_rows.getItem(pos.second);
+		if (tg != NULL) {
+			tg->set_tile(this->tileset, tile, pos.first);
+		}
+	
 }
 
 Tile * Level::get_tile(int x, int y)
@@ -953,6 +919,23 @@ TileSet * Level::get_tileset()
 void Level::set_tileset_key(std::string value)
 {
 	this->tileset_key = value.c_str();
+}
+
+const std::string Level::get_tileset_key()
+{
+	return this->tileset_key.value();
+}
+
+EntityGroup * Level::entity_group_at_tile_pos(const std::pair<int, int> pos)
+{
+	const int size = this->entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		EntityGroup *eg = this->entity_groups.getItem(i);
+		if (eg != NULL && eg->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			return eg;
+		}
+	}
+	return NULL;
 }
 
 std::string Level::get_dungeon_filename()
@@ -1043,8 +1026,9 @@ void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
 	al_set_target_bitmap(bitmap);
-	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
+	const int y_size = this->tile_rows.size();
 	for (int y = 0; y < y_size; y++) {
+		const int x_size = this->tile_rows.getItem(y)->get_size();
 		for (int x = 0; x < x_size; x++) {
 			Tile * t = this->get_tile(x, y);
 			ALLEGRO_BITMAP *tile_bitmap = t->get_bitmap();

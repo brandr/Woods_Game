@@ -122,17 +122,6 @@ void FileManager::save_xml_content(std::string const & filename,
 	for (auto const &it : attributes) {
 		save_element->SetAttribute(it.first.c_str(), it.second.c_str());
 	}
-	//tinyxml2::XMLDocument save_document;
-	//save_document.Parse(saveXML.c_str());
-	/*
-	save_element->DeleteChildren();
-	for (tinyxml2::XMLNode *save_child = save_document.RootElement()->FirstChild();
-		save_child != NULL;
-		save_child = save_child->NextSibling())
-	{
-		copy_xml_node(save_element, save_child);
-	}
-	*/
 	tinyxml2::XMLNode *last_child = root->LastChild();
 	if (last_child != NULL) {
 		root->InsertAfterChild(last_child, save_element);
@@ -181,6 +170,37 @@ std::vector<std::string> FileManager::all_xml_keys(std::string const & filename,
 		}
 	}
 	return all_keys;
+}
+
+const std::map<std::string, std::string> FileManager::all_top_named_attributes(std::string const & xml)
+{
+	std::map<std::string, std::string> xml_map;
+	if (xml.size() > 0) {
+		tinyxml2::XMLPrinter printer;
+		tinyxml2::XMLDocument doc;
+		doc.Parse(xml.c_str());
+		tinyxml2::XMLNode *root = doc.FirstChild();
+			for (tinyxml2::XMLNode *e = root->FirstChild();
+				e != NULL; e = e->NextSibling()) {
+				tinyxml2::XMLElement * el = e->ToElement();
+				if (el->Attribute("Name") != NULL) {
+					const std::string name = el->Attribute("Name");
+					const std::string el_value = el->Value();
+					//e->Accept(&printer);
+					//const std::string serializable_str = printer.CStr();
+					if (el_value == "Member") {
+						const std::string value = el->GetText();
+						xml_map[name] = value;
+					} else if (el_value == "Collection"){
+						//TODO
+					} else {
+						//TODO
+					}
+				}
+			}
+
+	}
+	return xml_map;
 }
 
 void FileManager::copy_xml_node(tinyxml2::XMLNode * p_dest_parent, const tinyxml2::XMLNode * p_src)

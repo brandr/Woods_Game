@@ -282,7 +282,7 @@ std::pair<int, int> DungeonEditorLayout::get_input_level_grid_pos()
 		y_pos_str = this->level_y_pos_field.getText();
 	const int x = isInteger(x_pos_str) ? ::atoi(x_pos_str.c_str()) : 0,
 		y = isInteger(y_pos_str) ? ::atoi(y_pos_str.c_str()) : 0;
-	return std::pair<int, int>(std::abs(x), std::abs(y));
+	return std::pair<int, int>(x, y);
 }
 
 std::pair<int, int> DungeonEditorLayout::get_input_level_dimensions()

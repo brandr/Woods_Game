@@ -1,8 +1,14 @@
 #include "Player.h"
-#include<iostream>
-#include<algorithm>
+#include <iostream>
+#include <algorithm>
 
 
+
+void Player::collide_with_entity(Entity * e)
+{
+	Being::collide_with_entity(e);
+	e->contact_action(this);
+}
 
 Player::Player()
 {
@@ -20,7 +26,6 @@ Player::Player()
 	Register("animation_data", &animation_data);
 	Register("additional_mask_data", &additional_mask_data);
 	Register("inventory", &inventory);
-	//Register("inventory_key", &inventory_key);
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
 }
@@ -47,7 +52,6 @@ void Player::load_content_from_attributes()
 {
 	Entity::load_content_from_attributes();
 	inventory.load_content_from_attributes();
-	//inventory->load_content_from_xml(this->inventory_key.value());
 }
 
 void Player::reset_entity_flags()
@@ -68,6 +72,9 @@ void Player::update(std::vector<Entity*> interactables, std::vector<Tile*> nearb
 		break;
 	}
 	Being::update(interactables, nearby_tiles, level_dimensions, game_mode);
+	if (this->interacting) {
+		this->interact_update(interactables, nearby_tiles, level_dimensions);
+	}
 	clear_input();
 }
 
@@ -189,6 +196,50 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_RIGHT);
 }
 
+void Player::interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
+{
+	const int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+
+	float x_off = 0, y_off = 0;
+	switch (direction) {
+	case DIR_NEUTRAL:
+		x_off = 0, y_off = 14;
+		break;
+	case DIR_UP:
+		x_off = 0, y_off = -14;
+		break;
+	case DIR_DOWN:
+		x_off = 0, y_off = 14;
+		break;
+	case DIR_LEFT:
+		x_off = -8, y_off = 0;
+		break;
+	case DIR_RIGHT:
+		x_off = 8, y_off = 0;
+		break;
+	}
+
+	const int x1 = this->get_rect_center().first, y1 = this->get_rect_center().second;
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
+			Entity* e = interactables[i];
+			if (this->interact(e)) {
+				return;
+			}
+		}
+	}
+}
+
+const bool Player::interact(Entity * e)
+{
+	return e->interact_action(this);
+}
+
 void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
@@ -238,8 +289,6 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 
 float Player::get_walk_speed()
 {
-	//TODO: get tile modifier
-
 	return base_walk_speed.value();
 }
 
@@ -267,6 +316,7 @@ void Player::clear_input()
 	move_map[MOVE_LEFT] = false;
 	move_map[MOVE_RIGHT] = false;
 	move_joystick_pos = std::pair<float, float>(0.0f, 0.0f);
+	interacting = false;
 }
 
 void Player::set_joystick_movement(std::pair<float, float> pos)
@@ -290,6 +340,33 @@ void Player::set_jumping(bool jumping)
 bool Player::is_jumping()
 {
 	return jumping;
+}
+
+void Player::set_destination_level_key_override(const std::string key)
+{
+	this->destination_level_key_override = key;
+}
+
+const std::string Player::get_destination_level_key_override()
+{
+	return this->destination_level_key_override;
+}
+
+void Player::set_destination_level_pos_override(const std::pair<int, int> pos)
+{
+	this->destination_level_pos_override = pos;
+}
+
+const std::pair<int, int> Player::get_destination_level_pos_override()
+{
+	return this->destination_level_pos_override;
+}
+
+void Player::reset_exit_level()
+{
+	this->exit_level_flag = false;
+	this->destination_level_key_override = "";
+	this->destination_level_pos_override = std::pair<int, int>(-1, -1);
 }
 
 void Player::set_exit_level_flag(bool flag)
@@ -326,6 +403,11 @@ void Player::hotbar_index_right()
 {
 	if (current_action != ACTION_NONE) return;
 	inventory.hotbar_index_right();
+}
+
+void Player::interact()
+{
+	this->interacting = true;
 }
 
 void Player::use_shears()

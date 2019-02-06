@@ -75,12 +75,14 @@ private:
 	void update_load_dungeon();
 	void update_selected_level();
 	void update_level_grid();
+	void update_object_instance();
 	void update_save_dungeon();
 	void update_add_dungeon();
 	void update_delete_dungeon();
 	void update_add_level();
 	void update_delete_level();
 	void update_selected_tileset();
+	void update_reset_level();
 	void update_reset_tile_edges();
 	void update_sheet_col();
 public:

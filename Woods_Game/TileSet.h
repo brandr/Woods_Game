@@ -31,6 +31,7 @@ public:
 	void unload_content();
 	static void load_sheet_images(std::string filename, int sub_width, int sub_height);
 	static void load_full_sheet_image(std::string filename);
+	const static bool sheet_image_exists(const std::string filename);
 	static ALLEGRO_BITMAP *get_full_sheet_image(std::string filename);
 	void load_sheet_images();
 	void set_tileset_key(std::string key);
@@ -61,6 +62,8 @@ public:
 	// block types
 	ALLEGRO_BITMAP * get_default_block_bitmap(const int index);
 	ALLEGRO_BITMAP * get_block_bitmap_for_col(const int index, const int col);
+	const std::vector<std::pair<std::string, std::string>> get_block_interact_action_data(const int index);
+	const std::vector<std::pair<std::string, std::string>> get_block_contact_action_data(const int index);
 	void set_block_solid(const int row, bool solid);
 	void set_block_attributes(const int row, std::map<std::string, int> attributes);
 	EntityData *get_block_data(const int index);
@@ -95,5 +98,7 @@ public:
 	const std::string get_tiled_image_name_by_index(const int index);
 	const std::string get_full_tiled_image_sheet_filename(const int index);
 	std::vector<std::string> all_tiled_image_keys();
+
+	
 };
 #endif

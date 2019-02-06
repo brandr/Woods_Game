@@ -51,6 +51,7 @@ public:
 	void update();
 	void set_layer_visible(std::string layer, bool visible);
 	void set_select_mode(int value);
+	void reset_all_grid_image_layers();
 	void reset_image_layer(std::string layer);
 	void reset_image_layer(int index);
 };

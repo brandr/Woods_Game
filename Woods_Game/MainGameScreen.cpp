@@ -2,8 +2,6 @@
 #include "Level.h"
 #include<iostream>
 
-//InputManager main_input;
-
 // functions to be passed along to the level, usually to the player
 void keyboard_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	GameScreen& input_screen = screen.screen_receiving_input();
@@ -34,6 +32,12 @@ void move_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 void number_entry(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if(toggle){
 		screen.process_number_input(ev.keyboard.keycode);
+	}
+}
+
+void interact(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.interact_action();
 	}
 }
 
@@ -271,6 +275,7 @@ void MainGameScreen::set_default_controls()
 void MainGameScreen::set_mappable_controls()
 {
 	// keyboard
+	this->map_keyboard_control_action(TOP_DOWN, "interact", &interact);
 	this->map_keyboard_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_keyboard_control_action(TOP_DOWN, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
@@ -730,35 +735,10 @@ void MainGameScreen::b_button_action()
 
 void MainGameScreen::x_button_action()
 {
-	/*
-	Item* item = game_image_manager.get_player()->get_selected_item();
-	if (item) {
-		switch (get_game_mode()) {
-		case TOP_DOWN:
-			game_image_manager.get_player()->use_selected_item();
-			break;
-		}
-	}
-	*/
 }
 
 void MainGameScreen::y_button_action()
 {
-	/*
-	if (game_image_manager.get_player()->get_current_action() != ACTION_NONE) return;
-	else {
-	switch (get_game_mode()) {
-	case TOP_DOWN:
-	game_image_manager.set_game_mode(MAIN_GAME_INVENTORY);
-	//TODO: any action necessary regarding the inventory screen
-	break;
-	case MAIN_GAME_INVENTORY:
-	resume_game();
-	game_image_manager.set_game_mode(TOP_DOWN);
-	break;
-	}
-	}
-	*/
 }
 
 void MainGameScreen::left_bumper_action()
@@ -796,6 +776,11 @@ void MainGameScreen::hotbar_left_action()
 void MainGameScreen::hotbar_right_action()
 {
 	game_image_manager.get_player()->hotbar_index_right();
+}
+
+void MainGameScreen::interact_action()
+{
+	game_image_manager.get_player()->interact();
 }
 
 void MainGameScreen::use_item_action()

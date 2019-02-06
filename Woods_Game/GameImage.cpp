@@ -276,18 +276,12 @@ void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 
 void GameImage::update()
 {
-	if (ss_animation) {	//TEMP: might sometimes only have animation
+	if (ss_animation) {
 		Animation* anim = get_animation();
 		if (anim) {
-			//TODO: figure out how to set animation direction
-			//anim->set_row(get_animation_index());
 			anim->set_row(get_animation_row());
-			//anim->set_row(get_animation_direction());
 			ss_animation->update(*anim);
 		}
-		//std::string anim_key = get_anim_key();
-		//TODO
-		
 	}
 }
 
@@ -329,16 +323,11 @@ void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)
 void GameImage::draw_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 {
 	additional_image_layers.push_back(bitmap);
-	/*
-	if (this->bitmap) {
-		
-		ALLEGRO_BITMAP *display = al_get_target_bitmap();
-		al_set_target_bitmap(this->bitmap);
-		al_draw_bitmap(bitmap, 0.0, 0.0, 0);
-		al_set_target_bitmap(display);
-		
-	}
-	*/
+}
+
+void GameImage::refresh_bitmap()
+{
+	this->bitmap = ImageLoader::get_instance().get_current_image(this);
 }
 
 void GameImage::refresh_mask()

@@ -39,6 +39,12 @@ void ImageLoader::unload_content()
 	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
 }
 
+const bool ImageLoader::image_exists(const std::string filename)
+{
+	std::string full_filename = ImageLoader::full_filename(filename);
+	return (al_load_bitmap(full_filename.c_str()));
+}
+
 
 
 void ImageLoader::load_image(std::string filename)

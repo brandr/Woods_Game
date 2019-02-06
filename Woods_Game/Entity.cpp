@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include "Player.h"
 
 Entity::Entity()
 {
@@ -67,18 +68,14 @@ void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	for (auto &it : entity_effects) {
 		if (!it.second.get_effect_active()) continue;
-		//std::cout << "drawing effect with row: " << it.second.get_animation_row() << "\n";
 		it.second.draw(display, x_offset, y_offset);
 	}
-	if (get_entity_attribute(E_ATTR_BROKEN) == 1) return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.
-	//const int effect_count = entity_effects.size();
-	
+	if (get_entity_attribute(E_ATTR_BROKEN) == 1) return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
 	GameImage::draw(display, x_offset, y_offset);
 }
 
 void Entity::update()
 {
-	//if (has_entity_attribute(E_ATTR_DURABILITY)) durability_update();
 	for (auto &it : entity_effects) {
 		if (!it.second.get_effect_active()) continue;
 		it.second.update();
@@ -97,6 +94,34 @@ void Entity::counter_update()
 void Entity::durability_update()
 {
 
+}
+
+const bool Entity::contact_action(Player * player)
+{
+	const InteractActionManager &manager = InteractActionManager::get_instance();
+	const int size = this->contact_actions.size();
+	bool interacted = false;
+	for (int i = 0; i < size; i++) {
+		InteractAction * action = this->contact_actions.getItem(i);
+		if (manager.run_action(action, player)) {
+			interacted = true;
+		}
+	}
+	return interacted;
+}
+
+const bool Entity::interact_action(Player * player)
+{
+	const InteractActionManager &manager = InteractActionManager::get_instance();
+	const int size = this->interact_actions.size();
+	bool interacted = false;
+	for (int i = 0; i < size; i++) {
+		InteractAction * action = this->interact_actions.getItem(i);
+		if (manager.run_action(action, player)) {
+			interacted = true;
+		}
+	}
+	return interacted;
 }
 
 void Entity::entity_break()
@@ -127,7 +152,6 @@ void Entity::set_entity_attributes(std::map<std::string, int> attributes)
 		EntityAttribute *attr = new EntityAttribute(attr_pair.first, attr_pair.second);
 		this->entity_attributes.addItem(attr);
 	}
-	//this->entity_attributes = attributes;
 }
 
 void Entity::set_entity_attributes(std::vector<std::string> attributes)
@@ -150,7 +174,24 @@ void Entity::set_entity_attribute(std::string attr_key, int val)
 		}
 	}
 	entity_attributes.addItem(new EntityAttribute(attr_key, val));
-	//entity_attributes[attr] = val;
+}
+
+void Entity::set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions)
+{
+	this->contact_actions.Clear();
+	for (std::pair<std::string, std::string> action_data : actions) {
+		InteractAction *action = new InteractAction(action_data.first, action_data.second);
+		this->contact_actions.addItem(action);
+	}
+}
+
+void Entity::set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions)
+{
+	this->interact_actions.Clear();
+	for (std::pair<std::string, std::string> action_data : actions) {
+		InteractAction *action = new InteractAction(action_data.first, action_data.second);
+		this->interact_actions.addItem(action);
+	}
 }
 
 void Entity::set_starting_pos(int x, int y)
@@ -190,8 +231,6 @@ bool Entity::has_entity_attribute(std::string attr_key)
 		}
 	}
 	return false;
-	//auto it = entity_attributes.find(attribute);
-	//return (it != entity_attributes.end());
 }
 int Entity::get_entity_sheet_col()
 {
@@ -201,12 +240,7 @@ int Entity::get_entity_sheet_row()
 {
 	return this->entity_sheet_row.value();
 }
-/*
-bool Entity::get_entity_flag(int flag_key)
-{
-	return false;
-}
-*/
+
 void Entity::take_durability_damage(const int damage)
 {
 	if (!has_entity_attribute(E_ATTR_DURABILITY)) return;
@@ -236,6 +270,8 @@ EntityData::EntityData()
 	setClassName("EntityData");
 	Register("entity_data_key", &entity_data_key);
 	Register("entity_data_index", &entity_data_index);
+	Register("interact_actions", &interact_actions);
+	Register("contact_actions", &contact_actions);
 	Register("attributes", &attributes);
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);
@@ -289,6 +325,30 @@ void EntityData::set_components(std::vector<EntityComponentData*> components)
 	for (int i = 0; i < size; i++) {
 		this->components.addItem(components[i]);
 	}
+}
+
+std::vector<std::pair<std::string, std::string>> EntityData::get_block_contact_action_data()
+{
+	std::vector<std::pair<std::string, std::string>> data;
+	const int size = this->contact_actions.size();
+	for (int i = 0; i < size; i++) {
+		data.push_back(std::pair<std::string, std::string>(
+			this->contact_actions.getItem(i)->get_interact_action_key(),
+			this->contact_actions.getItem(i)->get_function_name()));
+	}
+	return data;
+}
+
+std::vector<std::pair<std::string, std::string>> EntityData::get_block_interact_action_data()
+{
+	std::vector<std::pair<std::string, std::string>> data;
+	const int size = this->interact_actions.size();
+	for (int i = 0; i < size; i++) {
+		data.push_back(std::pair<std::string, std::string>(
+			this->interact_actions.getItem(i)->get_interact_action_key(), 
+			this->interact_actions.getItem(i)->get_function_name()));
+	}
+	return data;
 }
 
 bool EntityData::is_empty()

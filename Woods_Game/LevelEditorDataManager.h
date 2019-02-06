@@ -12,8 +12,6 @@
 
 //TODO: make sure we avoid all memory leaks by filtering loading/unloading/etc through this class
 
-
-
 enum OBJECT_TYPES {
 	OBJECT_TYPE_TILE = 0, OBJECT_TYPE_BLOCK = 1, OBJECT_TYPE_ENTITY_GROUP = 2
 };
@@ -60,6 +58,7 @@ private:
 	int selected_object_sheet_col = 0;
 	std::pair<int, int> selected_object_grid_pos;
 	std::pair<int, int> selected_tiled_image_grid_pos = std::pair<int, int>(-1, -1);
+	GameImage * selected_level_object();
 	void reset_active_levels();
 	void set_selected_level_tile(int index, std::pair<int, int> pos);
 	void set_selected_level_block(int index, std::pair<int, int> pos);
@@ -88,6 +87,7 @@ public:
 		::pair<int, int> pos, std::pair<int, int> dimensions);
 	void add_level(std::string level_name);
 	void delete_level(std::string level_name);
+	void reset_level();
 	void reset_tile_edges();
 	std::vector<std::string> get_active_level_names();
 	std::string get_selected_level_name();
@@ -98,26 +98,38 @@ public:
 	void set_selected_level_index(int index);
 	int get_selected_level_index();
 	void set_selected_object_sheet_col(const int col);
+	const bool has_selected_level_object();
 
 	// level objects
+	const bool replace_selected_object_instance_xml(const std::string xml);
 	bool decrement_sheet_col();
 	bool increment_sheet_col();
 	void set_selected_object_tab_index(int index);
 	int get_selected_object_tab_index();
 	void set_selected_object_select_index(int index);
 	int get_selected_object_select_index();
+	const std::string get_selected_object_display_name();
 	bool add_level_object(std::pair<int, int> tile_pos);
 	bool delete_level_object(std::pair<int, int> tile_pos);
-	void select_level_object(std::pair<int, int> tile_pos);
+	void select_level_object(const std::pair<int, int> tile_pos);
+	const bool selected_level_object_instance_matches(const std::pair<int, int> grid_pos, const int index);
+	const std::pair<int, int> get_selected_object_instance_dimensions();
+	ALLEGRO_BITMAP * get_selected_object_instance_bitmap();
+	const std::string get_selected_object_instance_xml();
+	const std::pair<int, int> get_selected_object_grid_pos();
+	const int get_selected_object_grid_index();
 
 	// tileset
 	void load_all_tilesets();
+	void reset_tileset_object_selection();
 	bool update_selected_tileset(int index);
 	bool update_selected_tileset_tile(int index);
 	bool update_selected_tileset_block(int index);
 	bool update_selected_tileset_tiled_image(int index);
 	bool update_selected_tileset_entity_group(int index);
 	void set_selected_tileset_index(int index);
+	const int get_selected_tileset_index();
+	const int selected_level_tileset_index();
 	std::vector<std::string> all_tileset_names();
 	std::vector<std::string> all_selected_tile_keys();
 	std::vector<std::string> all_selected_block_keys();

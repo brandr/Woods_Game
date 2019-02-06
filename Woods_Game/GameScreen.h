@@ -85,6 +85,7 @@ public:
 	virtual void confirm_selection();
 	virtual void select();
 	virtual void process_number_input(int num);
+	virtual void interact_action();
 	virtual void use_item_action();
 	virtual void open_inventory_action();
 	virtual void hotbar_left_action();

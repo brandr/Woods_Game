@@ -93,10 +93,8 @@ void LevelEditorGrid::select_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
-	//TODO: tell the manager to select object at that location
-	//TODO: use selected entity type (or tiledImage?) to determine layer
-	//TODO: draw red border around selected thing
-	//TODO: view to show entity attributes (new tab?)
+	manager.select_level_object(tile_pos);
+	this->reset_image_layer(LevelEditorDataManager::GRID_LINES_LAYER);
 }
 
 void LevelEditorGrid::clear_image_layers()
@@ -201,6 +199,13 @@ void LevelEditorGrid::paintBackground(const agui::PaintEvent &paintEvent)
 void LevelEditorGrid::set_select_mode(int value)
 {
 	this->select_mode = value;
+}
+
+void LevelEditorGrid::reset_all_grid_image_layers()
+{
+	for (std::string layer : LEVEL_LAYERS) {
+		this->reset_image_layer(layer);
+	}
 }
 
 int LevelEditorGrid::getTopMargin() const

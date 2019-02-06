@@ -89,9 +89,11 @@ void LevelEditorManager::level_update()
 	this->update_add_level();
 	this->update_delete_level();
 	// level view
+	this->update_reset_level();
 	this->update_reset_tile_edges();
 	this->update_sheet_col();
 	this->update_level_grid();
+	this->update_object_instance();
 }
 
 void LevelEditorManager::tileset_update()
@@ -108,9 +110,9 @@ void LevelEditorManager::update_selected_level()
 {
 	const bool should_update = this->dungeon_edit_layout->update_selected_level();
 	if (should_update) {
-		//TODO: need to be able to save tilesets for levels/dungeons so we can pass the correct index as the currently selected one
-		const int tileset_index = 0; //TEMP
+		const int tileset_index = LevelEditorDataManager::get_instance().selected_level_tileset_index();
 		LevelEditorDataManager::get_instance().set_selected_tileset_index(tileset_index);
+		this->level_edit_layout->load_all_tilesets();
 		this->level_edit_layout->load_selected_tileset_tiles();
 		this->level_edit_layout->load_selected_tileset_blocks();
 		this->level_edit_layout->load_selected_tileset_entity_groups();
@@ -127,6 +129,13 @@ void LevelEditorManager::update_level_grid()
 {
 	this->level_edit_layout->set_selecting_objects(this->level_grid_keyboard_listener.has_control_held());
 	this->level_edit_layout->update();
+}
+
+void LevelEditorManager::update_object_instance()
+{
+	if (this->level_edit_layout->should_save_instance_attributes()) {
+		this->level_edit_layout->save_instance_attributes();
+	}
 }
 
 void LevelEditorManager::update_save_dungeon()
@@ -183,14 +192,31 @@ void LevelEditorManager::update_selected_tileset()
 		this->load_selected_tileset_blocks();
 		this->load_selected_tileset_entity_groups();
 		this->tileset_edit_layout->update_selected_tileset_fields();
+		this->level_edit_layout->load_selected_tileset_tiles();
+		this->level_edit_layout->load_selected_tileset_blocks();
+		this->level_edit_layout->load_selected_tileset_entity_groups();
+		this->level_edit_layout->load_selected_tileset_tiled_images();
+		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
+		this->tileset_edit_layout->update_selected_tileset_fields();
+		this->tileset_edit_layout->load_selected_tileset_tiles();
+		this->tileset_edit_layout->load_selected_tileset_blocks();
+		this->tileset_edit_layout->load_selected_tileset_entity_groups();
+		LevelEditorDataManager::get_instance().reset_tileset_object_selection();
 	}
 	this->tileset_edit_layout->update_selected_tileset();
+}
+
+void LevelEditorManager::update_reset_level()
+{
+	if (this->level_edit_layout->should_reset_level()) {
+		LevelEditorDataManager::get_instance().reset_level();
+		this->level_edit_layout->reset_all_grid_image_layers();
+	}
 }
 
 void LevelEditorManager::update_reset_tile_edges()
 {
 	if (this->level_edit_layout->should_reset_tile_edges()) {
-		const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
 		LevelEditorDataManager::get_instance().reset_tile_edges();
 		this->level_edit_layout->reset_grid_image_layer(LevelEditorDataManager::TILE_LAYER);
 	}

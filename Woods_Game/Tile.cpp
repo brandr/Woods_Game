@@ -122,6 +122,10 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
+	const std::vector<std::pair<std::string, std::string>> interact_action_data 
+		= tileset->get_block_interact_action_data(block_index);
+	const std::vector<std::pair<std::string, std::string>> contact_action_data
+		= tileset->get_block_contact_action_data(block_index);
 	const bool solid = tileset->get_block_solid(block_index);
 	const bool visible = tileset->get_block_visible(block_index);
 	this->block.set_entity_data_index(block_index);
@@ -132,8 +136,11 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	this->block.set_solid(solid);							//will be serialized
 	this->block.set_visible(visible);						//will be serialized
 	this->block.set_entity_attributes(block_attributes);	//will be serialized
+	this->block.set_interact_actions(interact_action_data);	//will be serialized
+	this->block.set_contact_actions(contact_action_data);	//will be serialized
 	this->block.load_entity_effects(filename, ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
+	//TODO: interact actions
 }
 
 void Tile::remove_block()

@@ -17,7 +17,7 @@ protected:
 	void movement_update_side_scrolling(std::vector<Entity*>, std::vector<Tile*>);
 	void movement_update_top_down(std::vector<Entity*>, std::vector<Tile*>);
 	void collision_update(std::vector<Entity*>, std::vector<Tile*>, int);
-	void collide_with_entity(Entity* e);
+	virtual void collide_with_entity(Entity* e);
 	bool on_ground(std::vector<Entity*>);
 	bool empty_at(Rect, std::vector<Entity*>);
 	bool precise_empty_at(std::vector<Entity*>, int, int);

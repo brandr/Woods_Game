@@ -91,6 +91,20 @@
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_door</Member>
+                <Member Name="entity_data_index">4</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractActions" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
         <Collection Name="entity_group_types">
             <Class Type="EntityGroupData" Version="1">
@@ -132,6 +146,52 @@
                 <Member Name="image_data_key">house_windows_1</Member>
                 <Member Name="image_data_index">2</Member>
             </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_indoors">
+        <Member Name="tile_sheet_name">tile_sheet_indoors</Member>
+        <Member Name="edge_tile_sheet_name">tile_sheet_indoors_edges</Member>
+        <Member Name="block_tile_sheet_name">tile_sheet_indoors</Member>
+        <Member Name="entity_group_tile_sheet_name">entity_group_tile_sheet_indoors</Member>
+        <Member Name="tiled_image_tile_sheet_name">tiled_images_indoors</Member>
+        <Collection Name="tile_types">
+            <Class Type="TileType" Version="1">
+                <Member Name="tile_sheet_row">0</Member>
+                <Member Name="tile_sheet_key">floor_1</Member>
+                <Member Name="tile_sheet_index">0</Member>
+                <Member Name="speed_mod">1</Member>
+                <Member Name="edge_priority">1</Member>
+            </Class>
+        </Collection>
+        <Collection Name="block_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">false</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_exit</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractActions" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">border_block</Member>
+                <Member Name="entity_data_index">1</Member>
+                <Collection Name="contact_actions">
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+        <Collection Name="entity_group_types">
+        </Collection>
+        <Collection Name="tiled_image_types">
         </Collection>
     </SerializableClass>
 </root>
