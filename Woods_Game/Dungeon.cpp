@@ -74,7 +74,6 @@ void Dungeon::add_level(Level* level)
 	int y_pos = level->get_grid_y();
 	int width = level->get_grid_width();
 	int height = level->get_grid_height();
-	//TODO: come up with a set of standard dimensions for a "room" and ensure that levels passed here match those dimensions)
 	// multiply by 1.0 to avoid warnings
 	if (x_pos >= 0 && y_pos >= 0) {
 		while (y_pos + height >= 1.0*dungeon_grid.size()) {
@@ -90,12 +89,7 @@ void Dungeon::add_level(Level* level)
 		}
 	}
 	this->level_list.push_back(level);
-	bool use_xml = true;	//temp-- set this some other way (maybe temporary menu
-	if (use_xml) {
-		level->load_from_xml();
-	} else {
-		level->load_from_map();
-	}
+	level->load_from_xml();
 }
 
 void Dungeon::remove_level(int index)

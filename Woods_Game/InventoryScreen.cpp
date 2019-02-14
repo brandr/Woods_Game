@@ -25,6 +25,7 @@ void InventoryScreen::load_content()
 	
 	// load font
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
+	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)

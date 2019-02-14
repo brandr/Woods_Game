@@ -96,9 +96,9 @@ void ImageLoader::load_spritesheet(Animation anim)
 	}
 }
 
-ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string sheet_filename, TileType * tile_type)
+ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string tileset_name, TileType * tile_type)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + tile_type->get_tile_sheet_key());
+	const std::string full_filename = ImageLoader::full_filename(tileset_name + "/tiles/" + tile_type->get_tile_sheet_key());
 	Rect * subsection = DBG_NEW Rect(0, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -111,7 +111,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string sheet_filename,
 
 ALLEGRO_BITMAP * ImageLoader::get_default_block_image(std::string sheet_filename, EntityData * block_type)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + block_type->get_entity_data_key());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/blocks/" + block_type->get_entity_data_key());
 	Rect * subsection = DBG_NEW Rect(0, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -124,7 +124,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_block_image(std::string sheet_filename
 
 ALLEGRO_BITMAP * ImageLoader::get_default_entity_group_image(std::string sheet_filename, EntityGroupData * eg_type)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + eg_type->get_entity_group_name());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/entity_groups/" + eg_type->get_entity_group_name());
 	Rect * subsection = DBG_NEW Rect(0, 0,
 		eg_type->get_entity_group_image_dimensions().first, 
 		eg_type->get_entity_group_image_dimensions().second);
@@ -138,7 +138,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_entity_group_image(std::string sheet_f
 
 ALLEGRO_BITMAP * ImageLoader::get_default_tiled_image_image(std::string sheet_filename, TiledImageData *image_type)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + image_type->get_image_data_key());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/tiled_images/" + image_type->get_image_data_key());
 	Rect * subsection = new Rect(0, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -151,7 +151,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_tiled_image_image(std::string sheet_fi
 
 ALLEGRO_BITMAP * ImageLoader::get_tile_image_for_col(const std::string sheet_filename, TileType * tile_type, const int col)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + tile_type->get_tile_sheet_key());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/tiles/" + tile_type->get_tile_sheet_key());
 	Rect * subsection = new Rect(col*TILE_SIZE, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -164,7 +164,7 @@ ALLEGRO_BITMAP * ImageLoader::get_tile_image_for_col(const std::string sheet_fil
 
 ALLEGRO_BITMAP * ImageLoader::get_block_image_for_col(const std::string sheet_filename, EntityData * block_type, const int col)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + block_type->get_entity_data_key());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/blocks/" + block_type->get_entity_data_key());
 	Rect * subsection = new Rect(col*TILE_SIZE, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -177,7 +177,7 @@ ALLEGRO_BITMAP * ImageLoader::get_block_image_for_col(const std::string sheet_fi
 
 ALLEGRO_BITMAP * ImageLoader::get_entity_group_image_for_col(const std::string sheet_filename, EntityGroupData * eg_type, const int col)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + eg_type->get_entity_group_name());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/entity_groups/" + eg_type->get_entity_group_name());
 	Rect * subsection = new Rect(col*eg_type->get_entity_group_image_dimensions().first, 0,
 		eg_type->get_entity_group_image_dimensions().first,
 		eg_type->get_entity_group_image_dimensions().second);
@@ -191,7 +191,7 @@ ALLEGRO_BITMAP * ImageLoader::get_entity_group_image_for_col(const std::string s
 
 ALLEGRO_BITMAP * ImageLoader::get_full_tiled_image_sheet(std::string sheet_filename, TiledImageData *image_type)
 {
-	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "_" + image_type->get_image_data_key());
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/tiled_images/" + image_type->get_image_data_key());
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
 	if (it == image_map.end()) {
 		return NULL;

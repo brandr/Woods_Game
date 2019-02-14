@@ -126,165 +126,6 @@ void Level::load_tileset()
 	this->tileset->load_sheet_images();
 }
 
-void Level::load_from_map()
-{
-	// new XML loading
-	// TODO: once this is done, use it as the "old" map loading method 
-	// (in case I want to draw maps manually) and use XML loading in a different method
-	this->load_tileset();
-	FileManager file_manager;
-	std::string filename = "resources/load/maps/" + get_filename() + ".txt";
-	const std::string tile_sheet_filename_start = this->tileset->get_tile_sheet_filename();
-	const std::string block_sheet_filename_start = this->tileset->get_block_tile_sheet_filename();
-	const std::string entity_group_sheet_filename_start = this->tileset->get_entity_group_tile_sheet_filename();
-	std::vector<std::string> layers = get_layers();
-	int size = layers.size();
-	for (int layer_index = 0; layer_index < size; layer_index++) {
-		std::string layer_id = layers[layer_index];
-		std::vector<std::vector<std::string>> attributes;
-		std::vector<std::vector<std::string>> contents;
-		file_manager.load_content(filename.c_str(), attributes, contents, layer_id);
-		int indexY = 0;
-		int size = attributes.size();
-		std::string null_tile = "";
-		for (int i = 0; i < size; i++) {
-			std::pair<int, int> tile(0, 0);
-			const int isize = attributes[i].size();
-			for (int j = 0; j < isize; j++) {
-				// tile loading
-				if (attributes[i][j] == "NullTile") {	//consider changing to "default tile" or something
-					null_tile = contents[i][j];
-				}
-				// entity loading
-				else if (attributes[i][j] == "StartLayer") {
-					const int contents_size = contents[i].size();
-					if (layer_id == "tile_layer") {
-						TileGroup *tile_group = new TileGroup(indexY);
-						tile_rows.addItem(tile_group);
-						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {
-								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
-								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
-								Rect* offset_rect = new Rect(ss_col*TILE_SIZE, ss_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-								const int edge_priority = this->tileset->get_edge_priority(ss_type_key);
-								const float speed_mod = this->tileset->get_tile_speed_mod(ss_type_key);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								Tile *t = new Tile(tileset, k, indexY, ss_type_key, ss_col, ss_row);
-								tile_group->add_tile(t);
-							} else {
-								Rect* offset_rect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								std::string tile_sheet_filename = this->tileset->get_full_tile_sheet_filename(0);
-								Tile *t = Tile::null_tile(tileset, k, indexY);
-								t->set_content(tile_sheet_filename, offset_rect, position);
-								t->set_tile_type_index(0);
-								t->set_edge_priority(0);
-								t->set_speed_mod(1.0f);
-								tile_group->add_tile(t);
-							}
-						}
-					}
-					// block loading
-					else if (layer_id == "block_layer") {
-						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {	
-								//TODO: allow for animated blocks if necessary
-								//TODO: consider refactoring to another method
-								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
-								int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
-								Rect* offset_rect = new Rect(ss_col*TILE_SIZE, ss_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
-								std::pair<int, int> position(k*TILE_SIZE, indexY*TILE_SIZE);
-								std::string block_sheet_filename = this->tileset->get_full_block_sheet_filename(ss_type_key);
-								const bool solid = tileset->get_block_solid(ss_type_key);
-								const bool visible = tileset->get_block_visible(ss_type_key);
-								std::map<std::string, int> block_attributes = tileset->get_block_attributes(ss_type_key);
-								Tile *t = this->tile_rows.getItem(indexY)->get_tile(k);
-								t->initialize_block();
-								Block *b = t->get_block();
-								b->set_content(block_sheet_filename, offset_rect, position);
-								b->set_starting_pos(ss_col*TILE_SIZE, ss_row*TILE_SIZE);
-								b->set_entity_data_index(ss_type_key);
-								b->set_entity_sheet_offset(ss_col, ss_row);
-								b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
-								b->set_solid(solid); //will be serialized
-								b->set_visible(visible);
-								b->set_entity_attributes(block_attributes);
-								b->load_entity_effects(block_sheet_filename, ss_row, std::pair<int, int>(TILE_SIZE, TILE_SIZE));	//temp. want to get a different filename eventually
-								b->refresh_mask();
-							}
-						}
-					}
-					// entity group loading
-					else if (layer_id == "entity_group_layer") {
-						for (int k = 0; k < contents_size; k++) {
-							if (contents[i][k] != null_tile) {
-								//...
-								std::vector<std::string> ss_keys = FileManager::string_to_parts(contents[i][k], ",");
-								const int ss_col = ::atoi(ss_keys[0].c_str()), ss_row = ::atoi(ss_keys[1].c_str()), ss_type_key = ::atoi(ss_keys[2].c_str());
-								const std::pair<int, int> eg_ss_pos(ss_col, ss_row);
-								const std::pair<int, int> pixel_pos(k*TILE_SIZE, indexY*TILE_SIZE);
-								EntityGroup * e_group = this->create_entity_group(entity_group_sheet_filename_start, ss_type_key, eg_ss_pos, pixel_pos);
-								/*
-
-								std::pair<int, int> root_off = tileset->get_entity_group_root_offset(ss_type_key);
-								std::pair<int, int> center_off = tileset->get_entity_group_center_offset(ss_type_key);
-								EntityGroupData* group_data = tileset->get_entity_group_data_by_index(ss_type_key);
-								std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_type_key);
-								std::pair<int, int> root_pos(k*TILE_SIZE, indexY*TILE_SIZE);
-								std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
-								const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions_by_index(ss_type_key);
-								std::vector<Entity*> entity_list;
-								// load the images separately for each component
-								int comp_size = comp_data.size();
-								for (int comp_index = 0; comp_index < comp_size; comp_index++) {
-									EntityComponentData *data = comp_data[comp_index];
-									std::string comp_filename = entity_group_sheet_filename_start + "_" + group_data->get_entity_group_name() +  "_" + data->name.value();
-									Rect* ss_offset_rect = new Rect(
-										ss_col*entity_group_image_dimensions.first,
-										ss_row*entity_group_image_dimensions.second,
-										entity_group_image_dimensions.first,
-										entity_group_image_dimensions.second);
-									Entity* e = new Entity();
-									e->set_content(comp_filename, ss_offset_rect, group_pos);
-									e->set_rect(group_pos.first, group_pos.second,
-										entity_group_image_dimensions.first, entity_group_image_dimensions.second);
-									e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
-									e->set_entity_attributes(data->get_attributes());
-									entity_list.push_back(e);
-								}
-								EntityGroup *e_group = new EntityGroup();
-								e_group->set_sheet_pos(ss_col, ss_row);
-								e_group->set_entity_group_name(group_data->get_entity_group_name());
-								e_group->set_entities(entity_list);
-								e_group->set_solid(true);	//temp. consider making a set of attributes for the entire group and including solid if necessary
-								e_group->set_rect(group_pos.first, group_pos.second,
-									entity_group_image_dimensions.first, entity_group_image_dimensions.second);
-								e_group->set_center_offset(center_off);
-								e_group->set_root_pos(root_pos);
-								e_group->load_mask(entity_group_sheet_filename_start + "_" + group_data->get_entity_group_name());
-								add_entity(e_group);
-								*/
-								this->add_entity(e_group);
-								this->entity_groups.addItem(e_group); //allows serialization
-							}
-						}
-					}
-					indexY++;
-				}
-				else if (attributes[i][j] == "EndLayer") {
-					if (layer_id == "tile_layer") {
-						this->initialize_tiles();
-						this->load_tile_edges();
-						this->draw_tile_edge_bitmaps();
-						this->initialize_entity_groups();
-						
-					}
-				}
-			}
-		}
-	}	
-}
-
 void Level::load_from_xml()
 {
 	this->load_tileset();
@@ -317,7 +158,7 @@ void Level::initialize_empty()
 void Level::initialize_tiles()
 {
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
-	const std::string block_sheet_filename = this->tileset->get_block_tile_sheet_filename();
+	const std::string block_sheet_filename = this->tileset->get_tile_sheet_filename();
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			Tile *t = this->get_tile(x, y);
@@ -330,11 +171,12 @@ void Level::initialize_tiles()
 			if (b == NULL) {
 				continue;
 			}
-			std::string block_filename = this->tileset->get_full_block_sheet_filename(b->get_entity_data_index());
+			const std::string block_filename = this->tileset->get_full_block_sheet_filename(b->get_entity_data_index());
 			Rect *block_subsection = b->get_bitmap_subsection();
 			b->set_content(block_filename, block_subsection, position);
 			b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
-			b->load_entity_effects(block_filename, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+			const std::string block_key = this->tileset->get_block_key(b->get_entity_data_index());
+			b->load_entity_effects(this->tileset->get_tile_sheet_filename(), block_key, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 			b->refresh_mask();
 		}
 	}
@@ -368,20 +210,20 @@ void Level::initialize_entity_groups()
 
 void Level::initialize_entity_group(EntityGroup *eg)
 {
-	std::pair<int, int> ss_offset(eg->get_entity_sheet_col(), eg->get_entity_sheet_row());
-	std::pair<int, int> root_off = this->tileset->get_entity_group_root_offset(ss_offset.second);
-	std::pair<int, int> center_off = this->tileset->get_entity_group_center_offset(ss_offset.second);
-	std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_offset.second);
-	std::pair<int, int> root_pos = eg->get_root_pos();
-	std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
-	std::vector<Entity*> entity_list;
-	std::string entity_group_sheet_filename = this->tileset->get_entity_group_tile_sheet_filename();
-	std::string entity_group_name = eg->get_entity_group_name();
+	const std::pair<int, int> ss_offset(eg->get_entity_sheet_col(), eg->get_entity_sheet_row());
+	const std::pair<int, int> root_off = this->tileset->get_entity_group_root_offset(ss_offset.second);
+	const std::pair<int, int> center_off = this->tileset->get_entity_group_center_offset(ss_offset.second);
+	const std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(ss_offset.second);
+	const std::pair<int, int> root_pos = eg->get_root_pos();
+	const std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
+	const std::string sheet_filename = this->tileset->get_tile_sheet_filename();
+	const std::string entity_group_name = eg->get_entity_group_name();
 	const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions(entity_group_name);
+	std::vector<Entity*> entity_list;
 	const int comp_size = comp_data.size();
 	for (int comp_index = 0; comp_index < comp_size; comp_index++) {
 		EntityComponentData *data = comp_data[comp_index];
-		std::string comp_filename = entity_group_sheet_filename + "_" + entity_group_name + "_" + data->name.value();
+		const std::string comp_filename = sheet_filename + "/entity_groups/" + entity_group_name + "_" + data->name.value();
 		Rect* ss_offset_rect = new Rect(
 			ss_offset.first*entity_group_image_dimensions.first,
 			ss_offset.second*entity_group_image_dimensions.second,
@@ -403,7 +245,7 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	eg->set_rect(group_pos.first, group_pos.second,
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
 	eg->set_center_offset(center_off);
-	eg->load_mask(entity_group_sheet_filename + "_" + eg->get_entity_group_name());
+	eg->load_mask(sheet_filename + "/entity_groups/" + eg->get_entity_group_name());
 	add_entity(eg); //allows serialization
 }
 
@@ -412,7 +254,7 @@ void Level::initialize_tiled_images()
 	const int layer_count = this->tiled_image_layers.size();
 	for (int i = 0; i < layer_count; i++) {
 		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
-		layer->initialize_tiled_images(this->tileset->get_tiled_image_tile_sheet_filename());
+		layer->initialize_tiled_images(this->tileset->get_tile_sheet_filename());
 	}
 }
 
@@ -504,7 +346,7 @@ void Level::draw_tile_edge_bitmaps()
 			if (t->has_edges()) {
 				std::vector<TileEdge*> tile_edges = t->get_tile_edges();
 				for (TileEdge *edge : tile_edges) {
-					std::string filename = this->tileset->get_edge_tile_sheet_filename() + "_" + edge->tile_key.c_str();
+					std::string filename = this->tileset->get_tile_sheet_filename() + "/tiles/edges/" + edge->tile_key.c_str();
 					this->draw_edge_tile_onto_bitmap(*t, filename, edge->row_index.value(), edge->direction_index.value());
 				}
 			}
@@ -796,7 +638,7 @@ void Level::add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair
 {
 	//TODO: figure out if create_entity_group() is redundant given initialize_entity_group()
 	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
-	const std::string filename_start = this->tileset->get_entity_group_tile_sheet_filename();
+	const std::string filename_start = this->tileset->get_tile_sheet_filename();
 	EntityGroup * eg = this->create_entity_group(filename_start, eg_index, ss_pos, pixel_pos);
 	this->initialize_entity_group(eg);
 	this->entity_groups.addItem(eg);
@@ -805,7 +647,7 @@ void Level::add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair
 void Level::add_tiled_image(const int ti_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos, const int layer_index)
 {
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
-	const std::string filename_start = this->tileset->get_tiled_image_tile_sheet_filename();
+	const std::string filename_start = this->tileset->get_tile_sheet_filename();
 	TiledImage * ti = this->create_tiled_image(filename_start, ti_index, ss_pos, pixel_pos);	//TODO: need filename start?
 	const std::string full_filename = this->tileset->get_full_tiled_image_sheet_filename(ti_index);
 	Rect *subsection = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);

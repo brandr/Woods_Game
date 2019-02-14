@@ -9,7 +9,6 @@
 #endif
 #define NOMINMAX
 #include "GameImageManager.h"
-//#include "Level.h"//TEMP
 
 
 std::pair<int, int> GameImageManager::get_camera_offset(ALLEGRO_DISPLAY *display)
@@ -50,6 +49,7 @@ GameImageManager::~GameImageManager()
 
 void GameImageManager::load_content()
 {
+	//TODO: load world from file (can probably select save file from title screen)
 	const std::string world_name = "world_1"; //TEMP
 	FileManager filemanager;
 	const std::string filename = "resources/load/worlds";
@@ -64,7 +64,7 @@ void GameImageManager::set_game_mode(int game_mode)
 	this->game_mode = game_mode;
 }
 
-int GameImageManager::get_game_mode()	//temp. figure out game mode some other way
+int GameImageManager::get_game_mode()
 {
 	return game_mode;
 }
@@ -97,8 +97,6 @@ void GameImageManager::load_player(std::string filename)
 
 void GameImageManager::load_level_content(std::string filename, std::string id, int type)
 {
-	//TODO: make a method that loads content into a level, not into the gamemanager itself
-	//when loading into the gamemanager, can load into current_level
 	std::vector<std::vector<std::string>> attributes;
 	std::vector<std::vector<std::string>> contents;
 	FileManager file_manager;
@@ -138,8 +136,7 @@ void GameImageManager::load_player_from_xml(std::string filepath, std::string pl
 	file_manager.load_xml_content(player, filepath, "SerializableClass", "PlayerKey", player_key);
 	player->load_content_from_attributes();
 	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
-	//file_manager.load_content(filename.c_str(), attributes, contents, "additional_masks");
-	player->load_additional_masks_from_attributes("player");	//TODO: make this method
+	player->load_additional_masks_from_attributes("player");
 	current_level->add_being(player);
 }
 
@@ -160,13 +157,18 @@ void GameImageManager::unload_level_content()
 
 void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::pair<float,float>> joystick_map)
 {
+	//TODO: where to do dialog updates?
 	const int game_mode = get_game_mode();
-	if (game_mode == MAIN_GAME_PAUSED) return;
+	if (game_mode != TOP_DOWN) return; //TODO: make sure this is the right check
 	std::pair<int, int> dimensions = current_level->get_dimensions();
 	if (player) {
 		if (player->get_exit_level_flag()) {
 			//TODO: check to make sure there is a next level in the given direction here
 			change_player_level();
+			return;
+		}
+		if (player->has_open_dialog()) {
+			set_game_mode(MAIN_GAME_DIALOG);
 			return;
 		}
 		player->update_input(input_map, joystick_map, game_mode);

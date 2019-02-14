@@ -6549,12 +6549,18 @@
                             <Member Name="Visible">false</Member>
                             <Member Name="EntityStartingPosX">192</Member>
                             <Member Name="EntityStartingPosY">384</Member>
-                            <Member Name="EntityDataIndex">3</Member>
+                            <Member Name="EntityDataIndex">5</Member>
                             <Member Name="EntitySheetCol">0</Member>
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                             <Collection Name="ContactActions"/>
-                            <Collection Name="InteractActions"/>
+                            <Collection Name="InteractActions">
+                                <Class Type="InteractAction" Version="1">
+                                    <Member Name="InteractActionKey">open_dialog</Member>
+                                    <Member Name="FunctionName">open_dialog</Member>
+                                    <Collection Name="Bindings"/>
+                                </Class>
+                            </Collection>
                         </Class>
                         <Collection Name="TileEdges"/>
                     </Class>
@@ -6812,14 +6818,25 @@
                         <Class Name="Block" Type="Block" Version="1">
                             <Member Name="Solid">true</Member>
                             <Member Name="Visible">false</Member>
-                            <Member Name="EntityStartingPosX">192</Member>
-                            <Member Name="EntityStartingPosY">448</Member>
-                            <Member Name="EntityDataIndex">3</Member>
+                            <Member Name="EntityStartingPosX">12288</Member>
+                            <Member Name="EntityStartingPosY">28672</Member>
+                            <Member Name="EntityDataIndex">5</Member>
                             <Member Name="EntitySheetCol">0</Member>
                             <Member Name="EntitySheetRow">0</Member>
                             <Collection Name="EntityAttributes"/>
                             <Collection Name="ContactActions"/>
-                            <Collection Name="InteractActions"/>
+                            <Collection Name="InteractActions">
+                                <Class Type="InteractAction" Version="1">
+                                    <Member Name="InteractActionKey">open_dialog</Member>
+                                    <Member Name="FunctionName">open_dialog</Member>
+                                    <Collection Name="Bindings">
+                                        <Class Type="ActionBinding" Version="1">
+                                            <Member Name="BindingKey">dialog_text</Member>
+                                            <Member Name="BindingValue">[p][l]test[l]line 2@[p][l]page 2, line 1! [l]page 2, line 2...</Member>
+                                        </Class>
+                                    </Collection>
+                                </Class>
+                            </Collection>
                         </Class>
                         <Collection Name="TileEdges"/>
                     </Class>

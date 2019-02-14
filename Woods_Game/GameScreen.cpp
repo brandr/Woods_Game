@@ -143,6 +143,11 @@ void GameScreen::quit_game()
 	screen_flag = FLAG_QUIT_GAME;
 }
 
+void GameScreen::dialog_advance()
+{
+	//TODO: advance dialog or go to next page
+}
+
 void GameScreen::menu_up()
 {
 }

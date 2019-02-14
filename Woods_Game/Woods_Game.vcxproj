@@ -265,6 +265,7 @@
     <ClInclude Include="Configurations.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
+    <ClInclude Include="Dialog.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonData.h" />
     <ClInclude Include="DungeonEditorLayout.h" />
@@ -323,6 +324,7 @@
     <ClCompile Include="Configurations.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
+    <ClCompile Include="Dialog.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="DungeonData.cpp" />
     <ClCompile Include="DungeonEditorLayout.cpp" />

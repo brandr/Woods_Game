@@ -12,6 +12,8 @@
 #include "xstddef"             // for addressof, less
 #include "xstring"             // for string
 #include <memory>              // for allocator
+#include <filesystem>
+#include <iostream>
 #include "XMLSerialization.h"
 
 struct EntityComponentAttribute : xmls::Serializable {
@@ -103,7 +105,7 @@ public:
 	virtual void set_visible(const bool visible);
 	virtual bool is_solid();
 	virtual bool is_visible();
-	virtual void load_entity_effects(std::string filename, int row, std::pair<int, int> frame_dimensions);
+	virtual void load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int, int> frame_dimensions);
 	virtual void load_content_from_attributes();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void update();

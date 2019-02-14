@@ -15,7 +15,7 @@ class ImageLoader;
 enum SCREEN_FLAGS { FLAG_NONE, FLAG_CHANGE_TO_MAIN_GAME, FLAG_CHANGE_TO_TITLE, FLAG_RESUME_GAME, FLAG_QUIT_GAME };
 enum NUMBER_KEYS {NUM_0 = 27, NUM_1 = 28, NUM_2 = 29, NUM_3 = 30, NUM_4 = 31, 
 	NUM_5 = 32, NUM_6 = 33, NUM_7 = 34, NUM_8 = 35, NUM_9 = 36};
-enum FONT_KEYS {FONT_HOTBAR};
+enum FONT_KEYS {FONT_HOTBAR, FONT_DIALOG};
 
 // font colors
 const static std::string FONT_COLOR_HOTBAR = "333333";
@@ -74,6 +74,7 @@ public:
 	virtual void cancel_menu();
 	virtual void resume_game();
 	virtual void quit_game();
+	virtual void dialog_advance();
 	virtual void menu_up();
 	virtual void menu_down();
 	virtual void menu_left();

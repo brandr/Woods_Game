@@ -421,8 +421,8 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 					did_serialize = xmls::Serializable::fromXML(xml, b);
 					const std::pair<int, int> ss_pos(b->get_entity_sheet_col(), b->get_entity_sheet_row());
 					const std::pair<int, int> pos(b->get_x(), b->get_y());
-					t->replace_block(this->active_tilesets[this->selected_tileset_index].get(), 
-						b->get_entity_data_index(), ss_pos, pos);
+					//t->replace_block(this->active_tilesets[this->selected_tileset_index].get(), 
+					//	b->get_entity_data_index(), ss_pos, pos);
 				}
 			}
 			break;

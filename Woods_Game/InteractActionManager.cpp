@@ -21,14 +21,55 @@ const int go_to_level(
 	return 0;
 }
 
+const int open_dialog(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player)
+{
+	//make sure we avoid memory leaks, either by deleting dialogs once they close or by keying them in a dialogmanager
+	std::string dialog_text = action->get_binding("dialog_text");
+	if (!dialog_text.empty()) {
+		Dialog * dialog = new Dialog();
+		FileManager manager;
+		const std::string page_delimiter = "[p]";
+		const std::string line_delimiter = "[l]";
+		const std::vector< std::string> pages = manager.string_to_parts(dialog_text, page_delimiter);
+		const int page_count = pages.size();
+		int page_index = 0;
+		for (int p = 0; p < page_count; p++) {
+			bool empty_page = true;
+			int line_index = 0;
+			const std::string page = pages[p];
+			const std::vector<std::string> lines = manager.string_to_parts(page, line_delimiter);
+			const int line_count = lines.size();
+			for (int l = 0; l < line_count; l++) {
+				const std::string line = lines[l];
+				if (line.size() > 0) {
+					dialog->add_line(line, page_index, line_index);
+					line_index++;
+					empty_page = false;
+				}
+			}
+			if (!empty_page) {
+				page_index++;
+			}
+		}
+		player->set_open_dialog(dialog);
+		return 1;
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	// go to level
-	std::function<const int(const InteractActionManager*, 
+	std::function<const int(const InteractActionManager*,
 		InteractAction*,
-		Player*)> fcnPtr = go_to_level;
+		Player*)> fcnPtr;
 	fcnPtr = go_to_level;
 	this->function_map["go_to_level"] = fcnPtr;
+	fcnPtr = open_dialog;
+	this->function_map["open_dialog"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()

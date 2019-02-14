@@ -149,21 +149,15 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	// tabs for selecting objects to place in the level
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILE_SELECT_TAB],
-		&level_edit_object_tile_scroll_pane);
+		&level_edit_object_tile_select_box);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[BLOCK_SELECT_TAB],
-		&level_edit_object_block_scroll_pane);
+		&level_edit_object_block_select_box);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB],
-		&level_edit_object_entity_group_scroll_pane);
+		&level_edit_object_entity_group_select_box);
 
-	// add select boxes to scroll panes
-	level_edit_object_tile_scroll_pane.add(&level_edit_object_tile_select_box);
-	level_edit_object_block_scroll_pane.add(&level_edit_object_block_select_box);
-	level_edit_object_entity_group_scroll_pane.add(&level_edit_object_entity_group_select_box);
-
-	// set scroll pane sizes
-	level_edit_object_tile_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	level_edit_object_block_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	level_edit_object_entity_group_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_tile_select_box.setMargins(0, 0, 28, 0);
+	level_edit_object_block_select_box.setMargins(0, 0, 28, 0);
+	level_edit_object_entity_group_select_box.setMargins(0, 0, 28, 0);
 
 	// set select box sizes
 	level_edit_object_tile_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
@@ -331,6 +325,10 @@ void LevelEditorLayout::load_selected_tileset_tiles()
 			// level editor tab selection
 			this->level_edit_object_tile_select_box.addItem(tile_key);
 		}
+		this->level_edit_object_tile_select_box.resizeHeightToContents();
+		this->level_edit_object_tile_scroll_pane.resizeHeightToContents();
+		//this-.setSize(this->selected_level_object_instance_attributes_box.getWidth() + 12,
+		//	this->selected_level_object_instance_attributes_box.getHeight() + 12);
 	}
 }
 
@@ -344,6 +342,10 @@ void LevelEditorLayout::load_selected_tileset_blocks()
 			// level editor tab selection
 			this->level_edit_object_block_select_box.addItem(block_key);
 		}
+		//this->level_edit_object_block_select_box.resizeHeightToContents();
+		//this->level_edit_object_block_select_box.updateScrollBars();
+		//this->level_edit_object_block_scroll_pane.setSize(this->level_edit_object_block_select_box.getWidth(),
+		//	this->level_edit_object_block_select_box.getHeight());
 	}
 }
 
@@ -357,9 +359,11 @@ void LevelEditorLayout::load_selected_tileset_entity_groups()
 			// level editor tab selection
 			this->level_edit_object_entity_group_select_box.addItem(entity_group_key);
 		}
+		this->level_edit_object_entity_group_select_box.resizeHeightToContents();
 	}
 }
 
+//TODO: is this actually used?
 void LevelEditorLayout::load_selected_tileset_tiled_images()
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();

@@ -9,6 +9,7 @@
 #include "GameImageManager.h"  // for GameImageManager
 #include "GameScreen.h"        // for GameScreen
 #include "PauseScreen.h"       // for PauseScreen
+#include "Dialog.h"
 
 #define DEFAULT_SCREEN_WIDTH 800
 #define DEFAULT_SCREEN_HEIGHT 600
@@ -27,6 +28,7 @@ private:
 	//UI components
 	ALLEGRO_BITMAP* hotbar_box;
 	ALLEGRO_BITMAP* hotbar_box_selected;
+	ALLEGRO_BITMAP* dialog_backdrop_full_width;
 public:
 	MainGameScreen();
 	~MainGameScreen();
@@ -46,12 +48,14 @@ public:
 	void reset_controls();
 	virtual void update();
 	void pause_screen_update();
+	void dialog_update();
 	virtual void draw(ALLEGRO_DISPLAY* display);
 	void draw_ui(ALLEGRO_DISPLAY* display);
 	void draw_ui_inventory(ALLEGRO_DISPLAY* display);
 	void draw_ui_main_game(ALLEGRO_DISPLAY* display);
 	void draw_hotbar(ALLEGRO_DISPLAY* display);
 	void draw_ui_paused(ALLEGRO_DISPLAY* display);
+	void draw_ui_dialog(ALLEGRO_DISPLAY* display);
 	virtual int get_game_mode();
 	virtual int get_camera_offset_x();
 	virtual int get_camera_offset_y();
@@ -62,6 +66,7 @@ public:
 	virtual void pause_game();
 	virtual void cancel_menu();
 	virtual void resume_game();
+	virtual void dialog_advance();
 	virtual void menu_up();
 	virtual void menu_down();
 	virtual void menu_left();

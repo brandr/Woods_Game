@@ -3,6 +3,7 @@
 
 #include <functional>
 #include "InteractAction.h"
+#include "Dialog.h"
 
 class Player;
 class InteractActionManager

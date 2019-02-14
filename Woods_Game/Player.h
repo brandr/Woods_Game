@@ -3,6 +3,7 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
+#include "Dialog.h"
 #include "Inventory.h"
 #include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
 #include "allegro5/bitmap_draw.h"  // for al_draw_bitmap
@@ -17,7 +18,6 @@
 #include <map>
 
 enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAUSE };
-//enum PLAYER_DIRECTIONS{DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN};
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
 enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
 
@@ -37,6 +37,7 @@ private:
 	bool interacting = false;
 	Inventory inventory;
 	int current_action = ACTION_NONE;
+	Dialog * open_dialog;
 protected:
 	virtual void collide_with_entity(Entity* e);
 public:
@@ -53,6 +54,8 @@ public:
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	void dialog_update();
+	const bool has_open_dialog();
 	const bool interact(Entity* e);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	float get_walk_speed();
@@ -79,6 +82,9 @@ public:
 	int get_current_action();
 	Item *get_selected_item();
 	Inventory &get_inventory();
+	void advance_dialog();
+	Dialog * get_open_dialog();
+	void set_open_dialog(Dialog * dialog);
 };
 
 #endif

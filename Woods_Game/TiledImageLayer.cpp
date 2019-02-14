@@ -10,14 +10,14 @@ TiledImageLayer::~TiledImageLayer()
 {
 }
 
-void TiledImageLayer::initialize_tiled_images(const std::string filename_start)
+void TiledImageLayer::initialize_tiled_images(const std::string tileset_name)
 {
 	const int size = this->tiled_images.size();
 	for (int i = 0; i < size; i++) {
 		TiledImage *ti = this->tiled_images.getItem(i);
 		if (!ti->is_empty()) {
 			Rect *subsection = ti->get_bitmap_subsection();
-			const std::string filename = filename_start + "_" + ti->get_tiled_image_name();
+			const std::string filename = tileset_name + "/tiled_images/" + ti->get_tiled_image_name();
 			std::pair<int, int> position = ti->get_starting_pos();
 			ti->set_content(filename, subsection, position);
 			ti->set_bitmap(ImageLoader::get_instance().get_current_image(ti));

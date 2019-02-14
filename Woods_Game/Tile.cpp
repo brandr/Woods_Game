@@ -120,7 +120,7 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 {
 	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::pair<int, int> pixel_pos(pos.first, pos.second);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
 	const std::vector<std::pair<std::string, std::string>> interact_action_data 
 		= tileset->get_block_interact_action_data(block_index);
@@ -138,7 +138,7 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	this->block.set_entity_attributes(block_attributes);	//will be serialized
 	this->block.set_interact_actions(interact_action_data);	//will be serialized
 	this->block.set_contact_actions(contact_action_data);	//will be serialized
-	this->block.load_entity_effects(filename, ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+	this->block.load_entity_effects(filename, tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
 	//TODO: interact actions
 }

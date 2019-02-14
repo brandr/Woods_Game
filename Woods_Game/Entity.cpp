@@ -1,6 +1,7 @@
 #include "Entity.h"
 #include "Player.h"
 
+
 Entity::Entity()
 {
 	// NOTE: we do not register xml attributes here, only in subclass constructors
@@ -40,14 +41,14 @@ bool Entity::is_visible()
 	return visible.value();
 }
 
-void Entity::load_entity_effects(std::string filename, int row, std::pair<int,int> frame_dimensions)
+void Entity::load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int,int> frame_dimensions)
 {
 	//TODO: consider including animation speed if we decide we want different animation speeds
-	std::string filename_prefix = filename;//"effects/" + filename;
-	std::vector<std::string> entity_effect_names = get_entity_effect_names();
+	const std::string filename_prefix = filename + "/effects/";
+	const std::vector<std::string> entity_effect_names = get_entity_effect_names(); //FIXME: effect names should be set in tileset, or should be a constant
 	const int size = entity_effect_names.size();
 	for (int i = 0; i < size; i++) {
-		std::string filename = filename_prefix + "_" + entity_effect_names[i];
+		std::string filename = filename_prefix + entity_key + "_" + entity_effect_names[i];
 		std::string full_filename = "resources/images/" + filename + ".png";
 		if (!al_filename_exists(full_filename.c_str())) continue;
 		EntityEffect effect;
@@ -256,6 +257,7 @@ void Entity::take_durability_damage(const int damage)
 	entity_effects["hit"].set_effect_active(true);
 }
 
+//TODO: do this part better
 std::vector<std::string> Entity::get_entity_effect_names()
 {
 	std::vector<std::string> names{ "break", "hit" };

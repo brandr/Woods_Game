@@ -41,6 +41,11 @@
                 <Member Name="InputKey">keyboard_space</Member>
                 <Member Name="Label">Menu cancel</Member>
             </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">dialog_advance</Member>
+                <Member Name="InputKey">keyboard_z</Member>
+                <Member Name="Label">Advance Dialog</Member>
+            </Class>
         </Collection>
     </SerializableClass>
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_keyboard">
@@ -84,6 +89,11 @@
                 <Member Name="ActionKey">menu_cancel</Member>
                 <Member Name="InputKey">keyboard_space</Member>
                 <Member Name="Label">Menu cancel</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">dialog_advance</Member>
+                <Member Name="InputKey">keyboard_z</Member>
+                <Member Name="Label">Advance Dialog</Member>
             </Class>
         </Collection>
     </SerializableClass>
@@ -129,6 +139,11 @@
                 <Member Name="InputKey">controller_b</Member>
                 <Member Name="Label">Menu cancel</Member>
             </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">dialog_advance</Member>
+                <Member Name="InputKey">controller_a</Member>
+                <Member Name="Label">Advance Dialog</Member>
+            </Class>
         </Collection>
     </SerializableClass>
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_controller">
@@ -172,6 +187,11 @@
                 <Member Name="ActionKey">menu_cancel</Member>
                 <Member Name="InputKey">controller_b</Member>
                 <Member Name="Label">Menu cancel</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">dialog_advance</Member>
+                <Member Name="InputKey">controller_a</Member>
+                <Member Name="Label">Advance Dialog</Member>
             </Class>
         </Collection>
     </SerializableClass>

@@ -107,9 +107,6 @@
     <Filter Include="World\Header Files">
       <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="World\Source Files">
-      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LevelEditor">
       <UniqueIdentifier>{0bb47399-6fe3-488b-bbd9-153ae10cc8aa}</UniqueIdentifier>
     </Filter>
@@ -118,6 +115,18 @@
     </Filter>
     <Filter Include="LevelEditor\Source Files">
       <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialogs">
+      <UniqueIdentifier>{f8dc2ea9-6920-4d6a-a505-d53d359d604e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialogs\Header Files">
+      <UniqueIdentifier>{d4e2bd99-0bea-4999-bbb0-4ec4d2f5f4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Dialogs\Source Files">
+      <UniqueIdentifier>{102acaa2-dfa5-4604-9470-35602e14e6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World\Source Files">
+      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -287,6 +296,9 @@
     <ClInclude Include="InteractActionManager.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Dialog.h">
+      <Filter>Dialogs\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -453,6 +465,9 @@
     </ClCompile>
     <ClCompile Include="InteractActionManager.cpp">
       <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dialog.cpp">
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

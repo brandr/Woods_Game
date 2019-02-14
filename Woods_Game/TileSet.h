@@ -16,10 +16,6 @@ class TileSet : public xmls::Serializable
 private:
 	std::string tileset_key;
 	xmls::xString tile_sheet_name;
-	xmls::xString edge_tile_sheet_name;
-	xmls::xString block_tile_sheet_name;
-	xmls::xString entity_group_tile_sheet_name;
-	xmls::xString tiled_image_tile_sheet_name;
 	xmls::Collection<TileType> tile_types;
 	xmls::Collection<EntityData> block_types;
 	xmls::Collection<EntityGroupData> entity_group_types;
@@ -36,16 +32,9 @@ public:
 	void load_sheet_images();
 	void set_tileset_key(std::string key);
 	void set_tile_sheet_name(std::string name);
-	void set_edge_tile_sheet_name(std::string name); 
-	void set_block_tile_sheet_name(std::string name);
-	void set_entity_group_tile_sheet_name(std::string name);
 	
 	std::string get_tileset_key();
 	std::string get_tile_sheet_filename();
-	std::string get_edge_tile_sheet_filename();
-	std::string get_block_tile_sheet_filename();
-	std::string get_entity_group_tile_sheet_filename();
-	std::string get_tiled_image_tile_sheet_filename();
 	
 	// tile types	
 	ALLEGRO_BITMAP * get_default_tile_bitmap(const int index);
@@ -53,7 +42,6 @@ public:
 	void set_tile_speed_mod(const int row, float speed_mod);
 	void set_edge_priority(const int row, int edge_priority);
 	std::string get_full_tile_sheet_filename(int index);
-	std::string get_full_edge_tile_sheet_filename(int index);
 	std::string get_tile_key(const int index);
 	float get_tile_speed_mod(const int row);
 	int get_edge_priority(const int row);

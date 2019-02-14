@@ -113,6 +113,12 @@ void resume(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
+void advance_dialog(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.dialog_advance();
+	}
+}
+
 // input-sensitive actions that may be passed along
 
 void menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
@@ -120,6 +126,8 @@ void menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 		screen.screen_receiving_input().cancel_menu();
 	}
 }
+
+
 
 void input_menu_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
@@ -223,7 +231,6 @@ void MainGameScreen::set_default_controls()
 			// movement
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_AXIS, 0), &move_joystick_axis);
 			// pause
-	//control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_START), &pause);
 	// paused controls	
 	control_map[MAIN_GAME_PAUSED] = std::map<std::pair<int, int>, controlFunc>();
 
@@ -234,7 +241,6 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
 		// confirm/cancel selection
-	//control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ENTER), &input_confirm_selection);
 		// mouse 
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
@@ -246,7 +252,6 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
 			// confirm/cancel selection
-	//control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_confirm_selection);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &menu_cancel);
 
 	// inventory controls
@@ -258,7 +263,6 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
 			// resume
-	//control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
 		// mouse
 		// joystick
 			// select
@@ -266,10 +270,10 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
-			// move items
-	//control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &input_select);
 			// resume
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
+
+	//TODO: control map for MAIN_GAME_DIALOG
 }
 
 void MainGameScreen::set_mappable_controls()
@@ -288,7 +292,9 @@ void MainGameScreen::set_mappable_controls()
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 	// controller
+	this->map_controller_control_action(TOP_DOWN, "interact", &interact);
 	this->map_controller_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_controller_control_action(TOP_DOWN, "open_inventory", &open_inventory);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
@@ -301,12 +307,14 @@ void MainGameScreen::set_mappable_controls()
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 }
 
 void MainGameScreen::unset_mappable_controls()
 {
 	//TODO: refactor this so we aren't copying the map method
 	// keyboard
+	this->unmap_keyboard_control_action(TOP_DOWN, "interact");
 	this->unmap_keyboard_control_action(TOP_DOWN, "use_item");
 	this->unmap_keyboard_control_action(TOP_DOWN, "open_inventory");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory");
@@ -319,7 +327,9 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select");
 	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance");
 	// controller
+	this->unmap_controller_control_action(TOP_DOWN, "interact");
 	this->unmap_controller_control_action(TOP_DOWN, "use_item");
 	this->unmap_controller_control_action(TOP_DOWN, "open_inventory");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory");
@@ -332,6 +342,7 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_select");
 	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance");
 }
 
 void MainGameScreen::set_mappable_input_list()
@@ -400,9 +411,12 @@ void MainGameScreen::load_ui_content()
 {
 	ImageLoader::get_instance().load_image("ui/item_box_1");
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
+	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
 	hotbar_box = ImageLoader::get_instance().get_image("ui/item_box_1");
 	hotbar_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
+	dialog_backdrop_full_width = ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL); 
+	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
 	//TODO: other UI components like stamina/time
 }
 
@@ -445,11 +459,13 @@ void MainGameScreen::update()
 		case MAIN_GAME_PAUSED:
 			pause_screen_update();
 			break;
+		case MAIN_GAME_DIALOG:
+			dialog_update();
+			break;
 		case TAKING_MAPPABLE_INPUT:
 			pause_screen_update();
 			break;
 	}
-	
 	GameScreen::update();
 }
 
@@ -466,6 +482,12 @@ void MainGameScreen::pause_screen_update()
 	} else {
 		game_image_manager.set_game_mode(MAIN_GAME_PAUSED);
 	}
+}
+
+void MainGameScreen::dialog_update()
+{
+	Player * player = game_image_manager.get_player();
+	player->dialog_update();
 }
 
 void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
@@ -488,6 +510,9 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 		break;
 	case TOP_DOWN:
 		draw_ui_main_game(display);
+		break;
+	case MAIN_GAME_DIALOG:
+		draw_ui_dialog(display);
 		break;
 	}
 }
@@ -534,6 +559,20 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_ui_paused(ALLEGRO_DISPLAY* display)
 {
 	pause_screen.draw(display);
+}
+
+void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
+{
+	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
+	if (dialog) {
+		const int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width)) / 2;
+		const int y = 10;
+		al_draw_bitmap(dialog_backdrop_full_width, x, y, 0);
+		dialog->draw(display, font_map[FONT_DIALOG], x, y);
+		//TODO: draw avatar
+		//TODO: scrolling text (button speeds up)
+		//TODO: font, text size, etc set in some config
+	}
 }
 
 int MainGameScreen::get_game_mode()
@@ -608,6 +647,16 @@ void MainGameScreen::resume_game()
 	game_image_manager.resume();
 	game_image_manager.set_game_mode(TOP_DOWN);	
 	reset_controls();
+}
+
+void MainGameScreen::dialog_advance()
+{
+	Player * player = this->game_image_manager.get_player();
+	player->advance_dialog();
+	if (!player->has_open_dialog()) {
+		//TODO: may want to trigger a different game mode if the dialog leads to another one
+		this->resume_game();
+	}
 }
 
 void MainGameScreen::menu_up()

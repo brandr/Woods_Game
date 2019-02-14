@@ -70,7 +70,11 @@ void Player::update(std::vector<Entity*> interactables, std::vector<Tile*> nearb
 	case TOP_DOWN:
 		update_top_down(interactables, nearby_tiles, level_dimensions);
 		break;
+	case MAIN_GAME_DIALOG:
+		dialog_update();
+		break;
 	}
+	
 	Being::update(interactables, nearby_tiles, level_dimensions, game_mode);
 	if (this->interacting) {
 		this->interact_update(interactables, nearby_tiles, level_dimensions);
@@ -233,6 +237,23 @@ void Player::interact_update(std::vector<Entity*> interactables, std::vector<Til
 			}
 		}
 	}
+}
+
+void Player::dialog_update()
+{
+	if (this->open_dialog) {
+		this->open_dialog->update();
+	}
+	//TODO: don't check here, use this method for something else
+	//if (this->open_dialog) {
+	//	game_image_manager.
+		//TODO: change game mode so we're paused and open the dialog
+	//}
+}
+
+const bool Player::has_open_dialog()
+{
+	return this->open_dialog != NULL;
 }
 
 const bool Player::interact(Entity * e)
@@ -433,6 +454,30 @@ Item * Player::get_selected_item()
 Inventory& Player::get_inventory()
 {
 	return inventory;
+}
+
+void Player::advance_dialog()
+{
+	if (this->open_dialog) {
+		this->open_dialog->advance_dialog();
+		if (!this->open_dialog->has_current_page()) {
+			delete(this->open_dialog);
+			this->open_dialog = NULL;
+		}
+	}
+}
+
+Dialog * Player::get_open_dialog()
+{
+	return this->open_dialog;
+}
+
+void Player::set_open_dialog(Dialog * dialog)
+{
+	if (this->open_dialog != NULL) {
+		delete (this->open_dialog);
+	}
+	this->open_dialog = dialog;
 }
 
 //TODO: need to check for no next level in the given direction

@@ -1,10 +1,5 @@
 Woods game todolist
 
-
-Draw the creepy guy from the story in paint
-	* done, but need animations
-	* make this the first NPC to save time
-
 Level editor
 --------------------
 
@@ -14,47 +9,46 @@ Tiled Images
 	*out of room on tileset tab-- need to reorganize it (tabs?)
 
 Fix memory leaks in level editor
-	*why does it happen when selecting objects?
-	*adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
+	* why does it happen when selecting objects?
+	* adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
 		# we probably reserve it in the update method (in level grid) after deletion, not the deletion itself
-	*might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
-	*this is also a good time to fix memory leaks in general
-consider how/whether to delete objects when resizing levels
+	* might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
+	* this is also a good time to fix memory leaks in general
 
 ---------------------------------------------------
 
-Find the cause of the bug where positions of blocks/tiles get multiplied twice (EntityStartingPos)
+Make NPC (creepy guy from the story)
+	- need animations
+	- Dialog avatar image
 
-Make it so we get images through the imageloader whenever possible-- avoid storing the bitmap directly on the gameimage
+IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
+	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
+	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
+	- allow these conditions to be "anded" together and give them ordinals so calculation is either
+		* might be able to do something with | and flags corresponding to the orders
+	- weight some options to be more likely than others using integer values
+	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
+	- a dialog options should be a set of panes which are divided into lines.
+
+IDEA: Make NPCs walk around outside programatically and have varying habits throughout the day.
+	- for instance, they should usually stay close to trails
+	- need to figure out how to process NPC movements when they're not on the same Level as the player
+		* maybe get less fine-grain and just process what level they're in at any given time based on time of day,
+			what they're doing, the weather, etc
+
+Think carefully about updates for NPCs
+	- there should definitely be a per-frame update, but could also have "update clocks" that go off every so often
+	- also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
+		* maybe they never pass between levels?
+			# only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
+
+Cutscenes
+
+Fix the way we pass xml attributes in the level editor (copy entire interact actions and contact actions instead of just method name and key)
 
 Look into getting rid of "gameImages" list in Level
 	*I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
 		#Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
-
-Implement readable signs before NPCs
-
-Think carefully about updates for NPCs
-	* there should definitely be a per-frame update, but could also have "update clocks" that go off every so often
-	* also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
-		# maybe they never pass between levels?
-			* only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
-
-IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
-	-implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
-	-for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
-	-allow these conditions to be "anded" together and give them ordinals so calculation is either
-		*might be able to do something with | and flags corresponding to the orders
-	-weight some options to be more likely than others using integer values
-	-when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
-	-a dialog options should be a set of panes which are divided into lines.
-
-IDEA: Make NPCs walk around outside programatically and have varying habits throughout the day.
-	-for instance, they should usually stay close to trails
-	-need to figure out how to process NPC movements when they're not on the same Level as the player
-		*maybe get less fine-grain and just process what level they're in at any given time based on time of day,
-			what they're doing, the weather, etc
-
-Cutscenes
 
 Implement "pickup-able" items, like seeds from ferns
 	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
@@ -69,53 +63,37 @@ Buildings
 	* make roofs
 
 Make sure I can do what I want with the tile system
-	*Going through brush will be better if there's a tool to make trails but trails get overgrown
-	*This means defining what the tile turns into when the tool is used on it
-		#this could be a property of tile data set in the tileset, or a mapping stored elsewhere
-		#the tool should also have some properties that come into play
-	*also consider how it will work to dig holes
-		#tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
-		#should holes be saved when the game is saved?
+	* Going through brush will be better if there's a tool to make trails but trails get overgrown
+	* This means defining what the tile turns into when the tool is used on it
+		# this could be a property of tile data set in the tileset, or a mapping stored elsewhere
+		# the tool should also have some properties that come into play
+	* also consider how it will work to dig holes
+		# tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
+		# should holes be saved when the game is saved?
 
 IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
 
 IDEA: Stamina upgrades are the only thing you take with you when reloading
 
-Figure out how to load player location and store in world
-
-IDEA: serialize tile edges after they are first generated to make loading faster
-	- did I already implement this?
-	- currently edges get drawn onto the tiles bitmap after being loaded from a map, so should implement like so:	
-		*edges get generated the long way when loading from map, use this same method to set the serializable values representing edges 
-		*in the case where we load from xml instead of map, draw the edge images onto bitmaps based on serialized values rather than doing the full generation
-
 Add a shovel and allow the player to dig up items
 	- implement picking up items off the ground first
 
 Refactor all file loading to xml
-	-player
-		*consider long-term saving/loading functionality, like items the player has
-	-in each case, do saving first while loading normally
-	-levels/world/entities/entitygroups/etc
-		*decide the difference between things that save/load for a level and things that don't
-			#for instance, we might or might not save blocks because these can be temporarily destroyed by the player and "grow back"
-			#once we add NPCs or objects that can move/channge, we likely won't save their exact positions, but things like spawn locations
-		*need a way to decide exactly which objects needs to be rewritten in xml
+	- player
+		* consider long-term saving/loading functionality, like items the player has, start dungeon/level/position, etc
 
 NOTES:
-*whenever adding new counters, be sure to check how they all interact 
-	(i.e., what happens if you use shears right as you collide with thorns and bounce)
 
 -consider adding plants as a class
-	*LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
-	*this allows plants to have general behavior for growing, spreading, etc.
-	*could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
+	* LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
+	* this allows plants to have general behavior for growing, spreading, etc.
+	* could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
 
 -think about how to set up world/dungeon/level serialization such that levels which update while the player isn't there are fully updated by the time the player gets to them
-	*changes include things like plant growth, animals spawning, etc.
-	*could generalize these things as some sort of "world data" that is less detailed than individual levels and gets applied to specific levels when loading them
-	*consider multithreading to load/update levels before the player gets to them
-	*could simply update the entire world as necessary when saving the game
+	* changes include things like plant growth, animals spawning, etc.
+	* could generalize these things as some sort of "world data" that is less detailed than individual levels and gets applied to specific levels when loading them
+	* consider multithreading to load/update levels before the player gets to them
+	* could simply update the entire world as necessary when saving the game
 
 -fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
 	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
@@ -130,7 +108,7 @@ NOTES:
 		(might need some check accessed through the main loop)
 	*might need to do this for mouse too, need to test
 
--fix analog stick issue that sometimes happens when controller is in some weird configuration (needs repro)
+-fix analog stick issue that sometimes happens when controller is in some weird configuration
 
 -fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
 	*make sure this fix applies to both inventory and pause
@@ -149,15 +127,9 @@ NOTES:
 -figure out how trails are going to work with the current tile system
 	*could have them occupy existing tiles as some sort of "contents" and have trail images drawn over them and increase movement modifier
 
--consider allowing hotbar to move to the top of the screen
-
 -fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
 
 -figure out how to scale object/ui sizes with resolution
-
--consider making a "cleaner" way of storing block entity effects (so that they don't attempt to load the entire spritesheet)
-
--fix the issue where the player can go faster while running against a wall than while walking normally.
 
 -fix the glitch where parts of the player's face sometimes disappear
 
@@ -176,6 +148,8 @@ NOTES:
 
 LONG TERM PLANS
 
+-allow changing text speed in options
+
 -make a "calendar" UI that also fuctions as saving/loading
 	*eventually want to make reloading from older saves something we subtly nudge the player towards in order to unlock hidden endings
 	*also need to make it so certain things only happen if the player is in the right places at the right times
@@ -189,3 +163,4 @@ LONG TERM PLANS
 -add animals
 
 -audio
+	* dialog sounds

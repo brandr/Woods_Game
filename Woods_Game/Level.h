@@ -48,7 +48,6 @@ public:
 	Level(int, int, int, int);
 	~Level();
 	void load_tileset();
-	void load_from_map();
 	void load_from_xml();
 	void intialize_dimensions();
 	void initialize_empty();
