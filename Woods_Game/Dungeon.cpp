@@ -118,6 +118,17 @@ Level * Dungeon::level_with_name(std::string name)
 	return NULL;
 }
 
+Level * Dungeon::find_level_with_spawn_key(const std::string spawn_key)
+{
+	for (Level * level : this->level_list) {
+		if (level->has_spawner_for_key(spawn_key))
+		{
+			return level;
+		}
+	}
+	return NULL;
+}
+
 void Dungeon::set_dungeon_name(std::string name)
 {
 	this->dungeon_name = name;

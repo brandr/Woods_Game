@@ -115,6 +115,14 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	tiled_image_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	tiled_image_visibility_checkbox.setChecked(true);
 
+	// spawner layer
+	this->level_editor_layout_1.add(&spawner_visibility_checkbox);
+	spawner_visibility_checkbox.setAutosizing(true);
+	spawner_visibility_checkbox.setText("Show spawners");
+	spawner_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
+	spawner_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
+	spawner_visibility_checkbox.setChecked(true);
+	
 	// gridlines
 	this->level_editor_layout_1.add(&grid_lines_visibility_checkbox);
 	grid_lines_visibility_checkbox.setAutosizing(true);
@@ -122,6 +130,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	grid_lines_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
 	grid_lines_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	grid_lines_visibility_checkbox.setChecked(true);
+	this->level_editor_layout_1.add(new agui::EmptyWidget());
 	this->level_editor_layout_1.add(new agui::EmptyWidget());
 
 	// reset level button
@@ -146,6 +155,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	level_edit_object_tabs[TILE_SELECT_TAB].setText("Tiles");
 	level_edit_object_tabs[BLOCK_SELECT_TAB].setText("Blocks");
 	level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB].setText("EntityGroups");
+	level_edit_object_tabs[SPAWNER_TAB].setText("Spawners");
 
 	// tabs for selecting objects to place in the level
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILE_SELECT_TAB],
@@ -154,15 +164,19 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 		&level_edit_object_block_select_box);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB],
 		&level_edit_object_entity_group_select_box);
+	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[SPAWNER_TAB],
+		&level_edit_object_spawner_select_box);
 
 	level_edit_object_tile_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_block_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_entity_group_select_box.setMargins(0, 0, 28, 0);
+	level_edit_object_spawner_select_box.setMargins(0, 0, 28, 0);
 
 	// set select box sizes
 	level_edit_object_tile_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_block_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 	level_edit_object_entity_group_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_spawner_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
 
 	// selected object display
 	this->level_editor_layout_1.add(&selected_level_object_display);
@@ -342,10 +356,6 @@ void LevelEditorLayout::load_selected_tileset_blocks()
 			// level editor tab selection
 			this->level_edit_object_block_select_box.addItem(block_key);
 		}
-		//this->level_edit_object_block_select_box.resizeHeightToContents();
-		//this->level_edit_object_block_select_box.updateScrollBars();
-		//this->level_edit_object_block_scroll_pane.setSize(this->level_edit_object_block_select_box.getWidth(),
-		//	this->level_edit_object_block_select_box.getHeight());
 	}
 }
 
@@ -360,6 +370,20 @@ void LevelEditorLayout::load_selected_tileset_entity_groups()
 			this->level_edit_object_entity_group_select_box.addItem(entity_group_key);
 		}
 		this->level_edit_object_entity_group_select_box.resizeHeightToContents();
+	}
+}
+
+void LevelEditorLayout::load_selected_tileset_spawners()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	this->level_edit_object_spawner_select_box.clearItems();
+	if (manager.has_selected_tileset()) {
+		std::vector<std::string> spawner_keys = manager.all_selected_spawner_keys();
+		for (std::string spawner_key : spawner_keys) {
+			// level editor tab selection
+			this->level_edit_object_spawner_select_box.addItem(spawner_key);
+		}
+		this->level_edit_object_spawner_select_box.resizeHeightToContents();
 	}
 }
 
@@ -402,6 +426,7 @@ void LevelEditorLayout::update_level_grid()
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::BLOCK_LAYER, this->block_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::ENTITY_GROUP_LAYER, this->entity_group_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::TILED_IMAGE_LAYER, this->tiled_image_visibility_checkbox.checked());
+		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::SPAWNER_LAYER, this->spawner_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::GRID_LINES_LAYER, this->grid_lines_visibility_checkbox.checked());
 	}
 	// resize if necessary
@@ -442,6 +467,9 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 		break;
 	case ENTITY_GROUP_SELECT_TAB:
 		object_box = &(this->level_edit_object_entity_group_select_box);
+		break;
+	case SPAWNER_TAB:
+		object_box = &(this->level_edit_object_spawner_select_box);
 		break;
 	default:
 		break;
@@ -484,6 +512,10 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 				case ENTITY_GROUP_SELECT_TAB:
 					object_bitmap = manager.get_entity_group_bitmap_for_selected_col(object_index);
 					dim = manager.get_entity_group_image_dimensions_by_index(object_index);
+					break;
+				case SPAWNER_TAB:
+					object_bitmap = manager.get_spawner_bitmap_for_selected_col(object_index);
+					dim = std::pair<int, int>(TILE_SIZE, TILE_SIZE);
 					break;
 				default:
 					break;

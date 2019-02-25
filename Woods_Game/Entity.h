@@ -122,6 +122,8 @@ public:
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_starting_pos(int x, int y);
+	virtual int get_entity_starting_pos_x();
+	virtual int get_entity_starting_pos_y();
 	virtual int get_entity_data_index();
 	virtual int get_entity_attribute(std::string attribute);
 	virtual bool has_entity_attribute(std::string attribute);

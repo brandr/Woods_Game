@@ -26,7 +26,7 @@
 
 class LevelEditorLayout : public agui::FlowLayout {
 	const int LEVEL_EDITOR_GRID_WIDTH = 550;
-	const int LEVEL_EDITOR_GRID_HEIGHT = 400;
+	const int LEVEL_EDITOR_GRID_HEIGHT = 380;
 	const int TILED_IMAGE_GRID_WIDTH = 250;
 	const int TILED_IMAGE_GRID_HEIGHT = 250;
 	const int ATTRIBUTE_PANE_WIDTH = 460;
@@ -35,7 +35,8 @@ class LevelEditorLayout : public agui::FlowLayout {
 	enum OBJECT_SELECT_TABS {
 		TILE_SELECT_TAB = 0,
 		BLOCK_SELECT_TAB = 1,
-		ENTITY_GROUP_SELECT_TAB = 2
+		ENTITY_GROUP_SELECT_TAB = 2,
+		SPAWNER_TAB = 3
 	};
 
 	enum SECONDARY_TABS {
@@ -75,7 +76,7 @@ private:
 	agui::ScrollPane object_instance_attributes_scroll_pane;
 	agui::Frame level_grid_frame;
 	agui::Frame tiled_image_grid_frame;
-	agui::Tab level_edit_object_tabs[3];
+	agui::Tab level_edit_object_tabs[4];
 	agui::Tab level_edit_secondary_tabs[3];
 	agui::ScrollPane level_edit_object_tile_scroll_pane;
 	agui::ScrollPane level_edit_object_block_scroll_pane;
@@ -85,6 +86,7 @@ private:
 	agui::ListBox level_edit_object_tile_select_box;
 	agui::ListBox level_edit_object_block_select_box;
 	agui::ListBox level_edit_object_entity_group_select_box;
+	agui::ListBox level_edit_object_spawner_select_box;
 	agui::ListBox tiled_image_select_box;
 	agui::ListBox tileset_select_box;
 	agui::Button level_edit_reset_level_button;
@@ -99,6 +101,7 @@ private:
 	agui::CheckBox block_visibility_checkbox;
 	agui::CheckBox entity_group_visibility_checkbox;
 	agui::CheckBox tiled_image_visibility_checkbox;
+	agui::CheckBox spawner_visibility_checkbox;
 	agui::CheckBox grid_lines_visibility_checkbox;
 
 	// listeners
@@ -141,6 +144,7 @@ public:
 	void load_selected_tileset_tiles();
 	void load_selected_tileset_blocks();
 	void load_selected_tileset_entity_groups();
+	void load_selected_tileset_spawners();
 	void load_selected_tileset_tiled_images();
 	void update();
 	void update_level_grid();

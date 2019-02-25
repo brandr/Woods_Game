@@ -29,6 +29,7 @@ private:
 	ALLEGRO_BITMAP* hotbar_box;
 	ALLEGRO_BITMAP* hotbar_box_selected;
 	ALLEGRO_BITMAP* dialog_backdrop_full_width;
+	ALLEGRO_BITMAP* clock_backdrop;
 public:
 	MainGameScreen();
 	~MainGameScreen();
@@ -54,6 +55,7 @@ public:
 	void draw_ui_inventory(ALLEGRO_DISPLAY* display);
 	void draw_ui_main_game(ALLEGRO_DISPLAY* display);
 	void draw_hotbar(ALLEGRO_DISPLAY* display);
+	void draw_clock(ALLEGRO_DISPLAY* display);
 	void draw_ui_paused(ALLEGRO_DISPLAY* display);
 	void draw_ui_dialog(ALLEGRO_DISPLAY* display);
 	virtual int get_game_mode();

@@ -21,6 +21,9 @@ GameImage * LevelEditorDataManager::selected_level_object()
 		case OBJECT_TYPE_ENTITY_GROUP:
 			return this->active_levels[this->selected_level_index]->entity_group_at_tile_pos(grid_pos);
 			break;
+		case OBJECT_TYPE_SPAWNER:
+			return this->active_levels[this->selected_level_index]->spawner_at_tile_pos(grid_pos);
+			break;
 		default:
 			break;
 		}
@@ -350,6 +353,9 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(std::string layer
 	else if (TILED_IMAGE_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_tiled_images_onto_bitmap(image_bitmap);
 	}
+	else if (SPAWNER_LAYER == layer) {
+		this->active_levels[this->selected_level_index]->draw_spawners_onto_bitmap(image_bitmap);
+	}
 	else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
 		al_set_target_bitmap(image_bitmap);
@@ -405,6 +411,7 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 		Tile * t = NULL;
 		Block * b = NULL;
 		EntityGroup * eg = NULL;
+		Spawner * s = NULL;
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -431,6 +438,17 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 			if (eg) {
 				did_serialize = xmls::Serializable::fromXML(xml, eg);
 				this->active_levels[this->selected_level_index]->initialize_entity_group(eg); //todo test
+			}
+			break;
+		case OBJECT_TYPE_SPAWNER:
+			s = this->active_levels[this->selected_level_index]->spawner_at_tile_pos(grid_pos);
+			if (s) {
+				Spawner * s2 = new Spawner();
+				did_serialize = xmls::Serializable::fromXML(xml, s2);
+				if (did_serialize) {
+					s->Copy(s2);
+				}
+				//this->active_levels[this->selected_level_index]->initialize_entity_group(eg); //todo test
 			}
 			break;
 		default:
@@ -517,6 +535,10 @@ bool LevelEditorDataManager::add_level_object(std::pair<int, int> tile_pos)
 					this->add_selected_level_entity_group(this->selected_object_select_index, tile_pos);
 					update = true;
 					break;
+				case OBJECT_TYPE_SPAWNER:
+					this->add_selected_level_spawner(this->selected_object_select_index, tile_pos);
+					update = true;
+					break;
 				default:
 					break;
 				}
@@ -550,6 +572,10 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 						break;
 					case OBJECT_TYPE_ENTITY_GROUP:
 						this->delete_level_entity_group(tile_pos);
+						update = true;
+						break;
+					case OBJECT_TYPE_SPAWNER:
+						this->delete_level_spawner(tile_pos);
 						update = true;
 						break;
 					default:
@@ -605,6 +631,7 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 		Tile * t = NULL;
 		Block * b = NULL;
 		EntityGroup * eg = NULL;
+		Spawner * s = NULL;
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -625,6 +652,12 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 			eg = this->active_levels[this->selected_level_index]->entity_group_at_tile_pos(grid_pos);
 			if (eg) {
 				return eg->toXML();
+			}
+			break;
+		case OBJECT_TYPE_SPAWNER:
+			s = this->active_levels[this->selected_level_index]->spawner_at_tile_pos(grid_pos);
+			if (s) {
+				return s->toXML();
 			}
 			break;
 		default:
@@ -678,6 +711,11 @@ void LevelEditorDataManager::delete_level_entity_group(std::pair<int, int> pos)
 bool LevelEditorDataManager::delete_level_tiled_image(const std::pair<int, int> pos)
 {
 	return this->active_levels[this->selected_level_index]->remove_tiled_image(pos, this->tiled_image_layer_index);
+}
+
+void LevelEditorDataManager::delete_level_spawner(std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->remove_spawner(pos);
 }
 
 std::string LevelEditorDataManager::get_active_dungeon_name()
@@ -801,6 +839,14 @@ std::vector<std::string> LevelEditorDataManager::all_selected_tiled_image_keys()
 	return std::vector<std::string>();
 }
 
+std::vector<std::string> LevelEditorDataManager::all_selected_spawner_keys()
+{
+	if (this->has_selected_tileset()) {
+		return this->active_tilesets[this->selected_tileset_index]->all_spawner_keys();
+	}
+	return std::vector<std::string>();
+}
+
 std::string LevelEditorDataManager::get_selected_tileset_name()
 {
 	return this->get_tileset_name(this->selected_tileset_index);
@@ -870,6 +916,15 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_default_tiled_image_bitmap(int inde
 {
 	if (this->active_tilesets[this->selected_tileset_index] != NULL) {
 		return this->active_tilesets[this->selected_tileset_index]->get_default_tiled_image_bitmap(index);
+	}
+	return NULL;
+}
+
+ALLEGRO_BITMAP * LevelEditorDataManager::get_spawner_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_spawner_bitmap_for_col(index, this->selected_object_sheet_col);
 	}
 	return NULL;
 }
@@ -966,6 +1021,11 @@ void LevelEditorDataManager::add_selected_level_tiled_image(const int tiled_imag
 {
 	const int layer_index = this->tiled_image_layer_index;
 	this->active_levels[this->selected_level_index]->add_tiled_image(tiled_image_index, tiled_image_grid_pos, level_grid_pos, layer_index);
+}
+
+void LevelEditorDataManager::add_selected_level_spawner(const int index, const std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->add_spawner(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
 void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)

@@ -201,6 +201,16 @@ void Entity::set_starting_pos(int x, int y)
 	this->entity_starting_pos_y = y;
 }
 
+int Entity::get_entity_starting_pos_x()
+{
+	return this->entity_starting_pos_x.value();
+}
+
+int Entity::get_entity_starting_pos_y()
+{
+	return this->entity_starting_pos_y.value();
+}
+
 int Entity::get_entity_data_index()
 {
 	return this->entity_data_index.value();

@@ -55,6 +55,34 @@ void Dialog::add_line(const std::string line_text, const int page_num, const int
 	page->lines[line_num]->text = line_text;
 }
 
+void Dialog::parse_text(const std::string text)
+{
+	FileManager manager;
+	const std::string page_delimiter = "[p]";
+	const std::string line_delimiter = "[l]";
+	const std::vector< std::string> pages = manager.string_to_parts(text, page_delimiter);
+	const int page_count = pages.size();
+	int page_index = 0;
+	for (int p = 0; p < page_count; p++) {
+		bool empty_page = true;
+		int line_index = 0;
+		const std::string page = pages[p];
+		const std::vector<std::string> lines = manager.string_to_parts(page, line_delimiter);
+		const int line_count = lines.size();
+		for (int l = 0; l < line_count; l++) {
+			const std::string line = lines[l];
+			if (line.size() > 0) {
+				this->add_line(line, page_index, line_index);
+				line_index++;
+				empty_page = false;
+			}
+		}
+		if (!empty_page) {
+			page_index++;
+		}
+	}
+}
+
 void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off)
 {
 	if (this->pages.size() > this->page_num) {

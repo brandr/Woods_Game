@@ -299,6 +299,12 @@
     <ClInclude Include="Dialog.h">
       <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Spawner.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -468,6 +474,12 @@
     </ClCompile>
     <ClCompile Include="Dialog.cpp">
       <Filter>Dialogs\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Spawner.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

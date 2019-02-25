@@ -256,4 +256,22 @@
             </Class>
         </Collection>
 	</SerializableClass>
+	<Collection Name="npcs">
+		<Class Type="NPC" Version="1">
+			<Member Name="animation_spritesheet_key">stranger_spritesheet_1</Member>
+			<Member Name="center_offset_x">32</Member>
+			<Member Name="center_offset_y">89</Member>
+			<Member Name="spritesheet_frame_width">64</Member>
+			<Member Name="spritesheet_frame_height">96</Member>
+			<Collection Name="animation_data">
+            	<Class Type="AnimationData" Version="1">
+                	<Member Name="animation_key">neutral</Member>
+                	<Member Name="animation_frame_width">1</Member>
+                	<Member Name="animation_frame_height">5</Member>
+               		<Member Name="animation_frame_duration">1</Member>
+            	</Class>
+        	</Collection>
+        	<Member Name="spawn_key">stranger_spawner_1</Member>
+		</Class>
+	</Collection>
 </root>

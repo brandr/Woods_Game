@@ -48,7 +48,7 @@ void TiledImageGrid::load_image_layer(std::string layer)
 		const std::string image_key = LevelEditorDataManager::get_instance().get_selected_tiled_image_key();
 		agui::Allegro5Image  *loaded_image = this->loaded_tiled_image_image(layer, image_key);
 		if (loaded_image != NULL) {
-			loaded_image->free_image();
+			//loaded_image->free_image();
 			delete loaded_image;
 		}
 		agui::Allegro5Image *image_layer

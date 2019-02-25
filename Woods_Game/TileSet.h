@@ -20,6 +20,7 @@ private:
 	xmls::Collection<EntityData> block_types;
 	xmls::Collection<EntityGroupData> entity_group_types;
 	xmls::Collection<TiledImageData> tiled_image_types;
+	xmls::Collection<EntityData> spawner_types;
 	void ensure_room_for_type(const int type_key, const int row);
 public:
 	TileSet();
@@ -86,6 +87,11 @@ public:
 	const std::string get_tiled_image_name_by_index(const int index);
 	const std::string get_full_tiled_image_sheet_filename(const int index);
 	std::vector<std::string> all_tiled_image_keys();
+	// spawner types
+	const std::string get_full_spawner_sheet_filename(int index);
+	ALLEGRO_BITMAP * get_spawner_bitmap_for_col(const int index, const int col);
+	EntityData * get_spawner_data_by_index(const int index);
+	const std::vector<std::string> all_spawner_keys();
 
 	
 };

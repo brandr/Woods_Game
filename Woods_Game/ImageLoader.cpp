@@ -189,6 +189,19 @@ ALLEGRO_BITMAP * ImageLoader::get_entity_group_image_for_col(const std::string s
 	else { return it->second; }
 }
 
+ALLEGRO_BITMAP * ImageLoader::get_spawner_image_for_col(const std::string sheet_filename, EntityData * spawner_type, const int col)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/spawners/" + spawner_type->get_entity_data_key());
+	Rect * subsection = new Rect(col*TILE_SIZE, 0,
+		TILE_SIZE, TILE_SIZE);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else { return it->second; }
+}
+
 ALLEGRO_BITMAP * ImageLoader::get_full_tiled_image_sheet(std::string sheet_filename, TiledImageData *image_type)
 {
 	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/tiled_images/" + image_type->get_image_data_key());

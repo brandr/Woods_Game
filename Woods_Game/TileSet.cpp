@@ -8,6 +8,7 @@ TileSet::TileSet()
 	Register("block_types", &block_types);
 	Register("entity_group_types", &entity_group_types);
 	Register("tiled_image_types", &tiled_image_types);
+	Register("spawner_types", &spawner_types);
 }
 
 
@@ -95,6 +96,13 @@ void TileSet::load_sheet_images()
 	for (int i = 0; i < tiled_image_type_count; i++) {
 		TiledImageData *tid = this->tiled_image_types.getItem(i);
 		const std::string filename = this->tile_sheet_name.value() + "/tiled_images/" + tid->get_image_data_key();
+		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
+	}
+
+	const int spawner_type_count = this->spawner_types.size();
+	for (int i = 0; i < spawner_type_count; i++) {
+		EntityData * e = this->spawner_types.getItem(i);
+		const std::string filename = this->tile_sheet_name.value() + "/spawners/" + e->get_entity_data_key();
 		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
 	}
 }
@@ -526,4 +534,31 @@ std::vector<std::string> TileSet::all_tiled_image_keys()
 		tiled_image_keys.push_back(tiled_image_type->get_image_data_key());
 	}
 	return tiled_image_keys;
+}
+
+const std::string TileSet::get_full_spawner_sheet_filename(int index)
+{
+	return this->get_tile_sheet_filename() + "/spawners/" + this->spawner_types.getItem(index)->get_entity_data_key();
+}
+
+ALLEGRO_BITMAP * TileSet::get_spawner_bitmap_for_col(const int index, const int col)
+{
+	return ImageLoader::get_instance().get_spawner_image_for_col(this
+		->get_tile_sheet_filename(), this->spawner_types.getItem(index), col);
+}
+
+EntityData * TileSet::get_spawner_data_by_index(const int index)
+{
+	return this->spawner_types.getItem(index);
+}
+
+const std::vector<std::string> TileSet::all_spawner_keys()
+{
+	std::vector<std::string> spawner_keys;
+	const int size = this->spawner_types.size();
+	for (int i = 0; i < size; i++) {
+		EntityData * spawner_data = this->spawner_types.getItem(i);
+		spawner_keys.push_back(spawner_data->get_entity_data_key());
+	}
+	return spawner_keys;
 }

@@ -12,6 +12,7 @@
 #include <allegro5/display.h>
 #include <allegro5/allegro_font.h>
 #include <algorithm>
+#include "FileManager.h"
 
 struct DialogLine {
 	std::string text;
@@ -42,6 +43,7 @@ public:
 	void advance_dialog();
 	const bool has_current_page();
 	void add_line(const std::string line, const int page_num, const int line_num);
+	void parse_text(const std::string text);
 };
 
 #endif

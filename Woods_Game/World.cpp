@@ -1,6 +1,19 @@
 #include "World.h"
 #include "ImageLoader.h"
 
+Level * World::find_level_with_spawn_key(const std::string spawn_key)
+{
+	const int size = this->dungeons.size();
+	for (int i = 0; i < size; i++) {
+		Dungeon *d = this->dungeons[i].get();
+		Level *l = d->find_level_with_spawn_key(spawn_key);
+		if (l) {
+			return l;
+		}
+	}
+	return NULL;
+}
+
 World::World()
 {
 	setClassName("World");
@@ -9,6 +22,8 @@ World::World()
 	Register("current_level_grid_x", &current_level_grid_x);
 	Register("current_level_grid_y", &current_level_grid_y);
 	Register("dungeon_data", &dungeon_data);
+	Register("npcs", &npcs);
+	Register("current_day", &current_day);
 	//TODO: add dungeon based on dungeon data
 	//add_dungeon(new Dungeon("dungeon_1"));	//temp. probably want to pass in multiple dungeons and a starting one
 }
@@ -25,6 +40,19 @@ void World::load_dungeons()
 	for (int i = 0; i < size; i++) {
 		const std::string dungeon_key = this->dungeon_data.getItem(i)->get_dungeon_key();
 		this->add_dungeon(new Dungeon(dungeon_key));
+	}
+}
+
+void World::load_npcs()
+{
+	const int npc_count = this->npcs.size();
+	for (int i = 0; i < npc_count; i++) {
+		NPC * npc = this->npcs.getItem(i);
+		const std::string spawner_id = npc->get_spawn_key();
+		Level * level = this->find_level_with_spawn_key(spawner_id);
+		if (level) {
+			level->add_npc_at_spawner(npc, spawner_id);
+		}
 	}
 }
 

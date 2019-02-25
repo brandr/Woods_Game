@@ -67,6 +67,7 @@ private:
 	void load_selected_tileset_blocks();
 	void load_selected_tileset_entity_groups();
 	void load_selected_tileset_tiled_images();
+	void load_selected_tileset_spawners();
 
 		// update methods
 	void dungeon_update();

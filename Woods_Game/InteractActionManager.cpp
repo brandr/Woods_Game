@@ -30,30 +30,7 @@ const int open_dialog(
 	std::string dialog_text = action->get_binding("dialog_text");
 	if (!dialog_text.empty()) {
 		Dialog * dialog = new Dialog();
-		FileManager manager;
-		const std::string page_delimiter = "[p]";
-		const std::string line_delimiter = "[l]";
-		const std::vector< std::string> pages = manager.string_to_parts(dialog_text, page_delimiter);
-		const int page_count = pages.size();
-		int page_index = 0;
-		for (int p = 0; p < page_count; p++) {
-			bool empty_page = true;
-			int line_index = 0;
-			const std::string page = pages[p];
-			const std::vector<std::string> lines = manager.string_to_parts(page, line_delimiter);
-			const int line_count = lines.size();
-			for (int l = 0; l < line_count; l++) {
-				const std::string line = lines[l];
-				if (line.size() > 0) {
-					dialog->add_line(line, page_index, line_index);
-					line_index++;
-					empty_page = false;
-				}
-			}
-			if (!empty_page) {
-				page_index++;
-			}
-		}
+		dialog->parse_text(dialog_text);
 		player->set_open_dialog(dialog);
 		return 1;
 	}

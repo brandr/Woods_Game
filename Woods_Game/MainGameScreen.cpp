@@ -412,12 +412,16 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1");
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
+	ImageLoader::get_instance().load_image("ui/clock_backdrop");
+
 	hotbar_box = ImageLoader::get_instance().get_image("ui/item_box_1");
 	hotbar_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
 	dialog_backdrop_full_width = ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
+	clock_backdrop = ImageLoader::get_instance().get_image("ui/clock_backdrop");
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL); 
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
-	//TODO: other UI components like stamina/time
+	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
+	//TODO: other UI components like stamina
 }
 
 void MainGameScreen::unload_content()
@@ -525,19 +529,19 @@ void MainGameScreen::draw_ui_inventory(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_ui_main_game(ALLEGRO_DISPLAY * display)
 {
 	draw_hotbar(display);
+	draw_clock(display);
 	//TODO: draw other HUD components like stamina
 }
 
 void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 {
 	Inventory& inventory = game_image_manager.get_player()->get_inventory();
-	//std::vector<Item*> hotbar = inventory.get_hotbar();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(hotbar_box);
 	const int box_height = al_get_bitmap_height(hotbar_box);
 	const int hotbar_index = inventory.get_hotbar_index();
-	const int size = HOTBAR_SIZE;//hotbar.size();	//TODO
+	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size)/2 + i*box_width;
 		const float y = height - box_height - 12;
@@ -550,10 +554,19 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		}
 		const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_HOTBAR);
 		al_draw_text(font_map[FONT_HOTBAR], al_map_rgb(rgb[0], rgb[1], rgb[2]), x + 8.0f, y + 5.0f, 0, std::to_string(num).c_str());
-		Item* item = inventory.get_hotbar_item(i);//hotbar[i];
+		Item* item = inventory.get_hotbar_item(i);
 		if (item) item->draw(display, x, y);
-		//TODO: draw the item here if the index of the hotbar is not empty
 	}
+}
+
+void MainGameScreen::draw_clock(ALLEGRO_DISPLAY * display)
+{
+	const int x = al_get_display_width(display) - al_get_bitmap_width(clock_backdrop) - 8;
+	const int y = 8;
+	al_draw_bitmap(clock_backdrop, x, y, NULL);
+	const std::string time_str = game_image_manager.time_display_string();
+	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, time_str.c_str());
+	//TODO
 }
 
 void MainGameScreen::draw_ui_paused(ALLEGRO_DISPLAY* display)

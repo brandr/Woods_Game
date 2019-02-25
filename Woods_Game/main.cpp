@@ -60,7 +60,7 @@ ALLEGRO_DISPLAY * initialize_display(std::string config_path, std::string run_mo
 	
 	ALLEGRO_DISPLAY *display = NULL;
 	FileManager filemanager;
-	Configurations config;//*config = DBG_NEW Configurations();
+	Configurations config;
 	std::string config_key = run_mode == LEVEL_EDITOR ? "level_editor_configurations" : "current_configurations";
 	filemanager.load_xml_content(&config, config_path, "SerializableClass", "ConfigurationsKey", config_key);
 	if (config.get_screen_mode() == Configurations::SCREEN_STYLE_FULLSCREEN) {
@@ -170,7 +170,7 @@ int main(int argc, char *argv[])
 {
 	// show memory leaks
 	_CrtDumpMemoryLeaks();
-	std::string run_mode = argv[1];
+	const std::string run_mode = argc > 1 ? argv[1] : RUN_GAME;
 	ALLEGRO_DISPLAY *display; 
 	if (run_mode == RUN_GAME || run_mode == LEVEL_EDITOR) {
 		if (initialize_allegro()){

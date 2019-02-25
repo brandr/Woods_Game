@@ -244,11 +244,6 @@ void Player::dialog_update()
 	if (this->open_dialog) {
 		this->open_dialog->update();
 	}
-	//TODO: don't check here, use this method for something else
-	//if (this->open_dialog) {
-	//	game_image_manager.
-		//TODO: change game mode so we're paused and open the dialog
-	//}
 }
 
 const bool Player::has_open_dialog()

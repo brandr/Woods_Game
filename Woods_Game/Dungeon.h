@@ -24,6 +24,7 @@ public:
 	void remove_level(int index);
 	Level* level_at(int, int);
 	Level* level_with_name(std::string name);
+	Level* find_level_with_spawn_key(const std::string spawn_key);
 	void set_dungeon_name(std::string name);
 	std::string get_dungeon_name();
 	std::vector<Level*> get_level_list();

@@ -55,6 +55,7 @@ void GameImageManager::load_content()
 	const std::string filename = "resources/load/worlds";
 	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", world_name);
 	this->world.load_dungeons();
+	this->world.load_npcs();
 	this->current_level = world.get_current_level();
 	load_player_from_xml("resources/load/player", this->world.get_player_key());
 }
@@ -75,9 +76,9 @@ void GameImageManager::load_level(int grid_x, int grid_y)
 	if (level) {
 		load_level_from_map(level);
 		current_level = level;
-	}
-	else
+	} else {
 		std::cout << "ERROR: failed to load level." << std::endl; //TODO: error handling
+	}
 }
 
 void GameImageManager::load_player(std::string filename)
@@ -100,10 +101,11 @@ void GameImageManager::load_level_content(std::string filename, std::string id, 
 	std::vector<std::vector<std::string>> attributes;
 	std::vector<std::vector<std::string>> contents;
 	FileManager file_manager;
-	if (id == "")
+	if (id == "") {
 		file_manager.load_content(filename.c_str(), attributes, contents);
-	else
+	} else {
 		file_manager.load_content(filename.c_str(), attributes, contents, id);
+	}
 	int size = attributes.size();
 	for (int i = 0; i < size; i++) {
 		GameImage *image;
@@ -174,7 +176,30 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 		player->update_input(input_map, joystick_map, game_mode);
 	}
 	current_level->update(game_mode);
+	this->time_update();
+}
 
+const std::string GameImageManager::time_display_string()
+{
+	int hours = (START_TIME_HOUR + this->time_counter / TIME_RATIO) % 24;
+	const int minutes = ((this->time_counter % TIME_RATIO) * 60) / TIME_RATIO;
+	const std::string ampm = hours > 11 ? "PM" : "AM";
+	if (hours == 0) {
+		hours = 12;
+	}
+	const std::string hourStr = std::to_string((hours > 12 ? hours - 12 : hours));
+	const std::string minuteStr = minutes > 9 ? std::to_string(minutes) : "0" + std::to_string(minutes);
+	return hourStr + " : " + minuteStr + " " + ampm;
+}
+
+void GameImageManager::time_update()
+{
+	this->time_counter = (this->time_counter + 1) % (TIME_RATIO*24);
+}
+
+const int GameImageManager::get_current_minutes()
+{
+	return START_TIME_HOUR*60 + (((this->time_counter)*60/TIME_RATIO) % (TIME_RATIO*60*24));
 }
 
 void GameImageManager::change_player_level()
@@ -256,7 +281,71 @@ void GameImageManager::change_player_level()
 
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
-	if (current_level) current_level->draw(display, get_camera_offset(display));
+	if (current_level) {
+		current_level->draw(display, get_camera_offset(display));
+		this->draw_light_filter(display, get_camera_offset(display));
+	}
+}
+
+void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	if (this->light_filter == NULL) {
+		this->light_filter = al_create_bitmap(width, height);
+	}
+
+	al_set_target_bitmap(this->light_filter);
+	if (al_get_bitmap_width(this->light_filter) != width || al_get_bitmap_height(this->light_filter) != height) {
+		al_destroy_bitmap(this->light_filter);
+		this->light_filter = al_create_bitmap(width, height);
+	}
+	// (4 AM) blue, darkest -> (6 AM) orange, lighter -> (8 AM) yellow, ligthest -> orange, lighter (6 PM) -> blue, darkest (8 PM)
+	const float minutes = this->get_current_minutes();
+	int r = 0;
+	int g = 0;
+	int b = NIGHT_B;
+	int a = NIGHT_A;
+	if (minutes >= SUNRISE_START_MINUTES && minutes < SUNRISE_END_MINUTES ) {
+		const float m = ((minutes - SUNRISE_START_MINUTES) / (SUNRISE_END_MINUTES - SUNRISE_START_MINUTES));
+		r = SUNRISE_END_R * m;
+		g = SUNRISE_END_G * m;
+		b = NIGHT_B - ((NIGHT_B - SUNRISE_END_B) * m);
+		a = NIGHT_A - ((NIGHT_A - SUNRISE_END_A) * m);
+	} else if (minutes >= SUNRISE_END_MINUTES && minutes < DAY_START_MINUTES) {
+		const float m = ((minutes - SUNRISE_END_MINUTES) / (DAY_START_MINUTES - SUNRISE_END_MINUTES));
+		r = SUNRISE_END_R + ((DAY_START_R - SUNRISE_END_R) * m);
+		g = SUNRISE_END_G + ((DAY_START_G - SUNRISE_END_G) * m);
+		b = SUNRISE_END_B;
+		a = SUNRISE_END_A - ((SUNRISE_END_A - DAY_START_A) * m);
+	} else if (minutes >= DAY_START_MINUTES && minutes < DAY_END_MINUTES) {
+		const float m = ((minutes - SUNRISE_END_MINUTES) / (DAY_END_MINUTES - DAY_START_MINUTES));
+		r = DAY_START_R;
+		g = DAY_START_G;
+		b = 0;
+		a = DAY_START_A - ((SUNRISE_END_A - DAY_START_A) * m);
+	} else if (minutes >= DAY_END_MINUTES && minutes < SUNSET_START_MINUTES) {
+		const float m = ((minutes - DAY_END_MINUTES) / (SUNSET_START_MINUTES - DAY_END_MINUTES));
+		r = DAY_END_R - ((DAY_END_R - SUNSET_START_R) * m);
+		g = DAY_END_G - ((DAY_END_G - SUNSET_START_G) * m);
+		b = 0;
+		a = DAY_END_A + ((SUNSET_START_A - DAY_END_A) * m);
+	} else if (minutes >= SUNSET_START_MINUTES && minutes < SUNSET_END_MINUTES) {
+		const float m = ((minutes - SUNSET_START_MINUTES) / (SUNSET_END_MINUTES - SUNSET_START_MINUTES));
+		r = SUNSET_START_R - ((SUNSET_START_R - SUNSET_END_R) * m);
+		g = SUNSET_START_G - ((SUNSET_START_G - SUNSET_END_G) * m);
+		b = (SUNSET_END_B - SUNSET_START_B) * m;
+		a = SUNSET_START_A + ((SUNSET_END_A - SUNSET_START_A) * m);
+	} else if (minutes >= SUNSET_END_MINUTES) {
+		r = SUNSET_END_R;
+		g = SUNSET_END_G;
+		b = SUNSET_END_B;
+		a = SUNSET_END_A;
+	}
+	
+	al_clear_to_color(al_map_rgba(r, g, b, a));
+	al_set_target_bitmap(al_get_backbuffer(display));
+	al_draw_bitmap(this->light_filter, 0, 0, 0);
 }
 
 void GameImageManager::resume()

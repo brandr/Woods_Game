@@ -17,9 +17,13 @@ Fix memory leaks in level editor
 
 ---------------------------------------------------
 
+Day/night cycle
+	- need some kind of world-level clock that updates when game is not in a paused state
+	- add UI showing date/time
+
 Make NPC (creepy guy from the story)
 	- need animations
-	- Dialog avatar image
+	- Dialog with avatar image
 
 IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
 	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
@@ -28,7 +32,6 @@ IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose 
 		* might be able to do something with | and flags corresponding to the orders
 	- weight some options to be more likely than others using integer values
 	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
-	- a dialog options should be a set of panes which are divided into lines.
 
 IDEA: Make NPCs walk around outside programatically and have varying habits throughout the day.
 	- for instance, they should usually stay close to trails
@@ -45,10 +48,11 @@ Think carefully about updates for NPCs
 Cutscenes
 
 Fix the way we pass xml attributes in the level editor (copy entire interact actions and contact actions instead of just method name and key)
+	* look at spawners for an example since these seem to work correctly
 
 Look into getting rid of "gameImages" list in Level
-	*I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
-		#Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
+	* I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
+		# Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
 
 Implement "pickup-able" items, like seeds from ferns
 	* Should probably be a % drop chance rolled on breaking plant so player can't savescum

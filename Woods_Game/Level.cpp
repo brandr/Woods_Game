@@ -28,6 +28,7 @@ Level::Level()
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("Spawners", &(this->spawners));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 }
 
@@ -41,6 +42,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("Spawners", &(this->spawners));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = level_filename;
 	this->dungeon_filename = dungeon_filename;
@@ -57,6 +59,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename,  std::str
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("Spawners", &(this->spawners));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = level_filename;
 	this->dungeon_filename = dungeon_filename;
@@ -79,6 +82,7 @@ Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int g
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("Spawners", &(this->spawners));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->map_filename = filename;
 	this->grid_x = grid_x;
@@ -99,6 +103,7 @@ Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)
 	this->Register("GridHeight", &(this->grid_height));
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
+	this->Register("Spawners", &(this->spawners));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->grid_x = grid_x;
 	this->grid_y = grid_y;
@@ -135,6 +140,7 @@ void Level::load_from_xml()
 	this->draw_tile_edge_bitmaps();
 	this->initialize_entity_groups();
 	this->initialize_tiled_images();
+	this->initialize_spawners();
 }
 
 void Level::intialize_dimensions()
@@ -255,6 +261,20 @@ void Level::initialize_tiled_images()
 	for (int i = 0; i < layer_count; i++) {
 		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
 		layer->initialize_tiled_images(this->tileset->get_tile_sheet_filename());
+	}
+}
+
+void Level::initialize_spawners()
+{
+	const int size = this->spawners.size();
+	for (int i = 0; i < size; i++) {
+		Spawner *s = this->spawners.getItem(i);
+		Rect *subsection = s->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_spawner_sheet_filename(s->get_entity_data_index());
+		std::pair<int, int> position(s->get_entity_starting_pos_x(), s->get_entity_starting_pos_y());
+		s->set_content(filename, subsection, position);
+		s->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
 	}
 }
 
@@ -471,7 +491,6 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 		layer_index < max_layer_index; layer_index++) {
 		this->draw_tiled_images(display, offset, layer_index);
 	}
-	
 }
 
 void Level::draw_edge_tile_onto_bitmap(Tile &tile, std::string edge_filename, int edge_row, int dir_key)
@@ -619,6 +638,18 @@ bool Level::remove_tiled_image(const std::pair<int, int> pos, const int layer_in
 	return did_remove;
 }
 
+void Level::remove_spawner(const std::pair<int, int> pos)
+{
+	const int size = this->spawners.size();
+	for (int i = 0; i < size; i++) {
+		Spawner *s = this->spawners.getItem(i);
+		if (s != NULL && s->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			this->spawners.removeItem(i);
+			break;
+		}
+	}
+}
+
 void Level::replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	Tile * replacing_tile = new Tile(this->tileset, pos.first, pos.second, 
@@ -636,7 +667,6 @@ void Level::replace_block(int block_index, std::pair<int, int> ss_pos, std::pair
 
 void Level::add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
-	//TODO: figure out if create_entity_group() is redundant given initialize_entity_group()
 	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	const std::string filename_start = this->tileset->get_tile_sheet_filename();
 	EntityGroup * eg = this->create_entity_group(filename_start, eg_index, ss_pos, pixel_pos);
@@ -675,6 +705,60 @@ TiledImage * Level::create_tiled_image(std::string filename_start, int index, st
 	//this->initialize_tiled_image(tiled_image);
 	//TODO
 	return tiled_image;
+}
+
+void Level::add_spawner(const int spawner_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos)
+{
+	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::string filename_start = this->tileset->get_tile_sheet_filename();
+	Spawner * s = this->create_spawner(filename_start, spawner_index, ss_pos, pixel_pos);
+	s->set_bitmap(ImageLoader::get_instance().get_current_image(s));
+	this->spawners.addItem(s);
+}
+
+Spawner * Level::create_spawner(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+{
+	EntityData* spawner_data = tileset->get_spawner_data_by_index(index);
+	const std::string filename = filename_start + "/spawners/" + spawner_data->get_entity_data_key();
+	Spawner * spawner = new Spawner();
+	spawner->set_entity_data_index(index);
+	Rect * ss_offset_rect = new Rect(TILE_SIZE*ss_pos.first, 
+		TILE_SIZE*ss_pos.second, 
+		TILE_SIZE*(ss_pos.first + 1), 
+		TILE_SIZE*(ss_pos.second + 1));
+	spawner->set_content(filename, ss_offset_rect, pos);
+	spawner->set_rect(pos.first, pos.second,
+		TILE_SIZE, TILE_SIZE);
+	spawner->set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	return spawner;
+}
+
+const bool Level::has_spawner_for_key(const std::string spawn_key)
+{
+	return this->spawner_for_key(spawn_key) != NULL;
+}
+
+Spawner * Level::spawner_for_key(const std::string spawn_key)
+{
+	const int size = this->spawners.size();
+	for (int i = 0; i < size; i++) {
+		Spawner * s = this->spawners.getItem(i);
+		if (s && s->get_spawner_id() == spawn_key) {
+			return s;
+		}
+	}
+	return NULL;
+}
+
+void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
+{
+	Spawner * spawner = this->spawner_for_key(spawn_key);
+	if (spawner) {
+		npc->set_starting_pos(spawner->get_x(), spawner->get_y());
+		npc->load_content_from_attributes();
+		this->add_being(npc);
+		//TODO: is this enough?
+	}
 }
 
 EntityGroup * Level::create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
@@ -775,6 +859,18 @@ EntityGroup * Level::entity_group_at_tile_pos(const std::pair<int, int> pos)
 		EntityGroup *eg = this->entity_groups.getItem(i);
 		if (eg != NULL && eg->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
 			return eg;
+		}
+	}
+	return NULL;
+}
+
+Spawner * Level::spawner_at_tile_pos(const std::pair<int, int> pos)
+{
+	const int size = this->spawners.size();
+	for (int i = 0; i < size; i++) {
+		Spawner *s = this->spawners.getItem(i);
+		if (s != NULL && s->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			return s;
 		}
 	}
 	return NULL;
@@ -950,6 +1046,21 @@ void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 		}
 	}
 	*/
+	al_set_target_bitmap(display);
+}
+
+void Level::draw_spawners_onto_bitmap(ALLEGRO_BITMAP * bitmap)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
+	const int size = this->spawners.size();
+	for (int i = 0; i < size; i++) {
+		Spawner * s = this->spawners.getItem(i);
+		float dx = s->get_x();
+		float dy = s->get_y();
+		ALLEGRO_BITMAP *spawner_bitmap = s->get_bitmap();
+		al_draw_bitmap(spawner_bitmap, dx, dy, 0);
+	}
 	al_set_target_bitmap(display);
 }
 

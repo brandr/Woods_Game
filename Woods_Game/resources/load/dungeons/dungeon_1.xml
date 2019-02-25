@@ -4876,6 +4876,7 @@
                 <Member Name="EntityGroupName">tree_1</Member>
             </Class>
         </Collection>
+        <Collection Name="Spawners"/>
         <Collection Name="TiledImageLayers"/>
     </SerializableClass>
     <SerializableClass LevelKey="temp_level_B_1" Type="Level" Version="1">
@@ -7573,6 +7574,17 @@
             </Class>
         </Collection>
         <Collection Name="EntityGroups"/>
+        <Collection Name="Spawners">
+            <Class Type="Spawner" Version="1">
+                <Member Name="SpawnerID">stranger_spawner_1</Member>
+                <Member Name="EntityStartingPosX">384</Member>
+                <Member Name="EntityStartingPosY">192</Member>
+                <Member Name="EntityDataIndex">0</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Collection Name="EntityAttributes"/>
+            </Class>
+        </Collection>
         <Collection Name="TiledImageLayers">
             <Class Type="TiledImageLayer" Version="1">
                 <Collection Name="TiledImages"/>
@@ -10553,6 +10565,7 @@
             </Class>
         </Collection>
         <Collection Name="EntityGroups"/>
+        <Collection Name="Spawners"/>
         <Collection Name="TiledImageLayers"/>
     </SerializableClass>
     <SerializableClass LevelKey="test_level_size" Type="Level" Version="1">
@@ -13214,6 +13227,7 @@
             </Class>
         </Collection>
         <Collection Name="EntityGroups"/>
+        <Collection Name="Spawners"/>
         <Collection Name="TiledImageLayers"/>
     </SerializableClass>
 </root>

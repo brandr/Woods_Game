@@ -157,6 +157,14 @@
                 <Member Name="image_data_index">2</Member>
             </Class>
         </Collection>
+        <Collection Name="spawner_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">spawner_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
     </SerializableClass>
     <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_indoors">
         <Member Name="tile_sheet_name">indoors</Member>
