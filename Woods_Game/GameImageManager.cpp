@@ -56,7 +56,6 @@ void GameImageManager::load_content()
 	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", world_name);
 	this->world.load_dungeons();
 	this->world.load_npcs();
-	this->current_level = world.get_current_level();
 	load_player_from_xml("resources/load/player", this->world.get_player_key());
 }
 
@@ -75,7 +74,6 @@ void GameImageManager::load_level(int grid_x, int grid_y)
 	Level *level = world.get_current_dungeon()->level_at(grid_x, grid_y);
 	if (level) {
 		load_level_from_map(level);
-		current_level = level;
 	} else {
 		std::cout << "ERROR: failed to load level." << std::endl; //TODO: error handling
 	}
@@ -139,7 +137,8 @@ void GameImageManager::load_player_from_xml(std::string filepath, std::string pl
 	player->load_content_from_attributes();
 	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
 	player->load_additional_masks_from_attributes("player");
-	current_level->add_being(player);
+	this->current_level = this->world.extract_current_level(player);
+	this->current_level->add_being(player);
 }
 
 Player * GameImageManager::get_player()
@@ -351,6 +350,16 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 void GameImageManager::resume()
 {
 	player->clear_input();
+}
+
+void GameImageManager::decrement_dialog_option()
+{
+	player->decrement_dialog_option();
+}
+
+void GameImageManager::increment_dialog_option()
+{
+	player->increment_dialog_option();
 }
 
 

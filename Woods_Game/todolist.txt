@@ -17,13 +17,25 @@ Fix memory leaks in level editor
 
 ---------------------------------------------------
 
-Day/night cycle
-	- need some kind of world-level clock that updates when game is not in a paused state
-	- add UI showing date/time
+Allow sleeping in bed (maybe only in certain times?) to go to next day and save, allow using calendar to load
+	* How to save?
+	* Sleep animation? (Screen going dark, player lying in bed)
+	* advance day
 
-Make NPC (creepy guy from the story)
-	- need animations
+Look up actual date for specific year (whenever story took place, probably early 90s or late 80s), maybe use standard date methods to determine real timestamps
+
+Day/night cycle
+	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
+		* how to handle areas with lighting?
+	- how to show date in addition to time? When to increment date? (Midnight or only after sleeping)
+	- should player pass out if they're up too late?
+	- might want to calculate "time to wake up" somehow rather than just making it constant
+		* alarm clock upgrade/item?
+
+Make NPC
+	- need animations (mostly walking)
 	- Dialog with avatar image
+	- Have NPC turn to face player when talking and/or turn to face player under some circumstances
 
 IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
 	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection

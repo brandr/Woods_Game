@@ -1,5 +1,6 @@
 <root>
 	<SerializableClass Type="Player" Version="1" PlayerKey="default_player">
+		<Member Name="spawn_key">player_spawner_room</Member>
 		<Member Name="start_pos_x">10</Member>
 		<Member Name="start_pos_y">10</Member>
 		<Member Name="animation_spritesheet_key">player_spritesheet_1</Member>

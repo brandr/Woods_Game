@@ -204,8 +204,34 @@
             </Class>
         </Collection>
         <Collection Name="entity_group_types">
+            <Class Type="EntityGroupData" Version="1">
+                <Member Name="entity_group_name">player_bed</Member>
+                <Member Name="entity_group_index">0</Member>
+                <Member Name="root_offset_x">0</Member>
+                <Member Name="root_offset_y">0</Member>
+                <Member Name="center_offset_x">89</Member>
+                <Member Name="center_offset_y">72</Member>
+                <Member Name="entity_group_image_width">128</Member>
+                <Member Name="entity_group_image_height">128</Member>
+                <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
+                <Collection Name="components">
+                    <Class Type="EntityComponentAttribute" Version="1">
+                        <Member Name="name">bed</Member>
+                        <Collection Name="attributes"/>
+                    </Class>
+                </Collection>
+            </Class>
         </Collection>
         <Collection Name="tiled_image_types">
+        </Collection>
+        <Collection Name="spawner_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">spawner_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
     </SerializableClass>
 </root>

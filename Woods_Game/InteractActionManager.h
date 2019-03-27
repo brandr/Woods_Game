@@ -21,7 +21,7 @@ public:
 	static InteractActionManager& get_instance();
 	~InteractActionManager();
 	const bool run_action(InteractAction * action, Player * game_image_manager) const;
-	
+	const bool run_action(const std::string action_key, Player * game_image_manager) const;
 };
 
 #endif

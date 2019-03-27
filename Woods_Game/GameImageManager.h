@@ -79,8 +79,9 @@ public:
 	void change_player_level();
 	void draw(ALLEGRO_DISPLAY *display);
 	void draw_light_filter(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
-
 	void resume();
+	void decrement_dialog_option();
+	void increment_dialog_option();
 };
 
 #endif

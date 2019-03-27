@@ -391,3 +391,25 @@ std::pair<std::string, std::string> FileManager::string_to_pair(std::string str,
 {
 	return std::pair<std::string, std::string>(str.substr(0, str.find(delimiter)), str.substr(str.find(delimiter) + 1));
 }
+
+const std::vector<std::string> FileManager::parse_tags(std::string str, const std::string token)
+{
+	size_t open_pos = 0;
+	size_t close_pos = 0;
+	const std::string open_tag = "[" + token + "]";
+	const std::string close_tag = "[/" + token + "]";
+	std::vector<std::string> parts;
+	while ((open_pos = str.find(open_tag)) != std::string::npos) {
+		str.erase(0, open_pos + open_tag.length());
+		close_pos = str.find(close_tag);
+		if (close_pos == std::string::npos) {
+			break;
+		}
+		parts.push_back(str.substr(0, close_pos));
+		str.erase(0, close_pos + close_tag.length());
+		
+	}
+	//last iteration
+	//parts.push_back(str);
+	return parts;
+}

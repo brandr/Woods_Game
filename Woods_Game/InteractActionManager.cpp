@@ -37,9 +37,26 @@ const int open_dialog(
 	return 0;
 }
 
+const int close_dialog(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player)
+{
+	player->close_dialog();
+	return 1;
+}
+
+const int player_sleep(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player)
+{
+	//TODO: close dialog and sleep in bed
+	return 1;
+}
+
 void InteractActionManager::initialize_functions()
 {
-	// go to level
 	std::function<const int(const InteractActionManager*,
 		InteractAction*,
 		Player*)> fcnPtr;
@@ -47,6 +64,10 @@ void InteractActionManager::initialize_functions()
 	this->function_map["go_to_level"] = fcnPtr;
 	fcnPtr = open_dialog;
 	this->function_map["open_dialog"] = fcnPtr;
+	fcnPtr = close_dialog;
+	this->function_map["close_dialog"] = fcnPtr;
+	fcnPtr = player_sleep;
+	this->function_map["player_sleep"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()
@@ -66,5 +87,12 @@ const bool InteractActionManager::run_action(InteractAction * action, Player * p
 	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr 
 		= this->function_map.at(action_key);
 	return fcnPtr(this, action, player);
+}
+
+const bool InteractActionManager::run_action(const std::string action_key, Player * player) const
+{
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr
+		= this->function_map.at(action_key);
+	return fcnPtr(this, NULL, player);
 }
 

@@ -26,7 +26,7 @@
             		</Class>
         		</Collection>
         		<Member Name="spawn_key">stranger_spawner_1</Member>
-        		<Member Name="default_dialog_text">[p][l]I am a stranger.</Member>
+        		<Member Name="default_dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
 			</Class>
 		</Collection>
 	</SerializableClass>

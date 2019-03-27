@@ -27,6 +27,7 @@ class Player :
 private:
 	xmls::xFloat base_walk_speed;
 	xmls::xFloat jump_speed;
+	xmls::xString spawn_key;
 	std::map<int, bool> move_map;
 	std::pair<float, float> move_joystick_pos;
 	bool jumping = false;
@@ -56,6 +57,7 @@ public:
 	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	void dialog_update();
 	const bool has_open_dialog();
+	void close_dialog();
 	const bool interact(Entity* e);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	float get_walk_speed();
@@ -85,6 +87,9 @@ public:
 	void advance_dialog();
 	Dialog * get_open_dialog();
 	void set_open_dialog(Dialog * dialog);
+	void decrement_dialog_option();
+	void increment_dialog_option();
+	const std::string get_spawn_key();
 };
 
 #endif

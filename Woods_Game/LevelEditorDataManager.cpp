@@ -448,7 +448,6 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 				if (did_serialize) {
 					s->Copy(s2);
 				}
-				//this->active_levels[this->selected_level_index]->initialize_entity_group(eg); //todo test
 			}
 			break;
 		default:

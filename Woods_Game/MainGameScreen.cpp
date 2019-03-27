@@ -127,8 +127,6 @@ void menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
-
-
 void input_menu_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
 		screen.screen_receiving_input().menu_up();
@@ -206,7 +204,7 @@ void MainGameScreen::set_default_controls()
 {
 	// main controls
 	control_map[TOP_DOWN] = std::map<std::pair<int, int>, controlFunc>();
-		// key presses
+		// keyboard
 			// movement
 	control_map[TOP_DOWN].emplace(std::pair<int,int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &move_up);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &move_down);
@@ -224,17 +222,14 @@ void MainGameScreen::set_default_controls()
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_9), &number_entry);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_0), &number_entry);
 
-		// mouse
-	//control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_axis);
-
-		// joystick
+		// controller
 			// movement
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_AXIS, 0), &move_joystick_axis);
-			// pause
+
 	// paused controls	
 	control_map[MAIN_GAME_PAUSED] = std::map<std::pair<int, int>, controlFunc>();
 
-		// key presses
+		// keyboard
 			// select
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
@@ -245,7 +240,7 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
 
-		// joystick
+		// controller
 			// select
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
 	control_map[MAIN_GAME_PAUSED].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
@@ -256,15 +251,13 @@ void MainGameScreen::set_default_controls()
 
 	// inventory controls
 	control_map[MAIN_GAME_INVENTORY] = std::map<std::pair<int, int>, controlFunc>();
-		// key presses
+		// keyboard
 			// select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
-			// resume
-		// mouse
-		// joystick
+		// controller
 			// select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
@@ -273,6 +266,17 @@ void MainGameScreen::set_default_controls()
 			// resume
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
 
+	// dialog controls
+		// keyboard
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
+		// controller
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
 	//TODO: control map for MAIN_GAME_DIALOG
 }
 
@@ -413,11 +417,13 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
 	ImageLoader::get_instance().load_image("ui/clock_backdrop");
+	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
 
 	hotbar_box = ImageLoader::get_instance().get_image("ui/item_box_1");
 	hotbar_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
 	dialog_backdrop_full_width = ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
 	clock_backdrop = ImageLoader::get_instance().get_image("ui/clock_backdrop");
+	option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL); 
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
 	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
@@ -492,6 +498,10 @@ void MainGameScreen::dialog_update()
 {
 	Player * player = game_image_manager.get_player();
 	player->dialog_update();
+	if (!player->has_open_dialog()) {
+		//TODO: may want to trigger a different game mode if the dialog leads to another one
+		this->resume_game();
+	}
 }
 
 void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
@@ -666,10 +676,6 @@ void MainGameScreen::dialog_advance()
 {
 	Player * player = this->game_image_manager.get_player();
 	player->advance_dialog();
-	if (!player->has_open_dialog()) {
-		//TODO: may want to trigger a different game mode if the dialog leads to another one
-		this->resume_game();
-	}
 }
 
 void MainGameScreen::menu_up()
@@ -680,6 +686,9 @@ void MainGameScreen::menu_up()
 		break;
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_up();
+		break;
+	case MAIN_GAME_DIALOG:
+		this->game_image_manager.decrement_dialog_option();
 		break;
 	}
 }
@@ -693,6 +702,9 @@ void MainGameScreen::menu_down()
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_down();
 		break;
+	case MAIN_GAME_DIALOG:
+		this->game_image_manager.increment_dialog_option();
+		break;
 	}
 }
 
@@ -705,6 +717,9 @@ void MainGameScreen::menu_left()
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_left();
 		break;
+	case MAIN_GAME_DIALOG:
+		this->game_image_manager.decrement_dialog_option();
+		break;
 	}
 }
 
@@ -716,6 +731,9 @@ void MainGameScreen::menu_right()
 		break;
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_right();
+		break;
+	case MAIN_GAME_DIALOG:
+		this->game_image_manager.increment_dialog_option();
 		break;
 	}
 }

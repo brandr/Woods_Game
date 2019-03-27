@@ -26,6 +26,7 @@ Player::Player()
 	Register("animation_data", &animation_data);
 	Register("additional_mask_data", &additional_mask_data);
 	Register("inventory", &inventory);
+	Register("spawn_key", &spawn_key);
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
 }
@@ -242,13 +243,28 @@ void Player::interact_update(std::vector<Entity*> interactables, std::vector<Til
 void Player::dialog_update()
 {
 	if (this->open_dialog) {
-		this->open_dialog->update();
+		const std::string action_key = this->open_dialog->get_active_action_key();
+		if (action_key.length() > 0) {
+			const InteractActionManager &manager = InteractActionManager::get_instance();
+			manager.run_action(action_key, this);
+		}  else {
+			this->open_dialog->update();
+		}
+		
 	}
 }
 
 const bool Player::has_open_dialog()
 {
 	return this->open_dialog != NULL;
+}
+
+void Player::close_dialog()
+{
+	if (this->open_dialog != NULL) {
+		delete(this->open_dialog);
+		this->open_dialog = NULL;
+	}
 }
 
 const bool Player::interact(Entity * e)
@@ -456,8 +472,7 @@ void Player::advance_dialog()
 	if (this->open_dialog) {
 		this->open_dialog->advance_dialog();
 		if (!this->open_dialog->has_current_page()) {
-			delete(this->open_dialog);
-			this->open_dialog = NULL;
+			this->close_dialog();
 		}
 	}
 }
@@ -473,6 +488,25 @@ void Player::set_open_dialog(Dialog * dialog)
 		delete (this->open_dialog);
 	}
 	this->open_dialog = dialog;
+}
+
+void Player::decrement_dialog_option()
+{
+	if (this->open_dialog != NULL) {
+		this->open_dialog->decrement_option();
+	}
+}
+
+void Player::increment_dialog_option()
+{
+	if (this->open_dialog != NULL) {
+		this->open_dialog->increment_option();
+	}
+}
+
+const std::string Player::get_spawn_key()
+{
+	return this->spawn_key.value();
 }
 
 //TODO: need to check for no next level in the given direction

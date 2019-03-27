@@ -31,3 +31,8 @@ const std::string Spawner::get_spawner_id()
 {
 	return this->spawner_id.value();
 }
+
+Rect * Spawner::get_bitmap_subsection()
+{
+	return new Rect(this->entity_sheet_col.value()*TILE_SIZE, this->entity_sheet_row.value()*TILE_SIZE, TILE_SIZE, TILE_SIZE);
+}

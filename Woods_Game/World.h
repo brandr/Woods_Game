@@ -1,12 +1,13 @@
 #ifndef WORLD_H
 #define WORLD_H
+
 #include "Dungeon.h"
 #include "DungeonData.h"
 #include "NPC.h"
 #include "XMLSerialization.h"
 #include <memory>
 class ImageLoader;
-
+class Player;
 class World : public xmls::Serializable
 {
 private:
@@ -31,6 +32,7 @@ public:
 	void add_dungeon(Dungeon*);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
+	Level * extract_current_level(Player * player);
 	Dungeon* get_dungeon(std::string dungeon_name);
 	std::string get_player_key();
 };

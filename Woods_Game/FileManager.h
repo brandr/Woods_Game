@@ -49,6 +49,7 @@ public:
 	static std::pair<int, int> string_to_pair(std::string tile_string);
 	static std::vector<std::string> string_to_parts(std::string str, std::string delimiter);
 	static std::pair<std::string, std::string> string_to_pair(std::string str, std::string delimiter);
+	const static std::vector<std::string> parse_tags(const std::string str, const std::string token);
 	//unload content?
 };
 #endif

@@ -1,5 +1,6 @@
 #include "World.h"
 #include "ImageLoader.h"
+#include "Player.h"
 
 Level * World::find_level_with_spawn_key(const std::string spawn_key)
 {
@@ -93,6 +94,20 @@ Dungeon* World::get_current_dungeon()
 Level * World::get_current_level()
 {
 	return this->get_current_dungeon()->level_at(this->current_level_grid_x.value(), this->current_level_grid_y.value());
+}
+
+Level * World::extract_current_level(Player * player)
+{
+	const std::string spawner_id = player->get_spawn_key();
+	Level * level = this->find_level_with_spawn_key(spawner_id);
+	if (level) {
+		Spawner * spawner = level->spawner_for_key(spawner_id);
+		player->set_starting_pos(spawner->get_x(), spawner->get_y());
+		player->set_position(spawner->get_x(), spawner->get_y());
+		return level;
+	}
+	//TODO: if we want the player to store the level without having a spawner, put the logic here
+	return NULL;
 }
 
 Dungeon * World::get_dungeon(std::string dungeon_name)

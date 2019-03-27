@@ -275,6 +275,7 @@ void Level::initialize_spawners()
 		s->set_content(filename, subsection, position);
 		s->set_rect(position.first, position.second,
 			TILE_SIZE, TILE_SIZE);
+		s->set_bitmap(ImageLoader::get_instance().get_current_image(s));
 	}
 }
 
@@ -775,7 +776,7 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 	int comp_size = comp_data.size();
 	for (int comp_index = 0; comp_index < comp_size; comp_index++) {
 		EntityComponentData *data = comp_data[comp_index];
-		std::string comp_filename = filename_start + "_" + group_data->get_entity_group_name() + "_" + data->name.value();
+		std::string comp_filename = filename_start + "/entity_groups/" + group_data->get_entity_group_name() + "_" + data->name.value();
 		Rect* ss_offset_rect = new Rect(
 			ss_pos.first*entity_group_image_dimensions.first,
 			ss_pos.second*entity_group_image_dimensions.second,
@@ -800,7 +801,7 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
 	e_group->set_center_offset(center_off);
 	e_group->set_root_pos(root_pos);
-	e_group->load_mask(filename_start + "_" + group_data->get_entity_group_name());
+	e_group->load_mask(filename_start + "/entity_groups/" + group_data->get_entity_group_name());
 	return e_group;
 }
 

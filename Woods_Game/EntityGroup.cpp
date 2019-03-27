@@ -11,6 +11,8 @@ EntityGroup::EntityGroup()
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
 	this->Register("EntityGroupName", &entity_group_name);
+	this->Register("ContactActions", &contact_actions);
+	this->Register("InteractActions", &interact_actions);
 }
 
 EntityGroup::EntityGroup(std::pair<int, int> root_offset)
@@ -22,6 +24,8 @@ EntityGroup::EntityGroup(std::pair<int, int> root_offset)
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
 	this->Register("EntityGroupName", &entity_group_name);
+	this->Register("ContactActions", &contact_actions);
+	this->Register("InteractActions", &interact_actions);
 	this->root_pos_x = root_offset.first, this->root_pos_y = root_offset.second;
 }
 
