@@ -19,6 +19,7 @@
 #include <allegro5/allegro_font.h>
 #include <algorithm>
 #include "FileManager.h"
+#include "InteractAction.h"
 
 struct DialogLine {
 	std::string text;
@@ -51,6 +52,7 @@ private:
 	const bool is_showing_full_page();
 	DialogPage * current_page();
 	ALLEGRO_BITMAP * option_arrow;
+	std::vector<ActionBinding*> action_bindings;
 public:
 	Dialog();
 	~Dialog();
@@ -63,6 +65,9 @@ public:
 	const std::string get_active_action_key();
 	void decrement_option();
 	void increment_option();
+	void set_should_scroll_text(const bool value);
+	void set_action_bindings(std::vector<ActionBinding *> bindings);
+	std::vector<ActionBinding *> get_action_bindings();
 };
 
 #endif

@@ -12,6 +12,12 @@
 #include "Animation.h"
 #include "allegro5/allegro5.h"
 
+#define IMAGE_PREFIX_COLOR "color"
+
+#define IMAGE_KEY_FILLED_RECT "filled_rect"
+
+
+
 class GameImage;
 class ImageLoader
 {
@@ -19,6 +25,7 @@ private:
 	ImageLoader() {}
 	std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*> image_map;
 	std::string rect_to_string(Rect r);
+	const std::string full_image_key(const std::string image_key, const int width, const int height, const std::string suffix);
 public:
 	ImageLoader(ImageLoader const&) = delete;
 	void operator=(ImageLoader const&) = delete;
@@ -28,6 +35,10 @@ public:
 	void load_content();
 	void unload_content();
 	const bool image_exists(const std::string filename);
+	const bool keyed_image_exists(const std::string image_key, const int width, const int height, const std::string suffix);
+	const bool keyed_image_exists(const std::string key);
+	void set_keyed_image(ALLEGRO_BITMAP * image, const std::string image_key, const int width, const int height, const std::string suffix);
+	ALLEGRO_BITMAP * get_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix);
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);
 	void load_spritesheet(Animation);

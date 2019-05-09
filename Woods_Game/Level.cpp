@@ -134,13 +134,47 @@ void Level::load_tileset()
 void Level::load_from_xml()
 {
 	this->load_tileset();
-	FileManager file_manager;
-	const std::string filename = "resources/load/dungeons/" + this->dungeon_filename;
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
 	this->initialize_entity_groups();
 	this->initialize_tiled_images();
 	this->initialize_spawners();
+}
+
+void Level::reload_from_xml(Level &copy_level)
+{
+	this->reload_tiles(copy_level);
+	//TODO: figure out how to reload here
+}
+
+void Level::reset_for_reload()
+{
+	for (int i = 0; i < tile_rows.size(); i++) {
+		for (int j = 0; j < tile_rows.getItem(i)->get_size(); j++) {
+			this->get_tile(j, i)->reset_for_reload();
+		}
+	}
+}
+
+void Level::reload_tiles(Level &copy_level)
+{
+	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
+	const std::string block_sheet_filename = this->tileset->get_tile_sheet_filename();
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			Tile *t = this->get_tile(x, y);
+			Tile *copy_tile = copy_level.get_tile(x, y);
+			std::pair<int, int> position(t->get_tile_pos_x()*TILE_SIZE, t->get_tile_pos_y()*TILE_SIZE);
+			Block *b = t->get_block();
+			Block *copy_block = copy_tile->get_block();
+			// TODO: can one block be null and the other not?
+			if (b == NULL) {
+				continue;
+			}
+			b->copy_entity_attributes(copy_block);
+			b->refresh_mask();
+		}
+	}
 }
 
 void Level::intialize_dimensions()
@@ -385,8 +419,6 @@ void Level::save_to_xml()
 //TODO: how to unload level to avoid memory leak?
 void Level::unload_content()
 {
-	//this->tile_rows.Clear();
-	//this->entity_groups.Clear();
 	/*
 	for (int i = 0; i < game_images.size(); i++) {
 		if (game_images[i]) {
@@ -395,16 +427,13 @@ void Level::unload_content()
 		}
 	}
 	*/
-	/*
 	for (int i = 0; i < tile_rows.size(); i++) {
 		for (int j = 0; j < tile_rows.getItem(i)->get_size(); j++) {
 			this->get_tile(j, i)->unload_content();
 		}
-		tiles[i].clear();
-		std::vector<Tile*>().swap(tiles[i]);
 	}
-	std::vector<std::vector<Tile*>>().swap(tiles);
-	*/
+	this->tile_rows.Clear();
+	this->entity_groups.Clear();
 	/*
 	game_images.clear();
 	std::vector<GameImage*>().swap(game_images);

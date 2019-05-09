@@ -27,6 +27,7 @@ public:
 	const std::string get_interact_action_key();
 	const std::string get_function_name();
 	const std::string get_binding(const std::string key);
+	void set_bindings(std::vector<ActionBinding*> bindings);
 };
 
 #endif

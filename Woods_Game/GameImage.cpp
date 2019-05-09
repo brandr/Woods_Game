@@ -237,8 +237,9 @@ void GameImage::load_additional_masks_from_attributes(std::string prefix)
 
 void GameImage::unload_content()
 {
-	if(image_subsection)
+	if (image_subsection) {
 		delete image_subsection;
+	}
 	if(ss_animation)
 		delete ss_animation;
 	if(mask)

@@ -35,117 +35,47 @@ MenuManager& PauseScreen::current_menu_manager()
 
 void PauseScreen::load_content()
 {
-	//load_config_settings();
 	//main menu
 	menus[PAUSE_MAIN_MENU] = std::make_unique<MenuManager>();
-	//menus[PAUSE_MAIN_MENU]->load_content("pause_main_menu");
 	menus[PAUSE_MAIN_MENU]->load_xml_content("pause_main_menu");
 	ImageLoader::get_instance().load_image("ui/pause_main_backdrop");
 	backdrops[PAUSE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/pause_main_backdrop");
+
 	//video settings
 	menus[PAUSE_VIDEO_MENU] = std::make_unique<MenuManager>();
-	//menus[PAUSE_VIDEO_MENU]->load_content("pause_video_menu");
 	menus[PAUSE_VIDEO_MENU]->load_xml_content("pause_video_menu");
 	ImageLoader::get_instance().load_image("ui/pause_video_backdrop");
 	backdrops[PAUSE_VIDEO_MENU] = ImageLoader::get_instance().get_image("ui/pause_video_backdrop");
-	//std::vector<MenuItem*> video_items = menus[PAUSE_VIDEO_MENU]->get_menu_items();
-	
-	//xmls::Collection<MenuItem> video_items = menus[PAUSE_VIDEO_MENU]->get_menu_items();
-	//xmls::Collection<TextOption> &resolutions = video_items.getItem(0)->get_text_options();
-	/*
-	for (int i = 0; i < resolutions.size(); i++) {
-		if (resolutions.getItem(i)->Option.value() == config_settings[CONFIG_SCREEN_RESOLUTION]) {
-			video_items.getItem(0)->set_options_index(i);
-		}
-	}
-	xmls::Collection<TextOption> &screen_styles = video_items.getItem(1)->get_text_options();
-	for (int i = 0; i < screen_styles.size(); i++) {
-		if (screen_styles.getItem(i)->Option.value() == config_settings[CONFIG_SCREEN_STYLE]) {
-			video_items.getItem(1)->set_options_index(i);
-		}
-	}
-	
-	
-	//temp
-	std::string xmlString = menus[PAUSE_VIDEO_MENU]->toXML();
-	std::ofstream out("resources/load/pause_video_menu.xml");
-	out << xmlString;
-	out.close();
-	//temp
-	*/
+
 	// controls settings
 	menus[PAUSE_CONTROLS_MENU] = std::make_unique<MenuManager>();
-	//menus[PAUSE_CONTROLS_MENU]->load_content("pause_controls_menu");
 	menus[PAUSE_CONTROLS_MENU]->load_xml_content("pause_controls_menu");
 	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU] = ImageLoader::get_instance().get_image("ui/pause_controls_backdrop");
-	//temp
-	/*
-	std::string xmlString1 = menus[PAUSE_CONTROLS_MENU]->toXML();
-	std::ofstream out1("resources/load/pause_controls_menu.xml");
-	out1 << xmlString1;
-	out1.close();
-	*/
-	//temp
+
 	// keyboard controls settings
 	menus[PAUSE_CONTROLS_MENU_KEYBOARD] = std::make_unique<ControlsMenuManager>();
-	//menus[PAUSE_CONTROLS_MENU_KEYBOARD]->load_content("pause_controls_menu_keyboard");
 	menus[PAUSE_CONTROLS_MENU_KEYBOARD]->load_xml_content("pause_controls_menu_keyboard");
 	ImageLoader::get_instance().load_image("ui/pause_controls_keyboard_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU_KEYBOARD] = ImageLoader::get_instance().get_image("ui/pause_controls_keyboard_backdrop");
-	//temp
-	/*
-	std::string xmlString2 = menus[PAUSE_CONTROLS_MENU_KEYBOARD]->toXML();
-	std::ofstream out2("resources/load/pause_controls_menu_keyboard.xml");
-	out2 << xmlString2;
-	out2.close();
-	*/
-	//temp
+
 	// controller controls settings
 	menus[PAUSE_CONTROLS_MENU_CONTROLLER] = std::make_unique<ControlsMenuManager>();
-	//menus[PAUSE_CONTROLS_MENU_CONTROLLER]->load_content("pause_controls_menu_controller");
 	menus[PAUSE_CONTROLS_MENU_CONTROLLER]->load_xml_content("pause_controls_menu_controller");
 	ImageLoader::get_instance().load_image("ui/pause_controls_controller_backdrop");
 	backdrops[PAUSE_CONTROLS_MENU_CONTROLLER] = ImageLoader::get_instance().get_image("ui/pause_controls_controller_backdrop");
-	/*
-	//temp
-	std::string xmlString3 = menus[PAUSE_CONTROLS_MENU_CONTROLLER]->toXML();
-	std::ofstream out3("resources/load/pause_controls_menu_controller.xml");
-	out3 << xmlString3;
-	out3.close();
-	//temp
-	*/
 }
 
 void PauseScreen::load_config_settings()
 {
-	//TODO: change to new xml loading
 	FileManager filemanager;
 	std::string filename = "resources/config";
 	filemanager.load_xml_content(config.get(), filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
-	//std::vector<std::vector<std::string>> attributes, contents;
-	//filemanager.load_content("resources/config.ini", attributes, contents);
-
-	//TODO: handle config settings here
-	/*
-	for (int i = 0; i < attributes.size(); i++) {
-		for (int j = 0; j < attributes[i].size(); j++) {
-			if (attributes[i][j] == "screen_resolution") {
-				config_settings[CONFIG_SCREEN_RESOLUTION] = contents[i][j];
-			}
-			else if (attributes[i][j] == "screen_style") {
-				config_settings[CONFIG_SCREEN_STYLE] = contents[i][j];
-			}
-		}
-	}
-	*/
 }
 
 void PauseScreen::unload_content()
 {
-	
 	backdrops.clear();
-	//main_backdrop = NULL;
 	GameScreen::unload_content();
 }
 
@@ -279,15 +209,12 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 			if (style_string == Configurations::SCREEN_STYLE_FULLSCREEN) {
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
 				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
 				
 			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
-				//std::cout << "setting windowed fullscreen\n";
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				//al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
 				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
 			}

@@ -51,7 +51,30 @@ const int player_sleep(
 	InteractAction * action,
 	Player * player)
 {
-	//TODO: close dialog and sleep in bed
+	player->close_dialog();
+	player->sleep_in_bed(InteractActionManager::get_instance().get_current_time());
+	return 1;
+}
+
+const int player_open_calendar(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player)
+{
+	player->open_calendar();
+	return 1;
+}
+
+const int load_selected_day(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player)
+{
+	if (action != NULL) {
+		player->close_calendar();
+		const std::string day_index_str = action->get_binding("load_day_index");
+		player->load_game_for_day(::atoi(day_index_str.c_str()));
+	}
 	return 1;
 }
 
@@ -68,6 +91,10 @@ void InteractActionManager::initialize_functions()
 	this->function_map["close_dialog"] = fcnPtr;
 	fcnPtr = player_sleep;
 	this->function_map["player_sleep"] = fcnPtr;
+	fcnPtr = player_open_calendar;
+	this->function_map["player_open_calendar"] = fcnPtr;
+	fcnPtr = load_selected_day;
+	this->function_map["load_selected_day"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()
@@ -94,5 +121,31 @@ const bool InteractActionManager::run_action(const std::string action_key, Playe
 	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr
 		= this->function_map.at(action_key);
 	return fcnPtr(this, NULL, player);
+}
+
+const bool InteractActionManager::run_action(const std::string action_key, std::vector<ActionBinding*> bindings, Player * player) const
+{
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr
+		= this->function_map.at(action_key);
+	InteractAction * action = new InteractAction();
+	action->set_bindings(bindings);
+	return fcnPtr(this, action, player);
+}
+
+void InteractActionManager::update_current_time(GlobalTime * other_time)
+{
+	if (other_time != NULL) {
+		if (this->current_time == NULL) {
+			this->current_time = new GlobalTime(other_time->get_day(), other_time->get_time());
+		}
+		else {
+			this->current_time->copy(other_time);
+		}
+	}
+}
+
+GlobalTime * InteractActionManager::get_current_time()
+{
+	return this->current_time;
 }
 

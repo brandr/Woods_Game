@@ -100,6 +100,7 @@ protected:
 public:
 	Entity();
 	~Entity();
+	virtual void copy_entity_attributes(Entity * other);
 	virtual Rect *get_bitmap_subsection();
 	virtual void set_solid(const bool solid);
 	virtual void set_visible(const bool visible);
@@ -107,6 +108,7 @@ public:
 	virtual bool is_visible();
 	virtual void load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int, int> frame_dimensions);
 	virtual void load_content_from_attributes();
+	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void update();
 	void counter_update();
@@ -126,6 +128,7 @@ public:
 	virtual int get_entity_starting_pos_y();
 	virtual int get_entity_data_index();
 	virtual int get_entity_attribute(std::string attribute);
+	virtual std::map<std::string, int> get_entity_attributes();
 	virtual bool has_entity_attribute(std::string attribute);
 	virtual int get_entity_sheet_col();
 	virtual int get_entity_sheet_row();

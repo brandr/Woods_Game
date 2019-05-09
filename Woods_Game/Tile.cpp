@@ -68,13 +68,7 @@ void Tile::set_content(std::string image_filename, Rect * image_subsection, std:
 
 void Tile::unload_content()
 {
-	/*
-	if (block) {
-		block->unload_content();
-		delete block;
-	}
-	block = NULL;
-	*/
+	this->block.unload_content();
 	GameImage::unload_content();
 }
 
@@ -97,6 +91,13 @@ void Tile::reset(TileSet *tileset, Tile * t)
 	this->set_edge_priority(tileset->get_edge_priority(type_index));
 	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
 	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+}
+
+void Tile::reset_for_reload()
+{
+	if (!this->block.is_empty()) {
+		this->block.reset_for_reload();
+	}
 }
 
 void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)

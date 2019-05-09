@@ -2,7 +2,6 @@
 #define GAMEIMAGEMANAGER_H
 
 #define START_TIME_HOUR 3
-#define TIME_RATIO 400 // number of time counter ticks per hour (probably want 5000-10000 for actual game, not sure though)
 
 #define SUNRISE_START_MINUTES 240
 #define SUNRISE_END_MINUTES 360
@@ -44,6 +43,10 @@
 #include "World.h"
 #include "Player.h"
 #include "FileManager.h"
+#include "GlobalTime.h"
+#include "Cutscene.h"
+#include "InteractActionManager.h"
+#include "boost/filesystem.hpp"
 
 class GameImageManager
 {
@@ -53,7 +56,7 @@ private:
 	std::pair<int, int> get_camera_offset(ALLEGRO_DISPLAY *display);
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
-	int time_counter = 0;
+	GlobalTime * current_global_time = NULL;
 	ALLEGRO_BITMAP * light_filter = NULL;
 	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
@@ -63,6 +66,9 @@ public:
 	GameImageManager();
 	~GameImageManager();
 	void load_content();
+	void start_new_game(const std::string world_key);
+	void load_game_from_save(const int day, const int time);
+	void save_game();
 	void set_game_mode(int game_mode);
 	int get_game_mode();
 	void load_level(int, int);
@@ -74,14 +80,24 @@ public:
 	void unload_level_content();
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	const std::string time_display_string();
+	const std::string date_display_string();
 	void time_update();
+	GlobalTime * get_current_global_time();
 	const int get_current_minutes();
+	const std::string get_current_month_str();
+	const int get_current_month_index();
+	const int get_first_day_index();
+	const int get_first_day_of_month_index();
+	const int get_num_days();
 	void change_player_level();
 	void draw(ALLEGRO_DISPLAY *display);
+	void draw_filters(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void draw_light_filter(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void resume();
 	void decrement_dialog_option();
 	void increment_dialog_option();
+	// cutscene
+	void process_cutscene(Cutscene * cutscene);
 };
 
 #endif

@@ -18,6 +18,7 @@ Level * World::find_level_with_spawn_key(const std::string spawn_key)
 World::World()
 {
 	setClassName("World");
+	Register("world_key", &world_key); 
 	Register("current_dungeon_key", &current_dungeon_key);
 	Register("player_key", &player_key);
 	Register("current_level_grid_x", &current_level_grid_x);
@@ -41,6 +42,27 @@ void World::load_dungeons()
 	for (int i = 0; i < size; i++) {
 		const std::string dungeon_key = this->dungeon_data.getItem(i)->get_dungeon_key();
 		this->add_dungeon(new Dungeon(dungeon_key));
+	}
+}
+
+void World::reload_dungeons(const std::string dungeons_path)
+{
+	const int size = this->dungeons.size();
+	for (int i = 0; i < size; i++) {
+		std::shared_ptr<Dungeon> d = this->dungeons[i];
+		FileManager filemanager;
+		const std::string filename = dungeons_path + "/" + d->get_dungeon_name();
+		std::vector<std::string> level_keys = filemanager.all_xml_keys(filename, "SerializableClass", "Level", "LevelKey");
+		const std::vector<Level *> levels = d->get_level_list();
+		const int size = levels.size();
+		for (Level * level : levels) {
+			const std::string level_key = level->get_filename();
+			//level->reset_for_reload();
+			Level copy_level(level_key, d->get_dungeon_name(), level_key);
+			filemanager.load_xml_content(&copy_level, filename, "SerializableClass", "LevelKey", level_key);
+			level->reload_from_xml(copy_level);
+			copy_level.unload_content();
+		}
 	}
 }
 
@@ -122,7 +144,17 @@ Dungeon * World::get_dungeon(std::string dungeon_name)
 	return NULL;
 }
 
+std::vector<std::shared_ptr<Dungeon>> World::get_dungeons()
+{
+	return this->dungeons;
+}
+
 std::string World::get_player_key()
 {
 	return this->player_key.value();
+}
+
+const std::string World::get_world_key()
+{
+	return this->world_key.value();
 }

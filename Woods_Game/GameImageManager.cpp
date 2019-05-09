@@ -49,14 +49,86 @@ GameImageManager::~GameImageManager()
 
 void GameImageManager::load_content()
 {
-	//TODO: load world from file (can probably select save file from title screen)
-	const std::string world_name = "world_1"; //TEMP
+}
+
+void GameImageManager::start_new_game(const std::string world_key)
+{
 	FileManager filemanager;
 	const std::string filename = "resources/load/worlds";
-	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", world_name);
+	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", world_key);
 	this->world.load_dungeons();
 	this->world.load_npcs();
-	load_player_from_xml("resources/load/player", this->world.get_player_key());
+	load_player_from_xml("resources/load/player", this->world.get_player_key()); //TODO: Should we look for a default player? Create one with some settings entered at the start?
+	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
+	this->save_game();
+
+}
+
+void GameImageManager::load_game_from_save(const int day, const int time)
+{
+	FileManager filemanager;
+	const std::string world_key = this->world.get_world_key();
+	const std::string filename = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/worlds";
+	const int x = this->player->get_x(), y = this->player->get_y();
+	//load_player_from_xml("resources/load/player", this->world.get_player_key()); //TODO: Should this be different from when we start a new game?
+	if (this->current_global_time != NULL) {
+		delete this->current_global_time;
+	}
+	this->current_global_time = new GlobalTime(day, time);
+	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/dungeons";
+	this->world.reload_dungeons(dungeons_path);
+	//this->world.load_npcs(); //TODO: need to reload NPCS?
+	this->save_game();
+	//TODO: fix the part where we cut to black right after loading (maybe need to load asynchronously while fading to black)
+	//TODO: fix memory issues that hapen when reloading
+}
+
+void GameImageManager::save_game()
+{
+	//TODO: make it possible to load from saves with calendar
+	const std::string save_file_name = this->world.get_world_key();
+	const std::string day_str = "day_" + std::to_string(this->current_global_time->get_day());
+	std::string save_file_dir = "resources/load/saves/" + save_file_name;
+	if (!boost::filesystem::is_directory(save_file_dir)) {
+		boost::filesystem::create_directory(save_file_dir);
+	}
+	save_file_dir += "/" + day_str;
+	if (!boost::filesystem::is_directory(save_file_dir)) {
+		boost::filesystem::create_directory(save_file_dir);
+	}
+	FileManager filemanager;
+	const std::string world_file_path = save_file_dir + "/worlds";
+	std::map<std::string, std::string> attributes;
+	attributes["Type"] = "World";
+	attributes["Version"] = "1";
+	attributes["WorldKey"] = save_file_name;
+	file_manager.create_xml_file(world_file_path);
+	file_manager.save_xml_content(world_file_path, "SerializableClass", attributes);
+	const std::string world_xml = this->world.toXML();
+	//TODO: serialize global time in world
+	//TODO: serialize saved player
+	//TODO: when to update NPCs? (I think these get serialized in world)
+	file_manager.replace_xml_content(world_file_path, "SerializableClass", "LevelKey", save_file_name, world_xml);
+	const std::string dungeon_dir = save_file_dir + "/dungeons";
+	if (!boost::filesystem::is_directory(dungeon_dir)) {
+		boost::filesystem::create_directory(dungeon_dir);
+	}
+	for (std::shared_ptr<Dungeon> d : this->world.get_dungeons()) {
+		const std::string dungeon_path = dungeon_dir + "/" + d->get_dungeon_name();
+		file_manager.create_xml_file(dungeon_path);
+		std::vector<Level*> levels = d->get_level_list();
+		for (Level *level : levels) {
+			std::map<std::string, std::string> attributes;
+			attributes["Type"] = "Level";
+			attributes["Version"] = "1";
+			attributes["LevelKey"] = level->get_filename();
+			file_manager.save_xml_content(dungeon_path, "SerializableClass", attributes);
+			const std::string level_xml = level->toXML();
+			file_manager.replace_xml_content(dungeon_path, "SerializableClass", "LevelKey", level->get_filename(), level_xml);
+		}
+	}
+	const std::string save_file_path = save_file_dir + "/" + day_str;
+	file_manager.create_xml_file(save_file_path);
 }
 
 void GameImageManager::set_game_mode(int game_mode)
@@ -149,6 +221,9 @@ Player * GameImageManager::get_player()
 void GameImageManager::unload_content()
 {
 	world.unload_content();
+	if (player != NULL) {
+		player->unload_content();
+	}
 	player = NULL;
 }
 
@@ -172,6 +247,14 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 			set_game_mode(MAIN_GAME_DIALOG);
 			return;
 		}
+		if (player->has_active_cutscene()) {
+			set_game_mode(CUTSCENE);
+			return;
+		}
+		if (player->get_should_open_calendar()) {
+			set_game_mode(CALENDAR);
+			return;
+		}
 		player->update_input(input_map, joystick_map, game_mode);
 	}
 	current_level->update(game_mode);
@@ -180,8 +263,9 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 
 const std::string GameImageManager::time_display_string()
 {
-	int hours = (START_TIME_HOUR + this->time_counter / TIME_RATIO) % 24;
-	const int minutes = ((this->time_counter % TIME_RATIO) * 60) / TIME_RATIO;
+	const int time = this->current_global_time->get_time();
+	int hours = (time / TIME_RATIO) % 24;
+	const int minutes = ((time % TIME_RATIO) * 60) / TIME_RATIO;
 	const std::string ampm = hours > 11 ? "PM" : "AM";
 	if (hours == 0) {
 		hours = 12;
@@ -191,14 +275,50 @@ const std::string GameImageManager::time_display_string()
 	return hourStr + " : " + minuteStr + " " + ampm;
 }
 
+const std::string GameImageManager::date_display_string()
+{
+	return this->current_global_time->date_display_string();
+}
+
 void GameImageManager::time_update()
 {
-	this->time_counter = (this->time_counter + 1) % (TIME_RATIO*24);
+	this->current_global_time->update();
+	InteractActionManager::get_instance().update_current_time(this->current_global_time);
+}
+
+GlobalTime * GameImageManager::get_current_global_time()
+{
+	return this->current_global_time;
 }
 
 const int GameImageManager::get_current_minutes()
 {
-	return START_TIME_HOUR*60 + (((this->time_counter)*60/TIME_RATIO) % (TIME_RATIO*60*24));
+	return this->current_global_time->get_current_minutes();
+}
+
+const std::string GameImageManager::get_current_month_str()
+{
+	return this->current_global_time->get_current_month_str();
+}
+
+const int GameImageManager::get_current_month_index()
+{
+	return this->current_global_time->get_current_month_index();
+}
+
+const int GameImageManager::get_first_day_index()
+{
+	return this->current_global_time->get_first_displayable_day_index();
+}
+
+const int GameImageManager::get_first_day_of_month_index()
+{
+	return this->current_global_time->get_first_day_of_month_index();
+}
+
+const int GameImageManager::get_num_days()
+{
+	return this->current_global_time->get_num_days();
 }
 
 void GameImageManager::change_player_level()
@@ -282,7 +402,21 @@ void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
 	if (current_level) {
 		current_level->draw(display, get_camera_offset(display));
-		this->draw_light_filter(display, get_camera_offset(display));
+		this->draw_filters(display, get_camera_offset(display));
+	}
+}
+
+void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
+{
+	//TODO: check whether we actually need a light filter before drawing it
+	this->draw_light_filter(display, offset);
+	if (this->player != NULL && this->player->has_active_cutscene()) {
+		const int width = al_get_display_width(display), height = al_get_display_height(display);
+		const std::vector<ALLEGRO_BITMAP *> filters = player->get_cutscene_filters(display, width, height);
+		const int size = filters.size();
+		for (int i = 0; i < size; i++) {
+			al_draw_bitmap(filters[i], 0, 0, 0);
+		}
 	}
 }
 
@@ -360,6 +494,29 @@ void GameImageManager::decrement_dialog_option()
 void GameImageManager::increment_dialog_option()
 {
 	player->increment_dialog_option();
+}
+
+void GameImageManager::process_cutscene(Cutscene * cutscene)
+{
+	if (cutscene != NULL && cutscene->has_action()) {
+		const std::string action_key = cutscene->get_active_action_key();
+		if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
+			GlobalTime * updated_time = cutscene->get_active_global_time();
+			if (updated_time != NULL) {
+				this->current_global_time->copy(updated_time);
+				cutscene->advance_block();
+			}
+		} else if (action_key == ACTION_SAVE_GAME) {
+			this->save_game();
+			cutscene->advance_block();
+		} else if (action_key == ACTION_LOAD_GAME) {
+			GlobalTime * updated_time = cutscene->get_active_global_time();
+			if (updated_time != NULL) {
+				this->load_game_from_save(updated_time->get_day(), updated_time->get_time());
+				cutscene->advance_block();
+			}
+		}
+	}
 }
 
 

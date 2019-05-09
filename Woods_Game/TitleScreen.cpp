@@ -14,28 +14,169 @@ TitleScreen::~TitleScreen()
 
 void TitleScreen::load_content()
 {
+	//TODO: base on PauseScreen.load_content()
+	//TODO: better font
 	font = al_load_ttf_font("resources/fonts/Xeranthemum.ttf", 30, NULL);
+
+	//main menu
+	menus[TITLE_MAIN_MENU] = std::make_unique<MenuManager>();
+	menus[TITLE_MAIN_MENU]->load_xml_content("title_main_menu");
+	ImageLoader::get_instance().load_image("ui/title_main_backdrop");
+	backdrops[TITLE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/title_main_backdrop");
+	set_default_controls();
+	//TODO: start new game, load game, options, quit, etc
 }
 
 void TitleScreen::unload_content()
 {
 	al_destroy_font(font);
 	font = NULL;
+	backdrops.clear();
+	GameScreen::unload_content();
+}
+
+// input-sensitive actions that may be passed along
+
+void title_menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().cancel_menu();
+	}
+}
+
+void title_input_menu_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().menu_up();
+	}
+}
+
+void title_input_menu_down(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().menu_down();
+	}
+}
+
+void title_input_menu_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().menu_left();
+	}
+}
+
+void title_input_menu_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().menu_right();
+	}
+}
+
+void title_input_confirm_selection(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().confirm_selection();
+	}
+}
+
+void title_move_mouse_pos(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.update_mouse_position(ev.mouse.x, ev.mouse.y);
+	}
+}
+
+void title_register_mouse_click_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.process_mouse_click_left(ev.mouse.x, ev.mouse.y);
+	}
+}
+
+void title_input_select(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().select();
+	}
+}
+
+void TitleScreen::set_default_controls()
+{
+	// paused controls	
+	control_map[TITLE_SCREEN] = std::map<std::pair<int, int>, controlFunc>();
+
+	// keyboard
+	// select
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &title_input_menu_up);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &title_input_menu_down);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &title_input_menu_left);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &title_input_menu_right);
+	// confirm/cancel selection
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ENTER), &title_input_confirm_selection);
+	// needs cancel?
+	// mouse 
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &title_move_mouse_pos);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &title_register_mouse_click_left);
+
+	// controller
+	// select
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &title_input_menu_up);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &title_input_menu_down);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &title_input_menu_left);
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &title_input_menu_right);
+	// confirm/cancel selection
+	control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_A), &title_input_confirm_selection);
+	//control_map[TITLE_SCREEN].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &menu_cancel);
+}
+
+int TitleScreen::get_game_mode()
+{
+	return TITLE_SCREEN;
 }
 
 void TitleScreen::update()
 {
-	//TODO
+	GameScreen::update();
 }
 
 void TitleScreen::draw(ALLEGRO_DISPLAY * display)
 {
-	al_draw_text(font, al_map_rgb(255, 0, 0), 100, 100, NULL, "TITLE");
+	//TODO: draw background (animated?)
+	//TODO: could put backdrop somewhere besides the center of the screen
+	const float x = (al_get_display_width(display) - al_get_bitmap_width(current_backdrop())) / 2.0;
+	const float y = (al_get_display_height(display) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	al_draw_bitmap(current_backdrop(), x, y, 0);
+	current_menu_manager().draw(display, x, y,
+		al_get_bitmap_width(current_backdrop()), al_get_bitmap_height(current_backdrop()));
+	GameScreen::draw(display);
 }
 
-void TitleScreen::process_event(ALLEGRO_EVENT ev)
+ALLEGRO_BITMAP * TitleScreen::current_backdrop()
 {
-	if (title_input.is_key_pressed(ev, ALLEGRO_KEY_ENTER)) {
-		screen_flag = FLAG_CHANGE_TO_MAIN_GAME;
+	return this->backdrops[this->menu_key];
+}
+
+MenuManager & TitleScreen::current_menu_manager()
+{
+	return *menus[menu_key];
+}
+
+void TitleScreen::menu_up()
+{
+	current_menu_manager().menu_up();
+}
+
+void TitleScreen::menu_down()
+{
+	current_menu_manager().menu_down();
+}
+
+void TitleScreen::menu_left()
+{
+	current_menu_manager().menu_left();
+}
+
+void TitleScreen::menu_right()
+{
+	current_menu_manager().menu_right();
+}
+
+void TitleScreen::confirm_selection()
+{
+	std::string action_key = current_menu_manager().get_selected_action_key();
+	if (action_key == MenuManager::SELECTION_KEY_START_NEW_GAME) {
+		//TODO: more menu options before leaving title screen? (name character, select save file, etc.)
+		screen_flag = FLAG_START_NEW_GAME;
 	}
 }

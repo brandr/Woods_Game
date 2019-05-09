@@ -52,6 +52,9 @@ public:
 	~Level();
 	void load_tileset();
 	void load_from_xml();
+	void reload_from_xml(Level &copy_level);
+	void reset_for_reload();
+	void reload_tiles(Level &copy_level);
 	void intialize_dimensions();
 	void initialize_empty();
 	void initialize_tiles();

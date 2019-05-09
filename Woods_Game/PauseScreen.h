@@ -4,7 +4,6 @@
 #include "GameImageManager.h"
 #include "GameScreen.h"
 #include <memory>
-//#include "Configurations.h"
 
 enum PAUSE_MENUS{
 	PAUSE_MAIN_MENU, 
@@ -18,7 +17,6 @@ class PauseScreen:
 private:
 	std::map<int, ALLEGRO_BITMAP*> backdrops;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
-	//std::map<int, std::string> config_settings;
 	int menu_key = PAUSE_MAIN_MENU;
 public:
 	PauseScreen();

@@ -182,9 +182,9 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\agui\Agui-master\Agui-master\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\Programming\Libraries\boost\boost_1_69_0\boost_1_69_0;C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\agui\Agui-master\Agui-master\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -193,7 +193,7 @@
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\agui\Agui-master\Release;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\Programming\Libraries\boost\boost_1_69_0\boost_1_69_0\stage\x86\lib;C:\Users\Robert\Documents\agui\Agui-master\Release;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>agui.lib;agui_allegro5.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>LIBCD.lib</IgnoreSpecificDefaultLibraries>
@@ -205,22 +205,23 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\Programming\Libraries\allegro5\allegro-x86_64-w64-mingw32-gcc-7.2.0-posix-seh-static-5.2.4.1\allegro\include;C:\Users\Robert\Documents\agui\Agui-master\Agui-master\include;C:\Program Files (x86)\Visual Leak Detector\include;C:\Users\Robert\Documents\VLD;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Robert\Documents\Programming\Libraries\boost\boost_1_69_0\boost_1_69_0;C:\Users\Robert\Documents\VLD;C:\Users\Robert\Documents\agui\Agui-master\Agui-master\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
-      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <ShowIncludes>true</ShowIncludes>
       <WholeProgramOptimization>true</WholeProgramOptimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>ALLEGRO_STATICLINK;_MBCS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\allegro\allegro-5.0.10-msvc-11.0\lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\agui\Agui-master\Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Robert\Documents\Programming\Libraries\boost\boost_1_69_0\boost_1_69_0\stage\x86\lib;C:\Users\Robert\Documents\agui\Agui-master\Release;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;C:\Users\Robert\Documents\VLD;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>agui.lib;agui_allegro5.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -285,9 +286,12 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Being.h" />
+    <ClInclude Include="Binding.h" />
+    <ClInclude Include="CalendarScreen.h" />
     <ClInclude Include="Configurations.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
+    <ClInclude Include="Cutscene.h" />
     <ClInclude Include="Dialog.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonData.h" />
@@ -302,6 +306,7 @@
     <ClInclude Include="GameImageDisplay.h" />
     <ClInclude Include="GameImageManager.h" />
     <ClInclude Include="GameScreen.h" />
+    <ClInclude Include="GlobalTime.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InteractAction.h" />
@@ -346,9 +351,11 @@
   <ItemGroup>
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Being.cpp" />
+    <ClCompile Include="CalendarScreen.cpp" />
     <ClCompile Include="Configurations.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
+    <ClCompile Include="Cutscene.cpp" />
     <ClCompile Include="Dialog.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="DungeonData.cpp" />
@@ -363,6 +370,7 @@
     <ClCompile Include="GameImageDisplay.cpp" />
     <ClCompile Include="GameImageManager.cpp" />
     <ClCompile Include="GameScreen.cpp" />
+    <ClCompile Include="GlobalTime.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InteractAction.cpp" />

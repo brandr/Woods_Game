@@ -46,8 +46,13 @@ void ScreenManager::refresh()
 void ScreenManager::update()
 {
 	if (current_screen) {
-		if (current_screen->get_screen_flag() == FLAG_CHANGE_TO_MAIN_GAME) {
-			add_screen(DBG_NEW MainGameScreen());
+		if (current_screen->get_screen_flag() == FLAG_START_NEW_GAME) {
+			//TODO: how to determine where to load from? need to prompt generation? how to know which save file/character name/etc?
+			const std::string world_key = "world_1"; //TEMP. maybe different options for world gen?
+			MainGameScreen * game_screen = new MainGameScreen();
+			game_screen->start_new_game(world_key);
+			add_screen(game_screen);
+			//TODO: save game once it's loaded (might be inside game_screen->start_new_game())
 			return;
 		}
 		current_screen->update();

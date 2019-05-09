@@ -42,6 +42,14 @@ void Dungeon::unload_content()
 	dungeon_grid.swap(std::vector<std::vector<Level*>>());
 	deleted_level_coords.clear();
 	deleted_level_coords.swap(std::vector<std::string > ());
+	const int level_size = this->level_list.size();
+	for (int i = 0; i < level_size; i++) {
+		Level * l = this->level_list[i];
+		if (l != NULL) {
+			l->unload_content();
+		}
+	}
+	this->level_list.clear();
 }
 
 void Dungeon::intialize_levels()

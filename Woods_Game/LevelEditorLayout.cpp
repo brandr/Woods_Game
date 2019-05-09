@@ -283,6 +283,8 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	this->edit_object_layout.add(new agui::EmptyWidget());
 
 	// scrollable text edit pane
+	agui::Allegro5Font * attributes_font = new agui::Allegro5Font("resources/fonts/Monospace.ttf", 12);
+	selected_level_object_instance_attributes_box.setFont(attributes_font);
 	this->edit_object_layout.add(&object_instance_attributes_scroll_pane);
 	object_instance_attributes_scroll_pane.setVScrollPolicy(agui::ScrollPolicy::SHOW_ALWAYS);
 	object_instance_attributes_scroll_pane.setSize(ATTRIBUTE_PANE_WIDTH, ATTRIBUTE_PANE_HEIGHT);

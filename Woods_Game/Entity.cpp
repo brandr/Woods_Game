@@ -14,6 +14,12 @@ Entity::~Entity()
 	//currentLevel = NULL;
 }
 
+void Entity::copy_entity_attributes(Entity * other)
+{
+	this->entity_attributes.Clear();
+	this->set_entity_attributes(other->get_entity_attributes());
+}
+
 Rect * Entity::get_bitmap_subsection()
 {
 	//override this for subclasses
@@ -63,6 +69,12 @@ void Entity::load_content_from_attributes()
 	GameImage::load_content_from_attributes();
 	this->rect.x = this->entity_starting_pos_x.value();
 	this->rect.y = this->entity_starting_pos_y.value();
+}
+
+void Entity::unload_content()
+{
+	this->entity_attributes.Clear();
+	GameImage::unload_content();
 }
 
 void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -225,11 +237,18 @@ int Entity::get_entity_attribute(std::string attr_key)
 			return attr->attribute_value.value();
 		}
 	}
-	/*
-	auto it = entity_attributes.find(attribute);
-	if (it != entity_attributes.end()) return it->second;
-	*/
 	return 0;
+}
+
+std::map<std::string, int> Entity::get_entity_attributes()
+{
+	std::map<std::string, int> attributes;
+	const int size = this->entity_attributes.size();
+	for (int i = 0; i < size; i++) {
+		EntityAttribute *attr = this->entity_attributes.getItem(i);
+		attributes[attr->attribute_key.value()] = attr->attribute_value.value();
+	}
+	return attributes;
 }
 
 bool Entity::has_entity_attribute(std::string attr_key)

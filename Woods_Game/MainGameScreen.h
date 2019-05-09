@@ -2,6 +2,7 @@
 #define MAINGAMESCREEN_H
 
 #include "InventoryScreen.h"
+#include "CalendarScreen.h"
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "allegro5/events.h"   // for ALLEGRO_EVENT
@@ -23,6 +24,7 @@ private:
 	GameImageManager game_image_manager;
 	PauseScreen pause_screen;
 	InventoryScreen inventory_screen;
+	CalendarScreen calendar_screen;
 	Controls keyboard_controls;
 	Controls controller_controls;
 	//UI components
@@ -45,15 +47,19 @@ public:
 	virtual void set_input_map();
 	virtual void load_content();
 	void load_ui_content();
+	void start_new_game(const std::string world_key);
 	virtual void unload_content();
 	void load_controls();
 	void reset_controls();
 	virtual void update();
 	void pause_screen_update();
 	void dialog_update();
+	void cutscene_update();
+	void calendar_update();
 	virtual void draw(ALLEGRO_DISPLAY* display);
 	void draw_ui(ALLEGRO_DISPLAY* display);
 	void draw_ui_inventory(ALLEGRO_DISPLAY* display);
+	void draw_ui_calendar(ALLEGRO_DISPLAY* display);
 	void draw_ui_main_game(ALLEGRO_DISPLAY* display);
 	void draw_hotbar(ALLEGRO_DISPLAY* display);
 	void draw_clock(ALLEGRO_DISPLAY* display);

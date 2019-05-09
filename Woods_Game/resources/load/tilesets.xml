@@ -48,8 +48,16 @@
                         <Member Name="attribute_value">2</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">current_durability</Member>
+                        <Member Name="attribute_value">2</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">shearable</Member>
                         <Member Name="attribute_value">1</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">broken</Member>
+                        <Member Name="attribute_value">0</Member>
                     </Class>
                 </Collection>
                 <Collection Name="components"/>
@@ -69,12 +77,20 @@
                         <Member Name="attribute_value">3</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">current_durability</Member>
+                        <Member Name="attribute_value">3</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">knockback</Member>
                         <Member Name="attribute_value">3</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">shearable</Member>
                         <Member Name="attribute_value">1</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">broken</Member>
+                        <Member Name="attribute_value">0</Member>
                     </Class>
                 </Collection>
                 <Collection Name="components"/>
@@ -202,6 +218,34 @@
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_sign</Member>
+                <Member Name="entity_data_index">2</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractActions" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_door</Member>
+                <Member Name="entity_data_index">3</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractActions" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
         <Collection Name="entity_group_types">
             <Class Type="EntityGroupData" Version="1">
@@ -224,6 +268,14 @@
             </Class>
         </Collection>
         <Collection Name="tiled_image_types">
+             <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">calendars_1</Member>
+                <Member Name="image_data_index">0</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">room_walls_1</Member>
+                <Member Name="image_data_index">1</Member>
+            </Class>
         </Collection>
         <Collection Name="spawner_types">
             <Class Type="EntityData" Version="1">

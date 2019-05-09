@@ -240,17 +240,22 @@ void Player::interact_update(std::vector<Entity*> interactables, std::vector<Til
 	}
 }
 
+const int Player::wake_up_time()
+{
+	return 1000; //temp. need some constant, along with things like alarm clocks
+	// maybe set the base variable on player when loading it in?
+}
+
 void Player::dialog_update()
 {
 	if (this->open_dialog) {
 		const std::string action_key = this->open_dialog->get_active_action_key();
 		if (action_key.length() > 0) {
 			const InteractActionManager &manager = InteractActionManager::get_instance();
-			manager.run_action(action_key, this);
+			manager.run_action(action_key, this->open_dialog->get_action_bindings(), this);
 		}  else {
 			this->open_dialog->update();
 		}
-		
 	}
 }
 
@@ -264,6 +269,50 @@ void Player::close_dialog()
 	if (this->open_dialog != NULL) {
 		delete(this->open_dialog);
 		this->open_dialog = NULL;
+	}
+}
+
+void Player::open_calendar()
+{
+	this->should_open_calendar = true;
+}
+
+void Player::close_calendar()
+{
+	this->should_open_calendar = false;
+}
+
+const bool Player::get_should_open_calendar()
+{
+	return this->should_open_calendar;
+}
+
+const std::vector<ALLEGRO_BITMAP*> Player::get_cutscene_filters(ALLEGRO_DISPLAY * display, const int width, const int height)
+{
+	std::vector<ALLEGRO_BITMAP*> filters;
+	if (this->has_active_cutscene()) {
+		filters = this->active_cutscene->get_filters(display, width, height);
+	}
+	return filters;
+}
+
+void Player::cutscene_update()
+{
+	if (this->has_active_cutscene()) {
+		if (!this->active_cutscene->has_action()) {
+			this->active_cutscene->update();	
+		}
+		if (!this->active_cutscene->has_action() && this->active_cutscene->get_is_finished()) {
+			this->end_active_cutscene();
+		}
+	}
+}
+
+void Player::end_active_cutscene()
+{
+	if (this->active_cutscene != NULL) {
+		delete(this->active_cutscene);
+		this->active_cutscene = NULL;
 	}
 }
 
@@ -317,6 +366,25 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 				}
 			}
 	}
+}
+
+void Player::sleep_in_bed(GlobalTime * current_time)
+{
+	Cutscene * cutscene = new Cutscene();
+	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
+	cutscene->add_global_time_update(current_time->get_day() + 1, this->wake_up_time()); //TEMP: how to get wake up time?
+	cutscene->add_action(ACTION_SAVE_GAME);
+	this->active_cutscene = cutscene;
+}
+
+void Player::load_game_for_day(const int day)
+{
+	Cutscene * cutscene = new Cutscene();
+	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	cutscene->add_load_game_update(day, this->wake_up_time()); //TEMP: how to get wake up time? (should probably be accurate to that day)
+	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
+	this->active_cutscene = cutscene;
 }
 
 float Player::get_walk_speed()
@@ -502,6 +570,16 @@ void Player::increment_dialog_option()
 	if (this->open_dialog != NULL) {
 		this->open_dialog->increment_option();
 	}
+}
+
+const bool Player::has_active_cutscene()
+{
+	return this->active_cutscene != NULL;
+}
+
+Cutscene * Player::get_active_cutscene()
+{
+	return this->active_cutscene;
 }
 
 const std::string Player::get_spawn_key()

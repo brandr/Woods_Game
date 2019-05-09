@@ -27,7 +27,8 @@ DialogPage * Dialog::current_page()
 
 Dialog::Dialog()
 {
-	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
+	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
+	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
 }
 
 Dialog::~Dialog()
@@ -121,9 +122,23 @@ void Dialog::increment_option()
 	}
 }
 
+void Dialog::set_should_scroll_text(const bool value)
+{
+	this->should_scroll_text = value;
+}
+
+void Dialog::set_action_bindings(std::vector<ActionBinding*> bindings)
+{
+	this->action_bindings = bindings;
+}
+
+std::vector<ActionBinding*> Dialog::get_action_bindings()
+{
+	return this->action_bindings;
+}
+
 void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off)
 {
-	//TODO: draw options arrow
 	if (this->pages.size() > this->page_num) {
 		DialogPage * page = this->pages[this->page_num];
 		const bool page_has_options = page->has_options();

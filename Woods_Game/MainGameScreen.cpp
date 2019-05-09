@@ -277,7 +277,18 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
-	//TODO: control map for MAIN_GAME_DIALOG
+
+	// calendar controls
+	// keyboard
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
+	// controller
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
 }
 
 void MainGameScreen::set_mappable_controls()
@@ -294,8 +305,10 @@ void MainGameScreen::set_mappable_controls()
 	this->map_keyboard_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_keyboard_control_action(CALENDAR, "menu_select", &input_select);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_keyboard_control_action(CALENDAR, "menu_cancel", &resume);
 	this->map_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 	// controller
 	this->map_controller_control_action(TOP_DOWN, "interact", &interact);
@@ -309,8 +322,10 @@ void MainGameScreen::set_mappable_controls()
 	this->map_controller_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_controller_control_action(CALENDAR, "menu_select", &input_select);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_controller_control_action(CALENDAR, "menu_cancel", &resume);
 	this->map_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 }
 
@@ -329,8 +344,10 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_keyboard_control_action(TOP_DOWN, "hotbar_right");
 	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_select");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select");
+	this->unmap_keyboard_control_action(CALENDAR, "menu_select");
 	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_keyboard_control_action(CALENDAR, "menu_cancel");
 	this->unmap_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance");
 	// controller
 	this->unmap_controller_control_action(TOP_DOWN, "interact");
@@ -344,9 +361,13 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_controller_control_action(TOP_DOWN, "hotbar_right");
 	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_select");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_select");
+	this->unmap_controller_control_action(CALENDAR, "menu_select");
 	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_controller_control_action(CALENDAR, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance");
+
+	//TODO: calendar
 }
 
 void MainGameScreen::set_mappable_input_list()
@@ -400,10 +421,15 @@ void MainGameScreen::set_input_map()
 
 void MainGameScreen::load_content()
 {
+	//TODO: need to load content differently depending on whether we're starting a new game, loading a save, etc.
 	game_image_manager.load_content();
 	pause_screen.load_content();
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
+	calendar_screen.load_content();
+	GlobalTime * global_time = game_image_manager.get_current_global_time();
+	calendar_screen.set_global_time(global_time);
+	calendar_screen.set_player(game_image_manager.get_player());
 	load_controls();
 	set_default_controls();
 	set_mappable_controls();
@@ -416,18 +442,23 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1");
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
-	ImageLoader::get_instance().load_image("ui/clock_backdrop");
+	ImageLoader::get_instance().load_image("ui/time_date_backdrop");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
 
 	hotbar_box = ImageLoader::get_instance().get_image("ui/item_box_1");
 	hotbar_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
 	dialog_backdrop_full_width = ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
-	clock_backdrop = ImageLoader::get_instance().get_image("ui/clock_backdrop");
+	clock_backdrop = ImageLoader::get_instance().get_image("ui/time_date_backdrop");
 	option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL); 
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
-	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
+	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 	//TODO: other UI components like stamina
+}
+
+void MainGameScreen::start_new_game(const std::string world_key)
+{
+	this->game_image_manager.start_new_game(world_key);
 }
 
 void MainGameScreen::unload_content()
@@ -462,6 +493,7 @@ void MainGameScreen::reset_controls()
 void MainGameScreen::update()
 {
 	const int game_mode = game_image_manager.get_game_mode();
+	GlobalTime * global_time = game_image_manager.get_current_global_time();
 	switch (game_mode) {
 		case TOP_DOWN:
 			game_image_manager.update(input_map, joystick_pos_map);
@@ -471,6 +503,13 @@ void MainGameScreen::update()
 			break;
 		case MAIN_GAME_DIALOG:
 			dialog_update();
+			break;
+		case CUTSCENE:
+			cutscene_update();
+			break;
+		case CALENDAR:
+			this->calendar_screen.set_global_time(global_time);
+			calendar_update();
 			break;
 		case TAKING_MAPPABLE_INPUT:
 			pause_screen_update();
@@ -504,6 +543,28 @@ void MainGameScreen::dialog_update()
 	}
 }
 
+void MainGameScreen::cutscene_update()
+{
+	Player * player = game_image_manager.get_player();
+	player->cutscene_update();
+	game_image_manager.process_cutscene(player->get_active_cutscene());
+	if (!player->has_active_cutscene()) {
+		//TODO: may want to trigger a different game mode if the cutscene leads to another one
+		this->resume_game();
+	}
+}
+
+void MainGameScreen::calendar_update()
+{
+	Player * player = game_image_manager.get_player();
+	if (!player->get_should_open_calendar()) {
+		this->resume_game();
+	}
+	else {
+		this->calendar_screen.update();
+	}
+}
+
 void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
 {
 	game_image_manager.draw(display);
@@ -522,6 +583,9 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 	case MAIN_GAME_INVENTORY:
 		draw_ui_inventory(display);
 		break;
+	case CALENDAR:
+		draw_ui_calendar(display);
+		break;
 	case TOP_DOWN:
 		draw_ui_main_game(display);
 		break;
@@ -534,6 +598,11 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_ui_inventory(ALLEGRO_DISPLAY * display)
 {
 	inventory_screen.draw(display);
+}
+
+void MainGameScreen::draw_ui_calendar(ALLEGRO_DISPLAY * display)
+{
+	calendar_screen.draw(display);
 }
 
 void MainGameScreen::draw_ui_main_game(ALLEGRO_DISPLAY * display)
@@ -574,8 +643,10 @@ void MainGameScreen::draw_clock(ALLEGRO_DISPLAY * display)
 	const int x = al_get_display_width(display) - al_get_bitmap_width(clock_backdrop) - 8;
 	const int y = 8;
 	al_draw_bitmap(clock_backdrop, x, y, NULL);
+	const std::string date_str = game_image_manager.date_display_string();
 	const std::string time_str = game_image_manager.time_display_string();
-	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, time_str.c_str());
+	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, date_str.c_str());
+	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 200.0f, y + 16.0f, 0, time_str.c_str());
 	//TODO
 }
 
@@ -627,7 +698,8 @@ GameScreen & MainGameScreen::screen_receiving_input()
 			return pause_screen;
 		case MAIN_GAME_INVENTORY:
 			return inventory_screen;
-		
+		case CALENDAR:
+			return calendar_screen;
 		default:
 			return *this;
 	}
@@ -651,8 +723,9 @@ void MainGameScreen::pause_game()
 
 void MainGameScreen::cancel_menu()
 {
-	if (get_game_mode() != MAIN_GAME_PAUSED) return;
-	pause_screen.cancel_menu();
+	if (get_game_mode() == MAIN_GAME_PAUSED) {
+		pause_screen.cancel_menu();
+	}
 }
 
 void MainGameScreen::resume_game()
@@ -663,6 +736,14 @@ void MainGameScreen::resume_game()
 		break;
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.reset();
+		break;
+	case CALENDAR:
+		if (calendar_screen.showing_dialog()) {
+			calendar_screen.close_dialog();
+		} else {
+			calendar_screen.reset();
+			game_image_manager.get_player()->close_calendar();
+		}
 		break;
 	}
 	//TODO: reset other screens as necessary for the given game mode
@@ -690,6 +771,9 @@ void MainGameScreen::menu_up()
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.decrement_dialog_option();
 		break;
+	case CALENDAR:
+		this->calendar_screen.menu_up();
+		break;
 	}
 }
 
@@ -704,6 +788,9 @@ void MainGameScreen::menu_down()
 		break;
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.increment_dialog_option();
+		break;
+	case CALENDAR:
+		this->calendar_screen.menu_down();
 		break;
 	}
 }
@@ -720,6 +807,9 @@ void MainGameScreen::menu_left()
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.decrement_dialog_option();
 		break;
+	case CALENDAR:
+		this->calendar_screen.menu_left();
+		break;
 	}
 }
 
@@ -734,6 +824,9 @@ void MainGameScreen::menu_right()
 		break;
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.increment_dialog_option();
+		break;
+	case CALENDAR:
+		this->calendar_screen.menu_right();
 		break;
 	}
 }
@@ -752,6 +845,9 @@ void MainGameScreen::select()
 	switch (get_game_mode()) {
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.select();
+		break;
+	case CALENDAR:
+		calendar_screen.select();
 		break;
 	}
 }

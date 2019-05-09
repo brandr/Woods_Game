@@ -155,16 +155,13 @@ void MenuManager::load_xml_content(std::string menu_key)
 	file_manager.load_xml_content(this, "resources/load/menus",
 		"SerializableClass", "MenuKey", menu_key);
 	position[0] = x_pos.value();
-	position[1] = y_pos.value(); //TODO: replace position with the two positions and remove this part
+	position[1] = y_pos.value();
 	std::string font_full_filename = "resources/fonts/" + this->font_filename.value() + ".ttf";
 	font = al_load_font(font_full_filename.c_str(), this->font_size.value(), NULL);
 	const int size = this->menu_items.size();
 	for (int i = 0; i < size; i++) {
 		menu_items.getItem(i)->load_additional_content();
 	}
-	//set_menu_items();
-	//set_animations();
-	//TODO: anything that isn't serialzed
 }
 
 void MenuManager::unload_content()

@@ -17,19 +17,34 @@ Fix memory leaks in level editor
 
 ---------------------------------------------------
 
-Allow sleeping in bed (maybe only in certain times?) to go to next day and save, allow using calendar to load
-	* How to save?
-	* Sleep animation? (Screen going dark, player lying in bed)
-	* advance day
+Add an option on the title screen to load from save file -- base on calendar functionality
+	* need some global file in the save file that tells us things like the current day we should load, along with any constants that persist after reloads
 
-Look up actual date for specific year (whenever story took place, probably early 90s or late 80s), maybe use standard date methods to determine real timestamps
+Make it so we load asynchronously when using the calendar (do it during the fade)
+
+Fix memory leaks when loading via calendar (probably caused by loading a new level)
+	* I think there are also memory leaks when sleeping in the bed
+
+Implement ways to add items to the inventory, possibly store them in a chest or something
+
+Implement "pickup-able" items, like seeds from ferns
+	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
+	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
+	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
+
+Consider adding plants as a class
+	* should these be an XML-specified class, or is there a good way to layer EntityAttributes over plant behavior?
+		# general behavior is "action to take as time passes or at sunset"
+	* LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
+	* this allows plants to have general behavior for growing, spreading, etc.
+	* could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
 
 Day/night cycle
 	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
 		* how to handle areas with lighting?
 	- how to show date in addition to time? When to increment date? (Midnight or only after sleeping)
 	- should player pass out if they're up too late?
-	- might want to calculate "time to wake up" somehow rather than just making it constant
+	- calculate "time to wake up" somehow rather than just making it constant
 		* alarm clock upgrade/item?
 
 Make NPC
@@ -57,19 +72,9 @@ Think carefully about updates for NPCs
 		* maybe they never pass between levels?
 			# only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
 
-Cutscenes
-
-Fix the way we pass xml attributes in the level editor (copy entire interact actions and contact actions instead of just method name and key)
-	* look at spawners for an example since these seem to work correctly
-
 Look into getting rid of "gameImages" list in Level
 	* I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
 		# Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
-
-Implement "pickup-able" items, like seeds from ferns
-	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
-	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
-	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
 	
 Buildings
 	* need door animation? (no other blocks are animated, might need to be a new thing)
@@ -93,17 +98,6 @@ IDEA: Stamina upgrades are the only thing you take with you when reloading
 
 Add a shovel and allow the player to dig up items
 	- implement picking up items off the ground first
-
-Refactor all file loading to xml
-	- player
-		* consider long-term saving/loading functionality, like items the player has, start dungeon/level/position, etc
-
-NOTES:
-
--consider adding plants as a class
-	* LargePlants (i.e., trees) inherit from Plant and EntityGroup, SmallPlants (i.e. ferns) inherit from Plant and Block
-	* this allows plants to have general behavior for growing, spreading, etc.
-	* could also manage block/entity group behavior in other ways so as to avoid making to make new classes for every new set of behaviors
 
 -think about how to set up world/dungeon/level serialization such that levels which update while the player isn't there are fully updated by the time the player gets to them
 	* changes include things like plant growth, animals spawning, etc.
@@ -131,17 +125,11 @@ NOTES:
 
 -make entityAttributes more flexible by allowing values other than ints
 
--once saving/loading is implemented, make sure we have a way to track things that actually need to be saved/loaded
-	*i.e., don't bother saving a level if nothing about it has changed
-
 -make custom mouse cursor
 
 -make effects for the player touching vegetation
 	*might consider a small "rustling vegetation" animation that covers the player's feet instead 
 		#this could be used for wading through shallow water
-
--figure out how trails are going to work with the current tile system
-	*could have them occupy existing tiles as some sort of "contents" and have trail images drawn over them and increase movement modifier
 
 -fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
 
@@ -158,17 +146,11 @@ NOTES:
 	*since entitygroups are treated as single entities, need some kind of entitygroup overridden entity collision method for when the player rect-collides witth trees.
 		#within this method, have each entity within the group attempt to mask-collide with the other entity (i.e. the player) and check for the transparent_on_contact attribute
 
--test large levels to see if there is lag when entering them
-
 -decide how to handle player leaving the level when there's no corresponding level
 
 LONG TERM PLANS
 
 -allow changing text speed in options
-
--make a "calendar" UI that also fuctions as saving/loading
-	*eventually want to make reloading from older saves something we subtly nudge the player towards in order to unlock hidden endings
-	*also need to make it so certain things only happen if the player is in the right places at the right times
 
 -make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
 	*might even use real information about some of these things (like latin name)

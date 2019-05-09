@@ -20,6 +20,7 @@
 #include <Agui/Widgets/CheckBox/CheckBox.hpp>
 #include <Agui/Widgets/TextField/TextField.hpp>
 #include <Agui/Widgets/TextBox/TextBox.hpp>
+#include <Agui/Backends/Allegro5/Allegro5Font.hpp>
 
 #include <allegro5/display.h>
 

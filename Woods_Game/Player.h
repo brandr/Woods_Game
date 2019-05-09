@@ -3,6 +3,7 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
+#include "Cutscene.h"
 #include "Dialog.h"
 #include "Inventory.h"
 #include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
@@ -39,6 +40,8 @@ private:
 	Inventory inventory;
 	int current_action = ACTION_NONE;
 	Dialog * open_dialog;
+	Cutscene * active_cutscene;
+	bool should_open_calendar = false;
 protected:
 	virtual void collide_with_entity(Entity* e);
 public:
@@ -55,11 +58,24 @@ public:
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	//time
+	const int wake_up_time();
+	//dialog
 	void dialog_update();
 	const bool has_open_dialog();
 	void close_dialog();
+	void open_calendar();
+	void close_calendar();
+	const bool get_should_open_calendar();
+	//cutscenes
+	const std::vector<ALLEGRO_BITMAP*> get_cutscene_filters(ALLEGRO_DISPLAY * display, const int width, const int height);
+	void cutscene_update();
+	void end_active_cutscene();
+	//interact
 	const bool interact(Entity* e);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	void sleep_in_bed(GlobalTime * current_time);
+	void load_game_for_day(const int day);
 	float get_walk_speed();
 	void set_direction(int);
 	void queue_move(int);
@@ -89,6 +105,8 @@ public:
 	void set_open_dialog(Dialog * dialog);
 	void decrement_dialog_option();
 	void increment_dialog_option();
+	const bool has_active_cutscene();
+	Cutscene * get_active_cutscene();
 	const std::string get_spawn_key();
 };
 

@@ -61,6 +61,15 @@ const std::string InteractAction::get_binding(const std::string key)
 	return "";
 }
 
+void InteractAction::set_bindings(std::vector<ActionBinding*> bindings)
+{
+	this->bindings.Clear();
+	const int size = bindings.size();
+	for (int i = 0; i < size; i++) {
+		this->bindings.addItem(bindings[i]);
+	}
+}
+
 ActionBinding::ActionBinding()
 {
 	this->setClassName("ActionBinding");

@@ -75,17 +75,15 @@ void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
 
 void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 {
-	//std::vector<Item*> hotbar = inventory->get_hotbar();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(item_box_hotbar);
 	const int box_height = al_get_bitmap_height(item_box_hotbar);
 	const int hotbar_index = inventory->get_hotbar_index();
 	const float y = (height + al_get_bitmap_height(inventory_backdrop))/2 - box_height - 36;
-	const int size = HOTBAR_SIZE;//hotbar.size();
+	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size) / 2 + i*box_width;
-		const int num = i < 9 ? i + 1 : 0;
 		if (!selecting_internal_inventory() && i == hotbar_index) {
 			al_draw_bitmap(item_box_selected, x, y, 0);
 		}
@@ -95,7 +93,7 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		if (i == dragging_selection.first && dragging_selection.second < 0) {
 			al_draw_bitmap(item_drag_selection, x, y, 0);
 		}
-		Item* item = inventory->get_hotbar_item(i);// hotbar[i];
+		Item* item = inventory->get_hotbar_item(i);
 		if (item && !(dragging_selection.first == i && dragging_selection.second < 0)) 
 			item->draw(display, x, y);
 	}

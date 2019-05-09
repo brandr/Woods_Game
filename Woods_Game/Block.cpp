@@ -47,6 +47,17 @@ void Block::reset(TileSet * tileset, Block * b)
 {
 }
 
+void Block::reset_for_reload()
+{
+	if (this->has_entity_attribute(E_ATTR_BROKEN)) {
+		this->set_entity_attribute(E_ATTR_BROKEN, 0);
+	}
+	if (this->has_entity_attribute(E_ATTR_CURRENT_DURABILITY)) {
+		const int max_durability = this->get_entity_attribute(E_ATTR_DURABILITY);
+		this->set_entity_attribute(E_ATTR_CURRENT_DURABILITY, max_durability);
+	}
+}
+
 bool Block::is_empty() 
 {
 	return this->get_entity_data_index() < 0;

@@ -30,6 +30,8 @@ public:
 	static constexpr const char* SELECTION_KEY_CANCEL_CONTROLS_CHANGES = "cancel_controls_changes";
 	static constexpr const char* SELECTION_KEY_REVERT_CONTROLS_DEFAULT = "revert_controls_default";
 	static constexpr const char* SELECTION_KEY_SAVE_CONTROLS_CHANGES = "save_controls_changes";
+	// title screen menu options
+	static constexpr const char* SELECTION_KEY_START_NEW_GAME = "start_new_game";
 protected:
 	xmls::Collection<MenuItem> menu_items;
 	std::string menu_key;

@@ -1,5 +1,6 @@
 <root>
 	<SerializableClass Type="World" Version="1" WorldKey="world_1">
+		<Member Name="world_key">world_1</Member>
 		<Member Name="current_dungeon_key">dungeon_1</Member>
 		<Member Name="player_key">default_player</Member>
 		<Member Name="current_level_grid_x">0</Member>

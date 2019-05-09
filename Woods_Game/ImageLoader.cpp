@@ -8,6 +8,11 @@ std::string ImageLoader::rect_to_string(Rect r)
 	return "" + std::to_string(r.x) + "," + std::to_string(r.y) + "," + std::to_string(r.width) + "," + std::to_string(r.height);
 }
 
+const std::string ImageLoader::full_image_key(const std::string image_key, const int width, const int height, const std::string suffix)
+{
+	return image_key + "_" + "DIM-" + std::to_string(width) + "." + std::to_string(height) + "." + "_" + suffix;
+}
+
 
 ImageLoader &ImageLoader::get_instance()
 {
@@ -45,7 +50,32 @@ const bool ImageLoader::image_exists(const std::string filename)
 	return (al_load_bitmap(full_filename.c_str()));
 }
 
+const bool ImageLoader::keyed_image_exists(const std::string image_key, const int width, const int height, const std::string suffix)
+{
+	const std::string full_key = this->full_image_key(image_key, width, height, suffix);
+	return this->keyed_image_exists(full_key);
+}
 
+const bool ImageLoader::keyed_image_exists(const std::string key)
+{
+	auto it = image_map.find(std::pair<std::string, std::string>(key, ""));
+	return (it != image_map.end());
+}
+
+void ImageLoader::set_keyed_image(ALLEGRO_BITMAP * image, const std::string image_key, const int width, const int height, const std::string suffix)
+{
+	const std::string full_key = this->full_image_key(image_key, width, height, suffix);
+	image_map[std::pair<std::string, std::string>(full_key, "")] = image;
+}
+
+ALLEGRO_BITMAP * ImageLoader::get_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix)
+{
+	const std::string full_key = this->full_image_key(image_key, width, height, suffix);
+	if (this->keyed_image_exists(full_key)) {
+		return image_map[std::pair<std::string, std::string>(full_key, "")];
+	}
+	return NULL;
+}
 
 void ImageLoader::load_image(std::string filename)
 {

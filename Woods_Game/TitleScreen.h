@@ -2,24 +2,42 @@
 #define TITLESCREEN_H
 
 #include "GameScreen.h"
+#include "MenuManager.h"
 #include "allegro5/allegro_font.h"  // for ALLEGRO_FONT
 #include "allegro5/display.h"       // for ALLEGRO_DISPLAY
 #include "allegro5/events.h"        // for ALLEGRO_EVENT
 #include "allegro5/allegro_ttf.h"    
+#include "allegro5/bitmap.h"
+
+enum TITLE_MENUS {
+	TITLE_MAIN_MENU
+};
 
 class TitleScreen:
 	public GameScreen
 {
 private:
 	ALLEGRO_FONT *font;
+	std::map<int, ALLEGRO_BITMAP*> backdrops;
+	std::map<int, std::unique_ptr<MenuManager>> menus;
+	int menu_key = TITLE_MAIN_MENU;
 public:
 	TitleScreen();
 	~TitleScreen();
 	virtual void load_content();
 	virtual void unload_content();
+	void set_default_controls();
+	virtual int get_game_mode();
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
-	virtual void process_event(ALLEGRO_EVENT ev);
+	//virtual void process_event(ALLEGRO_EVENT ev);
+	ALLEGRO_BITMAP* current_backdrop();
+	MenuManager& current_menu_manager();
+	virtual void menu_up();
+	virtual void menu_down();
+	virtual void menu_left();
+	virtual void menu_right();
+	virtual void confirm_selection();
 };
 
 #endif
