@@ -1,7 +1,8 @@
 Woods game todolist
 
+---------------------------------------------------
 Level editor
---------------------
+---------------------------------------------------
 
 Either get rid of tileset select tab inside level tab or make it work
 
@@ -15,6 +16,9 @@ Fix memory leaks in level editor
 	* might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
 	* this is also a good time to fix memory leaks in general
 
+
+---------------------------------------------------
+Memory management/error handling
 ---------------------------------------------------
 
 Change how gameimages access bitmaps -- it should be possible to only ever use ImageLoader methods as long as we have the right keys
@@ -22,19 +26,55 @@ Change how gameimages access bitmaps -- it should be possible to only ever use I
 	* entitygroups seem particularly memory-expensive
 	* need to fix this asap because memory usage is terrible
 
+Make it so we load asynchronously when using the calendar (do it during the fade)
+
+Decide how to handle player leaving the level when there's no corresponding level
+
+---------------------------------------------------
+Procedural generation
+---------------------------------------------------
+
 Need to give blocks a set of allowed tiles to make sure plants don't spread to spots that don't make sense
 	* keep this a separate designation from level gen since (for example) thorns should be able to spread onto the trail
 
-Fix bug where player gets stuck when walking into thorns
-	* I think the issue might be that low move speed messed up bounce behavior
-	* Could also change thorn behavior so you get stuck and have to "shake" free or cut the thorns
+IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally"
 
-Fix bug where there's sometimes an exception on closing the window
+---------------------------------------------------
+Bug fixes
+---------------------------------------------------
+
+Player gets stuck when walking into thorns
+	* I think the issue might be that low move speed messed up bounce behavior
+	* Could also change thorn behavior so instead of just bouncing away, you get stuck and have to "shake" free or cut the thorns
+
+There's sometimes an exception on closing the window
 	* seems to have something to do with randomized procedural generation, because it only happens some of the time
 	* exception has something to do with level's tile rows
 
+Fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
+	* idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
+	* other idea: only allow selection in each menu through the appropriate selection button (I like this idea better since it's more intuitive)
+
+Fix analog stick issue that sometimes happens when controller is in some weird configuration
+
+Fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
+	*make sure this fix applies to both inventory and pause
+
+Fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up) and figure out how to scale object/ui sizes with resolution
+
+---------------------------------------------------
+Art/content
+---------------------------------------------------
+
 Draw the leaves for the large tree sprite
 	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
+
+Draw the symbols for the Eye of Pan and the Eye of Gabriel
+	* could also do "hand" instead of "eye" but I like eye better currently
+
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
 
 IDEA: different walk animations for different speed ranges (1.0 - 2.0, 2.0 - 3.0, etc)
 	* do this at the same time as making "rustle" animation because that animation might need to sync up with player's feet
@@ -44,41 +84,23 @@ Make some more "brush" tile types that are much slower than grass so there's mor
 		# this could be used for wading through shallow water
 	* later, consider allowing trails to be carved through these (should be slow/tedious/stamina intensive so the player can't just make trails all day on day 1)
 
-IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally"
-
-Add NPC schedules/quest triggers
-	* could make the first quest getting some item from the store with money from the player's mom
-		# can also just choose to keep the money
-	* these quest triggers need to tie into time travel (think of majora's mask)
-
-Experiment with some basic cutscenes
-	* could have one with Renaldo preaching about the neighorhood watch as a test
-
-Add animals
-	* keep track of which animals live in the area and let them move between levels, like NPCs
-	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
-	* maybe some animal types are set to only appear n days into the game
-	* add bugs too (possibly first, they might be easier and make more sense to interact with)
-		# some bugs might be under rocks
-
-Make it so we load asynchronously when using the calendar (do it during the fade)
-
-Implement ways to add items to the inventory, possibly store them in a chest or something
-
-Implement "pickup-able" items, like seeds from ferns
-	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
-	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
-	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
-
 IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
 
-Day/night cycle
-	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
-		* how to handle areas with their own lighting like lamps?
-	- When to increment date? (Midnight or only after sleeping)
-	- should player pass out if they're up too late?
-	- calculate "time to wake up" somehow rather than just making it constant
-		* alarm clock upgrade/item?
+Buildings
+	* need door animation? (no other blocks are animated, might need to be a new thing)
+	* stairs? (good test of building mechanics, similar to going outside)
+		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+	* can use tiledImages and invisible blocks to make furniture, sink, etc
+	* make roofs
+
+Make custom mouse cursor
+
+Idea: consider including animation frame duration in the files from which we load gameimages 
+	* may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
+
+---------------------------------------------------
+NPCs
+---------------------------------------------------
 
 Make NPC
 	- How to manage NPCs moving between levels? (currently they are stored in "beings", might want to refactor to game image manager or some smaller manager class)
@@ -105,55 +127,94 @@ Think carefully about updates for NPCs
 	- also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
 		* maybe they never pass between levels?
 			# only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
-	
-Buildings
-	* need door animation? (no other blocks are animated, might need to be a new thing)
-	* stairs? (good test of building mechanics, similar to going outside)
-		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-	* can use tiledImages and invisible blocks to make furniture, sink, etc
-	* make roofs
 
-IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
+Add NPC schedules/quest triggers
+	* could make the first quest getting some item from the store with money from the player's mom
+		# can also just choose to keep the money
+	* these quest triggers need to tie into time travel (think of majora's mask)
 
-IDEA: Stamina upgrades could be the only thing you take with you when reloading
+Experiment with some basic cutscenes
+	* could have one with Renaldo preaching about the neighorhood watch as a test
+
+---------------------------------------------------
+Animals
+---------------------------------------------------
+
+Add animals
+	* keep track of which animals live in the area and let them move between levels, like NPCs
+	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
+	* maybe some animal types are set to only appear n days into the game
+	* add bugs too (possibly first, they might be easier and make more sense to interact with)
+		# some bugs might be under rocks
+
+---------------------------------------------------
+Inventory/items
+---------------------------------------------------
+
+Implement ways to add items to the inventory, possibly store them in a chest or something
+
+Implement "pickup-able" items, like seeds from ferns
+	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
+	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
+	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
+
+Allow harvesting plants
+	* consider implementing a "cooking" system
+
+Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 
 Add a shovel and allow the player to dig up items
 	- implement picking up items off the ground first
 
--fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
-	*idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
-	*other idea: only allow selection in each menu through the appropriate selection button (I like this idea better since it's more intuitive)
+---------------------------------------------------
+Day/night cycle
+---------------------------------------------------
 
--need to make a "restore defaults" (or something similar) button for video configurations
+Day/night cycle
+	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
+		* how to handle areas with their own lighting like lamps?
+	- When to increment date? (Midnight or only after sleeping)
+	- should player pass out if they're up too late?
+	- calculate "time to wake up" somehow rather than just making it constant
+		* alarm clock upgrade/item?
 
--make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+---------------------------------------------------
+Stamina
+---------------------------------------------------
+	
+IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
 
--make it so the game can detect when a controller is plugged in and update properly
+IDEA: Stamina upgrades could be the only thing you take with you when reloading
+
+---------------------------------------------------
+Menus
+---------------------------------------------------
+
+Need to make a "restore defaults" (or something similar) button for video configurations
+
+Allow changing text speed in options
+
+---------------------------------------------------
+Controls
+---------------------------------------------------
+
+Make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
 	*might need to do this for mouse too, need to test
 
--fix analog stick issue that sometimes happens when controller is in some weird configuration
+---------------------------------------------------
+Encyclopedia
+---------------------------------------------------
 
--fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
-	*make sure this fix applies to both inventory and pause
-
--make custom mouse cursor
-
--fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up) and figure out how to scale object/ui sizes with resolution
-
--idea: consider including animation frame duration in the files from which we load gameimages 
-	* may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
-
--decide how to handle player leaving the level when there's no corresponding level
-
--allow changing text speed in options
-
-- make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
+Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
 	* might even use real information about some of these things (like latin name)
 
-- allow harvesting plants
-	*consider implementing a "cooking" system
+---------------------------------------------------
+Audio
+---------------------------------------------------
 
--audio
-	* dialog sounds like animal crossing
+Add music
+	* The Eye of Pan has a special theme that is hidden inside other tracks
+
+Dialog sounds like in animal crossing
