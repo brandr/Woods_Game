@@ -10,7 +10,6 @@
 #include "XMLSerialization.h"
 #include <memory>              // for allocator
 
-
 //TODO: serializable stuff
 class EntityGroup:
 	public xmls::Serializable, public Entity

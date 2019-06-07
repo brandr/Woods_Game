@@ -86,7 +86,7 @@
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_rate</Member>
-                        <Member Name="attribute_value">50</Member>
+                        <Member Name="attribute_value">40</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_range</Member>
@@ -94,7 +94,7 @@
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_crowd_aversion</Member>
-                        <Member Name="attribute_value">50</Member>
+                        <Member Name="attribute_value">40</Member>
                     </Class>
                 </Collection>
                 <Collection Name="components"/>
@@ -149,7 +149,7 @@
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_rate</Member>
-                        <Member Name="attribute_value">90</Member>
+                        <Member Name="attribute_value">60</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_range</Member>
@@ -157,7 +157,7 @@
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">plant_growth_spread_crowd_aversion</Member>
-                        <Member Name="attribute_value">10</Member>
+                        <Member Name="attribute_value">20</Member>
                     </Class>
                 </Collection>
                 <Collection Name="components"/>

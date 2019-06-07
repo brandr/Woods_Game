@@ -131,7 +131,7 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 {
 	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-	const std::pair<int, int> pixel_pos(pos.first, pos.second);
+	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
 	const std::vector<std::pair<std::string, std::string>> interact_action_data 
 		= tileset->get_block_interact_action_data(block_index);
@@ -149,15 +149,14 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
 	ImageLoader::get_instance().load_image(filename + this->block.image_filename_suffix(), *(this->block.get_image_subsection()));
 	this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
-	this->block.set_solid(solid);							//will be serialized
+	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
 	this->block.set_interact_actions(interact_action_data);
 	this->block.set_contact_actions(contact_action_data);	
 	this->block.set_load_day_actions(load_day_action_data);
-	this->block.load_entity_effects(filename, tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+	this->block.load_entity_effects(tileset->get_tile_sheet_filename(), tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
-	//TODO: interact actions
 }
 
 void Tile::remove_block()

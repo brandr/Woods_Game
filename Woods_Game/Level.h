@@ -47,11 +47,15 @@ private:
 	void generate_paths();
 	void generate_tiles();
 	void generate_entity_groups();
-	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited);
-	const std::vector<std::pair<int, int>> generate_weaving_paths(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited);
+	void generate_blocks();
+	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, 
+		const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited, const int path_size);
+	const std::vector<std::pair<int, int>> generate_weaving_paths(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, 
+		const std::vector<std::pair<int, int>> visited, const int path_size);
 	const std::vector<std::pair<int, int>> generate_weaving_coordinates(const int x1, const int y1, const int x2, const int y2, const int seed);
-	const std::vector<std::pair<int, int>> connect_path_nodes_straight_line(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2);
+	const std::vector<std::pair<int, int>> connect_path_nodes_straight_line(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, const int path_size);
 	std::vector<Tile *> get_tiles_in_line(const int x1, const int y1, const int x2, const int y2);
+	std::vector<Tile *> get_tiles_in_line(const int x1, const int y1, const int x2, const int y2, const int line_width);
 public:
 	//draw layers
 	static const int LAYER_INDEX_TILES = 0;
@@ -75,7 +79,6 @@ public:
 	void initialize_tiles();
 	void initialize_blocks();
 	void generate_level();
-	void generate_blocks();
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
 	void initialize_tiled_images();
@@ -123,6 +126,7 @@ public:
 	void set_tileset_key(std::string key);
 	const std::string get_tileset_key();
 	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos);
+	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos, const bool root_only);
 	Spawner * spawner_at_tile_pos(const std::pair<int, int> pos);
 	std::string get_dungeon_filename();
 	void set_dungeon_filename(std::string value);

@@ -6,7 +6,7 @@ Level editor
 Either get rid of tileset select tab inside level tab or make it work
 
 Tiled Images
-	*out of room on tileset tab-- need to reorganize it (tabs?)
+	* out of room on tileset tab-- need to reorganize it (tabs?)
 
 Fix memory leaks in level editor
 	* why does it happen when selecting objects?
@@ -17,11 +17,17 @@ Fix memory leaks in level editor
 
 ---------------------------------------------------
 
-Procedural generation
-	* make trees first, then ferns
-	* LevelGenData should say how crowded these should be, about how many, etc.
-	* consider making trails 2 blocks wide-- right now they can be annoying to walk through
-		# could also shrink the player's mask a bit
+Change how gameimages access bitmaps -- it should be possible to only ever use ImageLoader methods as long as we have the right keys
+	* don't just assume pointers are fine-- they take up memory on their own
+	* entitygroups seem particularly memory-expensive
+	* need to fix this asap because memory usage is terrible
+
+Need to give blocks a set of allowed tiles to make sure plants don't spread to spots that don't make sense
+	* keep this a separate designation from level gen since (for example) thorns should be able to spread onto the trail
+
+Fix bug where player gets stuck when walking into thorns
+	* I think the issue might be that low move speed messed up bounce behavior
+	* Could also change thorn behavior so you get stuck and have to "shake" free or cut the thorns
 
 Fix bug where there's sometimes an exception on closing the window
 	* seems to have something to do with randomized procedural generation, because it only happens some of the time
@@ -35,7 +41,10 @@ IDEA: different walk animations for different speed ranges (1.0 - 2.0, 2.0 - 3.0
 
 Make some more "brush" tile types that are much slower than grass so there's more of a point to staying on the trail
 	* give them "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
+		# this could be used for wading through shallow water
 	* later, consider allowing trails to be carved through these (should be slow/tedious/stamina intensive so the player can't just make trails all day on day 1)
+
+IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally"
 
 Add NPC schedules/quest triggers
 	* could make the first quest getting some item from the store with money from the player's mom
@@ -45,9 +54,6 @@ Add NPC schedules/quest triggers
 Experiment with some basic cutscenes
 	* could have one with Renaldo preaching about the neighorhood watch as a test
 
-Change how gameimages access bitmaps -- it should be possible to only ever use ImageLoader methods as long as we have the right keys
-	* don't just assume pointers are fine-- they take up memory on their own
-
 Add animals
 	* keep track of which animals live in the area and let them move between levels, like NPCs
 	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
@@ -55,14 +61,7 @@ Add animals
 	* add bugs too (possibly first, they might be easier and make more sense to interact with)
 		# some bugs might be under rocks
 
-How to handle shared tiles (like grass) between different tilesets?
-	* Should probably give them the same index for simplicity, but different names so I remember to copy/paste as necessary
-	* Figure out how lawn grass should interact with asphalt
-
 Make it so we load asynchronously when using the calendar (do it during the fade)
-
-Fix memory leaks when loading via calendar (probably caused by loading a new level)
-	* I think there are also memory leaks when sleeping in the bed
 
 Implement ways to add items to the inventory, possibly store them in a chest or something
 
@@ -71,19 +70,12 @@ Implement "pickup-able" items, like seeds from ferns
 	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
 	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
 
-Make taller, better looking trees (and generally make woods look better)
-	* may want to make a neighorhood first and figure out where woods entrance is
-	* could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
-
-Idea: Make "LevelObjectsManager" or something that holds all level objects, partly keyed by level
-	- Try to do everything with unique_ptrs to avoid memory leaks
-	- How will this affect level-serialized objects? (this might be the biggest reason not to do it)
-	- Might want special management just for NPCs since they travel between levels
+IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
 
 Day/night cycle
 	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
-		* how to handle areas with lighting?
-	- how to show date in addition to time? When to increment date? (Midnight or only after sleeping)
+		* how to handle areas with their own lighting like lamps?
+	- When to increment date? (Midnight or only after sleeping)
 	- should player pass out if they're up too late?
 	- calculate "time to wake up" somehow rather than just making it constant
 		* alarm clock upgrade/item?
@@ -113,10 +105,6 @@ Think carefully about updates for NPCs
 	- also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
 		* maybe they never pass between levels?
 			# only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
-
-Look into getting rid of "gameImages" list in Level
-	* I think it's mainly used for drawing everything in order regardless of type (i.e, player/entitygroup)
-		# Could probably make this put together a vector in memory without it being too expensive, and would prevent memory leaks
 	
 Buildings
 	* need door animation? (no other blocks are animated, might need to be a new thing)
@@ -124,15 +112,6 @@ Buildings
 		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
 	* can use tiledImages and invisible blocks to make furniture, sink, etc
 	* make roofs
-
-Make sure I can do what I want with the tile system
-	* Going through brush will be better if there's a tool to make trails but trails get overgrown
-	* This means defining what the tile turns into when the tool is used on it
-		# this could be a property of tile data set in the tileset, or a mapping stored elsewhere
-		# the tool should also have some properties that come into play
-	* also consider how it will work to dig holes
-		# tiles need to define whether or not they can be dug, how deep they can be dug, and what happens when they're dug
-		# should holes be saved when the game is saved?
 
 IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
 
@@ -161,28 +140,12 @@ Add a shovel and allow the player to dig up items
 
 -make custom mouse cursor
 
--make effects for the player touching vegetation
-	*might consider a small "rustling vegetation" animation that covers the player's feet instead 
-		#this could be used for wading through shallow water
-
--fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up)
-
--figure out how to scale object/ui sizes with resolution
-
--fix the glitch where parts of the player's face sometimes disappear
+-fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up) and figure out how to scale object/ui sizes with resolution
 
 -idea: consider including animation frame duration in the files from which we load gameimages 
-	*may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
-
--make the leaves as a separate sprite and having them turn partly transparent when the player passes behind them.
-	* could also try doing this for the entire trees, since we might have very large trees that obscure the player
-	* first, make sure the leaves have their mask loaded by images. (do this in level when they are created)
-	* since entitygroups are treated as single entities, need some kind of entitygroup overridden entity collision method for when the player rect-collides witth trees.
-		# within this method, have each entity within the group attempt to mask-collide with the other entity (i.e. the player) and check for the transparent_on_contact attribute
+	* may also want to adjust frame duration ingame in some situations such as when tilting the joystick very lightly with a controller
 
 -decide how to handle player leaving the level when there's no corresponding level
-
-LONG TERM PLANS
 
 -allow changing text speed in options
 
@@ -193,4 +156,4 @@ LONG TERM PLANS
 	*consider implementing a "cooking" system
 
 -audio
-	* dialog sounds
+	* dialog sounds like animal crossing
