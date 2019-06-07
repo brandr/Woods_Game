@@ -266,3 +266,7 @@ int GameScreen::get_screen_flag()
 	return screen_flag;
 }
 
+const std::string GameScreen::get_load_game_filepath()
+{
+	return this->load_game_filepath;
+}

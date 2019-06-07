@@ -144,6 +144,20 @@ void MenuItem::menu_right()
 	options_index = (options_index + 1) % text_options.size();
 }
 
+void MenuItem::set_menu_binding(const int bind_key, const std::string bind_val)
+{
+	this->menu_bindings[bind_key] = bind_val;
+}
+
+const std::string MenuItem::get_menu_binding(const int bind_key)
+{
+	auto it = this->menu_bindings.find(bind_key);
+	if (it == this->menu_bindings.end()) {
+		return "";
+	}
+	return this->menu_bindings[bind_key];
+}
+
 void MenuItem::set_text(std::string text)
 {
 	menu_text = text;

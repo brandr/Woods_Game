@@ -25,7 +25,6 @@ private:
 	ALLEGRO_BITMAP * calendar_backdrop_dialog;
 	GlobalTime * global_time;
 	Player * player;
-	//Dialog * select_day_dialog;
 	ALLEGRO_BITMAP* arrow_left;
 	ALLEGRO_BITMAP* arrow_right;
 	ALLEGRO_BITMAP* arrow_left_disabled;

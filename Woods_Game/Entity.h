@@ -49,6 +49,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<EntityAttribute> attributes;
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
+	xmls::Collection<InteractAction> load_day_actions;
 	xmls::xBool solid = false;
 	xmls::xBool visible = true;
 	xmls::Collection<EntityComponentData> components;
@@ -61,6 +62,7 @@ struct EntityData : public xmls::Serializable {
 	void set_components(std::vector<EntityComponentData*> components);
 	std::vector<std::pair<std::string, std::string>> get_block_contact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_interact_action_data();
+	std::vector<std::pair<std::string, std::string>> get_block_load_day_action_data();
 	bool is_empty();
 	std::string get_entity_data_key();
 	std::pair<int, int> get_root_offset();
@@ -89,19 +91,20 @@ protected:
 	xmls::Collection<EntityAttribute> entity_attributes;
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
+	xmls::Collection<InteractAction> load_day_actions;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;	
 	xmls::xInt entity_sheet_row;
 	xmls::xInt entity_starting_pos_x;
 	xmls::xInt entity_starting_pos_y;
 	std::map<int, int> counters;
-	std::map<int, bool> entity_flags;
 	std::map<std::string, EntityEffect> entity_effects;
 public:
 	Entity();
 	~Entity();
 	virtual void copy_entity_attributes(Entity * other);
 	virtual Rect *get_bitmap_subsection();
+	virtual const std::string image_filename_suffix();
 	virtual void set_solid(const bool solid);
 	virtual void set_visible(const bool visible);
 	virtual bool is_solid();
@@ -113,6 +116,11 @@ public:
 	virtual void update();
 	void counter_update();
 	virtual void durability_update();
+	virtual void mark_needs_plant_day_update();
+	virtual void unmark_needs_plant_day_update();
+	virtual const bool needs_plant_day_update();
+	virtual const int get_plant_growth_spread_range();
+	virtual const bool update_new_day(Player * player);
 	virtual const bool contact_action(Player * player);
 	virtual const bool interact_action(Player * player);
 	virtual void entity_break();
@@ -123,6 +131,7 @@ public:
 	virtual void set_entity_attribute(std::string attr, int val);
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_starting_pos(int x, int y);
 	virtual int get_entity_starting_pos_x();
 	virtual int get_entity_starting_pos_y();

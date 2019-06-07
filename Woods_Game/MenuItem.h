@@ -33,6 +33,7 @@ public:
 class MenuItem: public xmls::Serializable
 {
 private:
+	std::map<int, std::string> menu_bindings;
 	Animation* animation;
 	ALLEGRO_BITMAP* menu_image;
 	xmls::xString menu_text;
@@ -42,7 +43,6 @@ private:
 	std::pair<float,float> position;
 	xmls::xString selection_action_key;
 	xmls::xString confirm_action_key;
-	//std::vector<std::string> text_options;
 	xmls::Collection<TextOption> text_options;
 	int options_index = 0;
 	xmls::xInt stored_options_index = 0;
@@ -64,6 +64,8 @@ public:
 	void save();
 	void menu_left();
 	void menu_right();
+	void set_menu_binding(const int bind_key, const std::string bind_val);
+	const std::string get_menu_binding(const int bind_key);
 	void set_text(std::string);
 	std::string get_text();
 	void set_image(ALLEGRO_BITMAP *image);

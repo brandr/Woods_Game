@@ -66,6 +66,13 @@ void Dungeon::intialize_levels()
 	}
 }
 
+void Dungeon::generate_levels()
+{
+	for (Level * level : this->level_list) {
+		level->generate_level();
+	}
+}
+
 Dungeon * Dungeon::load_dungeon(std::string dungeon_name)
 {
 	Dungeon * dungeon = new Dungeon(dungeon_name);
@@ -74,6 +81,13 @@ Dungeon * Dungeon::load_dungeon(std::string dungeon_name)
 
 void Dungeon::load_images(ImageLoader& loader)
 {
+}
+
+void Dungeon::update_new_day(Player * player)
+{
+	for (Level *level : this->level_list) {
+		level->update_new_day(player);
+	}
 }
 
 void Dungeon::add_level(Level* level)
@@ -107,8 +121,10 @@ void Dungeon::remove_level(int index)
 
 Level * Dungeon::level_at(int x, int y)
 {
-	//TODO: out of bounds check
-	Level* level = dungeon_grid[y][x];
+	Level* level = NULL;
+	if (x >= 0 && y >= 0) {
+		level = dungeon_grid[y][x];
+	}
 	if (level == NULL) {
 		std::cout << "empty level " << std::endl;
 	}

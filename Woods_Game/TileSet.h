@@ -53,6 +53,7 @@ public:
 	ALLEGRO_BITMAP * get_block_bitmap_for_col(const int index, const int col);
 	const std::vector<std::pair<std::string, std::string>> get_block_interact_action_data(const int index);
 	const std::vector<std::pair<std::string, std::string>> get_block_contact_action_data(const int index);
+	const std::vector<std::pair<std::string, std::string>> get_block_load_day_action_data(const int index);
 	void set_block_solid(const int row, bool solid);
 	void set_block_attributes(const int row, std::map<std::string, int> attributes);
 	EntityData *get_block_data(const int index);

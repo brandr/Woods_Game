@@ -93,6 +93,16 @@ void Tile::reset(TileSet *tileset, Tile * t)
 	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
+void Tile::reset(TileSet * tileset, const int type_index)
+{
+	this->tile_type_index = type_index;
+	std::string filename = tileset->get_full_tile_sheet_filename(type_index);
+	this->image_filename = filename;
+	this->set_edge_priority(tileset->get_edge_priority(type_index));
+	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
+	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+}
+
 void Tile::reset_for_reload()
 {
 	if (!this->block.is_empty()) {
@@ -127,18 +137,24 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 		= tileset->get_block_interact_action_data(block_index);
 	const std::vector<std::pair<std::string, std::string>> contact_action_data
 		= tileset->get_block_contact_action_data(block_index);
+	const std::vector<std::pair<std::string, std::string>> load_day_action_data
+		= tileset->get_block_load_day_action_data(block_index);
+
+	// set serializable attributes
 	const bool solid = tileset->get_block_solid(block_index);
 	const bool visible = tileset->get_block_visible(block_index);
 	this->block.set_entity_data_index(block_index);
 	this->block.set_content(filename, offset_rect, pixel_pos);
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	ImageLoader::get_instance().load_image(filename + this->block.image_filename_suffix(), *(this->block.get_image_subsection()));
 	this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
 	this->block.set_solid(solid);							//will be serialized
-	this->block.set_visible(visible);						//will be serialized
-	this->block.set_entity_attributes(block_attributes);	//will be serialized
-	this->block.set_interact_actions(interact_action_data);	//will be serialized
-	this->block.set_contact_actions(contact_action_data);	//will be serialized
+	this->block.set_visible(visible);						
+	this->block.set_entity_attributes(block_attributes);	
+	this->block.set_interact_actions(interact_action_data);
+	this->block.set_contact_actions(contact_action_data);	
+	this->block.set_load_day_actions(load_day_action_data);
 	this->block.load_entity_effects(filename, tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
 	//TODO: interact actions
@@ -263,6 +279,15 @@ int Tile::get_tile_pos_x()
 int Tile::get_tile_pos_y()
 {
 	return this->tile_pos_y.value();
+}
+
+const bool Tile::get_can_grow_plants()
+{
+	if (!this->block.is_empty() && !this->block.get_entity_attribute(GameImage::E_ATTR_BROKEN) > 0) {
+		return false;
+	}
+	//TEMP. make it so some tile types can't grow plants
+	return true;
 }
 
 TileEdge::TileEdge()

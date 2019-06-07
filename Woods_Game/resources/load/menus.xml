@@ -481,6 +481,30 @@
                 <Member Name="LeftBracketFilename"/>
                 <Member Name="RightBracketFilename"/>
             </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Load game</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">load_game</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="title_load_game_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
         </Collection>
     </SerializableClass>
 </root>

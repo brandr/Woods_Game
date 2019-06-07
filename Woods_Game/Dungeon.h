@@ -18,8 +18,10 @@ public:
 	~Dungeon();
 	void unload_content();
 	void intialize_levels();
+	void generate_levels();
 	static Dungeon * load_dungeon(std::string dungeon_name);
 	void load_images(ImageLoader&);
+	void update_new_day(Player * player);
 	void add_level(Level*);
 	void remove_level(int index);
 	Level* level_at(int, int);

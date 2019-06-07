@@ -320,8 +320,10 @@
     <ClInclude Include="LevelEditorLayout.h" />
     <ClInclude Include="LevelEditorManager.h" />
     <ClInclude Include="LevelEditorScreen.h" />
+    <ClInclude Include="LevelGenData.h" />
     <ClInclude Include="LevelGridKeyboardListener.h" />
     <ClInclude Include="LevelGridListener.h" />
+    <ClInclude Include="LoadGameMenuManager.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="MenuItem.h" />
@@ -384,11 +386,14 @@
     <ClCompile Include="LevelEditorLayout.cpp" />
     <ClCompile Include="LevelEditorManager.cpp" />
     <ClCompile Include="LevelEditorScreen.cpp" />
+    <ClCompile Include="LevelGenData.cpp" />
     <ClCompile Include="LevelGridKeyboardListener.cpp" />
     <ClCompile Include="LevelGridListener.cpp" />
+    <ClCompile Include="LoadGameMenuManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="MathUtilities.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="NPC.cpp" />

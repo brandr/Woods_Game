@@ -87,10 +87,6 @@ void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 	for (int i = 0; i < size; i++) {
 		entities[i]->draw(display, x_offset, y_offset);
 	}
-	//temp
-	//Mask_Draw(mask, rect.x + x_offset, rect.y + y_offset);
-		//al_draw_bitmap(temp_mask_image, rect.x + x_offset, rect.y + y_offset, 0);
-	//temp
 }
 
 //TODO: eventually, all bitmaps should ultimately be findable in the imageloader (this is the point of gameimages)

@@ -6,7 +6,6 @@
 #include <algorithm>
 #include <fstream>
 #include <sstream>
-//#include "utility"  // for pair
 #include "xstring"  // for string
 #include "XMLSerialization.h"
 
@@ -45,7 +44,6 @@ public:
 	void copy_xml_node(tinyxml2::XMLNode *p_dest_parent, const tinyxml2::XMLNode *p_src);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents);
 	void load_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents, std::string id);
-	void replace_content(const char* filename, std::vector<std::vector<std::string>> &attributes, std::vector<std::vector<std::string>> &contents, std::string id);
 	static std::pair<int, int> string_to_pair(std::string tile_string);
 	static std::vector<std::string> string_to_parts(std::string str, std::string delimiter);
 	static std::pair<std::string, std::string> string_to_pair(std::string str, std::string delimiter);

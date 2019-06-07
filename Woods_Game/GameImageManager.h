@@ -67,6 +67,7 @@ public:
 	~GameImageManager();
 	void load_content();
 	void start_new_game(const std::string world_key);
+	void full_load_game_from_save(const std::string filepath);
 	void load_game_from_save(const int day, const int time);
 	void save_game();
 	void set_game_mode(int game_mode);
@@ -82,6 +83,7 @@ public:
 	const std::string time_display_string();
 	const std::string date_display_string();
 	void time_update();
+	void update_new_day();
 	GlobalTime * get_current_global_time();
 	const int get_current_minutes();
 	const std::string get_current_month_str();

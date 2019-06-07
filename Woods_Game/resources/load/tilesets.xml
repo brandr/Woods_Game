@@ -1,5 +1,5 @@
 <root>
-    <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_1">
+    <SerializableClass Type="TileSet" Version="1" TilesetKey="woods">
         <Member Name="tile_sheet_name">woods</Member>
         <Collection Name="tile_types">
             <Class Type="TileType" Version="1">
@@ -7,14 +7,14 @@
                 <Member Name="tile_sheet_key">grass</Member>
                 <Member Name="tile_sheet_index">0</Member>
                 <Member Name="speed_mod">0.72</Member>
-                <Member Name="edge_priority">3</Member>
+                <Member Name="edge_priority">10</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">1</Member>
                 <Member Name="tile_sheet_key">dirt</Member>
                 <Member Name="tile_sheet_index">1</Member>
                 <Member Name="speed_mod">0.72</Member>
-                <Member Name="edge_priority">2</Member>
+                <Member Name="edge_priority">5</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">2</Member>
@@ -22,6 +22,13 @@
                 <Member Name="tile_sheet_index">2</Member>
                 <Member Name="speed_mod">1.0</Member>
                 <Member Name="edge_priority">1</Member>
+            </Class>
+            <Class Type="TileType" Version="1">
+                <Member Name="tile_sheet_row">0</Member>
+                <Member Name="tile_sheet_key">forest_soil</Member>
+                <Member Name="tile_sheet_index">3</Member>
+                <Member Name="speed_mod">0.40</Member>
+                <Member Name="edge_priority">15</Member>
             </Class>
         </Collection>
         <Collection Name="block_types">
@@ -38,6 +45,12 @@
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">fern</Member>
                 <Member Name="entity_data_index">1</Member>
+                <Collection Name="load_day_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">plant_day_update</Member>
+                        <Member Name="FunctionName">plant_day_update</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_slow</Member>
@@ -59,6 +72,30 @@
                         <Member Name="attribute_key">broken</Member>
                         <Member Name="attribute_value">0</Member>
                     </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_current_age</Member>
+                        <Member Name="attribute_value">12</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_mature_age</Member>
+                        <Member Name="attribute_value">12</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_num_stages</Member>
+                        <Member Name="attribute_value">3</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_rate</Member>
+                        <Member Name="attribute_value">50</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_range</Member>
+                        <Member Name="attribute_value">2</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_crowd_aversion</Member>
+                        <Member Name="attribute_value">50</Member>
+                    </Class>
                 </Collection>
                 <Collection Name="components"/>
             </Class>
@@ -67,6 +104,12 @@
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">thorns</Member>
                 <Member Name="entity_data_index">2</Member>
+                <Collection Name="load_day_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">plant_day_update</Member>
+                        <Member Name="FunctionName">plant_day_update</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_damage</Member>
@@ -92,6 +135,30 @@
                         <Member Name="attribute_key">broken</Member>
                         <Member Name="attribute_value">0</Member>
                     </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_current_age</Member>
+                        <Member Name="attribute_value">8</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_mature_age</Member>
+                        <Member Name="attribute_value">8</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_num_stages</Member>
+                        <Member Name="attribute_value">2</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_rate</Member>
+                        <Member Name="attribute_value">90</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_range</Member>
+                        <Member Name="attribute_value">1</Member>
+                    </Class>
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">plant_growth_spread_crowd_aversion</Member>
+                        <Member Name="attribute_value">10</Member>
+                    </Class>
                 </Collection>
                 <Collection Name="components"/>
             </Class>
@@ -109,7 +176,7 @@
                 <Member Name="entity_data_key">invisible_block_door</Member>
                 <Member Name="entity_data_index">4</Member>
                 <Collection Name="interact_actions">
-                    <Class Type="InteractActions" Version="1">
+                    <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">go_to_level</Member>
                         <Member Name="FunctionName">go_to_level</Member>
                     </Class>
@@ -123,7 +190,257 @@
                 <Member Name="entity_data_key">invisible_block_sign</Member>
                 <Member Name="entity_data_index">5</Member>
                 <Collection Name="interact_actions">
-                    <Class Type="InteractActions" Version="1">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+        <Collection Name="entity_group_types">
+            <Class Type="EntityGroupData" Version="1">
+                <Member Name="entity_group_name">tree_1</Member>
+                <Member Name="entity_group_index">0</Member>
+                <Member Name="root_offset_x">0</Member>
+                <Member Name="root_offset_y">128</Member>
+                <Member Name="center_offset_x">32</Member>
+                <Member Name="center_offset_y">175</Member>
+                <Member Name="entity_group_image_width">64</Member>
+                <Member Name="entity_group_image_height">192</Member>
+                <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
+                <Collection Name="components">
+                    <Class Type="EntityComponentAttribute" Version="1">
+                        <Member Name="name">trunk</Member>
+                        <Collection Name="attributes"/>
+                    </Class>
+                    <Class Type="EntityComponentAttribute" Version="1">
+                        <Member Name="name">leaves</Member>
+                        <Collection Name="attributes">
+                            <Class Type="EntityComponentAttribute" Version="1">
+                                <Member Name="name">transparent_on_contact</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="EntityGroupData" Version="1">
+                <Member Name="entity_group_name">large_tree_1</Member>
+                <Member Name="entity_group_index">1</Member>
+                <Member Name="root_offset_x">64</Member>
+                <Member Name="root_offset_y">512</Member>
+                <Member Name="center_offset_x">126</Member>
+                <Member Name="center_offset_y">557</Member>
+                <Member Name="entity_group_image_width">256</Member>
+                <Member Name="entity_group_image_height">576</Member>
+                <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
+                <Collection Name="components">
+                    <Class Type="EntityComponentAttribute" Version="1">
+                        <Member Name="name">trunk</Member>
+                        <Collection Name="attributes"/>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="tiled_image_types">
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_walls_1</Member>
+                <Member Name="image_data_index">0</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_doors_1</Member>
+                <Member Name="image_data_index">1</Member>
+            </Class><Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_windows_1</Member>
+                <Member Name="image_data_index">2</Member>
+            </Class>
+        </Collection>
+        <Collection Name="spawner_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">spawner_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_indoors">
+        <Member Name="tile_sheet_name">indoors</Member>
+        <Collection Name="tile_types">
+            <Class Type="TileType" Version="1">
+                <Member Name="tile_sheet_row">0</Member>
+                <Member Name="tile_sheet_key">floor_1</Member>
+                <Member Name="tile_sheet_index">0</Member>
+                <Member Name="speed_mod">1</Member>
+                <Member Name="edge_priority">1</Member>
+            </Class>
+        </Collection>
+        <Collection Name="block_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">false</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_exit</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">border_block</Member>
+                <Member Name="entity_data_index">1</Member>
+                <Collection Name="contact_actions">
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_sign</Member>
+                <Member Name="entity_data_index">2</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">game_console_1</Member>
+                <Member Name="entity_data_index">3</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_door</Member>
+                <Member Name="entity_data_index">3</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+        <Collection Name="entity_group_types">
+            <Class Type="EntityGroupData" Version="1">
+                <Member Name="entity_group_name">player_bed</Member>
+                <Member Name="entity_group_index">0</Member>
+                <Member Name="root_offset_x">0</Member>
+                <Member Name="root_offset_y">0</Member>
+                <Member Name="center_offset_x">89</Member>
+                <Member Name="center_offset_y">72</Member>
+                <Member Name="entity_group_image_width">128</Member>
+                <Member Name="entity_group_image_height">128</Member>
+                <Member Name="solid">false</Member>
+                <Member Name="visible">true</Member>
+                <Collection Name="components">
+                    <Class Type="EntityComponentAttribute" Version="1">
+                        <Member Name="name">bed</Member>
+                        <Collection Name="attributes"/>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="tiled_image_types">
+             <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">calendars_1</Member>
+                <Member Name="image_data_index">0</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">room_walls_1</Member>
+                <Member Name="image_data_index">1</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">indoor_doors_1</Member>
+                <Member Name="image_data_index">2</Member>
+            </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">indoor_wall_top_1</Member>
+                <Member Name="image_data_index">3</Member>
+            </Class>
+        </Collection>
+        <Collection Name="spawner_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">spawner_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="TileSet" Version="1" TilesetKey="suburbs">
+        <Member Name="tile_sheet_name">suburbs</Member>
+        <Collection Name="tile_types">
+            <Class Type="TileType" Version="1">
+                <Member Name="tile_sheet_row">0</Member>
+                <Member Name="tile_sheet_key">asphalt_road</Member>
+                <Member Name="tile_sheet_index">0</Member>
+                <Member Name="speed_mod">1.0</Member>
+                <Member Name="edge_priority">0</Member>
+            </Class>
+            <Class Type="TileType" Version="1">
+                <Member Name="tile_sheet_row">1</Member>
+                <Member Name="tile_sheet_key">sidewalk</Member>
+                <Member Name="tile_sheet_index">1</Member>
+                <Member Name="speed_mod">1.0</Member>
+                <Member Name="edge_priority">0</Member>
+            </Class>
+        </Collection>
+        <Collection Name="block_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_door</Member>
+                <Member Name="entity_data_index">1</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_sign</Member>
+                <Member Name="entity_data_index">2</Member>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">open_dialog</Member>
                         <Member Name="FunctionName">open_dialog</Member>
                     </Class>
@@ -171,110 +488,6 @@
             </Class><Class Type="TiledImageData" Version="1">
                 <Member Name="image_data_key">house_windows_1</Member>
                 <Member Name="image_data_index">2</Member>
-            </Class>
-        </Collection>
-        <Collection Name="spawner_types">
-            <Class Type="EntityData" Version="1">
-                <Member Name="entity_data_key">spawner_1</Member>
-                <Member Name="entity_data_index">0</Member>
-                <Collection Name="attributes"/>
-                <Collection Name="components"/>
-            </Class>
-        </Collection>
-    </SerializableClass>
-    <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_indoors">
-        <Member Name="tile_sheet_name">indoors</Member>
-        <Collection Name="tile_types">
-            <Class Type="TileType" Version="1">
-                <Member Name="tile_sheet_row">0</Member>
-                <Member Name="tile_sheet_key">floor_1</Member>
-                <Member Name="tile_sheet_index">0</Member>
-                <Member Name="speed_mod">1</Member>
-                <Member Name="edge_priority">1</Member>
-            </Class>
-        </Collection>
-        <Collection Name="block_types">
-            <Class Type="EntityData" Version="1">
-                <Member Name="solid">false</Member>
-                <Member Name="visible">false</Member>
-                <Member Name="entity_data_key">invisible_block_exit</Member>
-                <Member Name="entity_data_index">0</Member>
-                <Collection Name="contact_actions">
-                    <Class Type="InteractActions" Version="1">
-                        <Member Name="InteractActionKey">go_to_level</Member>
-                        <Member Name="FunctionName">go_to_level</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="attributes"/>
-                <Collection Name="components"/>
-            </Class>
-            <Class Type="EntityData" Version="1">
-                <Member Name="solid">true</Member>
-                <Member Name="visible">true</Member>
-                <Member Name="entity_data_key">border_block</Member>
-                <Member Name="entity_data_index">1</Member>
-                <Collection Name="contact_actions">
-                </Collection>
-                <Collection Name="attributes"/>
-                <Collection Name="components"/>
-            </Class>
-            <Class Type="EntityData" Version="1">
-                <Member Name="solid">true</Member>
-                <Member Name="visible">false</Member>
-                <Member Name="entity_data_key">invisible_block_sign</Member>
-                <Member Name="entity_data_index">2</Member>
-                <Collection Name="interact_actions">
-                    <Class Type="InteractActions" Version="1">
-                        <Member Name="InteractActionKey">open_dialog</Member>
-                        <Member Name="FunctionName">open_dialog</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="attributes"/>
-                <Collection Name="components"/>
-            </Class>
-            <Class Type="EntityData" Version="1">
-                <Member Name="solid">true</Member>
-                <Member Name="visible">false</Member>
-                <Member Name="entity_data_key">invisible_block_door</Member>
-                <Member Name="entity_data_index">3</Member>
-                <Collection Name="interact_actions">
-                    <Class Type="InteractActions" Version="1">
-                        <Member Name="InteractActionKey">go_to_level</Member>
-                        <Member Name="FunctionName">go_to_level</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="attributes"/>
-                <Collection Name="components"/>
-            </Class>
-        </Collection>
-        <Collection Name="entity_group_types">
-            <Class Type="EntityGroupData" Version="1">
-                <Member Name="entity_group_name">player_bed</Member>
-                <Member Name="entity_group_index">0</Member>
-                <Member Name="root_offset_x">0</Member>
-                <Member Name="root_offset_y">0</Member>
-                <Member Name="center_offset_x">89</Member>
-                <Member Name="center_offset_y">72</Member>
-                <Member Name="entity_group_image_width">128</Member>
-                <Member Name="entity_group_image_height">128</Member>
-                <Member Name="solid">false</Member>
-                <Member Name="visible">true</Member>
-                <Collection Name="components">
-                    <Class Type="EntityComponentAttribute" Version="1">
-                        <Member Name="name">bed</Member>
-                        <Collection Name="attributes"/>
-                    </Class>
-                </Collection>
-            </Class>
-        </Collection>
-        <Collection Name="tiled_image_types">
-             <Class Type="TiledImageData" Version="1">
-                <Member Name="image_data_key">calendars_1</Member>
-                <Member Name="image_data_index">0</Member>
-            </Class>
-            <Class Type="TiledImageData" Version="1">
-                <Member Name="image_data_key">room_walls_1</Member>
-                <Member Name="image_data_index">1</Member>
             </Class>
         </Collection>
         <Collection Name="spawner_types">

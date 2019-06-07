@@ -54,6 +54,13 @@ void ScreenManager::update()
 			add_screen(game_screen);
 			//TODO: save game once it's loaded (might be inside game_screen->start_new_game())
 			return;
+		} else if (current_screen->get_screen_flag() == FLAG_LOAD_GAME) {
+			const std::string world_key = current_screen->get_load_game_filepath();
+			MainGameScreen * game_screen = new MainGameScreen();
+			game_screen->load_game(world_key);
+			add_screen(game_screen);
+			//TODO: save game once it's loaded (might be inside game_screen->start_new_game())
+			return;
 		}
 		current_screen->update();
 	}

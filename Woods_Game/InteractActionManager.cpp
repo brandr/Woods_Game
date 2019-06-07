@@ -1,10 +1,12 @@
 #include "InteractActionManager.h"
 #include "Player.h"
+#include "Entity.h"
 
 const int go_to_level(
 	const InteractActionManager * manager, 
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {	
 	std::string level_key = action->get_binding("destination_level_key");
 	if (!level_key.empty()) {
@@ -24,7 +26,8 @@ const int go_to_level(
 const int open_dialog(
 	const InteractActionManager * manager,
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {
 	//make sure we avoid memory leaks, either by deleting dialogs once they close or by keying them in a dialogmanager
 	std::string dialog_text = action->get_binding("dialog_text");
@@ -40,7 +43,8 @@ const int open_dialog(
 const int close_dialog(
 	const InteractActionManager * manager,
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {
 	player->close_dialog();
 	return 1;
@@ -49,7 +53,8 @@ const int close_dialog(
 const int player_sleep(
 	const InteractActionManager * manager,
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {
 	player->close_dialog();
 	player->sleep_in_bed(InteractActionManager::get_instance().get_current_time());
@@ -59,7 +64,8 @@ const int player_sleep(
 const int player_open_calendar(
 	const InteractActionManager * manager,
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {
 	player->open_calendar();
 	return 1;
@@ -68,7 +74,8 @@ const int player_open_calendar(
 const int load_selected_day(
 	const InteractActionManager * manager,
 	InteractAction * action,
-	Player * player)
+	Player * player,
+	Entity * actor)
 {
 	if (action != NULL) {
 		player->close_calendar();
@@ -78,11 +85,26 @@ const int load_selected_day(
 	return 1;
 }
 
+const int plant_day_update(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && actor != NULL) {
+		const int broken = actor->get_entity_attribute(GameImage::E_ATTR_BROKEN);
+		if (broken < 1) {
+			actor->mark_needs_plant_day_update();
+		}
+	}
+	return 1;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
 		InteractAction*,
-		Player*)> fcnPtr;
+		Player*, Entity*)> fcnPtr;
 	fcnPtr = go_to_level;
 	this->function_map["go_to_level"] = fcnPtr;
 	fcnPtr = open_dialog;
@@ -95,6 +117,8 @@ void InteractActionManager::initialize_functions()
 	this->function_map["player_open_calendar"] = fcnPtr;
 	fcnPtr = load_selected_day;
 	this->function_map["load_selected_day"] = fcnPtr;
+	fcnPtr = plant_day_update;
+	this->function_map["plant_day_update"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()
@@ -111,25 +135,33 @@ InteractActionManager::~InteractActionManager()
 const bool InteractActionManager::run_action(InteractAction * action, Player * player) const
 {
 	const std::string action_key = action->get_function_name();
-	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr 
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr 
 		= this->function_map.at(action_key);
-	return fcnPtr(this, action, player);
+	return fcnPtr(this, action, player, NULL);
 }
 
 const bool InteractActionManager::run_action(const std::string action_key, Player * player) const
 {
-	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
 		= this->function_map.at(action_key);
-	return fcnPtr(this, NULL, player);
+	return fcnPtr(this, NULL, player, NULL);
 }
 
 const bool InteractActionManager::run_action(const std::string action_key, std::vector<ActionBinding*> bindings, Player * player) const
 {
-	std::function<const int(const InteractActionManager*, InteractAction*, Player*)> fcnPtr
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
 		= this->function_map.at(action_key);
 	InteractAction * action = new InteractAction();
 	action->set_bindings(bindings);
-	return fcnPtr(this, action, player);
+	return fcnPtr(this, action, player, NULL);
+}
+
+const bool InteractActionManager::run_action(InteractAction * action, Player * player, Entity * actor) const
+{
+	const std::string action_key = action->get_function_name();
+	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
+		= this->function_map.at(action_key);
+	return fcnPtr(this, action, player, actor);
 }
 
 void InteractActionManager::update_current_time(GlobalTime * other_time)

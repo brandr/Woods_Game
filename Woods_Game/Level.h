@@ -3,6 +3,7 @@
 
 #include "Tile.h"
 #include "TileSet.h"
+#include "GameImage.h"
 #include "Being.h"
 #include "NPC.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
@@ -10,10 +11,17 @@
 #include "vector"              // for vector
 #include "xstring"             // for string
 #include "EntityGroup.h"
+#include "LevelGenData.h"
 #include "XMLSerialization.h"
 #include "Spawner.h"
 #include "TileGroup.h"
 #include "TiledImageLayer.h"
+#include "MathUtilities.cpp"
+#include <set>
+#include <stdlib.h>     /* srand, rand */
+
+#define STANDARD_LEVEL_GRID_WIDTH 832;
+#define STANDARD_LEVEL_GRID_HEIGHT 640;
 
 class Level : public xmls::Serializable
 {
@@ -27,8 +35,7 @@ private:
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	xmls::Collection<Spawner> spawners;
 	xmls::Collection<TiledImageLayer> tiled_image_layers;
-	std::vector<GameImage*> game_images;
-	std::vector<Entity*> entities;
+	LevelGenData gen_data;
 	std::vector<Being*> beings;
 	xmls::xInt grid_x;
 	xmls::xInt grid_y;
@@ -37,9 +44,15 @@ private:
 	int width;
 	int height;
 	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer);
+	void generate_paths();
+	void generate_tiles();
+	void generate_entity_groups();
+	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited);
+	const std::vector<std::pair<int, int>> generate_weaving_paths(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited);
+	const std::vector<std::pair<int, int>> generate_weaving_coordinates(const int x1, const int y1, const int x2, const int y2, const int seed);
+	const std::vector<std::pair<int, int>> connect_path_nodes_straight_line(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2);
+	std::vector<Tile *> get_tiles_in_line(const int x1, const int y1, const int x2, const int y2);
 public:
-	static const int STANDARD_LEVEL_GRID_WIDTH = 832;
-	static const int STANDARD_LEVEL_GRID_HEIGHT = 640;
 	//draw layers
 	static const int LAYER_INDEX_TILES = 0;
 	static const int LAYER_INDEX_BLOCKS = 10;
@@ -55,10 +68,13 @@ public:
 	void reload_from_xml(Level &copy_level);
 	void reset_for_reload();
 	void reload_tiles(Level &copy_level);
+	void update_new_day(Player * player);
+	void plant_day_update(Entity * plant, const int x, const int y);
 	void intialize_dimensions();
 	void initialize_empty();
 	void initialize_tiles();
 	void initialize_blocks();
+	void generate_level();
 	void generate_blocks();
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
@@ -74,14 +90,14 @@ public:
 	void draw(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, std::string edge_filename, int edge_row, int dir_key);
 	void add_edge_to_tile(Tile *tile, int edge_row, int dir_key, std::string tile_key);
-	void add_entity(Entity *e);
 	void add_being(Being *b);
 	void remove_player();
-	void remove_game_images(int type);
-	void remove_entities(int type);
 	void remove_beings(int type);
+	Being * get_player();
 	std::vector<Entity*> get_interactables(Entity*);
 	std::vector<Tile*> get_nearby_tiles(Entity*);
+	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
+	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
 	std::vector<Entity> get_player_interactables();
 	std::vector<std::string> get_layers();
 	void remove_tile(std::pair<int, int> pos);
@@ -125,10 +141,10 @@ public:
 	void set_grid_height(const int value);
 	int get_grid_height();
 	// methods for level editor
-	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap);
-	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap);
-	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap);
-	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap);
-	void draw_spawners_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_spawners_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 };
 #endif

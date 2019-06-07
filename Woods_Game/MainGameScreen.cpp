@@ -461,6 +461,11 @@ void MainGameScreen::start_new_game(const std::string world_key)
 	this->game_image_manager.start_new_game(world_key);
 }
 
+void MainGameScreen::load_game(const std::string filepath)
+{
+	this->game_image_manager.full_load_game_from_save(filepath);
+}
+
 void MainGameScreen::unload_content()
 {
 	game_image_manager.unload_content();

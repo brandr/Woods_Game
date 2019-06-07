@@ -1,6 +1,11 @@
 #include "GameImage.h"
 #include "ImageLoader.h"
 
+const std::string GameImage::image_filename_suffix()
+{
+	return "";
+}
+
 GameImage::GameImage(std::string filename)
 {
 	//this->image_filename = filename;
@@ -36,7 +41,7 @@ int GameImage::get_type()
 
 std::string GameImage::get_image_filename()
 {
-	return image_filename;
+	return image_filename + this->image_filename_suffix();
 }
 
 void GameImage::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
@@ -260,10 +265,12 @@ void GameImage::unload_content()
 
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
-	ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
-	if (ss_animation) {
-		draw_bitmap = ImageLoader::get_instance().get_current_image(this);
-	}
+	//TODO: figure out if the previous code was actually necessary for anything
+	//ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
+	ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+	//if (ss_animation) {
+	//	draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+	//}
 	//bitmap = ImageLoader::get_instance().get_current_image(this);
 	if (draw_bitmap && rect.x + x_offset < al_get_display_width(display) && rect.right() + x_offset > 0 && 
 		rect.y + y_offset < al_get_display_height(display) && rect.bottom() + y_offset > 0) {
@@ -458,8 +465,6 @@ bool GameImage::outside_level(std::pair<int, int> level_dimensions)
 
 Animation * GameImage::load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions)
 {
-	
-	//TODO
 	Animation *anim = new Animation();
 	ImageLoader::get_instance().load_image(filename);	//load full spritesheet
 	ALLEGRO_BITMAP *full_spritesheet = ImageLoader::get_instance().get_image(filename);
@@ -470,22 +475,3 @@ Animation * GameImage::load_animation_single_row(std::string filename, int row, 
 	ImageLoader::get_instance().load_spritesheet(*anim);
 	return anim;
 }
-
-
-/*
-inline bool center_comparsion::operator()(const GameImage & gi1, const GameImage & gi2)
-{
-	return (gi1.get_center().second < gi2.get_center().second);
-}
-*/
-/*
-bool operator<(const GameImage & g1, const GameImage & g2)
-{
-	return (g1.get_center().second < g2.get_center().second);
-}
-
-bool operator>(const GameImage & g1, const GameImage & g2)
-{
-	return (g1.get_center().second > g2.get_center().second);
-}
-*/

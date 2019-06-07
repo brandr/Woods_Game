@@ -30,8 +30,10 @@ public:
 	void reload_dungeons(const std::string dungeons_path);
 	void load_npcs();
 	void load_player();
+	void generate_levels();
 	void unload_content();
 	void load_images(ImageLoader&);
+	void update_new_day(Player * player);
 	void add_dungeon(Dungeon*);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
@@ -40,6 +42,8 @@ public:
 	std::vector<std::shared_ptr<Dungeon>> get_dungeons();
 	std::string get_player_key();
 	const std::string get_world_key();
+	const int get_current_day();
+	void set_current_day(const int day);
 };
 
 #endif

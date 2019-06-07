@@ -335,6 +335,12 @@
     <ClInclude Include="CalendarScreen.h">
       <Filter>Screens\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LoadGameMenuManager.h">
+      <Filter>Menus\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelGenData.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -519,6 +525,15 @@
     </ClCompile>
     <ClCompile Include="CalendarScreen.cpp">
       <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadGameMenuManager.cpp">
+      <Filter>Menus\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelGenData.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MathUtilities.cpp">
+      <Filter>Utilities\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

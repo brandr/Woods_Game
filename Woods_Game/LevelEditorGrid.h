@@ -15,7 +15,7 @@ private:
 	LevelGridListener grid_listener;
 	void update_input();
 	// component properties
-	std::map<std::string, agui::Allegro5Image*> loaded_image_layers;
+	std::map<std::string, std::vector<std::pair<agui::Allegro5Image *, std::string>>> loaded_image_layers;
 	std::map<std::string, bool> layer_visibility_map;
 	int topMargin;
 	int leftMargin;
@@ -27,8 +27,10 @@ private:
 	void clear_image_layers();
 	void load_image_layer(std::string layer);
 	void update_image_layer(std::string layer);
-	agui::Allegro5Image *loaded_level_image(std::string prefix, std::string level_name);
-	void set_loaded_level_image(agui::Allegro5Image *image, std::string prefix, std::string level_name);
+	agui::Allegro5Image *loaded_level_image(const std::string prefix, const std::string level_name);
+	std::vector<std::pair<agui::Allegro5Image *, std::string>> loaded_level_images(const std::string prefix, const std::string level_name);
+	void set_loaded_level_image(agui::Allegro5Image *image, const std::string prefix, const std::string level_name, const std::string rect_key);
+	const std::vector<std::string> image_layer_rect_keys();
 	bool is_layer_visible(std::string layer);
 	std::string level_name();
 	bool has_level();

@@ -1,12 +1,9 @@
 #include "Cutscene.h"
 #include "ImageLoader.h"
 
-CutsceneBlock * Cutscene::current_block()
+const bool Cutscene::has_current_cutscene_block()
 {
-	if (this->current_block_index >= 0 && this->current_block_index < this->cutscene_blocks.size()) {
-		return this->cutscene_blocks[this->current_block_index];
-	}
-	return NULL;
+	return this->current_block_index >= 0 && this->current_block_index < this->cutscene_blocks.size();
 }
 
 Cutscene::Cutscene()
@@ -15,16 +12,16 @@ Cutscene::Cutscene()
 
 Cutscene::~Cutscene()
 {
+	this->cutscene_blocks.clear();
 }
 
 void Cutscene::update()
 {
 	if (!this->action_flag) {
-		CutsceneBlock * block = this->current_block();
-		if (block != NULL) {
-			block->update(this->timer_active);
-			if (block->is_finished()) {
-				if (block->process_action()) {
+		if (this->has_current_cutscene_block()) {
+			this->cutscene_blocks[this->current_block_index]->update(this->timer_active);
+			if (this->cutscene_blocks[this->current_block_index]->is_finished()) {
+				if (this->cutscene_blocks[this->current_block_index]->process_action()) {
 					this->action_flag = true;
 				} else {
 					this->current_block_index++;
@@ -47,9 +44,8 @@ const std::vector<ALLEGRO_BITMAP*> Cutscene::get_filters(ALLEGRO_DISPLAY * displ
 {
 	std::vector<ALLEGRO_BITMAP*> filters;
 	if (!this->is_finished) {
-		CutsceneBlock * block = this->current_block();
-		if (block != NULL) {
-			const std::vector<ALLEGRO_BITMAP*> block_filters = block->get_filters(display, width, height);
+		if (this->has_current_cutscene_block()) {
+			const std::vector<ALLEGRO_BITMAP*> block_filters = this->cutscene_blocks[this->current_block_index]->get_filters(display, width, height);
 			const int size = block_filters.size();
 			for (int i = 0; i < size; i++) {
 				filters.push_back(block_filters[i]);
@@ -64,7 +60,7 @@ void Cutscene::add_effect(const std::string effect_key, const int duration)
 	CutsceneBlock * block = new CutsceneBlock();
 	block->effect_key = effect_key;
 	block->duration = duration;
-	this->cutscene_blocks.push_back(block);
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
 void Cutscene::add_action(const std::string action_key)
@@ -72,7 +68,7 @@ void Cutscene::add_action(const std::string action_key)
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = action_key;
 	block->duration = 1;
-	this->cutscene_blocks.push_back(block);
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
 void Cutscene::add_global_time_update(const int day, const int time)
@@ -81,7 +77,16 @@ void Cutscene::add_global_time_update(const int day, const int time)
 	block->action_key = ACTION_UPDATE_GLOBAL_TIME;
 	block->global_time = new GlobalTime(day, time);
 	block->duration = 1;
-	this->cutscene_blocks.push_back(block);
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+}
+
+void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_up_time)
+{
+	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
+	CutsceneBlock * block = new CutsceneBlock();
+	block->action_key = ACTION_UPDATE_NEW_DAY;
+	block->duration = 1;
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
 void Cutscene::add_load_game_update(const int day, const int time)
@@ -90,7 +95,7 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	block->action_key = ACTION_LOAD_GAME;
 	block->global_time = new GlobalTime(day, time);
 	block->duration = 1;
-	this->cutscene_blocks.push_back(block);
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
 
@@ -159,6 +164,8 @@ const bool CutsceneBlock::process_action()
 			return true;
 		} else if (this->action_key == ACTION_LOAD_GAME) {
 			return true;
+		} else if (this->action_key == ACTION_UPDATE_NEW_DAY) {
+			return true;
 		}
 	}
 	return false;
@@ -180,18 +187,16 @@ const bool Cutscene::has_action()
 
 const std::string Cutscene::get_active_action_key()
 {
-	CutsceneBlock * block = this->current_block();
-	if (block != NULL) {
-		return block->action_key;
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->action_key;
 	}
 	return "";
 }
 
 GlobalTime * Cutscene::get_active_global_time()
 {
-	CutsceneBlock * block = this->current_block();
-	if (block != NULL) {
-		return block->global_time;
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->global_time;
 	}
 	return NULL;
 }

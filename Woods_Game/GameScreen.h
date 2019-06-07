@@ -17,6 +17,7 @@ enum SCREEN_FLAGS {
 	FLAG_CHANGE_TO_MAIN_GAME, 
 	FLAG_CHANGE_TO_TITLE, 
 	FLAG_START_NEW_GAME, 
+	FLAG_LOAD_GAME,
 	FLAG_RESUME_GAME, 
 	FLAG_QUIT_GAME
 };
@@ -29,31 +30,19 @@ const static std::string FONT_COLOR_HOTBAR = "333333";
 const static std::string FONT_COLOR_CALENDAR_MONTH = "660000";
 const static std::string FONT_COLOR_CALENDAR_DAYS = "333333";
 
-// screen styles
-/*
-const static std::string SCREEN_STYLE_WINDOWED = "Windowed";
-const static std::string SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
-const static std::string SCREEN_STYLE_FULLSCREEN = "Fullscreen";
-*/
-class GameScreen
-{
-//do this so we can call key press methods
-//typedef void(*controlFunc)(GameScreen&, ALLEGRO_EVENT, bool);
+class GameScreen {
 protected:
 	typedef void(*controlFunc)(GameScreen&, ALLEGRO_EVENT, bool);
 	InputManager input;
 	FileManager file_manager;
 	std::unique_ptr<Configurations> config;
-	/*
-	std::vector<std::vector<int>> attributes;
-	std::vector<std::vector<std::string>> contents;
-	*/
 	std::map<int, std::map<std::pair<int,int>, controlFunc>> control_map;	
 	std::map<int, bool> input_map;
 	std::map<int, std::pair<float, float>> joystick_pos_map;
 	std::pair<int, int> mouse_pos;
 	int screen_flag = FLAG_NONE;
 	std::map<int, ALLEGRO_FONT*> font_map;
+	std::string load_game_filepath;
 public:
 	GameScreen();
 	~GameScreen();
@@ -109,6 +98,7 @@ public:
 	virtual void process_event(ALLEGRO_EVENT ev);
 	virtual void set_screen_flag(int);
 	virtual int get_screen_flag();
+	virtual const std::string get_load_game_filepath();
 };
 
 #endif

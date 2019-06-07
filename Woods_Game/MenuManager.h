@@ -8,6 +8,10 @@
 
 const int MENU_ITEM_SPACING = 30;
 
+enum MENU_ITEM_BINDING_KEYS {
+	MENU_BINDING_FILENAME
+};
+
 class MenuManager: public xmls::Serializable
 {
 public:
@@ -32,10 +36,11 @@ public:
 	static constexpr const char* SELECTION_KEY_SAVE_CONTROLS_CHANGES = "save_controls_changes";
 	// title screen menu options
 	static constexpr const char* SELECTION_KEY_START_NEW_GAME = "start_new_game";
+	static constexpr const char* SELECTION_KEY_LOAD_GAME = "load_game";
+	static constexpr const char* SELECTION_KEY_CONFIRM_LOAD_GAME = "confirm_load_game";
 protected:
 	xmls::Collection<MenuItem> menu_items;
 	std::string menu_key;
-	//std::vector<MenuItem*> menu_items;
 	int item_index;
 	int selected_index = -1;
 	FileManager file_manager;
@@ -67,7 +72,7 @@ public:
 	void update();
 	virtual void set_keyboard_mappable_input(int keycode);
 	virtual void set_controller_mappable_input(int keycode);
-	void draw(ALLEGRO_DISPLAY *display, float x_off, float y_off, float width, float height);
+	virtual void draw(ALLEGRO_DISPLAY *display, float x_off, float y_off, float width, float height);
 	void menu_up();
 	void menu_down();
 	void menu_left();
@@ -89,6 +94,7 @@ public:
 	void set_item_index(const int index);
 	bool is_selecting_input();
 	void set_selecting_input(bool selecting);
+	virtual const std::string selected_filepath();
 	xmls::Collection<MenuItem>& get_menu_items();
 	std::string get_selected_action_key();
 	std::string get_confirm_action_key();

@@ -48,6 +48,7 @@ public:
 	virtual void load_content();
 	void load_ui_content();
 	void start_new_game(const std::string world_key);
+	void load_game(const std::string filepath);
 	virtual void unload_content();
 	void load_controls();
 	void reset_controls();

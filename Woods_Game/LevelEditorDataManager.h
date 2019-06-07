@@ -10,6 +10,9 @@
 
 #include <allegro5/display.h>
 
+#define MAX_BITMAP_WIDTH 1920
+#define MAX_BITMAP_HEIGHT 1920
+
 //TODO: make sure we avoid all memory leaks by filtering loading/unloading/etc through this class
 
 enum OBJECT_TYPES {
@@ -75,7 +78,7 @@ public:
 	LevelEditorDataManager(LevelEditorDataManager const&) = delete;
 	void operator=(LevelEditorDataManager const&) = delete;
 	static LevelEditorDataManager& get_instance();
-	agui::Allegro5Image * load_image_layer(std::string layer);
+	agui::Allegro5Image * load_image_layer(const std::string layer, Rect &subsection);
 	
 	// dungeon
 	void save_dungeon(std::string dungeon_name);
@@ -92,6 +95,7 @@ public:
 	void delete_level(std::string level_name);
 	void reset_level();
 	void reset_tile_edges();
+	void update_new_day();
 	std::vector<std::string> get_active_level_names();
 	std::string get_selected_level_name();
 	std::pair<int, int> selected_level_grid_pos();
@@ -102,6 +106,7 @@ public:
 	int get_selected_level_index();
 	void set_selected_object_sheet_col(const int col);
 	const bool has_selected_level_object();
+	const std::vector<std::string> image_layer_rect_keys();
 
 	// level objects
 	const bool replace_selected_object_instance_xml(const std::string xml);

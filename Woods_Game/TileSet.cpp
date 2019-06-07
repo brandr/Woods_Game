@@ -302,6 +302,15 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_contac
 	return this->block_types.getItem(index)->get_block_contact_action_data();
 }
 
+const std::vector<std::pair<std::string, std::string>> TileSet::get_block_load_day_action_data(const int index)
+{
+	std::vector<std::pair<std::string, std::string>> data;
+	if (index < 0 || index > this->block_types.size()) {
+		return data;
+	}
+	return this->block_types.getItem(index)->get_block_load_day_action_data();
+}
+
 void TileSet::set_block_solid(const int row, bool solid)
 {
 	this->ensure_room_for_type(TILESET_BLOCK_TYPES, row);

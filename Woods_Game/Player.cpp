@@ -373,7 +373,7 @@ void Player::sleep_in_bed(GlobalTime * current_time)
 	Cutscene * cutscene = new Cutscene();
 	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
-	cutscene->add_global_time_update(current_time->get_day() + 1, this->wake_up_time()); //TEMP: how to get wake up time?
+	cutscene->add_advance_day_update(current_time, this->wake_up_time());
 	cutscene->add_action(ACTION_SAVE_GAME);
 	this->active_cutscene = cutscene;
 }
@@ -382,7 +382,7 @@ void Player::load_game_for_day(const int day)
 {
 	Cutscene * cutscene = new Cutscene();
 	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
-	cutscene->add_load_game_update(day, this->wake_up_time()); //TEMP: how to get wake up time? (should probably be accurate to that day)
+	cutscene->add_load_game_update(day, this->wake_up_time());
 	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
 	this->active_cutscene = cutscene;
 }

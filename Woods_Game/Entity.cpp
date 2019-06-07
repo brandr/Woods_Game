@@ -2,6 +2,23 @@
 #include "Player.h"
 
 
+const std::string Entity::image_filename_suffix()
+{
+	if (this->has_entity_attribute(E_ATTR_PLANT_GROWTH_CURRENT_AGE)
+		&& this->has_entity_attribute(E_ATTR_PLANT_GROWTH_MATURE_AGE)) {
+		const int current = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_CURRENT_AGE);
+		const int mature = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_MATURE_AGE);
+		if (current >= mature) {
+			return "";
+		} else {
+			const int num_stages = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_NUM_STAGES);
+			const int stage_index = current / (mature/num_stages) + 1;
+			return "_stage_" + std::to_string(stage_index);
+		}
+	}
+	return GameImage::image_filename_suffix();
+}
+
 Entity::Entity()
 {
 	// NOTE: we do not register xml attributes here, only in subclass constructors
@@ -11,13 +28,14 @@ Entity::Entity()
 
 Entity::~Entity()
 {
-	//currentLevel = NULL;
 }
 
 void Entity::copy_entity_attributes(Entity * other)
 {
 	this->entity_attributes.Clear();
-	this->set_entity_attributes(other->get_entity_attributes());
+	if (other != NULL) {
+		this->set_entity_attributes(other->get_entity_attributes());
+	}
 }
 
 Rect * Entity::get_bitmap_subsection()
@@ -107,6 +125,41 @@ void Entity::counter_update()
 void Entity::durability_update()
 {
 
+}
+
+
+void Entity::mark_needs_plant_day_update()
+{
+	this->counters[COUNTER_PLANT_DAY_UPDATE] = 1;
+}
+
+void Entity::unmark_needs_plant_day_update()
+{
+	this->counters[COUNTER_PLANT_DAY_UPDATE] = 0;
+}
+
+const bool Entity::needs_plant_day_update()
+{
+	return this->counters[COUNTER_PLANT_DAY_UPDATE] > 0;
+}
+
+const int Entity::get_plant_growth_spread_range()
+{
+	return this->get_entity_attribute(E_ATTR_PLANT_GROWTH_SPREAD_RANGE);
+}
+
+const bool Entity::update_new_day(Player * player)
+{
+	const InteractActionManager &manager = InteractActionManager::get_instance();
+	const int size = this->load_day_actions.size();
+	bool interacted = false;
+	for (int i = 0; i < size; i++) {
+		InteractAction * action = this->load_day_actions.getItem(i);
+		if (manager.run_action(action, player, this)) {
+			interacted = true;
+		}
+	}
+	return interacted;
 }
 
 const bool Entity::contact_action(Player * player)
@@ -207,6 +260,15 @@ void Entity::set_interact_actions(const std::vector<std::pair<std::string, std::
 	}
 }
 
+void Entity::set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions)
+{
+	this->load_day_actions.Clear();
+	for (std::pair<std::string, std::string> action_data : actions) {
+		InteractAction *action = new InteractAction(action_data.first, action_data.second);
+		this->load_day_actions.addItem(action);
+	}
+}
+
 void Entity::set_starting_pos(int x, int y)
 {
 	this->entity_starting_pos_x = x;
@@ -303,6 +365,7 @@ EntityData::EntityData()
 	Register("entity_data_index", &entity_data_index);
 	Register("interact_actions", &interact_actions);
 	Register("contact_actions", &contact_actions);
+	Register("load_day_actions", &load_day_actions);
 	Register("attributes", &attributes);
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);
@@ -378,6 +441,18 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_interact_
 		data.push_back(std::pair<std::string, std::string>(
 			this->interact_actions.getItem(i)->get_interact_action_key(), 
 			this->interact_actions.getItem(i)->get_function_name()));
+	}
+	return data;
+}
+
+std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_action_data()
+{
+	std::vector<std::pair<std::string, std::string>> data;
+	const int size = this->load_day_actions.size();
+	for (int i = 0; i < size; i++) {
+		data.push_back(std::pair<std::string, std::string>(
+			this->load_day_actions.getItem(i)->get_interact_action_key(),
+			this->load_day_actions.getItem(i)->get_function_name()));
 	}
 	return data;
 }
@@ -489,16 +564,16 @@ EntityGroupData::EntityGroupData()
 	setClassName("EntityData");
 	Register("entity_group_name", &entity_group_name);
 	Register("entity_group_index", &entity_group_index);
-	Register("attributes", &attributes);
-	Register("components", &components);
-	Register("root_offset_x", &root_offset_x);
-	Register("root_offset_y", &root_offset_y);
-	Register("center_offset_x", &center_offset_x);
-	Register("center_offset_y", &center_offset_y);
+	//Register("attributes", &attributes);
+	//Register("components", &components);
+	//Register("root_offset_x", &root_offset_x);
+	//Register("root_offset_y", &root_offset_y);
+	//Register("center_offset_x", &center_offset_x);
+	//Register("center_offset_y", &center_offset_y);
 	Register("entity_group_image_width", &entity_group_image_width);
 	Register("entity_group_image_height", &entity_group_image_height);
-	Register("solid", &solid);
-	Register("visible", &visible);
+	//Register("solid", &solid);
+	//Register("visible", &visible);
 	solid = false;
 	visible = true;
 }

@@ -36,6 +36,29 @@ const bool LevelEditorDataManager::has_selected_level_object()
 	return this->selected_level_object() != NULL;
 }
 
+const std::vector<std::string> LevelEditorDataManager::image_layer_rect_keys()
+{
+	std::vector<std::string> rect_keys;
+	if (this->has_selected_level()) {
+		const int width = this->active_levels[this->selected_level_index]->get_width();
+		const int height = this->active_levels[this->selected_level_index]->get_height();
+		const int level_grid_width = STANDARD_LEVEL_GRID_WIDTH;
+		const int level_grid_height = STANDARD_LEVEL_GRID_HEIGHT;
+		const int bitmap_cols = level_grid_width != width ? (width / level_grid_width) + 1 : 1;
+		const int bitmap_rows = level_grid_height != height ? (height / level_grid_height) + 1 : 1;
+		for (int row = 0; row < bitmap_rows; row++) {
+			for (int col = 0; col < bitmap_cols; col++) {
+				const int x = col * level_grid_width, y = row * level_grid_height;
+				const int rect_width = std::min(level_grid_width, width - x), rect_height = std::min(level_grid_height, height - y);
+				const std::string rect_key = "" + std::to_string(x) + "," + std::to_string(y) 
+					+ "," + std::to_string(rect_width) + "," + std::to_string(rect_height);
+				rect_keys.push_back(rect_key);
+			}
+		}
+	}
+	return rect_keys;
+}
+
 const std::string LevelEditorDataManager::get_selected_object_display_name() {
 	const std::pair<int, int> grid_pos = this->selected_object_grid_pos;
 	if (this->selected_object_grid_index >= 0
@@ -233,6 +256,10 @@ void LevelEditorDataManager::reset_tile_edges()
 	}
 }
 
+void LevelEditorDataManager::update_new_day()
+{
+}
+
 void LevelEditorDataManager::load_all_tilesets()
 {
 	for (int i = 0; i < this->active_tilesets.size(); i++) {
@@ -334,27 +361,28 @@ bool LevelEditorDataManager::update_selected_tileset_tiled_image(int index)
 	return update_image;
 }
 
-agui::Allegro5Image * LevelEditorDataManager::load_image_layer(std::string layer)
+agui::Allegro5Image * LevelEditorDataManager::load_image_layer(const std::string layer, Rect &subsection)
 {
 	const std::string level_name = this->get_selected_level_name();
 	agui::Allegro5Image *image_layer = new agui::Allegro5Image();
-	const int pixel_width = this->active_levels[this->selected_level_index]->get_width();
-	const int pixel_height = this->active_levels[this->selected_level_index]->get_height();
-	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
+	const int pixel_width = subsection.width;
+	const int pixel_height = subsection.height;
+	//ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
+	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(subsection.width, subsection.height);
 	if (TILE_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_tiles_onto_bitmap(image_bitmap);
+		this->active_levels[this->selected_level_index]->draw_tiles_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (BLOCK_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_blocks_onto_bitmap(image_bitmap);
+		this->active_levels[this->selected_level_index]->draw_blocks_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (ENTITY_GROUP_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_entity_groups_onto_bitmap(image_bitmap);
+		this->active_levels[this->selected_level_index]->draw_entity_groups_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (TILED_IMAGE_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_tiled_images_onto_bitmap(image_bitmap);
+		this->active_levels[this->selected_level_index]->draw_tiled_images_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (SPAWNER_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_spawners_onto_bitmap(image_bitmap);
+		this->active_levels[this->selected_level_index]->draw_spawners_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
@@ -372,7 +400,7 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(std::string layer
 		const std::pair<int, int> grid_pos = this->selected_object_grid_pos;
 		GameImage * selected_object = this->selected_level_object();
 		if (selected_object != NULL) {
-			const int x1 = selected_object->get_x(), y1 = selected_object->get_y();
+			const int x1 = selected_object->get_x() - subsection.x, y1 = selected_object->get_y() - subsection.y;
 			const int x2 = x1 + selected_object->get_width(), y2 = y1 + selected_object->get_height();
 			al_draw_line(x1, y1, x1, y2, al_map_rgb(220, 0, 0), 2.0);
 			al_draw_line(x2, y1, x2, y2, al_map_rgb(220, 0, 0), 2.0);
@@ -1035,16 +1063,26 @@ void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)
 
 std::pair<int, int> LevelEditorDataManager::selected_tiled_image_sheet_dimensions()
 {
-	ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
-	const int width = al_get_bitmap_width(tileset_sheet), height = al_get_bitmap_height(tileset_sheet);
-	return std::pair<int, int>(width, height);
+	if (this->selected_tileset_tile_image_index >= 0
+		&& this->selected_tileset_tile_image_index < this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size()) {
+		ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
+		const int width = al_get_bitmap_width(tileset_sheet), height = al_get_bitmap_height(tileset_sheet);
+		return std::pair<int, int>(width, height);
+	}
+	return std::pair<int, int>(0, 0);
 }
 
 agui::Allegro5Image * LevelEditorDataManager::load_tiled_image_select_layer(std::string layer)
 {
 	const std::string image_key = this->get_selected_tiled_image_key();
 	agui::Allegro5Image *image_layer = new agui::Allegro5Image();
-	ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
+	ALLEGRO_BITMAP* tileset_sheet = NULL;
+	if (this->selected_tileset_tile_image_index >= 0 
+		&& this->selected_tileset_tile_image_index < this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size()) {
+		tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
+	} else {
+		return image_layer;
+	}
 	const int pixel_width = al_get_bitmap_width(tileset_sheet);
 	const int pixel_height = al_get_bitmap_height(tileset_sheet);
 	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
@@ -1053,8 +1091,7 @@ agui::Allegro5Image * LevelEditorDataManager::load_tiled_image_select_layer(std:
 		al_set_target_bitmap(image_bitmap);
 		al_draw_bitmap(tileset_sheet, 0, 0, 0);
 		al_set_target_bitmap(display);
-	}
-	else if (GRID_LINES_LAYER == layer) {
+	} else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
 		al_set_target_bitmap(image_bitmap);
 		const int grid_width = pixel_width / TILE_SIZE;
@@ -1085,9 +1122,11 @@ std::string LevelEditorDataManager::get_selected_tiled_image_key()
 {
 	if (this->has_selected_tiled_image_key()) {
 		const std::vector<std::string> image_keys = this->all_selected_tiled_image_keys();
-		return image_keys[this->selected_tileset_tile_image_index];
+		if (this->selected_tileset_tile_image_index >= 0 && this->selected_tileset_tile_image_index < image_keys.size()) {
+			return image_keys[this->selected_tileset_tile_image_index];
+		}
 	}
-	return NULL;
+	return "";
 }
 
 bool LevelEditorDataManager::has_selected_tiled_image_key()

@@ -85,6 +85,15 @@ void World::load_player()
 	//load_player_from_xml("resources/load/player", "default_player");
 }
 
+void World::generate_levels()
+{
+	for (int i = 0; i < dungeons.size(); i++) {
+		if (dungeons[i]) {
+			dungeons[i]->generate_levels();
+		}
+	}
+}
+
 void World::unload_content()
 {
 
@@ -100,6 +109,15 @@ void World::unload_content()
 
 void World::load_images(ImageLoader& loader)
 {
+}
+
+void World::update_new_day(Player * player)
+{
+	for (int i = 0; i < dungeons.size(); i++) {
+		if (dungeons[i]) {
+			dungeons[i]->update_new_day(player);
+		}
+	}
 }
 
 void World::add_dungeon(Dungeon *dungeon)
@@ -157,4 +175,14 @@ std::string World::get_player_key()
 const std::string World::get_world_key()
 {
 	return this->world_key.value();
+}
+
+const int World::get_current_day()
+{
+	return this->current_day.value();
+}
+
+void World::set_current_day(const int day)
+{
+	this->current_day = day;
 }

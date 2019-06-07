@@ -66,3 +66,20 @@ void TiledImageLayer::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap)
 		}
 	}
 }
+
+void TiledImageLayer::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & subsection)
+{
+	const int size = this->tiled_images.size();
+	for (int i = 0; i < size; i++) {
+		TiledImage *ti = this->tiled_images.getItem(i);
+		if (!ti->is_empty()) {
+			ALLEGRO_BITMAP *ti_bitmap = ti->get_bitmap();
+			const std::pair<int, int> pos = ti->get_starting_pos();
+			const int x = pos.first - subsection.x, y = pos.second - subsection.y;
+			if (x >= 0 && y >= 0
+				&& x < subsection.width && y < subsection.height) {
+				al_draw_bitmap(ti_bitmap, pos.first, pos.second, 0);
+			}
+		}
+	}
+}

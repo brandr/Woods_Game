@@ -15,12 +15,10 @@ MenuManager::MenuManager()
 	Register("xPos", &x_pos);
 	Register("yPos", &y_pos);
 	Register("Axis", &axis);
-	//Register("Align", &align);
 	Register("SelectionStyle", &selection_style);
 	Register("FontFilename", &font_filename);
 	Register("FontSize", &font_size);
 	Register("ColorStr", &color_str);
-	//TODO: what else to register?
 }
 
 
@@ -30,16 +28,6 @@ MenuManager::~MenuManager()
 
 void MenuManager::set_menu_items()
 {
-	/*
-	for (int i = 0; i < menu_items.size(); i++) {
-		if (menu_images.size() == i)
-			menu_images.push_back(NULL);
-	}
-	for (int i = 0; i < menu_images.size(); i++) {
-		if (menu_items.size() == i)
-			menu_items.push_back("");
-	}
-	*/
 }
 
 void MenuManager::set_animations()
@@ -167,14 +155,6 @@ void MenuManager::load_xml_content(std::string menu_key)
 void MenuManager::unload_content()
 {
 	al_destroy_font(font);
-	//TODO:figure out what memory leaks  we need to catch here
-	// necessary since we didn't use ImageLoader to get  the menu images
-	/*
-	for (int i = 0; i < menu_items.size(); i++) {
-		menu_items[i]->unload_content();
-		delete menu_items[i];
-	}
-	*/
 	menu_items.Clear();
 	attributes.clear();
 	contents.clear();
@@ -364,6 +344,11 @@ bool MenuManager::is_selecting_input()
 void MenuManager::set_selecting_input(bool selecting)
 {
 	this->selecting_input = selecting;
+}
+
+const std::string MenuManager::selected_filepath()
+{
+	return "";
 }
 
 xmls::Collection<MenuItem> &MenuManager::get_menu_items()

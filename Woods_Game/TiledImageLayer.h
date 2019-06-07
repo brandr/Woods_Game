@@ -19,6 +19,7 @@ public:
 	bool remove_tiled_image(const std::pair<int, int> pos);
 	void draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
 	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap);
+	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 };
 
 #endif

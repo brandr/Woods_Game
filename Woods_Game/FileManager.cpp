@@ -322,50 +322,6 @@ void FileManager::load_content(const char * filename,
 	}
 }
 
-void FileManager::replace_content(const char * filename, 
-	std::vector<std::vector<std::string>>& attributes, 
-	std::vector<std::vector<std::string>>& contents, 
-	std::string id)
-{
-	std::string line, new_line;
-	std::ifstream openfile(filename);
-	std::stringstream write_str;
-	if (openfile.is_open()) {
-		while (!openfile.eof()) {
-			std::stringstream str;
-			std::getline(openfile, line);
-			if (line.find("EndLoad=") != std::string::npos &&
-				line.find(id) != std::string::npos) {
-				identifier_found = false;
-				break;
-			}
-			if (line.find("Load=") != std::string::npos &&
-				line.find(id) != std::string::npos) {
-				identifier_found = true;
-				continue;
-			}
-			if (identifier_found) {
-				const int attr_size = attributes.size();
-				for (int attr_set_index = 0; attr_set_index < attr_size; attr_set_index++) {
-					write_str << "Load=";
-					const std::vector<std::string> attr_line = attributes[attr_set_index];
-					const int attr_size = attr_line.size();
-					for (int attr_index = 0; attr_index < attr_size; attr_index++) {
-						write_str << "[" + attr_line[attr_index] + "]";
-					}
-					write_str << "\n";
-					const std::vector<std::string> content_set = contents[attr_set_index];
-					const int content_set_size = content_set.size();
-					for (int content_set_index = 0; content_set_index < content_set_size; content_set_index++) {
-						std::string cont = contents[attr_set_index][content_set_index];
-						write_str << "[" + cont + "]";
-					}
-				}
-			}
-		}
-	}
-}
-
 std::pair<int, int> FileManager::string_to_pair(std::string tile_string)
 {
 	std::pair<int, int> pair;

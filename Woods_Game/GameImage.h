@@ -41,7 +41,7 @@ enum GAME_MODES{
 enum TYPES{PLAYER, BLOCK, GAME_IMAGE, ENTITY_GROUP};
 enum FACING_DIRECTIONS { DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN };
 enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
-enum COUNTERS { BOUNCE, SWING };
+enum COUNTERS { BOUNCE, SWING, COUNTER_PLANT_DAY_UPDATE };
 
 
 
@@ -58,6 +58,16 @@ public:
 	static constexpr const char* E_ATTR_CONTACT_DAMAGE = "contact_damage";
 	static constexpr const char* E_ATTR_KNOCKBACK = "knockback";
 	static constexpr const char* E_ATTR_SHEARABLE = "shearable";
+		// plant growth attributes
+	static constexpr const char* E_ATTR_PLANT_GROWTH_CURRENT_AGE = "plant_growth_current_age";			// plant's current age in days
+	static constexpr const char* E_ATTR_PLANT_GROWTH_MATURE_AGE = "plant_growth_mature_age";			// age before plant uses its "mature" sprite and can spread
+	static constexpr const char* E_ATTR_PLANT_GROWTH_NUM_STAGES = "plant_growth_num_stages";			// number of stages before maturity. used to determine what sprite to show
+	static constexpr const char* E_ATTR_PLANT_GROWTH_SPREAD_RATE = "plant_growth_spread_rate";			// number from 0 to 100 to tell us how likely the plant is to spread
+	static constexpr const char* E_ATTR_PLANT_GROWTH_SPREAD_RANGE = "plant_growth_spread_range";		// number of tiles away the plant can spread
+	static constexpr const char* E_ATTR_PLANT_GROWTH_SPREAD_CROWD_AVERSION = "plant_growth_spread_crowd_aversion"; // number from 1 to 100 for how much the plant hates spreading near other plants
+	
+	
+	// TODO: sprites for different stages of plant growth
 protected:
 	// serializable attributes
 	xmls::xString animation_spritesheet_key;
@@ -85,6 +95,7 @@ public:
 	virtual ~GameImage();
 	virtual int get_type();
 	std::string get_image_filename();
+	virtual const std::string image_filename_suffix();
 	virtual void load_content(std::vector<std::string>, std::vector<std::string>);
 	virtual void load_content_from_attributes();
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
@@ -93,7 +104,7 @@ public:
 	virtual void load_additional_masks_from_attributes(std::string prefix);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
-	virtual void update();	//TEMP, need to figure out what arguments need to be passed
+	virtual void update();
 	void set_position(int, int);
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
@@ -120,9 +131,7 @@ public:
 	virtual bool contains_point(int, int);
 	virtual bool intersects_area(Rect);
 	virtual bool outside_level(std::pair<int, int>);
-	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);
-	//friend bool operator < (const GameImage& g1, const GameImage& g2);
-	//friend bool operator> (const GameImage& g1, const GameImage& g2);
+	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);\
 };
 
 
