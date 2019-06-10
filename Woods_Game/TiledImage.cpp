@@ -25,7 +25,6 @@ void TiledImage::set_empty()
 	this->tiled_image_name = "";
 	this->tiled_image_sheet_col = -1;
 	this->tiled_image_sheet_row = -1;
-	this->set_bitmap(NULL);
 	this->empty_flag = 1;
 }
 

@@ -269,6 +269,14 @@ void Entity::set_load_day_actions(const std::vector<std::pair<std::string, std::
 	}
 }
 
+void Entity::set_spawn_tile_rules(const std::vector<EntitySpawnTileRule*> rules)
+{
+	this->spawn_tile_rules.Clear();
+	for (EntitySpawnTileRule * rule : rules) {
+		this->spawn_tile_rules.addItem(rule);
+	}
+}
+
 void Entity::set_starting_pos(int x, int y)
 {
 	this->entity_starting_pos_x = x;
@@ -283,6 +291,16 @@ int Entity::get_entity_starting_pos_x()
 int Entity::get_entity_starting_pos_y()
 {
 	return this->entity_starting_pos_y.value();
+}
+
+const std::vector<int> Entity::get_allowed_spawn_tile_types()
+{
+	std::vector<int> types;
+	const int size = this->spawn_tile_rules.size();
+	for (int i = 0; i < size; i++) {
+		types.push_back(this->spawn_tile_rules.getItem(i)->tile_type_index.value());
+	}
+	return types;
 }
 
 int Entity::get_entity_data_index()
@@ -366,6 +384,7 @@ EntityData::EntityData()
 	Register("interact_actions", &interact_actions);
 	Register("contact_actions", &contact_actions);
 	Register("load_day_actions", &load_day_actions);
+	Register("spawn_tile_rules", &spawn_tile_rules);
 	Register("attributes", &attributes);
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);
@@ -453,6 +472,16 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_
 		data.push_back(std::pair<std::string, std::string>(
 			this->load_day_actions.getItem(i)->get_interact_action_key(),
 			this->load_day_actions.getItem(i)->get_function_name()));
+	}
+	return data;
+}
+
+const std::vector<EntitySpawnTileRule *> EntityData::get_block_spawn_tile_rules()
+{
+	std::vector<EntitySpawnTileRule *> data;
+	const int size = this->spawn_tile_rules.size();
+	for (int i = 0; i < size; i++) {
+		data.push_back(this->spawn_tile_rules.getItem(i));
 	}
 	return data;
 }
@@ -564,16 +593,8 @@ EntityGroupData::EntityGroupData()
 	setClassName("EntityData");
 	Register("entity_group_name", &entity_group_name);
 	Register("entity_group_index", &entity_group_index);
-	//Register("attributes", &attributes);
-	//Register("components", &components);
-	//Register("root_offset_x", &root_offset_x);
-	//Register("root_offset_y", &root_offset_y);
-	//Register("center_offset_x", &center_offset_x);
-	//Register("center_offset_y", &center_offset_y);
 	Register("entity_group_image_width", &entity_group_image_width);
 	Register("entity_group_image_height", &entity_group_image_height);
-	//Register("solid", &solid);
-	//Register("visible", &visible);
 	solid = false;
 	visible = true;
 }
@@ -596,4 +617,10 @@ void EntityGroupData::set_entity_group_image_dimensions(std::pair<int, int> dime
 std::pair<int, int> EntityGroupData::get_entity_group_image_dimensions()
 {
 	return std::pair<int, int>(this->entity_group_image_width.value(), this->entity_group_image_height.value());
+}
+
+EntitySpawnTileRule::EntitySpawnTileRule()
+{
+	this->setClassName("EntitySpawnTileRule");
+	this->Register("tile_type_index", &tile_type_index);
 }

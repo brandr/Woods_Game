@@ -20,7 +20,6 @@ void TiledImageLayer::initialize_tiled_images(const std::string tileset_name)
 			const std::string filename = tileset_name + "/tiled_images/" + ti->get_tiled_image_name();
 			std::pair<int, int> position = ti->get_starting_pos();
 			ti->set_content(filename, subsection, position);
-			ti->set_bitmap(ImageLoader::get_instance().get_current_image(ti));
 		}
 	}
 }
@@ -54,26 +53,13 @@ void TiledImageLayer::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pa
 	}
 }
 
-void TiledImageLayer::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap)
-{
-	const int size = this->tiled_images.size();
-	for (int i = 0; i < size; i++) {
-		TiledImage *ti = this->tiled_images.getItem(i);
-		if (!ti->is_empty()) {
-			ALLEGRO_BITMAP *ti_bitmap = ti->get_bitmap();
-			const std::pair<int, int> pos = ti->get_starting_pos();
-			al_draw_bitmap(ti_bitmap, pos.first, pos.second, 0);
-		}
-	}
-}
-
 void TiledImageLayer::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & subsection)
 {
 	const int size = this->tiled_images.size();
 	for (int i = 0; i < size; i++) {
 		TiledImage *ti = this->tiled_images.getItem(i);
 		if (!ti->is_empty()) {
-			ALLEGRO_BITMAP *ti_bitmap = ti->get_bitmap();
+			ALLEGRO_BITMAP *ti_bitmap = ImageLoader::get_instance().get_current_image(ti);
 			const std::pair<int, int> pos = ti->get_starting_pos();
 			const int x = pos.first - subsection.x, y = pos.second - subsection.y;
 			if (x >= 0 && y >= 0

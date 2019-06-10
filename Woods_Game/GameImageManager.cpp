@@ -153,73 +153,12 @@ int GameImageManager::get_game_mode()
 	return game_mode;
 }
 
-void GameImageManager::load_level(int grid_x, int grid_y)
-{
-	Level *level = world.get_current_dungeon()->level_at(grid_x, grid_y);
-	if (level) {
-		load_level_from_map(level);
-	} else {
-		std::cout << "ERROR: failed to load level." << std::endl; //TODO: error handling
-	}
-}
-
-void GameImageManager::load_player(std::string filename)
-{
-	std::vector<std::vector<std::string>> attributes;
-	std::vector<std::vector<std::string>> contents;
-	FileManager file_manager;
-	file_manager.load_content(filename.c_str(), attributes, contents, "gameimage_properties");
-	player = new Player();
-	player->load_content(attributes[0], contents[0]);
-	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
-	attributes.clear(), contents.clear();
-	file_manager.load_content(filename.c_str(), attributes, contents, "additional_masks");
-	player->load_additional_masks(attributes[0], contents[0], "player");
-	current_level->add_being(player);
-}
-
-void GameImageManager::load_level_content(std::string filename, std::string id, int type)
-{
-	std::vector<std::vector<std::string>> attributes;
-	std::vector<std::vector<std::string>> contents;
-	FileManager file_manager;
-	if (id == "") {
-		file_manager.load_content(filename.c_str(), attributes, contents);
-	} else {
-		file_manager.load_content(filename.c_str(), attributes, contents, id);
-	}
-	int size = attributes.size();
-	for (int i = 0; i < size; i++) {
-		GameImage *image;
-		switch (type) {
-		case PLAYER:
-			image = new Player();
-			player = dynamic_cast<Player*>(image);
-			player->load_content(attributes[i], contents[i]);
-			player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
-			current_level->add_being(player);
-			break;
-		}
-	}
-}
-
-void GameImageManager::load_level_from_map(Level *level)
-{
-	//TODO?
-}
-
-void GameImageManager::load_player()
-{
-	
-}
-
 void GameImageManager::load_player_from_xml(std::string filepath, std::string player_key)
 {
 	FileManager file_manager;
 	player = new Player();
 	file_manager.load_xml_content(player, filepath, "SerializableClass", "PlayerKey", player_key);
 	player->load_content_from_attributes();
-	player->set_bitmap(ImageLoader::get_instance().get_current_image(player));
 	player->load_additional_masks_from_attributes("player");
 	this->current_level = this->world.extract_current_level(player);
 	this->current_level->add_being(player);
@@ -448,7 +387,8 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 	}
 
 	al_set_target_bitmap(this->light_filter);
-	if (al_get_bitmap_width(this->light_filter) != width || al_get_bitmap_height(this->light_filter) != height) {
+	if (al_get_bitmap_width(this->light_filter) != width 
+		|| al_get_bitmap_height(this->light_filter) != height) {
 		al_destroy_bitmap(this->light_filter);
 		this->light_filter = al_create_bitmap(width, height);
 	}
@@ -471,11 +411,11 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 		b = SUNRISE_END_B;
 		a = SUNRISE_END_A - ((SUNRISE_END_A - DAY_START_A) * m);
 	} else if (minutes >= DAY_START_MINUTES && minutes < DAY_END_MINUTES) {
-		const float m = ((minutes - SUNRISE_END_MINUTES) / (DAY_END_MINUTES - DAY_START_MINUTES));
+		const float m = ((minutes - DAY_START_MINUTES) / (DAY_END_MINUTES - DAY_START_MINUTES));
 		r = DAY_START_R;
 		g = DAY_START_G;
 		b = 0;
-		a = DAY_START_A - ((SUNRISE_END_A - DAY_START_A) * m);
+		a = DAY_START_A - ((DAY_END_A - DAY_START_A) * m);
 	} else if (minutes >= DAY_END_MINUTES && minutes < SUNSET_START_MINUTES) {
 		const float m = ((minutes - DAY_END_MINUTES) / (SUNSET_START_MINUTES - DAY_END_MINUTES));
 		r = DAY_END_R - ((DAY_END_R - SUNSET_START_R) * m);
@@ -493,6 +433,16 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 		g = SUNSET_END_G;
 		b = SUNSET_END_B;
 		a = SUNSET_END_A;
+	}
+
+	if (minutes == SUNSET_START_MINUTES - 1) {
+		int breakpoint = 1;
+	}
+	if (minutes == SUNSET_START_MINUTES) {
+		int breakpoint = 1;
+	}
+	if (minutes == SUNSET_START_MINUTES) {
+		int breakpoint = 1;
 	}
 	
 	al_clear_to_color(al_map_rgba(r, g, b, a));

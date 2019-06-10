@@ -16,6 +16,11 @@
 #include <iostream>
 #include "XMLSerialization.h"
 
+struct EntitySpawnTileRule : xmls::Serializable {
+	xmls::xInt tile_type_index;
+	EntitySpawnTileRule();
+};
+
 struct EntityComponentAttribute : xmls::Serializable {
 	xmls::xString name = "";
 	EntityComponentAttribute();
@@ -50,6 +55,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
 	xmls::Collection<InteractAction> load_day_actions;
+	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::xBool solid = false;
 	xmls::xBool visible = true;
 	xmls::Collection<EntityComponentData> components;
@@ -63,6 +69,7 @@ struct EntityData : public xmls::Serializable {
 	std::vector<std::pair<std::string, std::string>> get_block_contact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_interact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_load_day_action_data();
+	const std::vector<EntitySpawnTileRule *> get_block_spawn_tile_rules();
 	bool is_empty();
 	std::string get_entity_data_key();
 	std::pair<int, int> get_root_offset();
@@ -92,6 +99,7 @@ protected:
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
 	xmls::Collection<InteractAction> load_day_actions;
+	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;	
 	xmls::xInt entity_sheet_row;
@@ -132,9 +140,11 @@ public:
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void set_spawn_tile_rules(const std::vector<EntitySpawnTileRule *> rules);
 	virtual void set_starting_pos(int x, int y);
 	virtual int get_entity_starting_pos_x();
 	virtual int get_entity_starting_pos_y();
+	virtual const std::vector<int> get_allowed_spawn_tile_types();
 	virtual int get_entity_data_index();
 	virtual int get_entity_attribute(std::string attribute);
 	virtual std::map<std::string, int> get_entity_attributes();

@@ -23,6 +23,7 @@ GameImage::GameImage(float x, float y, float width, float height)
 
 GameImage::~GameImage()
 {
+	//TOOD: how should we delete things? (shouldn't need to use al_destroy_bitmap, thanks to imageloader)
 	/*
 	delete animation;
 	delete ss_animation;
@@ -42,105 +43,6 @@ int GameImage::get_type()
 std::string GameImage::get_image_filename()
 {
 	return image_filename + this->image_filename_suffix();
-}
-
-void GameImage::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
-{
-	std::string anim_filename = "";
-	std::pair<int, int> ss_frame_dimensions;
-	std::vector<std::string> anim_keys;
-	int size = attributes.size();
-	std::map<std::string, std::pair<int, int>> frame_counts;
-	std::map<std::string, int> frame_durations;
-	//TODO: some way to check whether a mask image exists
-	for (int i = 0; i < size; i++) {
-		if (attributes[i] == "image") {
-			image_filename = contents[i];
-			ImageLoader::get_instance().load_image(contents[i]);
-		}
-		else if (attributes[i] == "position") {
-			std::string tile_string = contents[i];
-			rect.x = atoi(tile_string.substr(0, tile_string.find(',')).c_str());
-			rect.y = atoi(tile_string.substr(tile_string.find(',') + 1).c_str());
-		}	
-		else if (attributes[i] == "spritesheet") {
-			anim_filename = "sprite_sheets/" + contents[i];
-			ss_animation = new SpriteSheetAnimation();
-		}
-		else if (attributes[i] == "center_offset") {
-			std::pair<int,int> center_offset = FileManager::string_to_pair(contents[i]);
-			this->center_offset_x = center_offset.first;
-			this->center_offset_y = center_offset.second;
-		}
-		else if (attributes[i] == "anim_keys") {
-			std::string keys_string = contents[i];
-			std::string delimiter = ",";
-			size_t pos = 0;
-			std::string key;
-			while ((pos = keys_string.find(delimiter)) != std::string::npos) {
-				key = keys_string.substr(0, pos);
-				anim_keys.push_back(key);
-				keys_string.erase(0, pos + delimiter.length());
-			}
-			//last iteration
-			anim_keys.push_back(keys_string);
-		}
-		else if (attributes[i] == "ss_frame_count") {
-			std::string frame_count_list_str = contents[i];
-			std::string delimiter = ";";
-
-			size_t pos = 0;
-			std::string frame_count_str;
-			while ((pos = frame_count_list_str.find(delimiter)) != std::string::npos) {
-				frame_count_str = frame_count_list_str.substr(0, pos);
-				std::string anim_key_str = frame_count_str.substr(0, frame_count_str.find(":"));
-				std::string pair_str = frame_count_str.substr(frame_count_str.find(":") + 1).c_str();
-				int x = atoi(pair_str.substr(0, pair_str.find(',')).c_str());
-				int y = atoi(pair_str.substr(pair_str.find(',') + 1).c_str());
-				frame_counts[anim_key_str] = std::pair<int, int>(x, y);
-				frame_count_list_str.erase(0, pos + delimiter.length());
-			}
-
-			//last iteration
-			frame_count_str = frame_count_list_str;
-			std::string anim_key_str = frame_count_str.substr(0, frame_count_str.find(":"));
-			std::string pair_str = frame_count_str.substr(frame_count_str.find(":") + 1).c_str();
-			int x = atoi(pair_str.substr(0, pair_str.find(',')).c_str());
-			int y = atoi(pair_str.substr(pair_str.find(',') + 1).c_str());
-			frame_counts[anim_key_str] = std::pair<int, int>(x, y);
-			frame_count_list_str.erase(0, pos + delimiter.length());
-		}
-		else if (attributes[i] == "ss_frame_duration") {
-			std::vector<std::string> dur_datas = FileManager::string_to_parts(contents[i], ",");
-			for (int i = 0; i < dur_datas.size(); i++) {
-				std::pair<std::string, std::string> dur_parts = FileManager::string_to_pair(dur_datas[i], ":");
-				frame_durations[dur_parts.first] = ::atoi(dur_parts.second.c_str());
-			}
-		}
-		else if (attributes[i] == "ss_frame_dimensions") {
-			std::string str = contents[i];
-			int x = atoi(str.substr(0, str.find(',')).c_str());
-			int y = atoi(str.substr(str.find(',') + 1).c_str());
-			ss_frame_dimensions = std::pair<int, int>(x, y);
-		}
-	}
-	if (ss_animation) {
-		int keys_size = anim_keys.size();
-		
-		for (int i = 0; i < keys_size; i++) {
-			std::string key = anim_keys[i];
-			Animation *anim = new Animation();
-			std::pair<int, int> frame_count = frame_counts[key]; 
-			int frame_duration = frame_durations[key];
-			anim->load_content(anim_filename + "_" + key, frame_count, std::pair<int, int>(0, 0), ss_frame_dimensions, frame_duration);
-			ImageLoader::get_instance().load_spritesheet(*anim);
-			animations[key] = anim;
-		}
-	}
-	mask = NULL; 
-	if (anim_filename != "") {
-		load_mask(anim_filename);
-	}
 }
 
 void GameImage::load_content_from_attributes() {
@@ -167,6 +69,7 @@ void GameImage::load_content_from_attributes() {
 	load_mask(anim_filename);
 }
 
+//TODO: consider changing the way we mantain Rects (could key/store them in ImageLoader?)
 void GameImage::set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position)
 {
 	this->image_filename = image_filename;
@@ -185,35 +88,6 @@ void GameImage::load_mask(std::string base_filename)
 		mask = Mask_New(mask_image);
 	}
 	//TODO: consider loading mask from sprite by default if a mask image is not found.
-	mask_image = NULL;
-}
-
-
-void GameImage::load_additional_masks(std::vector<std::string> attributes, std::vector<std::string> contents, std::string prefix)
-{
-	int size = attributes.size();
-	std::string mask_key = "";
-	std::pair<int,int> frame_dimensions;
-	int frame_count = 0;
-	for (int i = 0; i < size; i++) {
-		if (attributes[i] == "filename") {
-			mask_key = contents[i];
-		}
-		else if (attributes[i] == "ss_frame_dimensions") {
-			frame_dimensions = FileManager::string_to_pair(contents[i]);
-		}
-		else if (attributes[i] == "ss_frame_count") {
-			frame_count = ::atoi(contents[i].c_str());
-		}
-	}
-	ALLEGRO_BITMAP* mask_image;
-	std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
-	for (int row = 0; row < frame_count; row++) {
-		Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
-		ImageLoader::get_instance().load_image(filename, sub);
-		mask_image = ImageLoader::get_instance().get_image(filename, sub);
-		additional_masks[std::pair<std::string, int>(mask_key, row)] = Mask_New(mask_image);
-	}
 	mask_image = NULL;
 }
 
@@ -265,19 +139,15 @@ void GameImage::unload_content()
 
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
-	//TODO: figure out if the previous code was actually necessary for anything
-	//ALLEGRO_BITMAP* draw_bitmap = this->bitmap;
 	ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_current_image(this);
-	//if (ss_animation) {
-	//	draw_bitmap = ImageLoader::get_instance().get_current_image(this);
-	//}
-	//bitmap = ImageLoader::get_instance().get_current_image(this);
 	if (draw_bitmap && rect.x + x_offset < al_get_display_width(display) && rect.right() + x_offset > 0 && 
 		rect.y + y_offset < al_get_display_height(display) && rect.bottom() + y_offset > 0) {
 		al_draw_bitmap(draw_bitmap, rect.x + x_offset, rect.y + y_offset, 0);
-		int size = additional_image_layers.size();
+		int size = additional_image_layer_data.size();
 		for (int i = 0; i < size; i++) {
-			al_draw_bitmap(additional_image_layers[i], rect.x + x_offset, rect.y + y_offset, 0);
+			const std::pair<std::string, Rect> additional_data = this->additional_image_layer_data[i];
+			ALLEGRO_BITMAP * additional_bmp = ImageLoader::get_instance().get_image(additional_data.first, additional_data.second);
+			al_draw_bitmap(additional_bmp, rect.x + x_offset, rect.y + y_offset, 0);
 		}
 	}
 }
@@ -318,26 +188,12 @@ const std::pair<int, int> GameImage::get_center()
 		, static_cast<int>(rect.y) + offset_y);
 }
 
-ALLEGRO_BITMAP* GameImage::get_bitmap()
+void GameImage::add_additional_image_layer(const std::string filename, Rect subsection)
 {
-	return this->bitmap;
+	additional_image_layer_data.push_back(std::pair<std::string, Rect>(filename, subsection));
 }
 
-void GameImage::set_bitmap(ALLEGRO_BITMAP * bitmap)
-{
-	this->bitmap = bitmap;
-}
-
-void GameImage::draw_onto_bitmap(ALLEGRO_BITMAP * bitmap)
-{
-	additional_image_layers.push_back(bitmap);
-}
-
-void GameImage::refresh_bitmap()
-{
-	this->bitmap = ImageLoader::get_instance().get_current_image(this);
-}
-
+//TODO: make sure this doesn't cause memory leaks (should be okay since we call Mask_Delete, but make sure)
 void GameImage::refresh_mask()
 {
 	if (mask) {
@@ -411,7 +267,11 @@ Rect * GameImage::get_image_subsection()
 
 std::vector<ALLEGRO_BITMAP*> GameImage::get_additional_image_layers()
 {
-	return this->additional_image_layers;
+	std::vector<ALLEGRO_BITMAP*> layers;
+	for (std::pair<std::string, Rect> layer_data : this->additional_image_layer_data) {
+		layers.push_back(ImageLoader::get_instance().get_image(layer_data.first, layer_data.second));
+	}
+	return layers;
 }
 
 std::pair<float, float> GameImage::get_rect_center()

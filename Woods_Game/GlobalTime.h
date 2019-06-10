@@ -13,7 +13,7 @@
 #define MIN_MONTH_INDEX 5;
 #define MAX_MONTH_INDEX 8;
 
-#define TIME_RATIO 400 // number of time counter ticks per hour (probably want 5000-10000 for actual game, not sure though)
+#define TIME_RATIO 120 // number of time counter ticks per hour (probably want 5000-10000 for actual game, not sure though)
 
 #define ORIGIN_YEAR 88
 #define ORIGIN_MONTH 5

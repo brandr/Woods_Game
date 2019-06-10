@@ -119,10 +119,8 @@ void LevelEditorGrid::load_image_layer(std::string layer)
 			agui::Allegro5Image *image_layer
 				= LevelEditorDataManager::get_instance().load_image_layer(layer, subsection);
 			std::string level_name = this->level_name();
-			//TODO: pass in subsection/rect_key
 			this->set_loaded_level_image(image_layer, layer, level_name, rect_key);
 		}
-		
 	}
 }
 
@@ -139,22 +137,15 @@ void LevelEditorGrid::reset_image_layer(std::string name)
 	for (int i = 0; i < size; i++) {
 		const std::string layer = LEVEL_LAYERS[i];
 		if (layer == name) {
-			loaded_image_layers[layer].clear();
+			std::vector<std::pair<agui::Allegro5Image *, std::string>> old_layer = loaded_image_layers[layer];
+			for (std::pair<agui::Allegro5Image *, std::string> section_data : old_layer) {
+				section_data.first->free();
+			}
+			old_layer.clear();
 			this->load_image_layer(layer);
 			return;
 		}
 	}
-}
-
-agui::Allegro5Image * LevelEditorGrid::loaded_level_image(const std::string prefix, const std::string level_name)
-{
-	std::string level_key = prefix + "_" + level_name;
-	auto it = loaded_image_layers.find(level_key);
-	if (it == loaded_image_layers.end()) {
-		return NULL;
-	}
-	return NULL; //temp
-	//return this->loaded_image_layers[level_key];
 }
 
 std::vector<std::pair<agui::Allegro5Image*, std::string>> LevelEditorGrid::loaded_level_images(const std::string prefix, const std::string level_name)
@@ -172,7 +163,7 @@ void LevelEditorGrid::set_loaded_level_image(agui::Allegro5Image * image, const 
 	const std::string level_key = prefix + "_" + level_name;
 	auto it = loaded_image_layers.find(level_key);
 	if (it == loaded_image_layers.end()) {
-		loaded_image_layers[level_key] = std::vector <std::pair<agui::Allegro5Image *, std::string>>();
+		loaded_image_layers[level_key] = std::vector<std::pair<agui::Allegro5Image *, std::string>>();
 	}
 	this->loaded_image_layers[level_key].push_back(std::pair<agui::Allegro5Image *, std::string>(image, rect_key));
 }

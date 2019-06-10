@@ -58,7 +58,6 @@ private:
 	World world;
 	GlobalTime * current_global_time = NULL;
 	ALLEGRO_BITMAP * light_filter = NULL;
-	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
 public:
 	Level* current_level;
@@ -72,10 +71,6 @@ public:
 	void save_game();
 	void set_game_mode(int game_mode);
 	int get_game_mode();
-	void load_level(int, int);
-	void load_player(std::string filename);
-	void load_level_content(std::string filename, std::string id, int type);
-	void load_level_from_map(Level *level);
 	Player* get_player();
 	void unload_content();
 	void unload_level_content();

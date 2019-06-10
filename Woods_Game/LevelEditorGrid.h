@@ -27,7 +27,6 @@ private:
 	void clear_image_layers();
 	void load_image_layer(std::string layer);
 	void update_image_layer(std::string layer);
-	agui::Allegro5Image *loaded_level_image(const std::string prefix, const std::string level_name);
 	std::vector<std::pair<agui::Allegro5Image *, std::string>> loaded_level_images(const std::string prefix, const std::string level_name);
 	void set_loaded_level_image(agui::Allegro5Image *image, const std::string prefix, const std::string level_name, const std::string rect_key);
 	const std::vector<std::string> image_layer_rect_keys();

@@ -66,8 +66,6 @@ public:
 	static constexpr const char* E_ATTR_PLANT_GROWTH_SPREAD_RANGE = "plant_growth_spread_range";		// number of tiles away the plant can spread
 	static constexpr const char* E_ATTR_PLANT_GROWTH_SPREAD_CROWD_AVERSION = "plant_growth_spread_crowd_aversion"; // number from 1 to 100 for how much the plant hates spreading near other plants
 	
-	
-	// TODO: sprites for different stages of plant growth
 protected:
 	// serializable attributes
 	xmls::xString animation_spritesheet_key;
@@ -78,14 +76,15 @@ protected:
 	xmls::Collection<AnimationData> animation_data;
 	xmls::Collection<MaskData> additional_mask_data;
 	// attributes we use (consider getting rid of center offset and just serializing it)
-	ALLEGRO_BITMAP *bitmap;
+	//ALLEGRO_BITMAP *bitmap;
 	std::string image_filename;
 	Rect* image_subsection = NULL;
-	std::vector<ALLEGRO_BITMAP*> additional_image_layers;
+	std::vector<std::pair<std::string, Rect>> additional_image_layer_data;
 	Rect rect;
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
+	//TODO: consider storing masks in ImageLoader (though position might make this tricky)
 	mask_t *mask;
 	std::map<std::pair<std::string, int>, mask_t*> additional_masks;
 public:
@@ -96,11 +95,9 @@ public:
 	virtual int get_type();
 	std::string get_image_filename();
 	virtual const std::string image_filename_suffix();
-	virtual void load_content(std::vector<std::string>, std::vector<std::string>);
 	virtual void load_content_from_attributes();
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
 	virtual void load_mask(std::string base_filename);
-	virtual void load_additional_masks(std::vector<std::string> attributes, std::vector<std::string> contents, std::string prefix);
 	virtual void load_additional_masks_from_attributes(std::string prefix);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
@@ -109,10 +106,7 @@ public:
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
 	virtual const std::pair<int,int> get_center();
-	virtual ALLEGRO_BITMAP* get_bitmap();
-	void set_bitmap(ALLEGRO_BITMAP *bitmap);
-	virtual void draw_onto_bitmap(ALLEGRO_BITMAP *bitmap);
-	virtual void refresh_bitmap();
+	virtual void add_additional_image_layer(const std::string filename, Rect subsection);
 	virtual void refresh_mask();
 	mask_t* get_mask();
 	std::string get_anim_state_key();

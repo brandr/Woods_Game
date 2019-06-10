@@ -35,7 +35,7 @@ Tile::Tile(TileSet *tileset, int tile_x, int tile_y, int type_index, int sheet_c
 	this->set_content(filename, offset_rect, position);
 	this->set_edge_priority(tileset->get_edge_priority(type_index));
 	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 Tile::~Tile()
@@ -56,7 +56,7 @@ Tile * Tile::null_tile(TileSet *tileset, int tile_x, int tile_y)
 	tile->set_content(filename, offset_rect, position);
 	tile->set_edge_priority(0);
 	tile->set_speed_mod(1.0f);
-	tile->set_bitmap(ImageLoader::get_instance().get_current_image(tile));
+	//tile->set_bitmap(ImageLoader::get_instance().get_current_image(tile));
 	return tile;
 }
 
@@ -90,7 +90,7 @@ void Tile::reset(TileSet *tileset, Tile * t)
 	this->set_content(filename, offset_rect, position);
 	this->set_edge_priority(tileset->get_edge_priority(type_index));
 	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 void Tile::reset(TileSet * tileset, const int type_index)
@@ -100,7 +100,7 @@ void Tile::reset(TileSet * tileset, const int type_index)
 	this->image_filename = filename;
 	this->set_edge_priority(tileset->get_edge_priority(type_index));
 	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
+	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 void Tile::reset_for_reload()
@@ -139,6 +139,8 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 		= tileset->get_block_contact_action_data(block_index);
 	const std::vector<std::pair<std::string, std::string>> load_day_action_data
 		= tileset->get_block_load_day_action_data(block_index);
+	const std::vector<EntitySpawnTileRule *> spawn_tile_rules
+		= tileset->get_block_spawn_tile_rules(block_index);
 
 	// set serializable attributes
 	const bool solid = tileset->get_block_solid(block_index);
@@ -148,13 +150,14 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
 	ImageLoader::get_instance().load_image(filename + this->block.image_filename_suffix(), *(this->block.get_image_subsection()));
-	this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
+	//this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
 	this->block.set_interact_actions(interact_action_data);
 	this->block.set_contact_actions(contact_action_data);	
 	this->block.set_load_day_actions(load_day_action_data);
+	this->block.set_spawn_tile_rules(spawn_tile_rules);
 	this->block.load_entity_effects(tileset->get_tile_sheet_filename(), tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
 }

@@ -48,7 +48,6 @@ public:
 	Player();
 	virtual ~Player();
 	virtual int get_type();
-	virtual void load_content(std::vector<std::string> attributes, std::vector<std::string> contents);
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
 	virtual void update(std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);

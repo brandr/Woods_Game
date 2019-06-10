@@ -229,8 +229,6 @@ void LevelEditorDataManager::add_level(std::string level_name)
 	}
 }
 
-//FIXME: are we actually using the level name?
-//NOTE: we might if we have -1, -1 levels
 void LevelEditorDataManager::delete_level(std::string level_name)
 {
 	if (level_name.length() > 0 && this->has_active_dungeon()) {
@@ -285,7 +283,6 @@ void LevelEditorDataManager::reset_tileset_object_selection()
 	this->selected_tileset_block_index = -1;
 	this->selected_tileset_entity_group_index = -1;
 	this->selected_tileset_tile_image_index = -1;
-
 	this->selected_object_tab_index = -1;
 	this->selected_object_select_index = -1;
 	this->selected_object_grid_index = -1;
@@ -367,7 +364,6 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(const std::string
 	agui::Allegro5Image *image_layer = new agui::Allegro5Image();
 	const int pixel_width = subsection.width;
 	const int pixel_height = subsection.height;
-	//ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
 	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(subsection.width, subsection.height);
 	if (TILE_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_tiles_onto_bitmap(image_bitmap, subsection);
@@ -456,8 +452,6 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 					did_serialize = xmls::Serializable::fromXML(xml, b);
 					const std::pair<int, int> ss_pos(b->get_entity_sheet_col(), b->get_entity_sheet_row());
 					const std::pair<int, int> pos(b->get_x(), b->get_y());
-					//t->replace_block(this->active_tilesets[this->selected_tileset_index].get(), 
-					//	b->get_entity_data_index(), ss_pos, pos);
 				}
 			}
 			break;
@@ -465,7 +459,7 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 			eg = this->active_levels[this->selected_level_index]->entity_group_at_tile_pos(grid_pos);
 			if (eg) {
 				did_serialize = xmls::Serializable::fromXML(xml, eg);
-				this->active_levels[this->selected_level_index]->initialize_entity_group(eg); //todo test
+				this->active_levels[this->selected_level_index]->initialize_entity_group(eg);
 			}
 			break;
 		case OBJECT_TYPE_SPAWNER:
@@ -645,7 +639,8 @@ const std::pair<int, int> LevelEditorDataManager::get_selected_object_instance_d
 ALLEGRO_BITMAP * LevelEditorDataManager::get_selected_object_instance_bitmap()
 {
 	GameImage * selected_object = this->selected_level_object();
-	return selected_object != NULL ? selected_object->get_bitmap() : NULL;
+	return selected_object != NULL 
+		? ImageLoader::get_instance().get_current_image(selected_object) : NULL;
 }
 
 const std::string LevelEditorDataManager::get_selected_object_instance_xml()

@@ -652,7 +652,6 @@ void MainGameScreen::draw_clock(ALLEGRO_DISPLAY * display)
 	const std::string time_str = game_image_manager.time_display_string();
 	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, date_str.c_str());
 	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 200.0f, y + 16.0f, 0, time_str.c_str());
-	//TODO
 }
 
 void MainGameScreen::draw_ui_paused(ALLEGRO_DISPLAY* display)

@@ -45,6 +45,14 @@
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">fern</Member>
                 <Member Name="entity_data_index">1</Member>
+                <Collection Name="spawn_tile_rules">
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">1</Member>
+                    </Class>
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">3</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="load_day_actions">
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">plant_day_update</Member>
@@ -104,6 +112,20 @@
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">thorns</Member>
                 <Member Name="entity_data_index">2</Member>
+                <Collection Name="spawn_tile_rules">
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">0</Member>
+                    </Class>
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">1</Member>
+                    </Class>
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">2</Member>
+                    </Class>
+                    <Class Type="EntitySpawnTileRule" Version="1">
+                        <Member Name="tile_type_index">3</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="load_day_actions">
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">plant_day_update</Member>

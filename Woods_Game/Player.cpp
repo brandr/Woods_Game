@@ -40,15 +40,6 @@ int Player::get_type()
 	return PLAYER;
 }
 
-//NOTE: might not need these arguments, need to look at how we end up creating the player
-void Player::load_content(std::vector<std::string> attributes, std::vector<std::string> contents)
-{
-	GameImage::load_content(attributes, contents);
-	inventory.load_content();
-	//TODO: load inventory from xml depending on what items the player should have
-	//TODO: if necessary, map player direction to different animations
-}
-
 void Player::load_content_from_attributes()
 {
 	Entity::load_content_from_attributes();
