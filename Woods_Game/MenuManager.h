@@ -66,7 +66,6 @@ protected:
 public:
 	MenuManager();
 	~MenuManager();
-	virtual void load_content(std::string id);
 	virtual void load_xml_content(std::string menu_key);
 	void unload_content();
 	void update();

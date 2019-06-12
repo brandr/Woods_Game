@@ -16,9 +16,6 @@ class LoadGameMenuManager :
 	public MenuManager
 {
 private:
-	//Controls default_controls;
-	//Controls current_controls;
-	//xmls::xString controls_id;
 public:
 	LoadGameMenuManager();
 	~LoadGameMenuManager();
@@ -26,13 +23,6 @@ public:
 	virtual void load_xml_content(const std::string id);
 	virtual void draw(ALLEGRO_DISPLAY *display, float x_off, float y_off, float width, float height);
 	virtual const std::string selected_filepath();
-	//virtual void reset();
-	//void load_controls(std::string filename, std::string controls_key, Controls *controls);
-	//virtual void save_controls();
-	//virtual void revert_controls_default();
-	//virtual void set_keyboard_mappable_input(int keycode);
-	//virtual void set_controller_mappable_input(int keycode);
-	//void set_controls_mapping(MenuItem* menu_item, std::string input_key, std::string input_label);
 };
 
 #endif

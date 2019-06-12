@@ -6,75 +6,78 @@ Prioritization
 
 Last updated 6/9/2019
 
-total: 60-144 days (~ 2-5 months)
+totals don't include ongoing stuff 
+
+total: 43-101 days (~ 2-4 months)
 biggest task: NPCs/quest triggers
 
-1. Improve memory usage (pretty sure bitmaps are the biggest problem)
-	(5-15 days)
-2. Fix bugs
-	(5-15 days)
-3. Clean up level editor
-	(3-8 days)
-4. NPCs/cutscenes/quest triggers (plan carefully and think long term)
-	(20-40 days)
-5. Figure out how to force end of day (otherwise saving gets weird)
-	(1-3 days)
-6. Wake-up time
-	(1-3 days)
-7. Animation/image code stuff
+1. NPCs/cutscenes/quest triggers (plan carefully and think long term, write notes)
+	(15-30 days)
+2. Inventory/item stuff (shovel?)
 	(5-10 days)
-8. Inventory/item stuff (shovel?)
+3. Figure out how to force end of day (otherwise saving gets weird after midnight)
+	(1-3 days)
+4. Wake-up time (alarm clock?)
+	(1-3 days)
+5. Animation/image code stuff
 	(5-10 days)
-9. Animals/bugs
+6. Menu/control stuff
+	(1-5 days)
+7. Animals/bugs
 	(5-15 days)
-10. Encyclopedia
+8. Encyclopedia
 	(5-15 days)
-11. Menu/control stuff
-	(1-4 days)
-12. Audio
-	(4-8 days)
-13. Content!
+9. Audio
+	(5-10 days)
+10. Content!
 	(???)
+
+Ongoing tasks:
+
+1. improve memory usage
+2. fix bugs
+3. streamline level editor
 
 ---------------------------------------------------
 Level editor
 ---------------------------------------------------
 
-Either get rid of tileset select tab inside level tab or make it work
+What to use tileset tab for?
+	* ideally could add new object types, edit global values, etc
 
 Tiled Images
-	* out of room on tileset tab-- need to reorganize it (tabs?)
-
-Fix memory leaks in level editor
-	* why does it happen when selecting objects?
-	* adding and deleting objects seems to cause a spike in memory, try looking into this to see where we reserve more memory
-		# we probably reserve it in the update method (in level grid) after deletion, not the deletion itself
-	* might be caused by the tilesets, or by the ALLEGRO_BITMAP pointers
-	* this is also a good time to fix memory leaks in general
-
+	* no room to put it on tileset tab-- need to reorganize it
+		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
 
 ---------------------------------------------------
 Memory management/error handling
 ---------------------------------------------------
 
-Consider storing masks in ImageLoader
-	* position might make this tricky, though it looks like this shouldn't be a problem
+Use the heap profiler whenever debugging memory usage because it's extremely helpful
 
-int[] takes up the most memory, followed by void, then Tile
-	* int seems to have to do with masks, void could potentially be interact actions, so look into both of these
-	* tile might be difficult to load less of, unless we can make tiles more lightweight by separating global attributes 
-	  (searchable by tile index) from per-tile attributes
-		# this same strategy could apply to a lot of serializable objects
+ImageLoader.load_image() is responsible for a huge portion of memory usage, so see if we can make it less expensive
+	* might be possible using bitmap settings since the memory being allocated is in al_create_bitmap()
+	* keep an eye out for redundant bitmap creation
 
-One problem might be in Tile.replace_block(). At some point, we create new interactActions, contactActions, etc., so make sure the old ones are getting properly deleted.
+Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
+	* remember to re-save levels in the editor after making this change or any others like it
+	* this same strategy could apply to a lot of serializable objects
+	* in addition to serializable values, we can probably get rid of others as well
+
+One possible problem might be in Tile.replace_block(). At some point, we create new interactActions, contactActions, etc., so make sure the old ones are getting properly deleted.
+	* can probably store these actions more globally (or do we already do this?)
 
 Make it so we load asynchronously when using the calendar (do it during the fade)
+	* This is a good place to fix the way the player "teleports" to the spawn location
 
 Could make it so we asynchronously load only adjacent levels to the current one (need to be careful to ensure the player can't walk to the edge before we finish loading)
 	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
 		# would probably want to figure out how I'm actually going to use dungeons
 
 Decide how to handle player leaving the level when there's no corresponding level
+	* probably want to not let them leave if we know this will happen, and push them back into a legal position
+
+Fix build warnings
 
 ---------------------------------------------------
 Procedural generation
@@ -82,28 +85,24 @@ Procedural generation
 
 IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally"
 
+IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
+
 ---------------------------------------------------
 Bug fixes
 ---------------------------------------------------
 
-Player gets stuck when walking into thorns
-	* I think the issue might be that low move speed messed up bounce behavior
-	* Could also change thorn behavior so instead of just bouncing away, you get stuck and have to "shake" free or cut the thorns
+Level gen bug: sometimes a trail doesn't get properly connected
+	* I think I fixed this (looked like a problem with the adjacency check in Level.connect_path_nodes)
+		# if it doesn't happen for a really long time, mark the bug as fixed
+	* keep an eye on console output for anything odd
+		# when the bug happens, it seems to say "generating paths" for that node but nothing else
+	* it specifically seems to happen where we generate exactly one tile, then stop
+	* could this be because "visited" tracking goes backwards and connects the trail to itself?
 
 There's sometimes an exception on closing the window
+	* does this still happen? can't repro
 	* seems to have something to do with randomized procedural generation, because it only happens some of the time
 	* exception has something to do with level's tile rows
-
-Fix the issue where it's impossible  to get out of the controller controls menu when selecting a control using only a keyboard (and vice versa)
-	* idea: cancel button from one input source gets out of "taking input" on the other input source's controls menu
-	* other idea: only allow selection in each menu through the appropriate selection button (I like this idea better since it's more intuitive)
-
-Fix analog stick issue that sometimes happens when controller is in some weird configuration
-
-Fix the weird effects that happen when pausing and resuming rapidly while moving the control stick around
-	* make sure this fix applies to both inventory and pause
-
-Fix the screen modes (fullscreen and windowed fullscreen seem to be mixed up) and figure out how to scale object/ui sizes with resolution
 
 ---------------------------------------------------
 Art/content
@@ -114,6 +113,16 @@ Draw the leaves for the large tree sprite
 
 Draw the symbols for the Eye of Pan and the Eye of Gabriel
 	* could also do "hand" instead of "eye" but I like eye better currently
+
+---------------------------------------------------
+Physics
+---------------------------------------------------
+
+Consider changing thorn behavior
+	* Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
+
+Consider giving blocks optional masks
+	* this means we use the block's image if there's no mask filepath
 
 ---------------------------------------------------
 Animation/image code
@@ -136,6 +145,9 @@ Buildings
 	* can use tiledImages and invisible blocks to make furniture, sink, etc
 	* make roofs
 
+Figure out how to scale object/ui sizes with resolution
+	* might not be feasible
+
 Make custom mouse cursor
 
 Idea: consider including animation frame duration in the files from which we load gameimages 
@@ -145,11 +157,12 @@ Idea: consider including animation frame duration in the files from which we loa
 NPCs
 ---------------------------------------------------
 
-Make NPC
-	- How to manage NPCs moving between levels? (currently they are stored in "beings", might want to refactor to game image manager or some smaller manager class)
-	- need animations (mostly walking)
-	- Dialog portrait image
+How to manage NPCs moving between levels? (currently they are stored in "beings", might want to refactor to game image manager or some smaller manager class)
+
+Need animations/assets
+	- Walking
 	- Have NPC turn to face player when talking and/or turn to face player under some circumstances
+	- Dialog portrait image
 
 IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
 	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
@@ -159,17 +172,13 @@ IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose 
 	- weight some options to be more likely than others using integer values
 	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
 
-IDEA: Make NPCs walk around outside programatically and have varying habits throughout the day.
+Make NPCs walk around outside programatically and have varying habits throughout the day.
+	- there should definitely be a per-frame update for NPCs, but could also have "update clocks" that go off every so often
 	- for instance, they should usually stay close to trails
 	- need to figure out how to process NPC movements when they're not on the same Level as the player
 		* maybe get less fine-grain and just process what level they're in at any given time based on time of day,
 			what they're doing, the weather, etc
-
-Think carefully about updates for NPCs
-	- there should definitely be a per-frame update, but could also have "update clocks" that go off every so often
-	- also figure out how to have NPCs do things while the player is on another level, and what to do when they pass between levels
-		* maybe they never pass between levels?
-			# only need to avoid case where player follows them and sees they aren't there, or where they pop in suddenly
+		* How to move NPCs between levels?
 
 Add NPC schedules/quest triggers
 	* could make the first quest getting some item from the store with money from the player's mom
@@ -205,6 +214,7 @@ Allow harvesting plants
 	* consider implementing a "cooking" system
 
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+	* first make sure I actually want the mallet in the game (balance)
 
 Add a shovel and allow the player to dig up items
 	* implement picking up items off the ground first
@@ -216,8 +226,8 @@ Day/night cycle
 Day/night cycle
 	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
 		* how to handle areas with their own lighting like lamps?
-	- When to increment date? (Midnight or only after sleeping)
-	- should player pass out if they're up too late?
+	- What happens in terms of date/saving if the player stays up past midnight? (with the current system, that means the date is never late)
+		* Should player pass out, get a game over, etc if they're up too late?
 	- calculate "time to wake up" somehow rather than just making it constant
 		* alarm clock upgrade/item?
 
@@ -226,12 +236,19 @@ Stamina
 ---------------------------------------------------
 	
 IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
+	* running should be significantly less stamina-efficient -- it shouldn't only drain faster, you should lose more stamina per unit traveled than when walking
 
 IDEA: Stamina upgrades could be the only thing you take with you when reloading
+
+Contact with thorns should cost stamina (look for a "damage" attribute that I already made)
 
 ---------------------------------------------------
 Menus
 ---------------------------------------------------
+
+Make loading screen(s)
+	* will require setting up asynchronous calls
+	* could possibly have one with a progress bar and description of what we're doing when genning the world
 
 Need to make a "restore defaults" (or something similar) button for video configurations
 
@@ -240,8 +257,6 @@ Allow changing text speed in options
 ---------------------------------------------------
 Controls
 ---------------------------------------------------
-
-Add the normal "confirm" option (z / controller A) to the calendar confirm controls since it's currently unintutive
 
 Make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 

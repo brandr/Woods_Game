@@ -4,6 +4,8 @@
 NPC::NPC()
 {
 	setClassName("NPC");
+	Register("start_level_key", &start_level_key);
+	Register("default_spawn_level_key", &default_spawn_level_key);
 	Register("animation_spritesheet_key", &animation_spritesheet_key);
 	Register("center_offset_x", &center_offset_x);
 	Register("center_offset_y", &center_offset_y);
@@ -11,7 +13,8 @@ NPC::NPC()
 	Register("spritesheet_frame_height", &spritesheet_frame_height);
 	Register("animation_data", &animation_data);
 	Register("additional_mask_data", &additional_mask_data);
-	Register("spawn_key", &spawn_key);
+	Register("start_spawn_key", &start_spawn_key);
+	Register("default_spawn_key", &default_spawn_key);
 	Register("default_dialog_text", &default_dialog_text);
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
@@ -22,9 +25,26 @@ NPC::~NPC()
 {
 }
 
-const std::string NPC::get_spawn_key()
+const std::string NPC::get_start_level_key()
 {
-	return this->spawn_key.value();
+	return this->start_level_key.value();
+}
+
+const std::string NPC::get_current_spawn_level_key()
+{
+	//TODO: logic to tell us which level we should spawn in if not default
+	return this->default_spawn_level_key.value();
+}
+
+const std::string NPC::get_start_spawn_key()
+{
+	return this->start_spawn_key.value();
+}
+
+const std::string NPC::get_current_spawn_key()
+{
+	//TODO: logic to tell us which spawenr we should use if not default
+	return this->default_spawn_key.value();
 }
 
 Dialog * NPC::choose_dialog(Player * player)

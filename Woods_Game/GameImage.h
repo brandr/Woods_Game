@@ -76,17 +76,14 @@ protected:
 	xmls::Collection<AnimationData> animation_data;
 	xmls::Collection<MaskData> additional_mask_data;
 	// attributes we use (consider getting rid of center offset and just serializing it)
-	//ALLEGRO_BITMAP *bitmap;
 	std::string image_filename;
+	std::string mask_filename;
 	Rect* image_subsection = NULL;
 	std::vector<std::pair<std::string, Rect>> additional_image_layer_data;
 	Rect rect;
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
-	//TODO: consider storing masks in ImageLoader (though position might make this tricky)
-	mask_t *mask;
-	std::map<std::pair<std::string, int>, mask_t*> additional_masks;
 public:
 	GameImage(std::string);
 	GameImage();
@@ -99,6 +96,7 @@ public:
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
 	virtual void load_mask(std::string base_filename);
 	virtual void load_additional_masks_from_attributes(std::string prefix);
+	virtual mask_t* get_additional_mask(const std::string mask_key, const std::string prefix, const int row);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();

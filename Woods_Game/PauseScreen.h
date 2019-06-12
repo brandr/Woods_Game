@@ -41,5 +41,7 @@ public:
 	virtual void call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual void call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual bool taking_mappable_input();
+	virtual void stop_taking_mappable_input_keyboard();
+	virtual void stop_taking_mappable_input_controller();
 };
 #endif

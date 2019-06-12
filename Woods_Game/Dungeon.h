@@ -30,6 +30,7 @@ public:
 	void set_dungeon_name(std::string name);
 	std::string get_dungeon_name();
 	std::vector<Level*> get_level_list();
+	void clear_all_beings();
 };
 
 #endif

@@ -184,9 +184,8 @@ void GameImageManager::unload_level_content()
 
 void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::pair<float,float>> joystick_map)
 {
-	//TODO: where to do dialog updates?
 	const int game_mode = get_game_mode();
-	if (game_mode != TOP_DOWN) return; //TODO: make sure this is the right check
+	if (game_mode != TOP_DOWN) { return; }
 	std::pair<int, int> dimensions = current_level->get_dimensions();
 	if (player) {
 		if (player->get_exit_level_flag()) {
@@ -240,7 +239,8 @@ void GameImageManager::time_update()
 void GameImageManager::update_new_day()
 {
 	this->world.update_new_day(this->player);
-	//TODO: plants grow, NPCs go to appropriate starting positions, etc
+	this->current_level = this->world.extract_current_level(player);
+	this->current_level->add_being(player);
 }
 
 GlobalTime * GameImageManager::get_current_global_time()
@@ -434,17 +434,6 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 		b = SUNSET_END_B;
 		a = SUNSET_END_A;
 	}
-
-	if (minutes == SUNSET_START_MINUTES - 1) {
-		int breakpoint = 1;
-	}
-	if (minutes == SUNSET_START_MINUTES) {
-		int breakpoint = 1;
-	}
-	if (minutes == SUNSET_START_MINUTES) {
-		int breakpoint = 1;
-	}
-	
 	al_clear_to_color(al_map_rgba(r, g, b, a));
 	al_set_target_bitmap(al_get_backbuffer(display));
 	al_draw_bitmap(this->light_filter, 0, 0, 0);

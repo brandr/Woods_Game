@@ -12,34 +12,7 @@ ControlsMenuManager::~ControlsMenuManager()
 {
 }
 
-void ControlsMenuManager::load_content(std::string id)
-{
-	MenuManager::load_content(id);
-	FileManager file_manager = this->file_manager;
-	this->controls_id = id;
-	if (id == "pause_controls_menu_keyboard") {
-		this->load_controls("resources/load/controls", "default_controls_keyboard", &default_controls);
-		this->load_controls("resources/load/controls", "current_controls_keyboard", &current_controls);
-	} else if (id == "pause_controls_menu_controller"){
-		this->load_controls("resources/load/controls", "default_controls_controller", &default_controls);
-		this->load_controls("resources/load/controls", "current_controls_controller", &current_controls);
-	}
-	const int size = this->menu_items.size();
-	for (int i = 0; i < size; i++) {
-		MenuItem *menu_item = this->menu_items.getItem(i);
-		std::string action_key = menu_item->get_controls_action_key();
-		if (action_key != "") {
-			std::string input_key = current_controls.input_key_for_action_key(action_key);
-			if (input_key != "") {
-				std::string label = current_controls.input_label_for_input_key(input_key);
-				menu_item->set_controls_input_key(input_key);
-				menu_item->set_controls_input_label(label);
-			}
-		}
-	}
-}
-
-void ControlsMenuManager::load_xml_content(std::string id)
+void ControlsMenuManager::load_xml_content(const std::string id)
 {
 	MenuManager::load_xml_content(id);
 	FileManager file_manager = this->file_manager;
@@ -133,26 +106,11 @@ void ControlsMenuManager::revert_controls_default()
 
 void ControlsMenuManager::set_keyboard_mappable_input(int keycode)
 {
-	//TODO: refactor this and controller version into a single function
 	if (!this->is_selecting_input()) return;
 	std::string input_key = current_controls.keyboard_input_key_for_input_num(keycode);
 	if (input_key != "") {
 		std::string input_label = current_controls.input_label_for_input_key(input_key);
 		const int size = this->menu_items.size();
-		for (int i = 0; i < size; i++) {
-			MenuItem* menu_item = this->menu_items.getItem(i);
-			std::string action_key = menu_item->get_controls_action_key();
-			if (action_key != "" && i != this->item_index) {
-				std::string current_input_key = menu_item->get_controls_input_key();
-				// check for another item that has the same input key we are trying to set
-				if (current_input_key != "" && current_input_key == input_key) {
-					std::string old_input_key = this -> menu_items.getItem(this->item_index)->get_controls_input_key();
-					std::string old_input_label = this -> menu_items.getItem(this->item_index)->get_controls_input_label();
-					set_controls_mapping(this -> menu_items.getItem(i), old_input_key, old_input_label);
-					break;
-				}
-			}
-		}
 		set_controls_mapping(this->menu_items.getItem(this->item_index), input_key, input_label);
 	}
 	this->set_selecting_input(false);
@@ -165,20 +123,6 @@ void ControlsMenuManager::set_controller_mappable_input(int keycode)
 	if (input_key != "") {
 		std::string input_label = current_controls.input_label_for_input_key(input_key);
 		const int size = this->menu_items.size();
-		for (int i = 0; i < size; i++) {
-			MenuItem* menu_item = this->menu_items.getItem(i);
-			std::string action_key = menu_item->get_controls_action_key();
-			if (action_key != "" && i != this->item_index) {
-				std::string current_input_key = menu_item->get_controls_input_key();
-				// check for another item that has the same input key we are trying to set
-				if (current_input_key != "" && current_input_key == input_key) {
-					std::string old_input_key = this->menu_items.getItem(this->item_index)->get_controls_input_key();
-					std::string old_input_label = this->menu_items.getItem(this->item_index)->get_controls_input_label();
-					set_controls_mapping(this->menu_items.getItem(i), old_input_key, old_input_label);
-					break;
-				}
-			}
-		}
 		set_controls_mapping(this->menu_items.getItem(this->item_index), input_key, input_label);
 	}
 	this->set_selecting_input(false);

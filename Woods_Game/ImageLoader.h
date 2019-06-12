@@ -2,6 +2,7 @@
 #define IMAGELOADER_H
 
 #include <map>
+#include "PPCD.h"
 #include "ImageLoader.h"
 #include "TileType.h"
 #include "Entity.h"
@@ -11,12 +12,12 @@
 #include "xstring"  
 #include "Animation.h"
 #include "allegro5/allegro5.h"
+#include <boost/filesystem/path.hpp>
+#include <boost/filesystem.hpp>
 
 #define IMAGE_PREFIX_COLOR "color"
 
 #define IMAGE_KEY_FILLED_RECT "filled_rect"
-
-
 
 class GameImage;
 class ImageLoader
@@ -24,7 +25,7 @@ class ImageLoader
 private:
 	ImageLoader() {}
 	std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*> image_map;
-	std::string rect_to_string(Rect r);
+	std::map<std::pair<std::string, std::string>, mask_t*> mask_map;
 	const std::string full_image_key(const std::string image_key, const int width, const int height, const std::string suffix);
 public:
 	ImageLoader(ImageLoader const&) = delete;
@@ -41,7 +42,11 @@ public:
 	ALLEGRO_BITMAP * get_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix);
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);
+	void load_image(std::string filename, const std::string rect_string, const bool allow_failure);
 	void load_spritesheet(Animation);
+	void load_mask(const std::string base_filename);
+	void load_mask(const std::string base_filename, const std::string rect_string);
+	void load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix);
 	ALLEGRO_BITMAP* get_default_tile_image(std::string, TileType*);
 	ALLEGRO_BITMAP* get_default_block_image(std::string, EntityData*);
 	ALLEGRO_BITMAP* get_default_entity_group_image(std::string, EntityGroupData*);
@@ -54,6 +59,9 @@ public:
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);
+	mask_t * get_mask(const std::string filename);
+	mask_t * get_mask(const std::string filename, const std::string rect_string);
+	std::string rect_to_string(Rect r);
 };
 
 #endif

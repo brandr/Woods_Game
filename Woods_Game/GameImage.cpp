@@ -8,7 +8,6 @@ const std::string GameImage::image_filename_suffix()
 
 GameImage::GameImage(std::string filename)
 {
-	//this->image_filename = filename;
 }
 
 GameImage::GameImage()
@@ -65,7 +64,6 @@ void GameImage::load_content_from_attributes() {
 		ImageLoader::get_instance().load_spritesheet(*anim);
 		animations[anim_key] = anim;
 	}
-	this->mask = NULL;
 	load_mask(anim_filename);
 }
 
@@ -79,16 +77,8 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 
 void GameImage::load_mask(std::string base_filename)
 {
-	ALLEGRO_BITMAP *mask_image = ImageLoader::get_instance().get_image(base_filename + "_mask");
-	if (!mask_image) {
-		ImageLoader::get_instance().load_image(base_filename + "_mask");
-		mask_image = ImageLoader::get_instance().get_image(base_filename + "_mask");
-	}
-	if (mask_image) {
-		mask = Mask_New(mask_image);
-	}
-	//TODO: consider loading mask from sprite by default if a mask image is not found.
-	mask_image = NULL;
+	this->mask_filename = base_filename;
+	ImageLoader::get_instance().load_mask(base_filename, "");
 }
 
 void GameImage::load_additional_masks_from_attributes(std::string prefix)
@@ -96,21 +86,39 @@ void GameImage::load_additional_masks_from_attributes(std::string prefix)
 	const int additional_mask_count = this->additional_mask_data.size();
 	for (int i = 0; i < additional_mask_count; i++) {
 		MaskData *mask_data = this->additional_mask_data.getItem(i);
-		std::string mask_key = mask_data->mask_key.value();
+		const std::string mask_key = mask_data->mask_key.value();
 		int mask_width = mask_data->mask_width.value();
 		int mask_height = mask_data->mask_height.value();
-		ALLEGRO_BITMAP* mask_image;
-		std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
-		int frame_count = mask_data->mask_frame_count.value();
+		const std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
+		const int frame_count = mask_data->mask_frame_count.value();
 		std::pair<int, int> frame_dimensions(mask_width, mask_height);
 		for (int row = 0; row < frame_count; row++) {
 			Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
-			ImageLoader::get_instance().load_image(filename, sub);
-			mask_image = ImageLoader::get_instance().get_image(filename, sub);
-			additional_masks[std::pair<std::string, int>(mask_key, row)] = Mask_New(mask_image);
+			const std::string rect_string = ImageLoader::get_instance().rect_to_string(sub);
+			ImageLoader::get_instance().load_mask(filename, rect_string, false);
 		}
-		mask_image = NULL;
 	}
+}
+
+mask_t * GameImage::get_additional_mask(const std::string mask_key, const std::string prefix, const int row)
+{
+	const int additional_mask_count = this->additional_mask_data.size();
+	for (int i = 0; i < additional_mask_count; i++) {
+		MaskData *mask_data = this->additional_mask_data.getItem(i);
+		const std::string mk = mask_data->mask_key.value();
+		if (mask_key != mk) {
+			continue;
+		}
+		const int mask_width = mask_data->mask_width.value();
+		const int mask_height = mask_data->mask_height.value();
+		const int frame_count = mask_data->mask_frame_count.value();
+		std::pair<int, int> frame_dimensions(mask_width, mask_height);
+		Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
+		const std::string rect_string = ImageLoader::get_instance().rect_to_string(sub);
+		const std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
+		return ImageLoader::get_instance().get_mask(filename, rect_string);
+	}
+	return NULL;
 }
 
 
@@ -121,20 +129,14 @@ void GameImage::unload_content()
 	}
 	if(ss_animation)
 		delete ss_animation;
-	if(mask)
-		Mask_Delete(mask);
 	for (auto const &it : animations) {
 		it.second->unload_content();
 		delete it.second;
-	}
-	for (auto const &it : additional_masks) {
-		Mask_Delete(it.second);
 	}
 	animations.clear();
 	animations.swap(std::map<std::string, Animation*>());
 	image_subsection = NULL;
 	ss_animation = NULL;
-	mask = NULL;
 }
 
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
@@ -193,20 +195,25 @@ void GameImage::add_additional_image_layer(const std::string filename, Rect subs
 	additional_image_layer_data.push_back(std::pair<std::string, Rect>(filename, subsection));
 }
 
-//TODO: make sure this doesn't cause memory leaks (should be okay since we call Mask_Delete, but make sure)
 void GameImage::refresh_mask()
 {
-	if (mask) {
-		Mask_Delete(mask);
-		mask = NULL;
+	this->mask_filename = this->image_filename;
+	Rect* subsection = this->get_image_subsection();
+	std::string rect_string = "";
+	if (subsection) {
+		rect_string = ImageLoader::get_instance().rect_to_string(*subsection);
 	}
-	ALLEGRO_BITMAP *bitmap = ImageLoader::get_instance().get_current_image(this);
-	mask = Mask_New(bitmap);
+	ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, false);
 }
 
 mask_t * GameImage::get_mask()
 {
-	return mask;
+	Rect* subsection = this->get_image_subsection();
+	std::string rect_string = "";
+	if (subsection) {
+		rect_string = ImageLoader::get_instance().rect_to_string(*subsection);
+	}
+	return ImageLoader::get_instance().get_mask(this->mask_filename, rect_string);
 }
 
 std::string GameImage::get_anim_state_key()
@@ -250,7 +257,7 @@ Animation * GameImage::get_animation()
 	//TODO: don't accidentally create a null pointer here
 	auto it = animations.find(get_anim_state_key());
 	if (it == animations.end()) {
-		return nullptr;
+		return NULL;
 	}
 	return it->second;
 }
@@ -301,7 +308,6 @@ float GameImage::get_height()
 
 bool GameImage::contains_point(int x, int y)
 {
-	//TODO: also account for pixel-perfect collision (might do this another place though)
 	return x >= this->rect.x && y >= this->rect.y && x < this->get_x() + this->rect.width && y < this->rect.y + this->rect.height;
 }
 
@@ -310,16 +316,8 @@ bool GameImage::intersects_area(Rect area)
 	return rect.intersects_rect(area);
 }
 
-/*
-void GameImage::set_current_level(Level* level)
-{
-	current_level = level;
-}
-*/
-
 bool GameImage::outside_level(std::pair<int, int> level_dimensions)
 {
-	//if (!current_level) return true;
 	return rect.right() < 0 || rect.x > level_dimensions.first || rect.bottom() < 0 || rect.y > level_dimensions.second;
 }
 

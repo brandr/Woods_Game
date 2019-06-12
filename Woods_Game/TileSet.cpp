@@ -24,9 +24,11 @@ void TileSet::unload_content()
 	this->tiled_image_types.Clear();
 }
 
-void TileSet::load_sheet_images(std::string filename, int sub_width, int sub_height)
+void TileSet::load_sheet_images(const std::string filename, const int sub_width, const int sub_height)
 {
-	TileSet::load_full_sheet_image(filename);
+	if (!get_full_sheet_image(filename)) {
+		TileSet::load_full_sheet_image(filename);
+	}
 	ALLEGRO_BITMAP *tile_sheet = TileSet::get_full_sheet_image(filename);
 	if (tile_sheet == NULL) {
 		std::cout << "ERROR: failed to get tile sheet for filename: " + filename;

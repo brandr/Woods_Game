@@ -57,6 +57,8 @@ public:
 	virtual void clear_input();
 	virtual void call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual void call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle);
+	virtual void stop_taking_mappable_input_keyboard();
+	virtual void stop_taking_mappable_input_controller();
 	virtual void set_joystick_pos(int stick, float x, float y);
 	virtual std::pair<float, float> get_joystick_pos(int stick);
 	virtual std::map<int, std::pair<float, float>> get_joystick_pos_map();

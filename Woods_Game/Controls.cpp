@@ -76,39 +76,10 @@ Controls::KeyboardNumToInputKeyMap Controls::controller_num_to_input_key_map = {
 	{ XC_BUTTON_A, "controller_a"},{ XC_BUTTON_B, "controller_b" }, 
 	{ XC_BUTTON_X, "controller_x"},{ XC_BUTTON_Y, "controller_y" },
 	{ XC_BUTTON_RIGHT_SHOULDER, "controller_right_shoulder" },{ XC_BUTTON_LEFT_SHOULDER, "controller_left_shoulder" },
+	{ XC_BUTTON_START, "controller_start"}
 	//{ XC_BUTTON_PAD_RIGHT, "controller_bpr" },{ XC_BUTTON_PAD_LEFT, "controller_bpl" },
 	//{ XC_BUTTON_PAD_DOWN, "controller_bpd" },{ XC_BUTTON_PAD_UP, "controller_bpu" }
 };
-
-void Controls::load_content(std::vector<std::vector<std::string>> attributes, std::vector<std::vector<std::string>> contents)
-{
-	//temporary
-	controls_map.Clear();
-	const int size = attributes.size();
-	std::vector<std::string> labels;
-	std::vector<std::string> input_keys;
-	std::vector<std::string> action_keys;
-	for (int i = 0; i < size; i++) {
-		const int i_size = attributes[i].size();
-		for (int j = 0; j < i_size; j++) {
-			if (attributes[i][j] == "label") {
-				labels.push_back(contents[i][j]);
-			}
-			else if (attributes[i][j] == "action_key") {
-				action_keys.push_back(contents[i][j]);
-			}
-			else if (attributes[i][j] == "input_key") {
-				input_keys.push_back(contents[i][j]);
-			}
-		}
-	}
-
-	const int mapping_size = labels.size();
-	for (int i = 0; i < mapping_size; i++) {
-		controls_map.addItem(new ControlMapping(action_keys[i], input_keys[i], labels[i]));
-	}
-	
-}
 
 void Controls::clear()
 {

@@ -44,6 +44,8 @@ public:
 	void map_controller_control_action(int game_mode, std::string action_key, controlFunc action_func);
 	void unmap_keyboard_control_action(int game_mode, std::string action_key);
 	void unmap_controller_control_action(int game_mode, std::string action_key);
+	virtual void stop_taking_mappable_input_keyboard();
+	virtual void stop_taking_mappable_input_controller();
 	virtual void set_input_map();
 	virtual void load_content();
 	void load_ui_content();

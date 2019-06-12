@@ -19,8 +19,7 @@ private:
 public:
 	ControlsMenuManager();
 	~ControlsMenuManager();
-	virtual void load_content(std::string id);
-	virtual void load_xml_content(std::string id);
+	virtual void load_xml_content(const std::string id);
 	virtual void reset();
 	void load_controls(std::string filename, std::string controls_key, Controls *controls);
 	virtual void save_controls();

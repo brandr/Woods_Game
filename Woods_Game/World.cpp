@@ -2,6 +2,19 @@
 #include "ImageLoader.h"
 #include "Player.h"
 
+Level * World::get_level_with_key(const std::string level_key)
+{
+	const int size = this->dungeons.size();
+	for (int i = 0; i < size; i++) {
+		Dungeon *d = this->dungeons[i].get();
+		Level *l = d->level_with_name(level_key);
+		if (l) {
+			return l;
+		}
+	}
+	return NULL;
+}
+
 Level * World::find_level_with_spawn_key(const std::string spawn_key)
 {
 	const int size = this->dungeons.size();
@@ -15,6 +28,13 @@ Level * World::find_level_with_spawn_key(const std::string spawn_key)
 	return NULL;
 }
 
+void World::clear_all_beings()
+{
+	for (std::shared_ptr<Dungeon> d : this->dungeons) {
+		d->clear_all_beings();
+	}
+}
+
 World::World()
 {
 	setClassName("World");
@@ -26,8 +46,6 @@ World::World()
 	Register("dungeon_data", &dungeon_data);
 	Register("npcs", &npcs);
 	Register("current_day", &current_day);
-	//TODO: add dungeon based on dungeon data
-	//add_dungeon(new Dungeon("dungeon_1"));	//temp. probably want to pass in multiple dungeons and a starting one
 }
 
 
@@ -57,7 +75,6 @@ void World::reload_dungeons(const std::string dungeons_path)
 		const int size = levels.size();
 		for (Level * level : levels) {
 			const std::string level_key = level->get_filename();
-			//level->reset_for_reload();
 			Level copy_level(level_key, d->get_dungeon_name(), level_key);
 			filemanager.load_xml_content(&copy_level, filename, "SerializableClass", "LevelKey", level_key);
 			level->reload_from_xml(copy_level);
@@ -71,23 +88,24 @@ void World::load_npcs()
 	const int npc_count = this->npcs.size();
 	for (int i = 0; i < npc_count; i++) {
 		NPC * npc = this->npcs.getItem(i);
-		const std::string spawner_id = npc->get_spawn_key();
-		Level * level = this->find_level_with_spawn_key(spawner_id);
-		if (level) {
-			level->add_npc_at_spawner(npc, spawner_id);
+		const std::string level_key = npc->get_start_level_key();
+		const std::string spawner_key = npc->get_start_spawn_key();
+		Level * level = this->get_level_with_key(level_key);
+		if (level && level->spawner_for_key(spawner_key)) {
+			level->add_npc_at_spawner(npc, spawner_key);
+			break;
 		}
 	}
 }
 
 void World::load_player()
 {
-	//TODO
-	//load_player_from_xml("resources/load/player", "default_player");
 }
 
 void World::generate_levels()
 {
-	for (int i = 0; i < dungeons.size(); i++) {
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
 			dungeons[i]->generate_levels();
 		}
@@ -96,8 +114,8 @@ void World::generate_levels()
 
 void World::unload_content()
 {
-
-	for (int i = 0; i < dungeons.size(); i++) {
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
 			dungeons[i]->unload_content();
 			dungeons[i].reset();
@@ -113,11 +131,31 @@ void World::load_images(ImageLoader& loader)
 
 void World::update_new_day(Player * player)
 {
-	for (int i = 0; i < dungeons.size(); i++) {
+	this->clear_all_beings();
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
 			dungeons[i]->update_new_day(player);
 		}
 	}
+	this->update_npcs_new_day();
+}
+
+void World::update_npcs_new_day()
+{
+	const int npc_count = this->npcs.size();
+	for (int i = 0; i < npc_count; i++) {
+		NPC * npc = this->npcs.getItem(i);
+		//TODO: need to pass in global time or other global values?
+		const std::string level_key = npc->get_current_spawn_level_key();
+		const std::string spawner_key = npc->get_current_spawn_key();
+		Level * level = this->get_level_with_key(level_key);
+		if (level && level->spawner_for_key(spawner_key)) {
+			level->add_npc_at_spawner(npc, spawner_key);
+			break;
+		}
+	}
+	//TODO: other NPC updates that should happen at the beginning of the day
 }
 
 void World::add_dungeon(Dungeon *dungeon)

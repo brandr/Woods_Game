@@ -33,7 +33,7 @@
             </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">menu_select</Member>
-                <Member Name="InputKey">keyboard_enter</Member>
+                <Member Name="InputKey">keyboard_z</Member>
                 <Member Name="Label">Menu select</Member>
             </Class>
             <Class Type="ControlMapping" Version="1">
@@ -82,7 +82,7 @@
             </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">menu_select</Member>
-                <Member Name="InputKey">keyboard_enter</Member>
+                <Member Name="InputKey">keyboard_z</Member>
                 <Member Name="Label">Menu select</Member>
             </Class>
             <Class Type="ControlMapping" Version="1">

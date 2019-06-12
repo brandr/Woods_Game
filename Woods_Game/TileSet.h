@@ -26,7 +26,7 @@ public:
 	TileSet();
 	~TileSet();
 	void unload_content();
-	static void load_sheet_images(std::string filename, int sub_width, int sub_height);
+	static void load_sheet_images(const std::string filename, const int sub_width, const int sub_height);
 	static void load_full_sheet_image(std::string filename);
 	const static bool sheet_image_exists(const std::string filename);
 	static ALLEGRO_BITMAP *get_full_sheet_image(std::string filename);

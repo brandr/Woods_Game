@@ -112,7 +112,6 @@ void LevelEditorManager::update_selected_level()
 	if (should_update) {
 		const int tileset_index = LevelEditorDataManager::get_instance().selected_level_tileset_index();
 		LevelEditorDataManager::get_instance().set_selected_tileset_index(tileset_index);
-		this->level_edit_layout->load_all_tilesets();
 		this->level_edit_layout->load_selected_tileset_tiles();
 		this->level_edit_layout->load_selected_tileset_blocks();
 		this->level_edit_layout->load_selected_tileset_entity_groups();

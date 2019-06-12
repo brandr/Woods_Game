@@ -271,6 +271,7 @@
                		<Member Name="animation_frame_duration">1</Member>
             	</Class>
         	</Collection>
+        	<Member Name="start_level_key">start_neighborhood</Member>
         	<Member Name="spawn_key">stranger_spawner_1</Member>
 		</Class>
 	</Collection>

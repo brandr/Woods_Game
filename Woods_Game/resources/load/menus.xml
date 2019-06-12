@@ -202,9 +202,20 @@
         <Member Name="ControlsID">pause_controls_menu_keyboard</Member>
         <Collection Name="MenuItems">
             <Class Type="MenuItem" Version="1">
-                <Member Name="MenuText">Use Item</Member>
+                <Member Name="MenuText">Interact</Member>
                 <Member Name="xPos">30</Member>
                 <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">interact</Member>
+                <Member Name="ControlsInputKey">keyboard_z</Member>
+                <Member Name="ControlsInputLabel">Z</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Use Item</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">use_item</Member>
                 <Member Name="ControlsInputKey">keyboard_c</Member>
@@ -215,7 +226,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Open inventory</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">60</Member>
+                <Member Name="yPos">90</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">open_inventory</Member>
                 <Member Name="ControlsInputKey">keyboard_v</Member>
@@ -226,7 +237,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Pause</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">90</Member>
+                <Member Name="yPos">120</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">pause</Member>
                 <Member Name="ControlsInputKey">keyboard_escape</Member>
@@ -237,7 +248,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Hotbar left</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">120</Member>
+                <Member Name="yPos">150</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">hotbar_left</Member>
                 <Member Name="ControlsInputKey">keyboard_q</Member>
@@ -248,7 +259,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Hotbar right</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">150</Member>
+                <Member Name="yPos">180</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">hotbar_right</Member>
                 <Member Name="ControlsInputKey">keyboard_w</Member>
@@ -259,7 +270,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Menu select</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">180</Member>
+                <Member Name="yPos">210</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">menu_select</Member>
                 <Member Name="ControlsInputKey">keyboard_enter</Member>
@@ -270,7 +281,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Menu cancel</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">210</Member>
+                <Member Name="yPos">240</Member>
                 <Member Name="SelectionActionKey">set_control_input</Member>
                 <Member Name="ControlsActionKey">menu_cancel</Member>
                 <Member Name="ControlsInputKey">keyboard_space</Member>
@@ -281,7 +292,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Cancel Changes</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">240</Member>
+                <Member Name="yPos">270</Member>
                 <Member Name="SelectionActionKey">cancel_controls_changes</Member>
                 <Member Name="ConfirmActionKey"/>
                 <Member Name="LeftBracketFilename"/>
@@ -296,7 +307,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Revert to Default</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">270</Member>
+                <Member Name="yPos">300</Member>
                 <Member Name="SelectionActionKey">revert_controls_default</Member>
                 <Member Name="ConfirmActionKey"/>
                 <Member Name="LeftBracketFilename"/>
@@ -311,7 +322,7 @@
             <Class Type="MenuItem" Version="1">
                 <Member Name="MenuText">Confirm</Member>
                 <Member Name="xPos">30</Member>
-                <Member Name="yPos">300</Member>
+                <Member Name="yPos">330</Member>
                 <Member Name="SelectionActionKey">save_controls_changes</Member>
                 <Member Name="ConfirmActionKey"/>
                 <Member Name="LeftBracketFilename"/>
@@ -504,7 +515,6 @@
         <Member Name="FontFilename">OpenSans-Regular</Member>
         <Member Name="FontSize">20</Member>
         <Member Name="ColorStr">000066</Member>
-        <Collection Name="MenuItems">
-        </Collection>
+        <Collection Name="MenuItems"/>
     </SerializableClass>
 </root>

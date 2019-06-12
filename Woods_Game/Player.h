@@ -13,6 +13,7 @@
 #include "SpriteSheetAnimation.h"  // for SpriteSheetAnimation
 #include "stdlib.h"                // for atoi
 #include "vcruntime_new.h"         // for operator delete, operator new
+#include "TileSet.h"
 #include "World.h"
 #include "xtree"                   // for _Tree_iterator, _Tree<>::iterator, _Tree_const_iterator
 #include "XMLSerialization.h"
@@ -50,7 +51,7 @@ public:
 	virtual int get_type();
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
-	virtual void update(std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);
+	virtual void update(TileSet * tileset, std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
 	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);

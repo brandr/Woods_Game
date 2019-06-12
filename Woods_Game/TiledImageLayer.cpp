@@ -64,7 +64,7 @@ void TiledImageLayer::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rec
 			const int x = pos.first - subsection.x, y = pos.second - subsection.y;
 			if (x >= 0 && y >= 0
 				&& x < subsection.width && y < subsection.height) {
-				al_draw_bitmap(ti_bitmap, pos.first, pos.second, 0);
+				al_draw_bitmap(ti_bitmap, x, y, 0);
 			}
 		}
 	}

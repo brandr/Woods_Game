@@ -206,25 +206,25 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	level_edit_secondary_tabs[TILED_IMAGE_TAB].setText("Tiled Images");
 	level_edit_secondary_tabs[EDIT_OBJECT_TAB].setText("Edit Object");
-	level_edit_secondary_tabs[SELECT_TILESET_TAB].setText("Select Tileset");
+	//level_edit_secondary_tabs[SELECT_TILESET_TAB].setText("Select Tileset");
 
 	secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[TILED_IMAGE_TAB],
 		&tiled_image_frame);
 	secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[EDIT_OBJECT_TAB],
 		&edit_object_frame);
-	secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[SELECT_TILESET_TAB],
-		&select_tileset_frame);
+	//secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[SELECT_TILESET_TAB],
+	//	&select_tileset_frame);
 
 	this->tiled_image_frame.add(&tiled_image_layout);
 	this->edit_object_frame.add(&edit_object_layout);
-	this->select_tileset_frame.add(&select_tileset_layout);
+	//this->select_tileset_frame.add(&select_tileset_layout);
 	this->tiled_image_layout.setMaxOnRow(4);
 	this->edit_object_layout.setMaxOnRow(4);
-	this->select_tileset_layout.setMaxOnRow(4);
+	//this->select_tileset_layout.setMaxOnRow(4);
 
 	this->tiled_image_frame.setSize(470, 670);
 	this->edit_object_frame.setSize(470, 670);
-	this->select_tileset_frame.setSize(470, 670);
+	//this->select_tileset_frame.setSize(470, 670);
 
 	// tiled images label
 	this->tiled_image_layout.add(&tiled_images_label);
@@ -306,6 +306,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	// select tileset layout
 
+	/*
 	this->select_tileset_layout.add(&selected_tileset_label);
 	this->select_tileset_layout.add(new agui::EmptyWidget());
 	this->select_tileset_layout.add(new agui::EmptyWidget());
@@ -319,8 +320,10 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	this->select_tileset_layout.add(new agui::EmptyWidget());
 	this->select_tileset_layout.add(new agui::EmptyWidget());
 	this->select_tileset_layout.add(new agui::EmptyWidget());
+	*/
 }
 
+/*
 void LevelEditorLayout::load_all_tilesets()
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
@@ -330,6 +333,7 @@ void LevelEditorLayout::load_all_tilesets()
 		this->tileset_select_box.addItem(tileset_key);
 	}
 }
+*/
 
 void LevelEditorLayout::load_selected_tileset_tiles()
 {
@@ -556,6 +560,7 @@ void LevelEditorLayout::reset_selected_level_object_instance_attributes()
 	this->selected_level_object_instance_attributes_box.setText("");
 	const std::string xml = manager.get_selected_object_instance_xml();
 	if (xml.size() > 0) {
+		this->selected_level_object_instance_attributes_box.clear();
 		this->selected_level_object_instance_attributes_box.setText(xml);
 		this->selected_level_object_instance_attributes_box.resizeToContents();
 		this->object_instance_attribute_frame.setSize(this->selected_level_object_instance_attributes_box.getWidth() + 12,
@@ -576,6 +581,7 @@ void LevelEditorLayout::update_selected_tiled_image()
 void LevelEditorLayout::update_selected_tileset()
 {
 	const int current_tileset_index = LevelEditorDataManager::get_instance().get_selected_tileset_index();
+	/*
 	const int new_tileset_index = this->tileset_select_box.getSelectedIndex();
 	if (current_tileset_index != new_tileset_index) {
 		LevelEditorDataManager::get_instance().set_selected_tileset_index(new_tileset_index);
@@ -584,6 +590,7 @@ void LevelEditorLayout::update_selected_tileset()
 			? LevelEditorDataManager::get_instance().get_selected_tileset_name() : "(none)";
 		this->selected_tileset_label.setText("Selected tileset: " + tileset_name);
 	}
+	*/
 }
 
 void LevelEditorLayout::update_sheet_col()
@@ -646,9 +653,10 @@ void LevelEditorLayout::reset_all_grid_image_layers()
 	this->level_editor_grid.reset_all_grid_image_layers();
 }
 
-void LevelEditorLayout::reset_grid_image_layer(std::string layer)
+void LevelEditorLayout::reset_grid_image_layer(const std::string layer)
 {
-	this->level_editor_grid.reset_image_layer(layer);
+	const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
+	this->level_editor_grid.reset_image_layer(layer, level_name);
 }
 
 void LevelEditorLayout::set_selecting_objects(const bool value)
@@ -661,6 +669,7 @@ void LevelEditorLayout::save_instance_attributes()
 	const std::string xml = this->selected_level_object_instance_attributes_box.getText();
 	const bool did_serialize = LevelEditorDataManager::get_instance().replace_selected_object_instance_xml(xml);
 	if (did_serialize) {
-		this->level_editor_grid.reset_image_layer(LevelEditorDataManager::get_instance().get_selected_object_tab_index());
+		const std::string level_name = LevelEditorDataManager::get_instance().get_selected_level_name();
+		this->level_editor_grid.reset_image_layer(LevelEditorDataManager::get_instance().get_selected_object_tab_index(), level_name);
 	}
 }

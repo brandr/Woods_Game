@@ -21,7 +21,9 @@ private:
 	xmls::xInt current_level_grid_y;
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
+	Level * get_level_with_key(const std::string level_key);
 	Level * find_level_with_spawn_key(const std::string spawn_key);
+	void clear_all_beings();
 public:	
 	Dungeon* current_dungeon;
 	World();
@@ -34,6 +36,7 @@ public:
 	void unload_content();
 	void load_images(ImageLoader&);
 	void update_new_day(Player * player);
+	void update_npcs_new_day();
 	void add_dungeon(Dungeon*);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();

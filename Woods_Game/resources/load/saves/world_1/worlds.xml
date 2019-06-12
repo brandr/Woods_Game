@@ -5,7 +5,7 @@
         <Member Name="player_key">default_player</Member>
         <Member Name="current_level_grid_x">0</Member>
         <Member Name="current_level_grid_y">0</Member>
-        <Member Name="current_day">1</Member>
+        <Member Name="current_day">2</Member>
         <Collection Name="dungeon_data">
             <Class Type="DungeonData" Version="1">
                 <Member Name="dungeon_key">dungeon_1</Member>
@@ -13,12 +13,15 @@
         </Collection>
         <Collection Name="npcs">
             <Class Type="NPC" Version="1">
+                <Member Name="start_level_key">start_neighborhood</Member>
+                <Member Name="default_spawn_level_key">stranger_house</Member>
                 <Member Name="animation_spritesheet_key">stranger_spritesheet_1</Member>
                 <Member Name="center_offset_x">32</Member>
                 <Member Name="center_offset_y">89</Member>
                 <Member Name="spritesheet_frame_width">64</Member>
                 <Member Name="spritesheet_frame_height">96</Member>
-                <Member Name="spawn_key">stranger_spawner_1</Member>
+                <Member Name="start_spawn_key">stranger_spawner_1</Member>
+                <Member Name="default_spawn_key">stranger_spawner_house</Member>
                 <Member Name="default_dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
                 <Collection Name="animation_data">
                     <Class Type="AnimationData" Version="1">

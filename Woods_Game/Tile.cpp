@@ -33,9 +33,6 @@ Tile::Tile(TileSet *tileset, int tile_x, int tile_y, int type_index, int sheet_c
 	Rect* offset_rect = new Rect(sheet_col*TILE_SIZE, sheet_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
 	this->set_content(filename, offset_rect, position);
-	this->set_edge_priority(tileset->get_edge_priority(type_index));
-	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 Tile::~Tile()
@@ -50,13 +47,10 @@ Tile * Tile::null_tile(TileSet *tileset, int tile_x, int tile_y)
 	tile->set_tile_type_index(0);
 	tile->set_tile_sheet_col(0);
 	tile->set_tile_sheet_row(0);
-	std::string filename = tileset->get_full_tile_sheet_filename(0);
+	const std::string filename = tileset->get_full_tile_sheet_filename(0);
 	Rect* offset_rect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
 	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
 	tile->set_content(filename, offset_rect, position);
-	tile->set_edge_priority(0);
-	tile->set_speed_mod(1.0f);
-	//tile->set_bitmap(ImageLoader::get_instance().get_current_image(tile));
 	return tile;
 }
 
@@ -88,9 +82,6 @@ void Tile::reset(TileSet *tileset, Tile * t)
 	Rect* offset_rect = new Rect(sheet_col*TILE_SIZE, sheet_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	std::pair<int, int> position(tile_x*TILE_SIZE, tile_y*TILE_SIZE);
 	this->set_content(filename, offset_rect, position);
-	this->set_edge_priority(tileset->get_edge_priority(type_index));
-	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 void Tile::reset(TileSet * tileset, const int type_index)
@@ -98,9 +89,6 @@ void Tile::reset(TileSet * tileset, const int type_index)
 	this->tile_type_index = type_index;
 	std::string filename = tileset->get_full_tile_sheet_filename(type_index);
 	this->image_filename = filename;
-	this->set_edge_priority(tileset->get_edge_priority(type_index));
-	this->set_speed_mod(tileset->get_tile_speed_mod(type_index));
-	//this->set_bitmap(ImageLoader::get_instance().get_current_image(this));
 }
 
 void Tile::reset_for_reload()
@@ -110,12 +98,12 @@ void Tile::reset_for_reload()
 	}
 }
 
-void Tile::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
+void Tile::draw(ALLEGRO_DISPLAY *display, const int x_offset, const int y_offset)
 {
 	GameImage::draw(display, x_offset, y_offset);
 }
 
-void Tile::draw_block(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
+void Tile::draw_block(ALLEGRO_DISPLAY *display, const int x_offset, const int y_offset)
 {
 	if (!block.is_empty() && block.is_visible()) {
 		block.draw(display, x_offset, y_offset);
@@ -127,7 +115,7 @@ void Tile::initialize_block()
 	this->block.set_entity_data_index(0);
 }
 
-void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
@@ -150,7 +138,6 @@ void Tile::replace_block(TileSet * tileset, int block_index, std::pair<int, int>
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
 	ImageLoader::get_instance().load_image(filename + this->block.image_filename_suffix(), *(this->block.get_image_subsection()));
-	//this->block.set_bitmap(ImageLoader::get_instance().get_current_image(&block));
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
@@ -171,7 +158,6 @@ void Tile::remove_block()
 void Tile::remove_edges()
 {
 	this->tile_edges.Clear();
-	//TODO: do we need to reload image?
 }
 
 Rect * Tile::get_bitmap_subsection()
@@ -187,42 +173,32 @@ Block * Tile::get_block()
 	return &(this->block);
 }
 
-void Tile::set_tile_type_index(int index)
+void Tile::set_tile_type_index(const int index)
 {
 	tile_type_index = index;
 }
 
-void Tile::set_sheet_row(int sheet_row)
+void Tile::set_sheet_row(const int sheet_row)
 {
 	this->sheet_row = sheet_row;
 }
 
-int Tile::get_tile_type_index()
+const int Tile::get_tile_type_index()
 {
 	return this->tile_type_index.value();
 }
 
-int Tile::get_sheet_row()
+const int Tile::get_sheet_row()
 {
 	return this->tile_sheet_row.value();
 }
 
-int Tile::get_sheet_col()
+const int Tile::get_sheet_col()
 {
 	return tile_sheet_col.value();
 }
 
-void Tile::set_speed_mod(float sm)
-{
-	speed_mod = sm;
-}
-
-float Tile::get_speed_mod()
-{
-	return speed_mod;
-}
-
-void Tile::add_edge(int row, int dir, std::string tile_key)
+void Tile::add_edge(const int row, const int dir, std::string tile_key)
 {
 	TileEdge *edge = new TileEdge(row, dir, tile_key);
 	this->tile_edges.addItem(edge);
@@ -238,19 +214,9 @@ std::vector<TileEdge*> Tile::get_tile_edges()
 	return edges;
 }
 
-bool Tile::has_edges()
+const bool Tile::has_edges()
 {
 	return this->tile_edges.size() > 0;
-}
-
-void Tile::set_edge_priority(int priority)
-{
-	this->edge_priority = priority;
-}
-
-int Tile::get_edge_priority()
-{
-	return edge_priority;
 }
 
 void Tile::set_tile_pos_x(int x)
@@ -295,7 +261,6 @@ const bool Tile::get_can_grow_plants()
 TileEdge::TileEdge()
 {
 	setClassName("TileEdge");
-	//Register("Filename", &filename);
 	Register("RowIndex", &row_index);
 	Register("DirectionIndex", &direction_index);
 	Register("TileKey", &tile_key);
@@ -304,11 +269,9 @@ TileEdge::TileEdge()
 TileEdge::TileEdge(int row, int direction, std::string key)
 {
 	setClassName("TileEdge");
-	//Register("Filename", &filename);
 	Register("RowIndex", &row_index);
 	Register("DirectionIndex", &direction_index);
 	Register("TileKey", &tile_key);
-	//this->filename = edge_filename;
 	this->row_index = row;
 	this->direction_index = direction;
 	this->tile_key = key;

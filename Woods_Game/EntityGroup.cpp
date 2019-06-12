@@ -92,17 +92,5 @@ void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 //TODO: eventually, all bitmaps should ultimately be findable in the imageloader (this is the point of gameimages)
 void EntityGroup::draw_bitmap_from_entities(std::vector<Entity*> entities)
 {
-	/*
-	ALLEGRO_BITMAP *display = al_get_target_bitmap();
-	for (Entity * e : entities) {
-		if (this->bitmap == NULL) {
-			const int width = al_get_bitmap_width(e->get_bitmap()), 
-				height = al_get_bitmap_height(e->get_bitmap());
-			this->bitmap = al_create_bitmap(width, height);
-		}
-		al_set_target_bitmap(this->bitmap);
-		al_draw_bitmap(e->get_bitmap(), 0, 0, 0);
-	}
-	al_set_target_bitmap(display);
-	*/
+
 }

@@ -167,3 +167,10 @@ std::vector<Level*> Dungeon::get_level_list()
 {
 	return this->level_list;
 }
+
+void Dungeon::clear_all_beings()
+{
+	for (Level * l : this->level_list) {
+		l->clear_all_beings();
+	}
+}

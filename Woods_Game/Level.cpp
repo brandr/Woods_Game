@@ -39,6 +39,7 @@ void Level::generate_paths()
 			const std::pair<int, int> pos2 = vector_coords[i2];
 			vector_coords.erase(vector_coords.begin() + i2);
 			std::vector<std::pair<int, int>> visited_coords;
+			std::cout << "\nGenerating coords\n";
 			const std::vector<std::pair<int, int>> coordinates = this->connect_path_nodes(tile_index, pos1, pos2, visited_coords, path_size);
 			for (std::pair<int, int> c : coordinates) {
 				if (!(std::find(visited_coords.begin(), visited_coords.end(), c) != visited_coords.end())) {
@@ -55,6 +56,7 @@ void Level::generate_paths()
 				const int index = rand() % vector_coords.size();
 				const std::pair<int, int> start_coords = vector_coords[index];
 				vector_coords.erase(vector_coords.begin() + index);
+				std::cout << "\nGenerating coords\n";
 				const std::vector<std::pair<int, int>> path_coords = this->connect_path_nodes(tile_index, start_coords, target_coords, visited_coords, path_size);
 				for (std::pair<int, int> c : path_coords) {
 					if (!(std::find(visited_coords.begin(), visited_coords.end(), c) != visited_coords.end())) {
@@ -308,9 +310,14 @@ const std::vector<std::pair<int, int>> Level::connect_path_nodes(const int tile_
 	if (x1 == x2 && y1 == y2) {
 		// the two tiles are actually the same, so there is no need to connect them
 		path_coords.push_back(std::pair<int, int>(x1, y1));
+		std::cout << "Not connecting tiles with coords (" + std::to_string(x1) + ", " + std::to_string(y1) + ") because same tile";
 		return path_coords;
 	}
-	if (std::abs(x1 - x2) == 1 || std::abs(y1 - y2) == 1) {
+	if (std::abs(x1 - x2) == 1 
+		&& std::abs(y1 - y2) == 1) {
+		std::cout << "Not connecting tiles with coords (" 
+			+ std::to_string(x1) + ", " + std::to_string(y1) + ") and " 
+			+ std::to_string(x2) + ", " + std::to_string(y2) + " because they are adjacent";
 		// the two tiles are adjacent and therefore already connected
 		path_coords.push_back(std::pair<int, int>(x1, y1));
 		path_coords.push_back(std::pair<int, int>(x2, y2));
@@ -336,13 +343,16 @@ const std::vector<std::pair<int, int>> Level::generate_weaving_paths(const int t
 		const std::pair<int, int> pos2(coordinates[i + 1].first, coordinates[i + 1].second);
 		const std::vector<std::pair<int, int>> line_coords 
 			= this->connect_path_nodes_straight_line(tile_index, pos1, pos2, path_size);
+		std::cout << "Connected path nodes: (" 
+			+ std::to_string(pos1.first) + "," + std::to_string(pos1.second) + ") and " 
+			+ std::to_string(pos2.first) + "," + std::to_string(pos2.second) + ")\n";
 		for (std::pair<int, int> lc : line_coords) {
 			if (!(std::find(path_coords.begin(), path_coords.end(), lc) != path_coords.end())) {
 				path_coords.push_back(lc);
-			}
-			if (std::find(visited.begin(), visited.end(), lc) != visited.end()) {
-				// return early if we connect to a path we already visited
-				return path_coords;
+				if (std::find(visited.begin(), visited.end(), lc) != visited.end()) {
+					// return early if we connect to a path we already visited
+					return path_coords;
+				}
 			}
 		}
 	}
@@ -647,7 +657,6 @@ void Level::reload_tiles(Level &copy_level)
 					const std::pair<int, int> pos(t->get_tile_pos_x(), t->get_tile_pos_y());
 					t->replace_block(this->tileset, block_index, ss_pos, pos);
 					const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-					//b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
 					b->refresh_mask();
 				}
 			} else if (copy_block == NULL) {
@@ -661,6 +670,13 @@ void Level::reload_tiles(Level &copy_level)
 }
 
 void Level::update_new_day(Player * player)
+{
+	this->update_tiles_new_day(player);
+	this->update_npcs_new_day();
+	//TODO: what other object types need to be updated?
+}
+
+void Level::update_tiles_new_day(Player * player)
 {
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
 	for (int y = 0; y < height; y++) {
@@ -677,9 +693,15 @@ void Level::update_new_day(Player * player)
 				}
 				b->refresh_mask();
 			}
-			//TODO: need to update entitygroups or other objects too?
 		}
 	}
+}
+
+void Level::update_npcs_new_day()
+{
+
+	//TODO: delete this if it doesn't make sense to do it in level
+	//TODO: send NPCs to the correct starting locations
 }
 
 void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant_ty)
@@ -698,12 +720,13 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 				const std::vector<int> allowed_tile_types = plant->get_allowed_spawn_tile_types();
 				const int block_index = plant->get_entity_data_index();
 				current_age++;
-				plant->set_entity_attribute(GameImage::E_ATTR_PLANT_GROWTH_CURRENT_AGE, current_age); // increase age by 1 day
+				// increase age by 1 day
+				plant->set_entity_attribute(GameImage::E_ATTR_PLANT_GROWTH_CURRENT_AGE, current_age); 
 				if (!started_mature) {
 					// make sure we update the sprite as necessary after aging
 					const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-					ImageLoader::get_instance().load_image(filename + plant->image_filename_suffix(), *(plant->get_image_subsection()));
-					//plant->set_bitmap(ImageLoader::get_instance().get_current_image(plant));
+					ImageLoader::get_instance().load_image(
+						filename + plant->image_filename_suffix(), *(plant->get_image_subsection()));
 				}
 				if (started_mature && spread_rate > 0 && spread_range > 0) {
 					std::vector<int> open_tile_indeces;
@@ -744,7 +767,8 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 							Tile * t = tiles_in_range[open_tile_i];
 							const int num_sheet_cols = tileset->get_block_sheet_image_cols_by_index(block_index);
 							const int sheet_col = rand() % num_sheet_cols;
-							const std::pair<int, int> ss_pos(sheet_col, plant->get_entity_sheet_row()); // TODO: do we want to randomize sheet row as well?
+							// TODO: do we want to randomize sheet row as well?
+							const std::pair<int, int> ss_pos(sheet_col, plant->get_entity_sheet_row()); 
 							const std::pair<int, int> pos(t->get_tile_pos_x(), t->get_tile_pos_y());
 							t->replace_block(this->tileset, block_index, ss_pos, pos);
 							Block *b = t->get_block();
@@ -753,7 +777,6 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 							const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 							b->set_entity_attribute(GameImage::E_ATTR_PLANT_GROWTH_CURRENT_AGE, 0);
 							ImageLoader::get_instance().load_image(filename + b->image_filename_suffix(), *(b->get_image_subsection()));
-							//b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
 							b->refresh_mask();
 							open_tile_indeces.erase(std::remove(open_tile_indeces.begin(), open_tile_indeces.end(), open_tile_i), open_tile_indeces.end());
 						}
@@ -795,7 +818,6 @@ void Level::initialize_tiles()
 			const std::string tile_filename = this->tileset->get_full_tile_sheet_filename(t->get_tile_type_index());
 			std::pair<int, int> position(t->get_tile_pos_x()*TILE_SIZE, t->get_tile_pos_y()*TILE_SIZE);
 			t->set_content(tile_filename, subsection, position);
-			//t->set_bitmap(ImageLoader::get_instance().get_current_image(t));
 			Block *b = t->get_block();
 			if (b == NULL) {
 				continue;
@@ -803,7 +825,6 @@ void Level::initialize_tiles()
 			const std::string block_filename = this->tileset->get_full_block_sheet_filename(b->get_entity_data_index());
 			Rect *block_subsection = b->get_bitmap_subsection();
 			b->set_content(block_filename, block_subsection, position);
-			//b->set_bitmap(ImageLoader::get_instance().get_current_image(b));
 			const std::string block_key = this->tileset->get_block_key(b->get_entity_data_index());
 			b->load_entity_effects(this->tileset->get_tile_sheet_filename(), block_key, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 			b->refresh_mask();
@@ -870,12 +891,10 @@ void Level::initialize_entity_group(EntityGroup *eg)
 		e->set_content(comp_filename, ss_offset_rect, group_pos);
 		e->set_rect(group_pos.first, group_pos.second,
 			entity_group_image_dimensions.first, entity_group_image_dimensions.second);
-		//e->set_bitmap(ImageLoader::get_instance().get_current_image(e));
 		e->set_entity_attributes(data->get_attributes());
 		entity_list.push_back(e);
 	}
 	eg->set_entities(entity_list);
-	eg->draw_bitmap_from_entities(entity_list);
 	eg->set_solid(true); //temp. consider making a set of attributes for the entire group and including solid if necessary
 	eg->set_rect(group_pos.first, group_pos.second,
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
@@ -903,7 +922,6 @@ void Level::initialize_spawners()
 		s->set_content(filename, subsection, position);
 		s->set_rect(position.first, position.second,
 			TILE_SIZE, TILE_SIZE);
-		//s->set_bitmap(ImageLoader::get_instance().get_current_image(s));
 	}
 }
 
@@ -931,23 +949,23 @@ void Level::remove_tile_edges()
 
 void Level::load_tile_edges()
 {
-	int tile_rows = this->tile_rows.size();
-	int tile_cols = this->tile_rows.getItem(0)->get_size();
+	const int tile_rows = this->tile_rows.size();
+	const int tile_cols = this->tile_rows.getItem(0)->get_size();
 	// map of sheet row/priority to groups of tiles with that priority
 	std::map<std::vector<int>, std::map<int, bool> > edge_map;
 	for (int y = 0; y < tile_rows; y++) {
 		for (int x = 0; x < tile_cols; x++) {
 			edge_map.clear();
 			Tile *t = this->get_tile(x, y);
-			int x_off1 = x > 0 ? -1 : 0;
-			int y_off1 = y > 0 ? -1 : 0;
-			int x_off2 = x < tile_cols - 1 ? 1 : 0;
-			int y_off2 = y < tile_rows - 1 ? 1 : 0;
+			const int x_off1 = x > 0 ? -1 : 0;
+			const int y_off1 = y > 0 ? -1 : 0;
+			const int x_off2 = x < tile_cols - 1 ? 1 : 0;
+			const int y_off2 = y < tile_rows - 1 ? 1 : 0;
 			for (int y_off = y_off1; y_off <= y_off2; y_off++) {
 				for (int x_off = x_off1; x_off <= x_off2; x_off++) {
 					if (y_off == 0 && x_off == 0) continue;
 					Tile *check_tile = this->get_tile(x + x_off, y + y_off);
-					int priority = check_tile->get_edge_priority();
+					const int priority = tileset->get_edge_priority(check_tile->get_tile_type_index());
 					const int row = 0; //temp
 					const int tile_index = check_tile->get_tile_type_index();
 					std::vector<int> edge_map_key{ priority, row, tile_index};
@@ -957,19 +975,23 @@ void Level::load_tile_edges()
 						edge_map[edge_map_key] = sub_map;
 					}
 					// little trick to map x_off, y_off combinations to the enum directional values in Tile.h
-					int dir_val = (y_off + 1) * 3 + (x_off + 1);
-					edge_map[edge_map_key][dir_val] = priority > t->get_edge_priority();
+					const int dir_val = (y_off + 1) * 3 + (x_off + 1);
+					edge_map[edge_map_key][dir_val] = priority > tileset->get_edge_priority(t->get_tile_type_index());// t->get_edge_priority();
 				}
 			}
 			// each iteration of this loop represents a different priority
 			for (const auto& edge_data: edge_map) {
 				std::vector<int> edge_key = edge_data.first;
 				std::map<int, bool> sub_map = edge_data.second;
-				int row = edge_key[1];
-				int tile_index = edge_key[2];
+				const int row = edge_key[1];
+				const int tile_index = edge_key[2];
 				std::string tile_key = this->tileset->get_tile_key(tile_index);
-				if (sub_map[TILE_UP] && sub_map[TILE_DOWN] && sub_map[TILE_LEFT] && sub_map[TILE_RIGHT]) add_edge_to_tile(t, row, TILE_CENTER, tile_key);
-				else {
+				if (sub_map[TILE_UP]
+					&& sub_map[TILE_DOWN]
+					&& sub_map[TILE_LEFT]
+					&& sub_map[TILE_RIGHT]) {
+					add_edge_to_tile(t, row, TILE_CENTER, tile_key);
+				} else {
 					if (sub_map[TILE_UP]) add_edge_to_tile(t, row, TILE_UP, tile_key);
 					if (sub_map[TILE_DOWN]) add_edge_to_tile(t, row, TILE_DOWN, tile_key);
 					if (sub_map[TILE_LEFT]) add_edge_to_tile(t, row, TILE_LEFT, tile_key);
@@ -994,12 +1016,17 @@ void Level::draw_tile_edge_bitmaps()
 			if (t->has_edges()) {
 				std::vector<TileEdge*> tile_edges = t->get_tile_edges();
 				for (TileEdge *edge : tile_edges) {
-					std::string filename = this->tileset->get_tile_sheet_filename() + "/tiles/edges/" + edge->tile_key.c_str();
+					const std::string filename = this->tileset->get_tile_sheet_filename() + "/tiles/edges/" + edge->tile_key.c_str();
 					this->draw_edge_tile_onto_bitmap(*t, filename, edge->row_index.value(), edge->direction_index.value());
 				}
 			}
 		}
 	}
+}
+
+void Level::clear_all_beings()
+{
+	this->beings.clear();
 }
 
 void Level::save_to_xml()
@@ -1022,19 +1049,20 @@ void Level::unload_content()
 	beings.clear();
 }
 
-void Level::update(int game_mode)
+void Level::update(const int game_mode)
 {
 	std::pair<int, int> dimensions = get_dimensions();
-	int b_size = beings.size();
+	const int b_size = beings.size();
 	for (int i = 0; i < b_size; i++) {
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
 			std::vector<Entity*> interactables = get_interactables(beings[i]);
 			std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
-			beings[i]->update(interactables, tiles, dimensions, game_mode);
-			//beings[i]->set_bitmap(ImageLoader::get_instance().get_current_image(beings[i]));
+			beings[i]->update(this->tileset, interactables, tiles, dimensions, game_mode);
 		}
-		else
+		else {
+			// TODO: better error handling
 			std::cout << "NULL BEING" << std::endl;
+		}
 	}
 	const int height = tile_rows.size();
 	for (int y = 0; y < height; y++) {
@@ -1088,9 +1116,12 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	for (int i = 0; i < eg_size; i++) {
 		draw_entities.push_back(this->entity_groups.getItem(i));
 	}
-	draw_entities.push_back(this->get_player());
 
-	// miscellaneous entities (includes player): layer 20
+	// beings includes the player and NPCs
+	for (Being * b : this->beings) {
+		draw_entities.push_back(b);
+	}
+	// miscellaneous entities: layer 20
 	std::sort(draw_entities.begin(), draw_entities.end(), game_image_center_comparison());
 	int size = draw_entities.size();
 	for (int i = 0; i < size; i++) {
@@ -1103,17 +1134,15 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	}
 }
 
-void Level::draw_edge_tile_onto_bitmap(Tile &tile, std::string edge_filename, int edge_row, int dir_key)
+void Level::draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key)
 {
 	
 	Rect subsection(dir_key*TILE_SIZE, edge_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	ImageLoader::get_instance().load_image(edge_filename, subsection);
-	//ALLEGRO_BITMAP* edge_image = ImageLoader::get_instance().get_image(edge_filename, subsection);
-	//tile.draw_onto_bitmap(edge_image);
 	tile.add_additional_image_layer(edge_filename, subsection);
 }
 
-void Level::add_edge_to_tile(Tile * tile, int edge_row, int dir_key, std::string tile_key)
+void Level::add_edge_to_tile(Tile * tile, const int edge_row, const int dir_key, const std::string tile_key)
 {
 	tile->add_edge(edge_row, dir_key, tile_key);
 }
@@ -1128,9 +1157,9 @@ void Level::remove_player()
 	remove_beings(PLAYER);
 }
 
-void Level::remove_beings(int type)
+void Level::remove_beings(const int type)
 {
-	int size = beings.size();
+	const int size = beings.size();
 	for (int i = size - 1; i >= 0; i--) {
 		if (beings[i]->get_type() == type) {
 			beings.erase(std::remove(beings.begin(), beings.end(), beings[i]), beings.end());
@@ -1159,7 +1188,14 @@ std::vector<Entity*> Level::get_interactables(Entity *entity)
 			interactables.push_back(e);
 		}
 	}
-	interactables.push_back(this->get_player());
+	if (entity->get_type() != PLAYER) {
+		interactables.push_back(this->get_player());
+	}
+	for (Being * b : this->beings) {
+		if (b != entity) {
+			interactables.push_back(b);
+		}
+	}
 	return interactables;
 }
 
@@ -1188,17 +1224,6 @@ std::vector<Tile*> Level::get_tiles_in_range(const int tx, const int ty, const i
 		}
 	}
 	return nearby_tiles;
-}
-
-std::vector<Entity> Level::get_player_interactables()
-{
-	std::vector<Entity> interactables;
-	return interactables;
-}
-
-std::vector<std::string> Level::get_layers()
-{
-	return {"tile_layer", "block_layer", "entity_group_layer"}; //temp. figure out where to store the different lists of layers for t he level, or how to get them efficiently when reading the text file
 }
 
 void Level::remove_tile(std::pair<int, int> pos)
@@ -1280,11 +1305,10 @@ void Level::add_tiled_image(const int ti_index, const std::pair<int, int> ss_pos
 {
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	const std::string filename_start = this->tileset->get_tile_sheet_filename();
-	TiledImage * ti = this->create_tiled_image(filename_start, ti_index, ss_pos, pixel_pos);	//TODO: need filename start?
+	TiledImage * ti = this->create_tiled_image(filename_start, ti_index, ss_pos, pixel_pos);
 	const std::string full_filename = this->tileset->get_full_tiled_image_sheet_filename(ti_index);
 	Rect *subsection = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	ti->set_content(full_filename, subsection, pixel_pos);
-	//ti->set_bitmap(ImageLoader::get_instance().get_current_image(ti));
 	ti->set_not_empty();
 	int layer_count = this->tiled_image_layers.size();
 	while (layer_count <= layer_index) {
@@ -1311,7 +1335,6 @@ void Level::add_spawner(const int spawner_index, const std::pair<int, int> ss_po
 	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	const std::string filename_start = this->tileset->get_tile_sheet_filename();
 	Spawner * s = this->create_spawner(filename_start, spawner_index, ss_pos, pixel_pos);
-	//s->set_bitmap(ImageLoader::get_instance().get_current_image(s));
 	this->spawners.addItem(s);
 }
 
@@ -1386,13 +1409,11 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 		e->set_entity_attributes(data->get_attributes());
 		entity_list.push_back(e);
 	}
-	EntityGroup *e_group = new EntityGroup(); //TODO: figure out if this allocation of new memory is related to a memory leak, particularly when removing and adding egs
+	EntityGroup *e_group = new EntityGroup();
 	e_group->set_sheet_pos(ss_pos.first, ss_pos.second);
 	e_group->set_entity_group_name(group_data->get_entity_group_name());
 	e_group->set_entities(entity_list);
-	e_group->draw_bitmap_from_entities(entity_list);
-	e_group->set_solid(true);	//temporary
-	//consider making a set of attributes for the entire group and including solid if necessary
+	e_group->set_solid(true);
 	e_group->set_rect(group_pos.first, group_pos.second,
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
 	e_group->set_center_offset(center_off);
@@ -1414,23 +1435,26 @@ void Level::set_tile(Tile * tile, std::pair<int, int> pos)
 	
 }
 
-Tile * Level::get_tile(int x, int y)
+Tile * Level::get_tile(const int x, const int y)
 {
-	if (y < 0 || y > this->tile_rows.size()) {
-		return nullptr;
+	if (y < 0 
+		|| y > this->tile_rows.size()) {
+		return NULL;
 	}
 	TileGroup *tile_row = this->tile_rows.getItem(y);
-	if (x < 0 || x > tile_row->get_size()) {
-		return nullptr;
+	if (x < 0 
+		|| x > tile_row->get_size()) {
+		return NULL;
 	}
 	return tile_row->get_tile(x);
 }
 
 // checks to see whether a space is passable
-bool Level::passable_at(int x, int y)
+bool Level::passable_at(const int x, const int y)
 {
-	if (x < 0 || x > width || y < 0 || y > width) return false;
-	//TODO: check for collisions (is this actually necessary?)
+	if (x < 0 || x > width || y < 0 || y > width) {
+		return false;
+	}
 	return true;
 }
 
@@ -1454,7 +1478,7 @@ EntityGroup * Level::entity_group_at_tile_pos(const std::pair<int, int> pos)
 	return this->entity_group_at_tile_pos(pos, false);
 }
 
-EntityGroup * Level::entity_group_at_tile_pos(const std::pair<int, int> tpos,  bool root_only)
+EntityGroup * Level::entity_group_at_tile_pos(const std::pair<int, int> tpos,  const bool root_only)
 {
 	const int size = this->entity_groups.size();
 	const std::pair<int, int> pos(tpos.first*TILE_SIZE, tpos.second*TILE_SIZE);
@@ -1574,7 +1598,6 @@ int Level::get_grid_height()
 }
 
 // level editor methods
-
 void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
@@ -1611,7 +1634,7 @@ void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect& subsection)
 			Tile * t = this->get_tile(x, y);
 			Block * b = t->get_block();
 			if (b != NULL) {
-				ALLEGRO_BITMAP *tile_bitmap = ImageLoader::get_instance().get_current_image(b);// b->get_bitmap();
+				ALLEGRO_BITMAP *tile_bitmap = ImageLoader::get_instance().get_current_image(b);
 				float dx = x * TILE_SIZE - subsection.x;
 				float dy = y * TILE_SIZE - subsection.y;
 				al_draw_bitmap(tile_bitmap, dx, dy, 0);	
@@ -1673,6 +1696,3 @@ void Level::draw_spawners_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 	}
 	al_set_target_bitmap(display);
 }
-
-
-

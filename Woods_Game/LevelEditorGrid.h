@@ -21,16 +21,16 @@ private:
 	int leftMargin;
 	int rightMargin;
 	int bottomMargin;
-	void add_object(std::pair<float, float> pos);
-	void delete_object(std::pair<float, float> pos);
-	void select_object(std::pair<float, float> pos);
+	void add_object(const std::pair<float, float> pos);
+	void delete_object(const std::pair<float, float> pos);
+	void select_object(const std::pair<float, float> pos);
 	void clear_image_layers();
-	void load_image_layer(std::string layer);
-	void update_image_layer(std::string layer);
+	void load_image_layer(const std::string layer, const std::string level_name);
+	void update_image_layer(const std::string layer);
 	std::vector<std::pair<agui::Allegro5Image *, std::string>> loaded_level_images(const std::string prefix, const std::string level_name);
 	void set_loaded_level_image(agui::Allegro5Image *image, const std::string prefix, const std::string level_name, const std::string rect_key);
 	const std::vector<std::string> image_layer_rect_keys();
-	bool is_layer_visible(std::string layer);
+	bool is_layer_visible(const std::string layer);
 	std::string level_name();
 	bool has_level();
 protected:
@@ -50,11 +50,11 @@ public:
 	LevelEditorGrid();
 	LevelEditorGrid(int, int, int, int);
 	void update();
-	void set_layer_visible(std::string layer, bool visible);
-	void set_select_mode(int value);
+	void set_layer_visible(const std::string layer, const bool visible);
+	void set_select_mode(const int value);
 	void reset_all_grid_image_layers();
-	void reset_image_layer(std::string layer);
-	void reset_image_layer(int index);
+	void reset_image_layer(const std::string layer, const std::string level_name);
+	void reset_image_layer(const int index, const std::string level_name);
 };
 
 #endif

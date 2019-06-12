@@ -18,11 +18,13 @@ void TitleScreen::load_content()
 	menus[TITLE_MAIN_MENU] = std::make_unique<MenuManager>();
 	menus[TITLE_MAIN_MENU]->load_xml_content("title_main_menu");
 	ImageLoader::get_instance().load_image("ui/title_main_backdrop");
-	backdrops[TITLE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/title_main_backdrop");
+	backdrop_filenames[TITLE_MAIN_MENU] = "ui/title_main_backdrop";
+	//backdrops[TITLE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/title_main_backdrop");
 	//load menu
 	menus[TITLE_LOAD_GAME_MENU] = std::make_unique<LoadGameMenuManager>();
 	menus[TITLE_LOAD_GAME_MENU]->load_xml_content("title_load_game_menu");
-	backdrops[TITLE_LOAD_GAME_MENU] = ImageLoader::get_instance().get_image("ui/title_main_backdrop"); //TEMP
+	backdrop_filenames[TITLE_LOAD_GAME_MENU] = "ui/title_main_backdrop"; //TEMP
+	//backdrops[TITLE_LOAD_GAME_MENU] = ImageLoader::get_instance().get_image("ui/title_main_backdrop"); //TEMP
 	//controls
 	set_default_controls();
 	//TODO: start new game, load game, options, quit, etc
@@ -32,7 +34,13 @@ void TitleScreen::unload_content()
 {
 	al_destroy_font(font);
 	font = NULL;
-	backdrops.clear();
+	/*
+	const int size = backdrops.size();
+	for (int i = 0; i < size; i++) {
+		al_destroy_bitmap(backdrops[i]);
+	}
+	*/
+	//backdrops.clear();
 	GameScreen::unload_content();
 }
 
@@ -151,7 +159,8 @@ void TitleScreen::draw(ALLEGRO_DISPLAY * display)
 
 ALLEGRO_BITMAP * TitleScreen::current_backdrop()
 {
-	return this->backdrops[this->menu_key];
+	const std::string filename = this->backdrop_filenames[this->menu_key];
+	return ImageLoader::get_instance().get_image(filename);
 }
 
 MenuManager & TitleScreen::current_menu_manager()

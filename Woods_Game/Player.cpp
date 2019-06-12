@@ -51,7 +51,7 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-void Player::update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Player::update(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
 {
 	if (exit_level_check(level_dimensions))
 		return;
@@ -67,7 +67,7 @@ void Player::update(std::vector<Entity*> interactables, std::vector<Tile*> nearb
 		break;
 	}
 	
-	Being::update(interactables, nearby_tiles, level_dimensions, game_mode);
+	Being::update(tileset, interactables, nearby_tiles, level_dimensions, game_mode);
 	if (this->interacting) {
 		this->interact_update(interactables, nearby_tiles, level_dimensions);
 	}
@@ -322,7 +322,8 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 	}
 	const int size = interactables.size();
 	
-	mask_t *shear_mask = additional_masks[std::pair<std::string, int>("slicing", direction)];
+	// TODO: define mask prefix ("player") more generally
+	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction); // additional_masks[std::pair<std::string, int>("slicing", direction)];
 	float x_off = 0, y_off = 0;
 	switch(direction){
 		case DIR_NEUTRAL:

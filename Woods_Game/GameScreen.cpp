@@ -40,6 +40,14 @@ void GameScreen::call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle)
 {
 }
 
+void GameScreen::stop_taking_mappable_input_keyboard()
+{
+}
+
+void GameScreen::stop_taking_mappable_input_controller()
+{
+}
+
 void GameScreen::set_joystick_pos(int stick, float x, float y)
 {
 	joystick_pos_map[stick] = std::pair<float, float>(x, y);

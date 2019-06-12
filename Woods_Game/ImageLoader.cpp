@@ -32,7 +32,6 @@ ImageLoader::~ImageLoader()
 
 void ImageLoader::load_content()
 {
-	image_map = std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>();
 }
 
 void ImageLoader::unload_content()
@@ -46,8 +45,8 @@ void ImageLoader::unload_content()
 
 const bool ImageLoader::image_exists(const std::string filename)
 {
-	std::string full_filename = ImageLoader::full_filename(filename);
-	return (al_load_bitmap(full_filename.c_str()));
+	const std::string full_filename = ImageLoader::full_filename(filename);
+	return boost::filesystem::exists(full_filename.c_str());
 }
 
 const bool ImageLoader::keyed_image_exists(const std::string image_key, const int width, const int height, const std::string suffix)
@@ -79,37 +78,57 @@ ALLEGRO_BITMAP * ImageLoader::get_keyed_image(const std::string image_key, const
 
 void ImageLoader::load_image(std::string filename)
 {
+	ImageLoader::get_instance().load_image(filename, "", false);
+}
+
+
+void ImageLoader::load_image(std::string filename, Rect subsection)
+{
 	std::string full_filename = ImageLoader::full_filename(filename);
-	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
-	if (it != image_map.end()) return;
-	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
-	ALLEGRO_BITMAP *image = al_load_bitmap(full_filename.c_str());
-	
-	if (image == NULL) {
-		std::cout << filename << std::endl;
-		std::cout << "loader failed to load image" << std::endl;
-	}
-	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
-	image_map[(std::pair<std::string, std::string>(full_filename, ""))] = image;
+	const std::string rect_string = rect_to_string(subsection);
+	ImageLoader::get_instance().load_image(filename, rect_string, false);
 }
 
 // only load the part of the image encompassed by the rect
-void ImageLoader::load_image(std::string filename, Rect subsection)
+void ImageLoader::load_image(const std::string filename, const std::string rect_string, const bool allow_failure)
 {
-	// in order to save time, we check to see if the full image is already loaded in. if not, we load it.
-	load_image(filename);
-	std::string full_filename = ImageLoader::full_filename(filename);
-	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_to_string(subsection)));
-	if (it != image_map.end()) return;
-	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
-	ALLEGRO_BITMAP *image = image_map[(std::pair<std::string, std::string>(full_filename, ""))];
+	// if the full image is not already loaded in, we load it here.
+	const std::string full_filename = ImageLoader::full_filename(filename);
+	if (image_map.find(std::pair<std::string, std::string>(full_filename, rect_string)) == image_map.end()
+		&& rect_string != ""
+		&& (image_map.find(std::pair<std::string, std::string>(full_filename, "")) == image_map.end())) {
+		load_image(filename, "", allow_failure);
+	} else {
+		// don't do anything if we have already lodaed this subsection
+		auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+		if (it != image_map.end()) {
+			return;
+		}
+	}
+	ALLEGRO_BITMAP *image = al_load_bitmap(full_filename.c_str());
 	if (image == NULL) {
-		std::cout << filename << std::endl;
-		std::cout << "loader failed to load image" << std::endl;
+		if (allow_failure) {
+			return;
+		} else {
+			std::cout << filename << std::endl;
+			std::cout << "loader failed to load image" << std::endl;
+			//TODO: better error handling
+		}
 	}
 	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
-	ALLEGRO_BITMAP* sub_image = al_create_sub_bitmap(image, subsection.x, subsection.y, subsection.width, subsection.height);
-	image_map[(std::pair<std::string, std::string>(full_filename, rect_to_string(subsection)))] = sub_image;
+	FileManager fm;
+	std::vector<std::string> rect_parts;
+	if (rect_string.length() > 0) {
+		rect_parts = fm.string_to_parts(rect_string, ",");
+		Rect subsection(::atoi(rect_parts[0].c_str()), 
+			::atoi(rect_parts[1].c_str()), 
+			::atoi(rect_parts[2].c_str()),
+			::atoi(rect_parts[3].c_str()));
+		ALLEGRO_BITMAP * sub_image = al_create_sub_bitmap(image, subsection.x, subsection.y, subsection.width, subsection.height);
+		image_map[(std::pair<std::string, std::string>(full_filename, rect_string))] = sub_image;
+	} else {
+		image_map[(std::pair<std::string, std::string>(full_filename, ""))] = image;
+	}
 }
 
 void ImageLoader::load_spritesheet(Animation anim)
@@ -126,10 +145,55 @@ void ImageLoader::load_spritesheet(Animation anim)
 	}
 }
 
+void ImageLoader::load_mask(const std::string base_filename)
+{
+	load_mask(base_filename, "", true);
+}
+
+void ImageLoader::load_mask(const std::string base_filename, const std::string rect_string)
+{
+	load_mask(base_filename, rect_string, true);
+}
+
+void ImageLoader::load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix)
+{
+	std::string mask_filename = base_filename;
+	if (include_suffix) {
+		mask_filename += "_mask";
+	}
+	auto it = mask_map.find(std::pair<std::string, std::string>(base_filename, rect_string));
+	if (it != mask_map.end()) {
+		return;
+	}
+	mask_t * loaded_mask = NULL;
+	ImageLoader::get_instance().load_image(mask_filename);
+	ALLEGRO_BITMAP * mask_image = NULL;
+	if (rect_string.length() > 0) {
+		FileManager fm;
+		const std::vector<std::string> rect_parts = fm.string_to_parts(rect_string, ",");
+		Rect subsection(::atoi(rect_parts[0].c_str()),
+			::atoi(rect_parts[1].c_str()),
+			::atoi(rect_parts[2].c_str()),
+			::atoi(rect_parts[3].c_str()));
+		ImageLoader::get_instance().load_image(mask_filename, subsection);
+		mask_image = ImageLoader::get_instance().get_image(mask_filename, subsection);
+	} else {
+		mask_image = ImageLoader::get_instance().get_image(mask_filename);
+	}
+	if (mask_image != NULL) {
+		al_convert_mask_to_alpha(mask_image, al_map_rgb(255, 0, 255));
+		loaded_mask = Mask_New(mask_image);
+	}
+	//store base filename, not mask filename, because we will never have both on the same image anyway
+	mask_map[std::pair<std::string, std::string>(base_filename, rect_string)] = loaded_mask;
+}
+
+// TODO: refactor all the repeated code below
+
 ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string tileset_name, TileType * tile_type)
 {
 	const std::string full_filename = ImageLoader::full_filename(tileset_name + "/tiles/" + tile_type->get_tile_sheet_key());
-	Rect * subsection = DBG_NEW Rect(0, 0,
+	Rect * subsection = new Rect(0, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
@@ -142,7 +206,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_tile_image(std::string tileset_name, T
 ALLEGRO_BITMAP * ImageLoader::get_default_block_image(std::string sheet_filename, EntityData * block_type)
 {
 	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/blocks/" + block_type->get_entity_data_key());
-	Rect * subsection = DBG_NEW Rect(0, 0,
+	Rect * subsection = new Rect(0, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
@@ -155,7 +219,7 @@ ALLEGRO_BITMAP * ImageLoader::get_default_block_image(std::string sheet_filename
 ALLEGRO_BITMAP * ImageLoader::get_default_entity_group_image(std::string sheet_filename, EntityGroupData * eg_type)
 {
 	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/entity_groups/" + eg_type->get_entity_group_name());
-	Rect * subsection = DBG_NEW Rect(0, 0,
+	Rect * subsection = new Rect(0, 0,
 		eg_type->get_entity_group_image_dimensions().first, 
 		eg_type->get_entity_group_image_dimensions().second);
 	const std::string rect_string = rect_to_string(*subsection);
@@ -188,8 +252,9 @@ ALLEGRO_BITMAP * ImageLoader::get_tile_image_for_col(const std::string sheet_fil
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
 		return NULL;
+	} else { 
+		return it->second; 
 	}
-	else { return it->second; }
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_block_image_for_col(const std::string sheet_filename, EntityData * block_type, const int col)
@@ -201,8 +266,9 @@ ALLEGRO_BITMAP * ImageLoader::get_block_image_for_col(const std::string sheet_fi
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
 		return NULL;
+	} else { 
+		return it->second;
 	}
-	else { return it->second; }
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_entity_group_image_for_col(const std::string sheet_filename, EntityGroupData * eg_type, const int col)
@@ -215,8 +281,9 @@ ALLEGRO_BITMAP * ImageLoader::get_entity_group_image_for_col(const std::string s
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
 		return NULL;
+	} else { 
+		return it->second;
 	}
-	else { return it->second; }
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_spawner_image_for_col(const std::string sheet_filename, EntityData * spawner_type, const int col)
@@ -228,8 +295,9 @@ ALLEGRO_BITMAP * ImageLoader::get_spawner_image_for_col(const std::string sheet_
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
 		return NULL;
+	} else { 
+		return it->second;
 	}
-	else { return it->second; }
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_full_tiled_image_sheet(std::string sheet_filename, TiledImageData *image_type)
@@ -238,8 +306,9 @@ ALLEGRO_BITMAP * ImageLoader::get_full_tiled_image_sheet(std::string sheet_filen
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
 	if (it == image_map.end()) {
 		return NULL;
+	} else { 
+		return it->second; 
 	}
-	else { return it->second; }
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
@@ -249,32 +318,49 @@ ALLEGRO_BITMAP * ImageLoader::get_current_image(GameImage* image)
 	if (anim && ss_anim) {
 		return get_image(anim->get_filename(), anim->get_current_rect());
 	}
-	std::string full_filename = ImageLoader::full_filename(image->get_image_filename());
+	const std::string full_filename = ImageLoader::full_filename(image->get_image_filename());
 	Rect* subsection = image->get_image_subsection();
-	std::string rect_string = "";
-	if (subsection) rect_string = rect_to_string(*subsection);
+	const std::string rect_string = subsection ? rect_to_string(*subsection) : "";
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) {
-		return nullptr;
+		return NULL;
+	} else {
+		return it->second;
 	}
-	else return it->second;
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_image(std::string filename)
 {
-	std::string full_filename = ImageLoader::full_filename(filename);
+	const std::string full_filename = ImageLoader::full_filename(filename);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, ""));
-	if (it == image_map.end()) return nullptr;
+	if (it == image_map.end()) {
+		return NULL;
+	}
 	else return it->second;
 }
 
 ALLEGRO_BITMAP * ImageLoader::get_image(std::string filename, Rect subsection)
 {
-
-	std::string full_filename = ImageLoader::full_filename(filename);
-	std::string rect_string = rect_to_string(subsection);
+	const std::string full_filename = ImageLoader::full_filename(filename);
+	const std::string rect_string = rect_to_string(subsection);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) return nullptr;
 	else return it->second;
+}
+
+mask_t * ImageLoader::get_mask(const std::string base_filename)
+{
+	return get_mask(base_filename, "");
+}
+
+mask_t * ImageLoader::get_mask(const std::string base_filename, const std::string rect_string)
+{
+	const std::string mask_filename = base_filename;
+	auto it = mask_map.find(std::pair<std::string, std::string>(mask_filename, rect_string));
+	if (it == mask_map.end()) {
+		return NULL;
+	} else {
+		return it->second;
+	}
 }
 

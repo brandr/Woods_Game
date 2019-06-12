@@ -43,7 +43,7 @@ class LevelEditorLayout : public agui::FlowLayout {
 	enum SECONDARY_TABS {
 		TILED_IMAGE_TAB = 0,
 		EDIT_OBJECT_TAB = 1,
-		SELECT_TILESET_TAB = 2
+		//SELECT_TILESET_TAB = 2
 	};
 private:
 
@@ -52,7 +52,7 @@ private:
 	agui::FlowLayout level_editor_layout_2;
 	agui::FlowLayout tiled_image_layout;
 	agui::FlowLayout edit_object_layout;
-	agui::FlowLayout select_tileset_layout;
+	//agui::FlowLayout select_tileset_layout;
 
 	// layout frames
 	agui::Frame level_editor_layout_frame_1;
@@ -71,7 +71,7 @@ private:
 	agui::Label level_edit_object_col_label;
 	agui::Label selected_object_label;
 	agui::Label selected_level_object_instance_attributes_label;
-	agui::Label selected_tileset_label;
+	//agui::Label selected_tileset_label;
 	agui::ScrollPane level_grid_scroll_pane;
 	agui::ScrollPane tiled_image_grid_scroll_pane;
 	agui::ScrollPane object_instance_attributes_scroll_pane;
@@ -83,13 +83,13 @@ private:
 	agui::ScrollPane level_edit_object_block_scroll_pane;
 	agui::ScrollPane level_edit_object_entity_group_scroll_pane;
 	agui::ScrollPane tiled_image_scroll_pane;
-	agui::ScrollPane tileset_select_scroll_pane;
+	//agui::ScrollPane tileset_select_scroll_pane;
 	agui::ListBox level_edit_object_tile_select_box;
 	agui::ListBox level_edit_object_block_select_box;
 	agui::ListBox level_edit_object_entity_group_select_box;
 	agui::ListBox level_edit_object_spawner_select_box;
 	agui::ListBox tiled_image_select_box;
-	agui::ListBox tileset_select_box;
+	//agui::ListBox tileset_select_box;
 	agui::Button level_edit_reset_level_button;
 	agui::Button level_edit_reset_tile_edges_button;
 	agui::Button level_edit_object_col_left_button;
@@ -125,7 +125,7 @@ private:
 	bool selecting_objects = false;
 
 	// edit tileset
-	agui::Frame select_tileset_frame;
+	//agui::Frame select_tileset_frame;
 
 	// methods
 	void set_selected_object_tab_index(int index);
@@ -141,7 +141,7 @@ private:
 	int last_selected_object_instance_index = -1;
 public:
 	LevelEditorLayout(ALLEGRO_DISPLAY *display);
-	void load_all_tilesets();
+	//void load_all_tilesets();
 	void load_selected_tileset_tiles();
 	void load_selected_tileset_blocks();
 	void load_selected_tileset_entity_groups();

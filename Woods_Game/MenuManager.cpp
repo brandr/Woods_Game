@@ -45,98 +45,6 @@ void MenuManager::set_animations()
 	}
 }
 
-//temp. get rid of this method once load_xml_content works for all menus
-void MenuManager::load_content(std::string id)
-{
-	file_manager.load_content("resources/load/menus.cme", attributes, contents, id);
-	for (int i = 0; i < attributes.size(); i++) {
-		for (int j = 0; j < attributes[i].size(); j++) {
-			if (attributes[i][j] == "text_item") {
-				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(contents[i][j], ",");
-				MenuItem *item = DBG_NEW MenuItem();
-				item -> set_text(text_item_data.first);
-				item -> set_selection_action_key(text_item_data.second);
-				menu_items.addItem(item);
-			}
-			else if (attributes[i][j] == "image_item") {
-				MenuItem *item = DBG_NEW MenuItem();
-				std::pair<std::string, std::string> image_item_data = FileManager::string_to_pair(contents[i][j], ",");
-				std::string filename = "resources/images/ui/menu_image_items/" + image_item_data.first + ".png";
-				item->set_image_filename("ui/menu_image_items/" + image_item_data.first + ".png");
-				item->set_image(al_load_bitmap(filename.c_str()));
-				item->set_selection_action_key(image_item_data.second);
-				menu_items.addItem(item);
-			}
-			else if (attributes[i][j] == "text_item_options") {
-				std::pair<std::string, std::string> text_options_data = FileManager::string_to_pair(contents[i][j], ":");
-				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(text_options_data.first, ",");
-				MenuItem *item = DBG_NEW MenuItem();
-				item->set_text(text_item_data.first);
-				item->set_selection_action_key(SELECTION_KEY_SELECT_OPTIONS);
-				item->set_confirm_action_key(text_item_data.second);
-				std::vector<std::string> options_list = FileManager::string_to_parts(text_options_data.second, ",");
-				item->set_text_options(options_list);
-				std::string filename1 = "resources/images/ui/brackets/bracket_1L.png";
-				std::string filename2 = "resources/images/ui/brackets/bracket_1R.png";
-				ALLEGRO_BITMAP* bracket_L = al_load_bitmap(filename1.c_str());
-				ALLEGRO_BITMAP* bracket_R = al_load_bitmap(filename2.c_str());
-				al_convert_mask_to_alpha(bracket_L, al_map_rgb(255, 0, 255));
-				al_convert_mask_to_alpha(bracket_R, al_map_rgb(255, 0, 255));
-				item->set_selection_brackets(bracket_L, bracket_R);
-				item->set_selection_bracket_filenames("ui/brackets/bracket_1L.png", "ui/brackets/bracket_1R.png");
-				menu_items.addItem(item);
-			}
-			else if (attributes[i][j] == "controls_menu_item") {
-				MenuItem *item = DBG_NEW MenuItem();
-				std::pair<std::string, std::string> text_item_data = FileManager::string_to_pair(contents[i][j], ",");
-				item->set_text(text_item_data.first);
-				item->set_selection_action_key(SELECTION_KEY_SET_CONTROL_INPUT);
-				item->set_controls_action_key(text_item_data.second);
-				menu_items.addItem(item);
-			}
-			else if (attributes[i][j] == "font") {
-				std::pair<std::string, std::string> font_pair = FileManager::string_to_pair(contents[i][j], ",");
-				std::string filename = "resources/fonts/" + font_pair.first + ".ttf";
-				this->font_filename = font_pair.first;
-				this->font_size = ::atoi(font_pair.second.c_str());
-				font = al_load_font(filename.c_str(), ::atoi(font_pair.second.c_str()), NULL);
-			}
-			else if (attributes[i][j] == "color") {
-				color_str = contents[i][j];
-			}
-			else if (attributes[i][j] == "align") {
-				align = contents[i][j];
-			}
-			else if (attributes[i][j] == "selection_style") {
-				selection_style = contents[i][j];
-			}
-			else if (attributes[i][j] == "animation") {
-				//TODO: replace animation with "transformation" or something that will make it clear that a given element is selected
-				//TODO
-				//animation_types.push_back(contents[i][j]);
-				/*
-				const int contents_size = contents[i].size();
-				for (int k = 0; k < contents_size; k++) {
-					//animation_types.push_back(contents[i][k]);
-				}
-				*/
-			}
-			else if (attributes[i][j] == "axis") {
-				axis = ::atoi(contents[i][j].c_str());
-			}
-			else if (attributes[i][j] == "position") {
-				std::pair<std::string, std::string> pos_pair = FileManager::string_to_pair(contents[i][j], ",");
-				position[0] = ::atoi(pos_pair.first.c_str());
-				position[1] = ::atoi(pos_pair.second.c_str());
-				x_pos = ::atoi(pos_pair.first.c_str());
-				y_pos = ::atoi(pos_pair.second.c_str());
-			}
-		}
-	}
-	set_menu_items();
-	set_animations();
-}
-
 void MenuManager::load_xml_content(std::string menu_key)
 {
 	this->menu_key = menu_key;
@@ -162,9 +70,6 @@ void MenuManager::unload_content()
 
 void MenuManager::update()
 {
-	//for (int i = 0; i < menu_items.size(); i++) {
-		//TODO: update as necessary
-	//}
 }
 
 void MenuManager::set_keyboard_mappable_input(int keycode)
@@ -264,7 +169,6 @@ const int MenuManager::mouse_selected_index(float x_pos, float y_pos, float x_of
 const int MenuManager::mouse_selected_options_direction_index(float x_pos, float y_pos, float x_off, float y_off, float back_width, float back_height)
 {
 	if(!is_selecting_options()) return -1;
-	//std::pair<float, float> mouse_pos(x_pos - x_off - position[0], y_pos - y_off - position[1]);
 	std::pair<float, float> mouse_pos(x_pos, y_pos);
 	std::pair<float, float> left_bracket_pos = menu_items.getItem(selected_index)->get_left_bracket_position(x_off, y_off, back_width, back_height);
 	std::pair<float, float> right_bracket_pos = menu_items.getItem(selected_index)->get_right_bracket_position(x_off, y_off, back_width, back_height);

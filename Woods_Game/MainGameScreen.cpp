@@ -13,6 +13,16 @@ void controller_mappable_input(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle
 	input_screen.call_controller_mappable_input(ev, toggle);
 }
 
+void cancel_mappable_input_keyboard(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	GameScreen& input_screen = screen.screen_receiving_input();
+	input_screen.stop_taking_mappable_input_keyboard();
+}
+
+void cancel_mappable_input_controller(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	GameScreen& input_screen = screen.screen_receiving_input();
+	input_screen.stop_taking_mappable_input_controller();
+}
+
 void move_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	screen.set_input(INPUT_UP, toggle);
 }
@@ -372,15 +382,18 @@ void MainGameScreen::unset_mappable_controls()
 
 void MainGameScreen::set_mappable_input_list()
 {
-	std::vector<int> keyboard_mappable_nums = Controls::keyboard_mappable_nums();
+	const std::vector<int> keyboard_mappable_nums = Controls::keyboard_mappable_nums();
 	// set remappable controls
 	for (int keycode : keyboard_mappable_nums) {
 		control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, keycode), &keyboard_mappable_input);
 	}
-	std::vector<int> controller_mappable_nums = Controls::controller_mappable_nums();
+	control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &cancel_mappable_input_controller);
+	const std::vector<int> controller_mappable_nums = Controls::controller_mappable_nums();
 	for (int keycode : controller_mappable_nums) {
 		control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, keycode), &controller_mappable_input);
 	}
+	//TODO: why doesn't this work? (probably have something else in that spot)
+	//control_map[TAKING_MAPPABLE_INPUT].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &cancel_mappable_input_keyboard);
 }
 
 void MainGameScreen::map_keyboard_control_action(int game_mode, std::string action_key, controlFunc action_func)
@@ -409,6 +422,24 @@ void MainGameScreen::unmap_controller_control_action(int game_mode, std::string 
 	auto it = control_map[game_mode].find(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, input_num));
 	if (it == control_map[game_mode].end()) return;
 	control_map[game_mode].erase(it);
+}
+
+void MainGameScreen::stop_taking_mappable_input_keyboard()
+{
+	switch (get_game_mode()) {
+	case MAIN_GAME_PAUSED:
+		pause_screen.stop_taking_mappable_input_keyboard();
+		break;
+	}
+}
+
+void MainGameScreen::stop_taking_mappable_input_controller()
+{
+	switch (get_game_mode()) {
+	case MAIN_GAME_PAUSED:
+		pause_screen.stop_taking_mappable_input_controller();
+		break;
+	}
 }
 
 void MainGameScreen::set_input_map()
@@ -982,5 +1013,4 @@ void MainGameScreen::call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle)
 		pause_screen.call_keyboard_mappable_input(ev, toggle);
 		break;
 	}
-	//TODO: if not paused, use whatever action the key is mapped to, if any
 }

@@ -159,8 +159,7 @@ void PauseScreen::cancel_menu()
 	case PAUSE_CONTROLS_MENU_CONTROLLER:
 		menu_key = PAUSE_CONTROLS_MENU;
 		break;
-	}
-	
+	}	
 }
 
 void PauseScreen::menu_up()
@@ -209,25 +208,34 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 			if (style_string == Configurations::SCREEN_STYLE_FULLSCREEN) {
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, true);
-				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
-				
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, false);
+				this->config->set_screen_res_x(disp_data.width);
+				this->config->set_screen_res_y(disp_data.height);
 			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
 				ALLEGRO_DISPLAY_MODE   disp_data;
 				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
-				al_resize_display(al_get_current_display(), disp_data.width, disp_data.height);
-			}
-			else if (style_string == Configurations::SCREEN_STYLE_WINDOWED) {
+				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, true);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_MAXIMIZED, true);
+				this->config->set_screen_res_x(disp_data.width);
+				this->config->set_screen_res_y(disp_data.height);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, false);
+			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED) {
+				ALLEGRO_DISPLAY_MODE   disp_data;
+				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 				const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
 				std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
 				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
+				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
 				al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
+				this->config->set_screen_res_x(::atoi(res_parts.first.c_str()));
+				this->config->set_screen_res_y(::atoi(res_parts.second.c_str()));
 			}
 			this->config->set_screen_mode(style_string);
 			this->save_configurations();
-			//TODO: set screen styles properly
 		}
 		current_menu_manager().confirm_option_select();
 	}
@@ -298,4 +306,18 @@ bool PauseScreen::taking_mappable_input()
 {
 	return (this->menu_key == PAUSE_CONTROLS_MENU_KEYBOARD || this->menu_key == PAUSE_CONTROLS_MENU_CONTROLLER) 
 		&& this->current_menu_manager().is_selecting_input();
+}
+
+void PauseScreen::stop_taking_mappable_input_keyboard()
+{
+	if (taking_mappable_input() && this->menu_key == PAUSE_CONTROLS_MENU_KEYBOARD) {
+		this->current_menu_manager().set_selecting_input(false);
+	}
+}
+
+void PauseScreen::stop_taking_mappable_input_controller()
+{
+	if (taking_mappable_input() && this->menu_key == PAUSE_CONTROLS_MENU_CONTROLLER) {
+		this->current_menu_manager().set_selecting_input(false);
+	}
 }

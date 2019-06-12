@@ -37,7 +37,6 @@ public:
 	const static std::vector<int> controller_mappable_nums();
 	Controls();
 	~Controls();
-	void load_content(std::vector<std::vector<std::string>> attributes, std::vector<std::vector<std::string>> contents);
 	void clear();
 	//void set_controls_key();
 	// mapping methods
