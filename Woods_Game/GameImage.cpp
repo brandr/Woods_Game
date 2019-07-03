@@ -142,8 +142,13 @@ void GameImage::unload_content()
 void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
 {
 	ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_current_image(this);
-	if (draw_bitmap && rect.x + x_offset < al_get_display_width(display) && rect.right() + x_offset > 0 && 
-		rect.y + y_offset < al_get_display_height(display) && rect.bottom() + y_offset > 0) {
+	const int image_width = std::max(this->spritesheet_frame_width.value(), (int) this->get_width());
+	const int image_height = std::max(this->spritesheet_frame_height.value(), (int) this->get_height());
+	if (draw_bitmap 
+		&& rect.x + x_offset < al_get_display_width(display) 
+		&& rect.x + image_width + x_offset >= 0 
+		&& rect.y + y_offset < al_get_display_height(display) 
+		&& rect.y + image_height + y_offset >= 0) {
 		al_draw_bitmap(draw_bitmap, rect.x + x_offset, rect.y + y_offset, 0);
 		int size = additional_image_layer_data.size();
 		for (int i = 0; i < size; i++) {
@@ -309,6 +314,19 @@ float GameImage::get_height()
 bool GameImage::contains_point(int x, int y)
 {
 	return x >= this->rect.x && y >= this->rect.y && x < this->get_x() + this->rect.width && y < this->rect.y + this->rect.height;
+}
+
+const int GameImage::calculate_direction(GameImage * other)
+{
+	const std::pair<int, int> pos_1 = this->get_center(), pos_2 = other->get_center();
+	const int x_dist = std::abs(pos_1.first - pos_2.first), 
+		y_dist = std::abs(pos_1.second - pos_2.second);
+	if (x_dist > y_dist) {
+		return pos_1.first > pos_2.first ? DIR_LEFT : DIR_RIGHT;
+	} else {
+		return pos_1.second > pos_2.second ? DIR_UP : DIR_DOWN;
+	}
+	return DIR_NEUTRAL;
 }
 
 bool GameImage::intersects_area(Rect area)

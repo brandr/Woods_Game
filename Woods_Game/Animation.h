@@ -1,5 +1,6 @@
 #ifndef ANIMATION_H
 #define ANIMATION_H
+
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "utility"             // for pair
 #include "xstring"             // for string

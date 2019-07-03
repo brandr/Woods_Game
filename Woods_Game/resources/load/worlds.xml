@@ -25,12 +25,46 @@
                 		<Member Name="animation_frame_height">5</Member>
                			<Member Name="animation_frame_duration">1</Member>
             		</Class>
+            		<Class Type="AnimationData" Version="1">
+                		<Member Name="animation_key">walking</Member>
+                		<Member Name="animation_frame_width">2</Member>
+                		<Member Name="animation_frame_height">5</Member>
+                		<Member Name="animation_frame_duration">8</Member>
+            		</Class>
         		</Collection>
+        		<Member Name="base_walk_speed">1.0</Member>
         		<Member Name="start_level_key">start_neighborhood</Member>
         		<Member Name="default_spawn_level_key">stranger_house</Member>
         		<Member Name="start_spawn_key">stranger_spawner_1</Member>
         		<Member Name="default_spawn_key">stranger_spawner_house</Member>
         		<Member Name="default_dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
+			</Class>
+			<Class Type="NPC" Version="1">
+				<Member Name="animation_spritesheet_key">stranger_spritesheet_2</Member>
+				<Member Name="center_offset_x">32</Member>
+				<Member Name="center_offset_y">89</Member>
+				<Member Name="spritesheet_frame_width">64</Member>
+				<Member Name="spritesheet_frame_height">96</Member>
+				<Collection Name="animation_data">
+            		<Class Type="AnimationData" Version="1">
+                		<Member Name="animation_key">neutral</Member>
+                		<Member Name="animation_frame_width">1</Member>
+                		<Member Name="animation_frame_height">5</Member>
+               			<Member Name="animation_frame_duration">1</Member>
+            		</Class>
+            		<Class Type="AnimationData" Version="1">
+                		<Member Name="animation_key">walking</Member>
+                		<Member Name="animation_frame_width">2</Member>
+                		<Member Name="animation_frame_height">5</Member>
+                		<Member Name="animation_frame_duration">8</Member>
+            		</Class>
+        		</Collection>
+        		<Member Name="base_walk_speed">1.0</Member>
+        		<Member Name="start_level_key">start_neighborhood</Member>
+        		<Member Name="default_spawn_level_key">stranger_house</Member>
+        		<Member Name="start_spawn_key">stranger_spawner_2</Member>
+        		<Member Name="default_spawn_key">stranger_spawner_2</Member>
+        		<Member Name="default_dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
 			</Class>
 		</Collection>
 	</SerializableClass>

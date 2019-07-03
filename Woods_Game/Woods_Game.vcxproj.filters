@@ -341,6 +341,9 @@
     <ClInclude Include="LevelGenData.h">
       <Filter>World\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AIBeing.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -534,6 +537,9 @@
     </ClCompile>
     <ClCompile Include="MathUtilities.cpp">
       <Filter>Utilities\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AIBeing.cpp">
+      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

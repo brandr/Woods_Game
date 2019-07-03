@@ -27,8 +27,9 @@ Player::Player()
 	Register("additional_mask_data", &additional_mask_data);
 	Register("inventory", &inventory);
 	Register("spawn_key", &spawn_key);
-	direction = DIR_NEUTRAL;
-	anim_state = ANIM_NEUTRAL;
+	this->direction = DIR_NEUTRAL;
+	this->anim_state = ANIM_NEUTRAL;
+	this->solid = true; // the player counts as solid because NPCs will not be able to walk through
 }
 
 Player::~Player()
@@ -97,7 +98,6 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 	}
 }
 
-//TODO: may want to update direction if necessary for animations
 void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (counters[BOUNCE]) return;
@@ -126,8 +126,7 @@ void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Til
 	if (check_move(MOVE_DOWN) && !check_move(MOVE_UP)) {
 		yvel = get_walk_speed();
 		direction = DIR_DOWN, anim_state = ANIM_STATE_WALKING;
-	}
-	else if (check_move(MOVE_UP) && !check_move(MOVE_DOWN)) {
+	} else if (check_move(MOVE_UP) && !check_move(MOVE_DOWN)) {
 		yvel = -1 * get_walk_speed();
 		direction = DIR_UP, anim_state = ANIM_STATE_WALKING;
 	}

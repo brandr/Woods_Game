@@ -284,6 +284,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIBeing.h" />
     <ClInclude Include="Animation.h" />
     <ClInclude Include="Being.h" />
     <ClInclude Include="Binding.h" />
@@ -351,6 +352,7 @@
     <ClInclude Include="XMLSerialization.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AIBeing.cpp" />
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="Being.cpp" />
     <ClCompile Include="CalendarScreen.cpp" />

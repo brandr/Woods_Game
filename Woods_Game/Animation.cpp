@@ -55,13 +55,6 @@ void Animation::unload_content()
 
 void Animation::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offest)
 {
-	/*
-	ALLEGRO_BITMAP* bitmap = ImageLoader::get_instance().get_current_image(this);
-	//TODO: check against screen space
-	if (bitmap && rect.x + x_offset < DEFAULT_SCREEN_WIDTH && rect.right() + x_offset > 0 && rect.y + y_offset < DEFAULT_SCREEN_HEIGHT && rect.bottom() + y_offset > 0) {
-		al_draw_bitmap(bitmap, rect.x + x_offset, rect.y + y_offset, 0);
-	}
-	*/
 }
 
 void Animation::update()
@@ -90,8 +83,6 @@ std::string Animation::get_filename()
 
 Rect Animation::get_current_rect()
 {
-	//TODO
-	//std::cout << "have frame dimensions: " << frame_dimensions.first << std::endl;
 	return Rect(current_frame.first*frame_dimensions.first, current_frame.second*frame_dimensions.second, frame_dimensions.first, frame_dimensions.second);
 }
 

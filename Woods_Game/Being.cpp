@@ -38,10 +38,6 @@ void Being::update(TileSet * tileset, std::vector<Entity*> interactables, std::v
 
 void Being::animation_update(const int game_mode)
 {
-	//auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_to_string(subsection)));
-	//if (it != image_map.end()) return;
-	//.find(std::pair<int, int>(game_mode, direction)
-	//TODO
 }
 
 void Being::movement_update(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, const int game_mode) {
@@ -54,9 +50,6 @@ void Being::movement_update(TileSet * tileset, std::vector<Entity*> interactable
 		case(TOP_DOWN):
 			movement_update_top_down(tileset, interactables, nearby_tiles);
 			break;
-		//case(SIDE_SCROLLING):
-		//	movement_update_side_scrolling(interactables, nearby_tiles);
-		//	break;
 	}
 }
 
@@ -135,44 +128,65 @@ void Being::movement_update_top_down(TileSet * tileset, std::vector<Entity*> int
 		xvel *= speed_multiplier, yvel *= speed_multiplier;
 	}
 	float xoff = xvel, yoff = yvel;
-	Rect* check_rect = new Rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
-	if (!empty_at(*check_rect, interactables)) {
+	// this will check for blocked tiles
+	this->adjust_movement(interactables, this->xvel, this->yvel, true);
+	rect.x += xvel;
+	rect.y += yvel;
+}
+
+void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+{
+	//TEMP
+	if (this->test_rect_bitmap == NULL) {
+		this->test_rect_bitmap = al_create_bitmap(this->get_width(), this->get_height());
+		al_set_target_bitmap(this->test_rect_bitmap);
+		al_clear_to_color(al_map_rgba(0, 0, 100, 100));
+		al_set_target_bitmap(al_get_backbuffer(display));
+	}
+	al_draw_bitmap(this->test_rect_bitmap, this->get_x() + x_offset, this->get_y() + y_offset, 0);
+	//TEMP
+	Entity::draw(display, x_offset, y_offset);
+}
+
+const bool Being::adjust_movement(std::vector<Entity*> interactables, float xoff, float yoff, const bool snap) {
+	bool blocked = false;
+	Rect check_rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
+	if (!empty_at(check_rect, interactables)) {
 		float mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
-		while (!precise_empty_at(interactables, xoff, yoff) && mag > 1.0f) {
-			float temp_mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
-			xoff = (xvel / temp_mag)*mag, yoff = (yvel / temp_mag)*mag;
-			mag -= 1.0f;
+		if (snap) {
+			while (!precise_empty_at(interactables, xoff, yoff) && mag > 1.0f) {
+				float temp_mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
+				xoff = (this->xvel / temp_mag)*mag, yoff = (this->yvel / temp_mag)*mag;
+				mag -= 1.0f;
+			}
 		}
-		if (mag <= 1.0f) {
+		if (mag <= 1.0f || !snap) {
 			float angle = M_PI / 12.0f;
-			float xoff1 = xvel, yoff1 = yvel, xoff2 = xvel, yoff2 = yvel;
-			while (!precise_empty_at(interactables, xoff1, yoff1) && !precise_empty_at(interactables, xoff2, yoff2) && angle < 5.0*M_PI/12.0f){ //5.0f*M_PI / 12.0f) {
+			float xoff1 = xoff, yoff1 = yoff, xoff2 = xoff, yoff2 = yoff;
+			while (!precise_empty_at(interactables, xoff1, yoff1)
+				&& !precise_empty_at(interactables, xoff2, yoff2)
+				&& angle < 5.0*M_PI / 12.0f) {
 				xoff1 = xvel * std::cos(angle) - yvel * std::sin(angle), yoff1 = xvel * std::sin(angle) + yvel * std::cos(angle);
 				xoff2 = xvel * std::cos(-1.0f*angle) - yvel * std::sin(-1.0f*angle), yoff2 = xvel * std::sin(-1.0f*angle) + yvel * std::cos(-1.0f*angle);
 				float mag1 = std::pow(std::pow(xoff1, 2.0) + std::pow(yoff1, 2), 0.5), mag2 = std::pow(std::pow(xoff2, 2.0) + std::pow(yoff2, 2), 0.5);
 				if (precise_empty_at(interactables, xoff1, yoff1)) {
 					xvel = xoff1, yvel = yoff1;
 					break;
-				}
-				else if (precise_empty_at(interactables, xoff2, yoff2)) {
+				} else if (precise_empty_at(interactables, xoff2, yoff2)) {
 					xvel = xoff2, yvel = yoff2;
 					break;
 				}
 				angle += M_PI / 12.0f;
 			}
 			if (!precise_empty_at(interactables, xvel, yvel)) {
-				xvel = 0, yvel = 0;
+				this->xvel = 0, this->yvel = 0;
+				blocked = true;
 			}
-		}
-		else
-		{
-			xvel = xoff, yvel = yoff;
+		} else {
+			this->xvel = xoff, this->yvel = yoff;
 		}
 	}
-	delete check_rect;
-	check_rect = NULL;
-	rect.x += xvel;
-	rect.y += yvel;
+	return blocked;
 }
 
 void Being::collision_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, int game_mode)
@@ -201,14 +215,14 @@ void Being::collide_with_entity(Entity * e)
 	if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_DAMAGE)) {
 		if (counters[BOUNCE] > 0) return;
 		if (counters[SWING] > 0) return;
-		//TODO: once health is implemented, apply damage as necessary. (will also need to figure out invincibility frames)
+		//TODO: once health/stamina is implemented, apply damage as necessary. (will also need to figure out invincibility frames)
 		std::pair<float, float> p1 = get_rect_center();
 		std::pair<float, float> p2 = e->get_rect_center();
 		std::pair<float, float> bounce_vec = std::pair<float, float>(p1.first - p2.first, p1.second - p2.second);
 		int knockback = std::max(1, e->get_entity_attribute(E_ATTR_KNOCKBACK));
 		float mag = std::pow(std::pow(bounce_vec.first, 2.0) + std::pow(bounce_vec.second, 2), 0.5);
 		xvel = (bounce_vec.first / mag)*knockback, yvel = (bounce_vec.second / mag)*knockback;
-		counters[BOUNCE] = knockback*2; //temp	
+		counters[BOUNCE] = knockback*2;
 	}
 }
 
@@ -228,7 +242,7 @@ const bool Being::on_ground(std::vector<Entity*> interactables) {
 
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
-		if (e->is_solid() && e->intersects_area(r)) {
+		if (e != this && e->is_solid() && e->intersects_area(r)) {
 			return false;
 		}
 	}

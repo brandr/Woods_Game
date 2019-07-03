@@ -87,6 +87,8 @@ void Entity::load_content_from_attributes()
 	GameImage::load_content_from_attributes();
 	this->rect.x = this->entity_starting_pos_x.value();
 	this->rect.y = this->entity_starting_pos_y.value();
+	this->rect.width = std::max((int) this->rect.width, this->spritesheet_frame_width.value());
+	this->rect.height = std::max((int) this->rect.height, this->spritesheet_frame_height.value());
 }
 
 void Entity::unload_content()

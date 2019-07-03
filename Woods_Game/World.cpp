@@ -93,7 +93,6 @@ void World::load_npcs()
 		Level * level = this->get_level_with_key(level_key);
 		if (level && level->spawner_for_key(spawner_key)) {
 			level->add_npc_at_spawner(npc, spawner_key);
-			break;
 		}
 	}
 }

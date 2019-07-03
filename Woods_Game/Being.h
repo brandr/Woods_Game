@@ -9,6 +9,9 @@
 class Being: public Entity
 {
 protected:
+	ALLEGRO_BITMAP * test_rect_bitmap; //TEMP
+
+	xmls::xFloat base_walk_speed;
 	float xvel = 0.0f;
 	float yvel = 0.0f;
 	float gravity = 2.0f;
@@ -16,9 +19,10 @@ protected:
 	std::vector<Entity*> colliding_entities;
 
 	void movement_update(TileSet * tileset, std::vector<Entity*>, std::vector<Tile*>, const int);
-	//void movement_update_side_scrolling(std::vector<Entity*>, std::vector<Tile*>);
 	void movement_update_top_down(TileSet * tileset, std::vector<Entity*>, std::vector<Tile*>);
+	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
 	void collision_update(std::vector<Entity*>, std::vector<Tile*>, int);
+	const bool adjust_movement(std::vector<Entity*> interactables, float xoff, float yoff, const bool snap);
 	virtual void collide_with_entity(Entity* e);
 	const bool on_ground(std::vector<Entity*>);
 	const bool empty_at(Rect, std::vector<Entity*>);

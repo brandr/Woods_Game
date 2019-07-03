@@ -84,6 +84,7 @@ protected:
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
+	virtual const int calculate_direction(GameImage * other);
 public:
 	GameImage(std::string);
 	GameImage();
@@ -123,7 +124,7 @@ public:
 	virtual bool contains_point(int, int);
 	virtual bool intersects_area(Rect);
 	virtual bool outside_level(std::pair<int, int>);
-	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);\
+	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);
 };
 
 

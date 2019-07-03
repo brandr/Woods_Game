@@ -27,7 +27,6 @@ class Player :
 	public Being, public xmls::Serializable
 {
 private:
-	xmls::xFloat base_walk_speed;
 	xmls::xFloat jump_speed;
 	xmls::xString spawn_key;
 	std::map<int, bool> move_map;

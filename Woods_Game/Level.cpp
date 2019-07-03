@@ -1039,6 +1039,7 @@ void Level::save_to_xml()
 //TODO: how to unload level to avoid memory leak?
 void Level::unload_content()
 {
+	//FIXME: Figure out why there's a memory leak here
 	for (int i = 0; i < tile_rows.size(); i++) {
 		for (int j = 0; j < tile_rows.getItem(i)->get_size(); j++) {
 			this->get_tile(j, i)->unload_content();

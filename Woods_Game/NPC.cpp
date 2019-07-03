@@ -13,16 +13,27 @@ NPC::NPC()
 	Register("spritesheet_frame_height", &spritesheet_frame_height);
 	Register("animation_data", &animation_data);
 	Register("additional_mask_data", &additional_mask_data);
+	Register("base_walk_speed", &base_walk_speed);
 	Register("start_spawn_key", &start_spawn_key);
 	Register("default_spawn_key", &default_spawn_key);
 	Register("default_dialog_text", &default_dialog_text);
-	direction = DIR_NEUTRAL;
-	anim_state = ANIM_NEUTRAL;
-	solid = true;
 }
 
 NPC::~NPC()
 {
+}
+
+void NPC::update(TileSet * tileset, 
+	std::vector<Entity*> interactables,
+	std::vector<Tile*> nearby_tiles, 
+	const std::pair<int, int> level_dimensions, const int game_mode)
+{
+	AIBeing::update(tileset, interactables, nearby_tiles, level_dimensions, game_mode);
+}
+
+void NPC::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+{
+	AIBeing::draw(display, x_offset, y_offset);
 }
 
 const std::string NPC::get_start_level_key()
@@ -66,6 +77,10 @@ const bool NPC::interact_action(Player * player)
 	//TODO: take into account time of day, previous interactions, weather, etc.
 	Dialog * dialog = this->choose_dialog(player);
 	if (dialog) {
+		// turn to face the player
+		this->direction = this->calculate_direction(player);
+		GameImage::update();
+		// TODO: probably need to make them hold still for a second after talking
 		player->set_open_dialog(dialog);
 		return true;
 	}
