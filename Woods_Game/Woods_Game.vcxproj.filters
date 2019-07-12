@@ -146,6 +146,15 @@
     <Filter Include="Time\Source Files">
       <UniqueIdentifier>{a3a6e163-d804-4d08-9e29-be58a786ba8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Pathing">
+      <UniqueIdentifier>{6f0cd2f7-ec1d-4c27-9804-358882fc1b14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pathing\Header Files">
+      <UniqueIdentifier>{c29f1c18-52b1-4684-b4a7-389b01f93dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Pathing\Source Files">
+      <UniqueIdentifier>{6df0917c-fbbe-4ddd-84ef-0b86e752975f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -344,6 +353,12 @@
     <ClInclude Include="AIBeing.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PathNode.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DjikstraPath.h">
+      <Filter>Pathing\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -540,6 +555,12 @@
     </ClCompile>
     <ClCompile Include="AIBeing.cpp">
       <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PathNode.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DjikstraPath.cpp">
+      <Filter>Pathing\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -209,6 +209,7 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 	}
 	current_level->update(game_mode);
 	this->time_update();
+	this->npc_update();
 }
 
 const std::string GameImageManager::time_display_string()
@@ -234,6 +235,11 @@ void GameImageManager::time_update()
 {
 	this->current_global_time->update();
 	InteractActionManager::get_instance().update_current_time(this->current_global_time);
+}
+
+void GameImageManager::npc_update()
+{
+	this->world.npc_update();
 }
 
 void GameImageManager::update_new_day()

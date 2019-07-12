@@ -78,6 +78,7 @@ public:
 	const std::string time_display_string();
 	const std::string date_display_string();
 	void time_update();
+	void npc_update();
 	void update_new_day();
 	GlobalTime * get_current_global_time();
 	const int get_current_minutes();

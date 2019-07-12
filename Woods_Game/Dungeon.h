@@ -2,6 +2,7 @@
 #define DUNGEON_H
 
 #include "Level.h"
+#include "PathNode.h"
 #include "vector"  // for vector
 #include <memory>  // for allocator
 #include "ImageLoader.h"
@@ -27,6 +28,8 @@ public:
 	Level* level_at(int, int);
 	Level* level_with_name(std::string name);
 	Level* find_level_with_spawn_key(const std::string spawn_key);
+	Level* find_level_with_path_node_key(const std::string node_key);
+	PathNode * find_path_node_with_key(const std::string node_key);
 	void set_dungeon_name(std::string name);
 	std::string get_dungeon_name();
 	std::vector<Level*> get_level_list();

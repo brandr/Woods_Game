@@ -506,6 +506,7 @@ Level::Level()
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
+	this->Register("PathNodes", &(this->path_nodes));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 }
@@ -521,6 +522,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
+	this->Register("PathNodes", &(this->path_nodes));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 	this->map_filename = level_filename;
@@ -539,6 +541,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename,  std::str
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
+	this->Register("PathNodes", &(this->path_nodes));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 	this->map_filename = level_filename;
@@ -565,6 +568,7 @@ Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int g
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
+	this->Register("PathNodes", &(this->path_nodes));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 	this->map_filename = filename;
@@ -589,6 +593,7 @@ Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)
 	this->Register("TileRows", &(this->tile_rows));
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
+	this->Register("PathNodes", &(this->path_nodes));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 	this->grid_x = grid_x;
@@ -623,6 +628,7 @@ void Level::load_from_xml()
 	this->initialize_entity_groups();
 	this->initialize_tiled_images();
 	this->initialize_spawners();
+	this->initialize_path_nodes();
 }
 
 void Level::reload_from_xml(Level &copy_level)
@@ -925,6 +931,20 @@ void Level::initialize_spawners()
 	}
 }
 
+void Level::initialize_path_nodes()
+{
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode *n = this->path_nodes.getItem(i);
+		Rect *subsection = n->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_path_node_sheet_filename(n->get_entity_data_index());
+		std::pair<int, int> position(n->get_entity_starting_pos_x(), n->get_entity_starting_pos_y());
+		n->set_content(filename, subsection, position);
+		n->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
+	}
+}
+
 void Level::clear_level()
 {
 	this->tile_rows.Clear();
@@ -1058,7 +1078,7 @@ void Level::update(const int game_mode)
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
 			std::vector<Entity*> interactables = get_interactables(beings[i]);
 			std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
-			beings[i]->update(this->tileset, interactables, tiles, dimensions, game_mode);
+			beings[i]->update(this, game_mode);
 		}
 		else {
 			// TODO: better error handling
@@ -1181,6 +1201,11 @@ Being * Level::get_player()
 
 std::vector<Entity*> Level::get_interactables(Entity *entity)
 {
+	return this->get_interactables(entity, false);
+}
+
+std::vector<Entity*> Level::get_interactables(Entity * entity, const bool ignore_moving_obstacles)
+{
 	std::vector<Entity*> interactables;
 	int size = this->entity_groups.size();
 	for (int i = 0; i < size; i++) {
@@ -1189,12 +1214,14 @@ std::vector<Entity*> Level::get_interactables(Entity *entity)
 			interactables.push_back(e);
 		}
 	}
-	if (entity->get_type() != PLAYER) {
-		interactables.push_back(this->get_player());
-	}
-	for (Being * b : this->beings) {
-		if (b != entity) {
-			interactables.push_back(b);
+	if (!ignore_moving_obstacles) {
+		if (entity->get_type() != PLAYER) {
+			interactables.push_back(this->get_player());
+		}
+		for (Being * b : this->beings) {
+			if (b && b != entity) {
+				interactables.push_back(b);
+			}
 		}
 	}
 	return interactables;
@@ -1278,6 +1305,19 @@ void Level::remove_spawner(const std::pair<int, int> pos)
 	}
 }
 
+void Level::remove_path_node(const std::pair<int, int> pos)
+{
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode *n = this->path_nodes.getItem(i);
+		if (n != NULL && n->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			this->path_nodes.removeItem(i);
+			n->unload_content();
+			break;
+		}
+	}
+}
+
 void Level::replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	Tile * replacing_tile = new Tile(this->tileset, pos.first, pos.second, 
@@ -1356,6 +1396,48 @@ Spawner * Level::create_spawner(std::string filename_start, int index, std::pair
 	return spawner;
 }
 
+void Level::add_path_node(const int path_node_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos)
+{
+	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::string filename_start = this->tileset->get_tile_sheet_filename();
+	PathNode * n = this->create_path_node(filename_start, path_node_index, ss_pos, pixel_pos);
+	this->path_nodes.addItem(n);
+}
+
+PathNode * Level::create_path_node(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos)
+{
+	EntityData* node_data = tileset->get_path_node_data_by_index(index);
+	const std::string filename = filename_start + "/path_nodes/" + node_data->get_entity_data_key();
+	PathNode * node = new PathNode();
+	node->set_entity_data_index(index);
+	Rect * ss_offset_rect = new Rect(TILE_SIZE*ss_pos.first,
+		TILE_SIZE*ss_pos.second,
+		TILE_SIZE*(ss_pos.first + 1),
+		TILE_SIZE*(ss_pos.second + 1));
+	node->set_content(filename, ss_offset_rect, pos);
+	node->set_rect(pos.first, pos.second,
+		TILE_SIZE, TILE_SIZE);
+	node->set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	return node;
+}
+
+const bool Level::has_path_node_for_key(const std::string node_key)
+{
+	return this->find_path_node_with_key(node_key) != NULL;
+}
+
+PathNode * Level::find_path_node_with_key(const std::string node_key)
+{
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode * n = this->path_nodes.getItem(i);
+		if (n && n->get_node_id() == node_key) {
+			return n;
+		}
+	}
+	return NULL;
+}
+
 const bool Level::has_spawner_for_key(const std::string spawn_key)
 {
 	return this->spawner_for_key(spawn_key) != NULL;
@@ -1379,6 +1461,7 @@ void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
 	if (spawner) {
 		npc->set_starting_pos(spawner->get_x(), spawner->get_y());
 		npc->load_content_from_attributes();
+		npc->set_current_level_key(this->get_filename());
 		this->add_being(npc);
 	}
 }
@@ -1514,6 +1597,30 @@ Spawner * Level::spawner_at_tile_pos(const std::pair<int, int> pos)
 		}
 	}
 	return NULL;
+}
+PathNode * Level::path_node_at_tile_pos(const std::pair<int, int> pos)
+{
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode *n = this->path_nodes.getItem(i);
+		if (n != NULL && n->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			return n;
+		}
+	}
+	return NULL;
+}
+
+std::vector<PathNode*> Level::get_path_nodes()
+{
+	std::vector<PathNode*> nodes;
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode * node = this->path_nodes.getItem(i);
+		if (node) {
+			nodes.push_back(node);
+		}
+	}
+	return nodes;
 }
 
 std::string Level::get_dungeon_filename()
@@ -1691,8 +1798,27 @@ void Level::draw_spawners_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 		if (dx >= 0 && dy >= 0
 			&& dx < subsection.width
 			&& dy < subsection.height) {
-			ALLEGRO_BITMAP *spawner_bitmap = ImageLoader::get_instance().get_current_image(s);//s->get_bitmap();
+			ALLEGRO_BITMAP *spawner_bitmap = ImageLoader::get_instance().get_current_image(s);
 			al_draw_bitmap(spawner_bitmap, dx, dy, 0);
+		}
+	}
+	al_set_target_bitmap(display);
+}
+
+void Level::draw_path_nodes_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & subsection)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
+	const int size = this->path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		PathNode * n = this->path_nodes.getItem(i);
+		float dx = n->get_x() - subsection.x;
+		float dy = n->get_y() - subsection.y;
+		if (dx >= 0 && dy >= 0
+			&& dx < subsection.width
+			&& dy < subsection.height) {
+			ALLEGRO_BITMAP *node_bitmap = ImageLoader::get_instance().get_current_image(n);
+			al_draw_bitmap(node_bitmap, dx, dy, 0);
 		}
 	}
 	al_set_target_bitmap(display);

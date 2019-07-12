@@ -23,6 +23,7 @@ enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAU
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
 enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
 
+class Level;
 class Player :
 	public Being, public xmls::Serializable
 {
@@ -50,7 +51,7 @@ public:
 	virtual int get_type();
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
-	virtual void update(TileSet * tileset, std::vector<Entity*>, std::vector<Tile*>, std::pair<int,int>, int);
+	virtual void update(Level * level, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
 	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);

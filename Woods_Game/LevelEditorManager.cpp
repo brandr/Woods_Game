@@ -12,11 +12,10 @@ LevelEditorManager::LevelEditorManager(agui::Gui * guiInstance, ALLEGRO_DISPLAY 
 	this->level_edit_layout = new LevelEditorLayout(display);
 	this->tileset_edit_layout = new TilesetEditorLayout(display);
 
-	//TODO: how to handle keyboard input? editor gui? tabs?
 	// tabs
 	tabbed_pane.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 	main_layout.add(&tabbed_pane);
-	//main_layout.addKeyboardListener(&level_grid_keyboard_listener);
+
 	tabs[0].setText("Dungeon");
 	tabs[1].setText("Level");
 	tabs[2].setText("Tileset");
@@ -112,11 +111,14 @@ void LevelEditorManager::update_selected_level()
 	if (should_update) {
 		const int tileset_index = LevelEditorDataManager::get_instance().selected_level_tileset_index();
 		LevelEditorDataManager::get_instance().set_selected_tileset_index(tileset_index);
+		// level edit layout
 		this->level_edit_layout->load_selected_tileset_tiles();
 		this->level_edit_layout->load_selected_tileset_blocks();
 		this->level_edit_layout->load_selected_tileset_entity_groups();
 		this->level_edit_layout->load_selected_tileset_spawners();
+		this->level_edit_layout->load_selected_tileset_path_nodes();
 		this->level_edit_layout->load_selected_tileset_tiled_images();
+		// tileset layout
 		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
 		this->tileset_edit_layout->update_selected_tileset_fields();
 		this->tileset_edit_layout->load_selected_tileset_tiles();
@@ -192,11 +194,17 @@ void LevelEditorManager::update_selected_tileset()
 		this->load_selected_tileset_blocks();
 		this->load_selected_tileset_entity_groups();
 		this->load_selected_tileset_spawners();
+		this->load_selected_tileset_path_nodes();
+
 		this->tileset_edit_layout->update_selected_tileset_fields();
+
 		this->level_edit_layout->load_selected_tileset_tiles();
 		this->level_edit_layout->load_selected_tileset_blocks();
 		this->level_edit_layout->load_selected_tileset_entity_groups();
+		this->level_edit_layout->load_selected_tileset_spawners();
+		this->level_edit_layout->load_selected_tileset_path_nodes();
 		this->level_edit_layout->load_selected_tileset_tiled_images();
+
 		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
 		this->tileset_edit_layout->update_selected_tileset_fields();
 		this->tileset_edit_layout->load_selected_tileset_tiles();
@@ -265,6 +273,14 @@ void LevelEditorManager::load_selected_tileset_spawners()
 	this->level_edit_layout->load_selected_tileset_spawners();
 	//this->tileset_edit_layout->load_selected_tileset_spawners(); //TODO
 }
+
+void LevelEditorManager::load_selected_tileset_path_nodes()
+{
+	this->level_edit_layout->load_selected_tileset_path_nodes();
+	//this->tileset_edit_layout->load_selected_tileset_path_nodes(); //TODO
+}
+
+
 
 void LevelEditorManager::draw(ALLEGRO_DISPLAY * display)
 {

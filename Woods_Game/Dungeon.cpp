@@ -153,6 +153,29 @@ Level * Dungeon::find_level_with_spawn_key(const std::string spawn_key)
 	return NULL;
 }
 
+Level * Dungeon::find_level_with_path_node_key(const std::string node_key)
+{
+	for (Level * level : this->level_list) {
+		if (level->has_path_node_for_key(node_key))
+		{
+			return level;
+		}
+	}
+	return NULL;
+}
+
+PathNode * Dungeon::find_path_node_with_key(const std::string node_key)
+{
+	for (Level * level : this->level_list) {
+		PathNode * node = level->find_path_node_with_key(node_key);
+		if (node)
+		{
+			return node;
+		}
+	}
+	return NULL;
+}
+
 void Dungeon::set_dungeon_name(std::string name)
 {
 	this->dungeon_name = name;

@@ -4,35 +4,43 @@ Woods game todolist
 Prioritization
 ---------------------------------------------------
 
-Last updated 7/2/2019
+Last updated 7/11/2019
 
 totals don't include ongoing stuff 
 
-Total: 87-130 days (~ 3-5 months)
+Total: 103-160 days (~4-6 months, done by Feb 2020)
 
-1. NPC pathing (including between levels) and schedule
+1. NPC pathing between levels
 	(5-10 days)
-2. NPC decision making/dialogue (overlaps a lot with previous)
+2. AIBeing/NPC state decision making
+	(5-10 days)
+3. NPC schedule
+	(5-10 days)
+4. Quest/NPC triggers
+	(5-10 days)
+5. NPC dialogue calculation
+	(5-10 days)
+6. Cutscenes
 	(15-20 days)
-3. Animals/bugs
+7. Animals/bugs
 	(10-15 days)
-4. Cutscenes/quest triggers
-	(15-20 days)
-5. Inventory/item stuff (shovel?)
+8. Map
 	(5-10 days)
-6. Figure out how to force end of day (otherwise saving gets weird after midnight)
-	(1-5 days)
-7. Wake-up time (alarm clock?)
-	(1-5 days)
-8. Animation/image code stuff
+9. Inventory/item stuff (shovel?)
 	(5-10 days)
-9. Menu/control stuff
+10. Figure out how to force end of day (otherwise saving gets weird after midnight)
+	(1-5 days)
+11. Wake-up time (alarm clock?)
+	(1-5 days)
+12. Animation/image code stuff
 	(10-15 days)
-10. Encyclopedia
+13. Menu/control stuff
 	(10-15 days)
-11. Audio
+14. Encyclopedia
 	(10-15 days)
-12. Content!
+15. Audio
+	(10-15 days)
+16. Content!
 	(???)
 
 Ongoing tasks:
@@ -156,40 +164,30 @@ Make custom mouse cursor
 NPCs
 ---------------------------------------------------
 
-Consider implementing animals before NPCs since they should be simpler
-	- Animals probably won't travel between levels, and will be generated from templates, 
-		rather than than 1 to 1 serialized data <-> game object relationship
-
 NPC pathing
+	- when hitting a "next level" facing node, need to turn off pathing while we walk to the next level
+		* might need to serialize walk to/from direction
+		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
+		* make sure next level traveling behaivor also handles going through doors into houses
+	- make NPCs stop and wait after being blocked before actually pathing
+		* this requires a larger state/timer system, so plan that out carefully
+		* refactor the "current dest node key" logic to something like "do we have a destination we want to walk to right now but don't know the way?"
+			# waiting should always block pathing so we nevr get slowdown from constant recalculation
+	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
+		* need to figure out how a typical case of the player talking to an NPC should work
+		* also need to treat people (the player and other NPCs, and maybe animals) differently from other interactables
+			# could have NPCs have different personality types/moods that determine their reaction to being blocked: go around, push past, stop, etc
+	- can probably modify the pathing algorithm a bit to make NPCs prefer trails and/or factor them into the "cost" formula
+		* cost could be 1.0 divided by the average of move speeds of the tiles
+		* could also make it so we generate some kind of serialized node objects along with trails in level gen, which then become primary destinations for NPCs
+			traveling through genned woods
 	- Set a debug launch argument to control whether test rect bitmaps appear
 		* Manage the bitmaps through ImageLoader
 		* instead of launch argument, could add console commands
-	- make NPCs stop and wait after being blocked before actually pathing
-		* this requires a larger timer system, so plan that out carefully
-	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
-		* need to figure out how a typical case of the player talking to an NPC should work
-		* also need to treat people (the player and other NPCs) differently from other obstacles
-			# could have NPCs have different personality types/moods that determine their reaction to being blocked: go around, push past, stop, etc
-	- can probably modify the pathing algorithm a bit to make NPCs prefer trails and/or factor them into the "cost" formula
-		* would probably need to see all the tiles in the level though
-		* alternately, could make it so we generate some kind of serialized node objects along with trails in level gen, which then become primary destinations for NPCs
-			traveling through genned woods
-	- How to manage NPCs moving between levels? (currently they are stored in Level.beings, might want to refactor to game image manager or some smaller manager class)
-
-Need assets
-	- Dialog portrait image
 
 Probably want to add a uniquely identifying key to serialized NPCs
 
-IDEA: Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
-	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
-	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
-	- allow these conditions to be "anded" together and give them ordinals so calculation is either
-		* might be able to do something with | and flags corresponding to the orders
-	- weight some options to be more likely than others using integer values
-	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
-
-Make NPCs walk around outside programatically and have varying habits throughout the day.
+Make NPCs walk around outside programatically and have varying habits throughout the day
 	- there should definitely be a per-frame update for NPCs, but could also have "update clocks" that go off every so often
 	- need to figure out how to process NPC movements when they're not on the same Level as the player
 		* maybe get less fine-grain and just process what level they're in at any given time based on time of day,
@@ -200,8 +198,22 @@ Add NPC schedules/quest triggers
 		# can also just choose to keep the money
 	* these quest triggers need to tie into time travel (think of majora's mask)
 
+Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
+	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
+	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
+	- allow these conditions to be "anded" together and give them ordinals so calculation is either
+		* might be able to do something with | and flags corresponding to the orders
+	- weight some options to be more likely than others using integer values
+	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
+
+Consider implementing animals before fully implementing NPCs since they should be simpler
+	- Animals probably won't travel between levels, and will be generated from templates, 
+		rather than than 1 to 1 serialized data <-> game object relationship
+
 Experiment with some basic cutscenes
 	* could have one with Renaldo preaching about the neighorhood watch as a test
+
+Dialog portrait image
 
 ---------------------------------------------------
 Animals
@@ -213,6 +225,17 @@ Add animals
 	* maybe some animal types are set to only appear n days into the game
 	* add bugs too (possibly first, they might be easier and make more sense to interact with)
 		# some bugs might be under rocks
+
+---------------------------------------------------
+Map
+---------------------------------------------------
+
+Since the game is largely about exploration, the map should start out blank and get filled in by exploring.
+
+Could be like metroid and have borders around levels but not the 1x1 squares that make up levels
+
+Could generate these images on level gen by getting full-sized images in the same way we draw the level for the editor, then scaling them down to a few pixels
+	* definitely want to delete these images afterwards because they'll take up a lot of space otherwise
 
 ---------------------------------------------------
 Inventory/items

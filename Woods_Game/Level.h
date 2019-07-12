@@ -13,6 +13,7 @@
 #include "EntityGroup.h"
 #include "LevelGenData.h"
 #include "XMLSerialization.h"
+#include "PathNode.h"
 #include "Spawner.h"
 #include "TileGroup.h"
 #include "TiledImageLayer.h"
@@ -34,6 +35,7 @@ private:
 	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	xmls::Collection<Spawner> spawners;
+	xmls::Collection<PathNode> path_nodes;
 	xmls::Collection<TiledImageLayer> tiled_image_layers;
 	LevelGenData gen_data;
 	std::vector<Being*> beings;
@@ -85,6 +87,7 @@ public:
 	void initialize_entity_group(EntityGroup *eg);
 	void initialize_tiled_images();
 	void initialize_spawners();
+	void initialize_path_nodes();
 	void clear_level();
 	void remove_tile_edges();
 	void load_tile_edges();
@@ -101,6 +104,7 @@ public:
 	void remove_beings(const int type);
 	Being * get_player();
 	std::vector<Entity*> get_interactables(Entity*);
+	std::vector<Entity*> get_interactables(Entity*, const bool ignore_moving_obstacles);
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
@@ -109,6 +113,7 @@ public:
 	void remove_entity_group(std::pair<int, int> pos);
 	bool remove_tiled_image(const std::pair<int, int> pos, const int layer_index);
 	void remove_spawner(const std::pair<int, int> pos);
+	void remove_path_node(const std::pair<int, int> pos);
 	void replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void replace_block(int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
@@ -120,6 +125,11 @@ public:
 	const bool has_spawner_for_key(const std::string spawn_key);
 	Spawner * spawner_for_key(const std::string spawn_key);
 	void add_npc_at_spawner(NPC * npc, const std::string spawn_key);
+	void add_path_node(const int path_node_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
+	PathNode * create_path_node(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
+	const bool has_path_node_for_key(const std::string node_key);
+	PathNode * find_path_node_with_key(const std::string node_key);
+	// tile stuff
 	void set_tile(Tile * tile, std::pair<int, int> pos);
 	Tile *get_tile(int x, int y);
 	bool passable_at(int, int);
@@ -129,6 +139,8 @@ public:
 	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos);
 	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos, const bool root_only);
 	Spawner * spawner_at_tile_pos(const std::pair<int, int> pos);
+	PathNode * path_node_at_tile_pos(const std::pair<int, int> pos);
+	std::vector<PathNode *> get_path_nodes();
 	std::string get_dungeon_filename();
 	void set_dungeon_filename(std::string value);
 	std::string get_filename();
@@ -151,5 +163,6 @@ public:
 	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_spawners_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_path_nodes_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 };
 #endif

@@ -4,6 +4,7 @@
 #include "Dungeon.h"
 #include "DungeonData.h"
 #include "NPC.h"
+#include "PathNode.h"
 #include "XMLSerialization.h"
 #include "FileManager.h"
 #include <memory>
@@ -21,8 +22,11 @@ private:
 	xmls::xInt current_level_grid_y;
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
-	Level * get_level_with_key(const std::string level_key);
+	
 	Level * find_level_with_spawn_key(const std::string spawn_key);
+	Level * find_level_with_path_node_key(const std::string node_key);
+	PathNode * find_path_node_with_key(const std::string node_key);
+	const std::string get_npc_destination_node_key(NPC * npc);
 	void clear_all_beings();
 public:	
 	Dungeon* current_dungeon;
@@ -35,12 +39,18 @@ public:
 	void generate_levels();
 	void unload_content();
 	void load_images(ImageLoader&);
+	// updates per frame
+	void npc_update();
+	// updates per new day
 	void update_new_day(Player * player);
 	void update_npcs_new_day();
 	void add_dungeon(Dungeon*);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
 	Level * extract_current_level(Player * player);
+	Level * get_level_with_key(const std::string level_key);
+	Level * get_npc_destination_level(NPC * npc);
+	PathNode * get_npc_destination_node(NPC * npc);
 	Dungeon* get_dungeon(std::string dungeon_name);
 	std::vector<std::shared_ptr<Dungeon>> get_dungeons();
 	std::string get_player_key();

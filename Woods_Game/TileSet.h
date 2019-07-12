@@ -21,6 +21,7 @@ private:
 	xmls::Collection<EntityGroupData> entity_group_types;
 	xmls::Collection<TiledImageData> tiled_image_types;
 	xmls::Collection<EntityData> spawner_types;
+	xmls::Collection<EntityData> path_node_types;
 	void ensure_room_for_type(const int type_key, const int row);
 public:
 	TileSet();
@@ -94,7 +95,10 @@ public:
 	ALLEGRO_BITMAP * get_spawner_bitmap_for_col(const int index, const int col);
 	EntityData * get_spawner_data_by_index(const int index);
 	const std::vector<std::string> all_spawner_keys();
-
-	
+	// path node types
+	const std::string get_full_path_node_sheet_filename(const int index);
+	ALLEGRO_BITMAP * get_path_node_bitmap_for_col(const int index, const int col);
+	EntityData * get_path_node_data_by_index(const int index);
+	const std::vector<std::string> all_path_node_keys();
 };
 #endif

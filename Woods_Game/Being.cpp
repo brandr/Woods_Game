@@ -2,6 +2,7 @@
 #include<cmath>
 #define NOMINMAX
 #include "Being.h"
+#include "Level.h"
 #include<iostream>
 #include<algorithm>
 
@@ -15,6 +16,14 @@ Being::~Being()
 {
 }
 
+void Being::update(Level * level, const int game_mode)
+{
+	collision_update(level, game_mode);
+	movement_update(level, game_mode);
+	animation_update(game_mode);
+	Entity::update();
+}
+
 void Being::set_xvel(int vel)
 { 
 	xvel = vel;
@@ -25,6 +34,7 @@ void Being::set_yvel(int vel)
 	yvel = vel;
 }
 
+/*
 void Being::update(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, const std::pair<int, int> level_dimensions, const int game_mode)
 {
 	
@@ -35,6 +45,7 @@ void Being::update(TileSet * tileset, std::vector<Entity*> interactables, std::v
 	Entity::update();
 	//TODO: non-platform collisions (some beings may pass through some objects, so need a system to handle nuance instead of just checking is_solid)
 }
+*/
 
 void Being::animation_update(const int game_mode)
 {
@@ -50,6 +61,15 @@ void Being::movement_update(TileSet * tileset, std::vector<Entity*> interactable
 		case(TOP_DOWN):
 			movement_update_top_down(tileset, interactables, nearby_tiles);
 			break;
+	}
+}
+
+void Being::movement_update(Level * level, const int game_mode)
+{
+	switch (game_mode) {
+	case(TOP_DOWN):
+		movement_update_top_down(level);
+		break;
 	}
 }
 
@@ -123,6 +143,27 @@ void Being::movement_update_side_scrolling(std::vector<Entity*> interactables, s
 
 void Being::movement_update_top_down(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles)
 {
+	float speed_multiplier = get_speed_multiplier(tileset, nearby_tiles);
+	if (counters[BOUNCE] <= 0) {
+		xvel *= speed_multiplier, yvel *= speed_multiplier;
+	}
+	float xoff = xvel, yoff = yvel;
+	// this will check for blocked tiles
+	this->adjust_movement(interactables, this->xvel, this->yvel, true);
+	rect.x += xvel;
+	rect.y += yvel;
+}
+
+void Being::movement_update_top_down(Level * level)
+{
+	TileSet * tileset = level->get_tileset();
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	std::vector<Entity*> interactables = level->get_interactables(this);
+	const int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
 	float speed_multiplier = get_speed_multiplier(tileset, nearby_tiles);
 	if (counters[BOUNCE] <= 0) {
 		xvel *= speed_multiplier, yvel *= speed_multiplier;
@@ -209,6 +250,28 @@ void Being::collision_update(std::vector<Entity*> interactables, std::vector<Til
 	}
 }
 
+void Being::collision_update(Level * level, const int game_mode)
+{
+	std::vector<Entity*> interactables = level->get_interactables(this); //TEMP?
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	colliding_entities.clear();
+	int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->get_mask() && Mask_Collide(this->get_mask(), interactables[i]->get_mask(),
+			get_x() - interactables[i]->get_x(),
+			get_y() - interactables[i]->get_y())) {
+			Entity* e = interactables[i];
+			colliding_entities.push_back(e);
+			collide_with_entity(e);
+		}
+	}
+}
+
 void Being::collide_with_entity(Entity * e)
 {
 
@@ -238,6 +301,32 @@ const bool Being::on_ground(std::vector<Entity*> interactables) {
 		below = NULL;
 		return true;
 	}
+}
+
+const bool Being::empty_at(Rect collide_rect, Level * level)
+{
+	return this->empty_at(collide_rect, level, false);
+}
+
+const bool Being::empty_at(Rect collide_rect, Level * level, const bool ignore_moving_obstacles)
+{
+	std::vector<Entity *> interactables = level->get_interactables(this, ignore_moving_obstacles);
+	std::vector<Tile *> nearby_tiles = level->get_tiles_in_range(collide_rect.x / TILE_SIZE, collide_rect.y / TILE_SIZE,
+		collide_rect.width / TILE_SIZE, collide_rect.height / TILE_SIZE, 2);
+
+	for (Tile * t : nearby_tiles) {
+		Block * b = t->get_block();
+		if (b != NULL && !b->is_empty() && b->is_solid()) {
+			interactables.push_back(b);
+		}
+	}
+
+	for (Entity *e : interactables) {
+		if (e != NULL && e != this && e->is_solid() && e->intersects_area(collide_rect)) {
+			return false;
+		}
+	}
+	return true;
 }
 
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {

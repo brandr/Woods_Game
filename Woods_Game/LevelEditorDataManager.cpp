@@ -24,6 +24,9 @@ GameImage * LevelEditorDataManager::selected_level_object()
 		case OBJECT_TYPE_SPAWNER:
 			return this->active_levels[this->selected_level_index]->spawner_at_tile_pos(grid_pos);
 			break;
+		case OBJECT_TYPE_PATH_NODE:
+			return this->active_levels[this->selected_level_index]->path_node_at_tile_pos(grid_pos);
+			break;
 		default:
 			break;
 		}
@@ -380,6 +383,9 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(const std::string
 	else if (SPAWNER_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_spawners_onto_bitmap(image_bitmap, subsection);
 	}
+	else if (PATH_NODE_LAYER == layer) {
+		this->active_levels[this->selected_level_index]->draw_path_nodes_onto_bitmap(image_bitmap, subsection);
+	}
 	else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
 		al_set_target_bitmap(image_bitmap);
@@ -436,6 +442,7 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 		Block * b = NULL;
 		EntityGroup * eg = NULL;
 		Spawner * s = NULL;
+		PathNode * n = NULL;
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -469,6 +476,16 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 				did_serialize = xmls::Serializable::fromXML(xml, s2);
 				if (did_serialize) {
 					s->Copy(s2);
+				}
+			}
+			break;
+		case OBJECT_TYPE_PATH_NODE:
+			n = this->active_levels[this->selected_level_index]->path_node_at_tile_pos(grid_pos);
+			if (n) {
+				PathNode * n2 = new PathNode();
+				did_serialize = xmls::Serializable::fromXML(xml, n2);
+				if (did_serialize) {
+					n->Copy(n2);
 				}
 			}
 			break;
@@ -560,6 +577,10 @@ bool LevelEditorDataManager::add_level_object(std::pair<int, int> tile_pos)
 					this->add_selected_level_spawner(this->selected_object_select_index, tile_pos);
 					update = true;
 					break;
+				case OBJECT_TYPE_PATH_NODE:
+					this->add_selected_level_path_node(this->selected_object_select_index, tile_pos);
+					update = true;
+					break;
 				default:
 					break;
 				}
@@ -597,6 +618,10 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 						break;
 					case OBJECT_TYPE_SPAWNER:
 						this->delete_level_spawner(tile_pos);
+						update = true;
+						break;
+					case OBJECT_TYPE_PATH_NODE:
+						this->delete_level_path_node(tile_pos);
 						update = true;
 						break;
 					default:
@@ -654,6 +679,7 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 		Block * b = NULL;
 		EntityGroup * eg = NULL;
 		Spawner * s = NULL;
+		PathNode * n = NULL;
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -680,6 +706,12 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 			s = this->active_levels[this->selected_level_index]->spawner_at_tile_pos(grid_pos);
 			if (s) {
 				return s->toXML();
+			}
+			break;
+		case OBJECT_TYPE_PATH_NODE:
+			n = this->active_levels[this->selected_level_index]->path_node_at_tile_pos(grid_pos);
+			if (n) {
+				return n->toXML();
 			}
 			break;
 		default:
@@ -738,6 +770,11 @@ bool LevelEditorDataManager::delete_level_tiled_image(const std::pair<int, int> 
 void LevelEditorDataManager::delete_level_spawner(std::pair<int, int> pos)
 {
 	this->active_levels[this->selected_level_index]->remove_spawner(pos);
+}
+
+void LevelEditorDataManager::delete_level_path_node(const std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->remove_path_node(pos);
 }
 
 std::string LevelEditorDataManager::get_active_dungeon_name()
@@ -869,6 +906,14 @@ std::vector<std::string> LevelEditorDataManager::all_selected_spawner_keys()
 	return std::vector<std::string>();
 }
 
+const std::vector<std::string> LevelEditorDataManager::all_selected_path_node_keys()
+{
+	if (this->has_selected_tileset()) {
+		return this->active_tilesets[this->selected_tileset_index]->all_path_node_keys();
+	}
+	return std::vector<std::string>();
+}
+
 std::string LevelEditorDataManager::get_selected_tileset_name()
 {
 	return this->get_tileset_name(this->selected_tileset_index);
@@ -947,6 +992,15 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_spawner_bitmap_for_selected_col(con
 	if (index >= 0
 		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
 		return this->active_tilesets[this->selected_tileset_index]->get_spawner_bitmap_for_col(index, this->selected_object_sheet_col);
+	}
+	return NULL;
+}
+
+ALLEGRO_BITMAP * LevelEditorDataManager::get_path_node_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_path_node_bitmap_for_col(index, this->selected_object_sheet_col);
 	}
 	return NULL;
 }
@@ -1050,6 +1104,11 @@ void LevelEditorDataManager::add_selected_level_spawner(const int index, const s
 	this->active_levels[this->selected_level_index]->add_spawner(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
+void LevelEditorDataManager::add_selected_level_path_node(const int index, const std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->add_path_node(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
+}
+
 void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)
 {
 	this->selected_tiled_image_grid_index = this->selected_tileset_tile_image_index;
@@ -1082,6 +1141,11 @@ agui::Allegro5Image * LevelEditorDataManager::load_tiled_image_select_layer(std:
 	const int pixel_height = al_get_bitmap_height(tileset_sheet);
 	ALLEGRO_BITMAP* image_bitmap = al_create_bitmap(pixel_width, pixel_height);
 	if (TILED_IMAGE_LAYER == layer) {
+		ALLEGRO_BITMAP *display = al_get_target_bitmap();
+		al_set_target_bitmap(image_bitmap);
+		al_draw_bitmap(tileset_sheet, 0, 0, 0);
+		al_set_target_bitmap(display);
+	} else if (PATH_NODE_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
 		al_set_target_bitmap(image_bitmap);
 		al_draw_bitmap(tileset_sheet, 0, 0, 0);

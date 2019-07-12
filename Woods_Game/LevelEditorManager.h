@@ -36,7 +36,7 @@
 
 class LevelEditorManager
 {
-	const int DEFAULT_WINDOW_WIDTH = 1200;
+	const int DEFAULT_WINDOW_WIDTH = 1300;
 	const int DEFAULT_WINDOW_HEIGHT = 800;
 
 private:
@@ -68,6 +68,7 @@ private:
 	void load_selected_tileset_entity_groups();
 	void load_selected_tileset_tiled_images();
 	void load_selected_tileset_spawners();
+	void load_selected_tileset_path_nodes();
 
 		// update methods
 	void dungeon_update();

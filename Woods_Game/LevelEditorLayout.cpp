@@ -59,7 +59,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	// layout 1
 
-	this->level_editor_layout_frame_1.setSize(600, 720);
+	this->level_editor_layout_frame_1.setSize(700, 720);
 	this->level_editor_layout_frame_1.add(&level_editor_layout_1);
 	this->level_editor_layout_1.setMaxOnRow(4);
 
@@ -122,6 +122,14 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	spawner_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
 	spawner_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	spawner_visibility_checkbox.setChecked(true);
+
+	// path node layer
+	this->level_editor_layout_1.add(&path_node_visibility_checkbox);
+	path_node_visibility_checkbox.setAutosizing(true);
+	path_node_visibility_checkbox.setText("Show path nodes");
+	path_node_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
+	path_node_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
+	path_node_visibility_checkbox.setChecked(true);
 	
 	// gridlines
 	this->level_editor_layout_1.add(&grid_lines_visibility_checkbox);
@@ -130,7 +138,6 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	grid_lines_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
 	grid_lines_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	grid_lines_visibility_checkbox.setChecked(true);
-	this->level_editor_layout_1.add(new agui::EmptyWidget());
 	this->level_editor_layout_1.add(new agui::EmptyWidget());
 
 	// reset level button
@@ -151,11 +158,12 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	this->level_editor_layout_1.add(&level_edit_object_tabbed_pane);
 
-	level_edit_object_tabbed_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_tabbed_pane.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
 	level_edit_object_tabs[TILE_SELECT_TAB].setText("Tiles");
 	level_edit_object_tabs[BLOCK_SELECT_TAB].setText("Blocks");
 	level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB].setText("EntityGroups");
 	level_edit_object_tabs[SPAWNER_TAB].setText("Spawners");
+	level_edit_object_tabs[PATH_NODE_TAB].setText("Nodes");
 
 	// tabs for selecting objects to place in the level
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILE_SELECT_TAB],
@@ -166,17 +174,21 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 		&level_edit_object_entity_group_select_box);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[SPAWNER_TAB],
 		&level_edit_object_spawner_select_box);
+	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[PATH_NODE_TAB],
+		&level_edit_object_path_node_select_box);
 
 	level_edit_object_tile_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_block_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_entity_group_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_spawner_select_box.setMargins(0, 0, 28, 0);
+	level_edit_object_path_node_select_box.setMargins(0, 0, 28, 0);
 
 	// set select box sizes
-	level_edit_object_tile_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	level_edit_object_block_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	level_edit_object_entity_group_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	level_edit_object_spawner_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
+	level_edit_object_tile_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_block_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_entity_group_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_spawner_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_path_node_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
 
 	// selected object display
 	this->level_editor_layout_1.add(&selected_level_object_display);
@@ -206,25 +218,19 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	level_edit_secondary_tabs[TILED_IMAGE_TAB].setText("Tiled Images");
 	level_edit_secondary_tabs[EDIT_OBJECT_TAB].setText("Edit Object");
-	//level_edit_secondary_tabs[SELECT_TILESET_TAB].setText("Select Tileset");
 
 	secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[TILED_IMAGE_TAB],
 		&tiled_image_frame);
 	secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[EDIT_OBJECT_TAB],
 		&edit_object_frame);
-	//secondary_tabbed_pane.addTab(&level_edit_secondary_tabs[SELECT_TILESET_TAB],
-	//	&select_tileset_frame);
 
 	this->tiled_image_frame.add(&tiled_image_layout);
 	this->edit_object_frame.add(&edit_object_layout);
-	//this->select_tileset_frame.add(&select_tileset_layout);
 	this->tiled_image_layout.setMaxOnRow(4);
 	this->edit_object_layout.setMaxOnRow(4);
-	//this->select_tileset_layout.setMaxOnRow(4);
 
 	this->tiled_image_frame.setSize(470, 670);
 	this->edit_object_frame.setSize(470, 670);
-	//this->select_tileset_frame.setSize(470, 670);
 
 	// tiled images label
 	this->tiled_image_layout.add(&tiled_images_label);
@@ -303,37 +309,7 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	save_instance_attributes_select_listener.set_listener_type(SAVE_INSTANCE_ATTRIBUTES);
 	save_instance_attributes_select_listener.set_display(display);
 	save_instance_attributes_button.addActionListener(&save_instance_attributes_select_listener);
-
-	// select tileset layout
-
-	/*
-	this->select_tileset_layout.add(&selected_tileset_label);
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-
-	//tileset select box
-	this->select_tileset_layout.add(&tileset_select_box);
-	tileset_select_scroll_pane.add(&tileset_select_box);
-	tileset_select_scroll_pane.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	tileset_select_box.setSize(LEVEL_EDITOR_GRID_WIDTH / 2, 140);
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-	this->select_tileset_layout.add(new agui::EmptyWidget());
-	*/
 }
-
-/*
-void LevelEditorLayout::load_all_tilesets()
-{
-	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
-	this->tileset_select_box.clearItems();
-	std::vector<std::string> tileset_keys = manager.all_tileset_names();
-	for (std::string tileset_key : tileset_keys) {
-		this->tileset_select_box.addItem(tileset_key);
-	}
-}
-*/
 
 void LevelEditorLayout::load_selected_tileset_tiles()
 {
@@ -347,8 +323,6 @@ void LevelEditorLayout::load_selected_tileset_tiles()
 		}
 		this->level_edit_object_tile_select_box.resizeHeightToContents();
 		this->level_edit_object_tile_scroll_pane.resizeHeightToContents();
-		//this-.setSize(this->selected_level_object_instance_attributes_box.getWidth() + 12,
-		//	this->selected_level_object_instance_attributes_box.getHeight() + 12);
 	}
 }
 
@@ -393,6 +367,20 @@ void LevelEditorLayout::load_selected_tileset_spawners()
 	}
 }
 
+void LevelEditorLayout::load_selected_tileset_path_nodes()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	this->level_edit_object_path_node_select_box.clearItems();
+	if (manager.has_selected_tileset()) {
+		std::vector<std::string> node_keys = manager.all_selected_path_node_keys();
+		for (std::string node_key : node_keys) {
+			// level editor tab selection
+			this->level_edit_object_path_node_select_box.addItem(node_key);
+		}
+		this->level_edit_object_path_node_select_box.resizeHeightToContents();
+	}
+}
+
 //TODO: is this actually used?
 void LevelEditorLayout::load_selected_tileset_tiled_images()
 {
@@ -415,7 +403,6 @@ void LevelEditorLayout::update()
 	this->update_selected_level_object(false);
 	this->update_selected_level_object_instance();
 	this->update_selected_tiled_image();
-	//this->update_selected_tileset();
 }
 
 void LevelEditorLayout::update_level_grid()
@@ -433,6 +420,7 @@ void LevelEditorLayout::update_level_grid()
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::ENTITY_GROUP_LAYER, this->entity_group_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::TILED_IMAGE_LAYER, this->tiled_image_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::SPAWNER_LAYER, this->spawner_visibility_checkbox.checked());
+		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::PATH_NODE_LAYER, this->path_node_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::GRID_LINES_LAYER, this->grid_lines_visibility_checkbox.checked());
 	}
 	// resize if necessary
@@ -476,6 +464,9 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 		break;
 	case SPAWNER_TAB:
 		object_box = &(this->level_edit_object_spawner_select_box);
+		break;
+	case PATH_NODE_TAB:
+		object_box = &(this->level_edit_object_path_node_select_box);
 		break;
 	default:
 		break;
@@ -521,6 +512,10 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 					break;
 				case SPAWNER_TAB:
 					object_bitmap = manager.get_spawner_bitmap_for_selected_col(object_index);
+					dim = std::pair<int, int>(TILE_SIZE, TILE_SIZE);
+					break;
+				case PATH_NODE_TAB:
+					object_bitmap = manager.get_path_node_bitmap_for_selected_col(object_index);
 					dim = std::pair<int, int>(TILE_SIZE, TILE_SIZE);
 					break;
 				default:
@@ -581,16 +576,6 @@ void LevelEditorLayout::update_selected_tiled_image()
 void LevelEditorLayout::update_selected_tileset()
 {
 	const int current_tileset_index = LevelEditorDataManager::get_instance().get_selected_tileset_index();
-	/*
-	const int new_tileset_index = this->tileset_select_box.getSelectedIndex();
-	if (current_tileset_index != new_tileset_index) {
-		LevelEditorDataManager::get_instance().set_selected_tileset_index(new_tileset_index);
-		const bool has_tileset = LevelEditorDataManager::get_instance().has_selected_tileset();
-		const std::string tileset_name = has_tileset
-			? LevelEditorDataManager::get_instance().get_selected_tileset_name() : "(none)";
-		this->selected_tileset_label.setText("Selected tileset: " + tileset_name);
-	}
-	*/
 }
 
 void LevelEditorLayout::update_sheet_col()

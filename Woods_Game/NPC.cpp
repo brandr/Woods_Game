@@ -1,5 +1,23 @@
+#include "Level.h"
 #include "NPC.h"
 #include "Player.h"
+
+void NPC::clear_primary_destinations()
+{
+	//temp
+	this->current_destination_node_key = "";
+	//temp
+	AIBeing::clear_primary_destinations();
+}
+
+void NPC::mark_destination_reached(const std::string dest_key)
+{
+	//TEMP
+	if (dest_key == this->current_destination_node_key) {
+		this->current_destination_node_key = "";
+	}
+	//TEMP
+}
 
 NPC::NPC()
 {
@@ -23,12 +41,9 @@ NPC::~NPC()
 {
 }
 
-void NPC::update(TileSet * tileset, 
-	std::vector<Entity*> interactables,
-	std::vector<Tile*> nearby_tiles, 
-	const std::pair<int, int> level_dimensions, const int game_mode)
+void NPC::update(Level * level, const int game_mode)
 {
-	AIBeing::update(tileset, interactables, nearby_tiles, level_dimensions, game_mode);
+	AIBeing::update(level, game_mode);
 }
 
 void NPC::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -90,4 +105,25 @@ const bool NPC::interact_action(Player * player)
 const std::string NPC::get_default_dialog_text()
 {
 	return this->default_dialog_text.value();
+}
+
+void NPC::set_current_level_key(const std::string level_key)
+{
+	this->current_level_key = level_key;
+}
+
+const std::string NPC::get_current_level_key()
+{
+	return this->current_level_key;
+}
+
+const std::string NPC::get_current_destination_node_key()
+{
+	//TODO: calculate from schedule
+	return this->current_destination_node_key; //TEMP. the location the npc should be at should come from the npc's schedule.
+}
+
+void NPC::clear_pathing_destination()
+{
+	this->current_destination_node_key = "";
 }

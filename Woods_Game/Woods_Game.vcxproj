@@ -294,6 +294,7 @@
     <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Cutscene.h" />
     <ClInclude Include="Dialog.h" />
+    <ClInclude Include="DjikstraPath.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonData.h" />
     <ClInclude Include="DungeonEditorLayout.h" />
@@ -330,6 +331,7 @@
     <ClInclude Include="MenuItem.h" />
     <ClInclude Include="MenuManager.h" />
     <ClInclude Include="NPC.h" />
+    <ClInclude Include="PathNode.h" />
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PPCD.h" />
@@ -361,6 +363,7 @@
     <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Cutscene.cpp" />
     <ClCompile Include="Dialog.cpp" />
+    <ClCompile Include="DjikstraPath.cpp" />
     <ClCompile Include="Dungeon.cpp" />
     <ClCompile Include="DungeonData.cpp" />
     <ClCompile Include="DungeonEditorLayout.cpp" />
@@ -399,6 +402,7 @@
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="MenuManager.cpp" />
     <ClCompile Include="NPC.cpp" />
+    <ClCompile Include="PathNode.cpp" />
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PPCD.cpp" />

@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Level.h"
 #include <iostream>
 #include <algorithm>
 
@@ -52,8 +53,12 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-void Player::update(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions, int game_mode)
+void Player::update(Level * level, const int game_mode)
 {
+	const std::pair<int, int> level_dimensions = level->get_dimensions();
+	std::vector<Entity*> interactables = level->get_interactables(this);
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	//TEMP. can probably pass the level into the check instead
 	if (exit_level_check(level_dimensions))
 		return;
 	switch (game_mode) {
@@ -67,8 +72,8 @@ void Player::update(TileSet * tileset, std::vector<Entity*> interactables, std::
 		dialog_update();
 		break;
 	}
-	
-	Being::update(tileset, interactables, nearby_tiles, level_dimensions, game_mode);
+
+	Being::update(level, game_mode);
 	if (this->interacting) {
 		this->interact_update(interactables, nearby_tiles, level_dimensions);
 	}
