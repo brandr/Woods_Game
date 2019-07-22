@@ -49,6 +49,10 @@ struct EntityData : public xmls::Serializable {
 	xmls::xInt entity_data_index;
 	xmls::xInt root_offset_x;
 	xmls::xInt root_offset_y;
+	xmls::xInt collide_offset_x;
+	xmls::xInt collide_offset_y;
+	xmls::xInt collide_width;
+	xmls::xInt collide_height;
 	xmls::xInt center_offset_x;
 	xmls::xInt center_offset_y;
 	xmls::Collection<EntityAttribute> attributes;
@@ -73,6 +77,8 @@ struct EntityData : public xmls::Serializable {
 	bool is_empty();
 	std::string get_entity_data_key();
 	std::pair<int, int> get_root_offset();
+	const std::pair<int, int> get_collide_offset();
+	const std::pair<int, int> get_collide_dimensions();
 	std::pair<int, int> get_center_offset();
 	std::vector<EntityComponentData*> get_components();
 };

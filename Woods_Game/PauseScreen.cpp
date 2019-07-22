@@ -25,7 +25,9 @@ void PauseScreen::set_menus()
 
 ALLEGRO_BITMAP * PauseScreen::current_backdrop()
 {
-	return backdrops[menu_key];
+	const std::string backdrop_key = this->backdrop_filenames[this->menu_key];
+	return ImageLoader::get_instance().get_image(backdrop_key);
+	//return backdrops[menu_key];
 }
 
 MenuManager& PauseScreen::current_menu_manager()
@@ -36,34 +38,47 @@ MenuManager& PauseScreen::current_menu_manager()
 void PauseScreen::load_content()
 {
 	//main menu
+	ImageLoader::get_instance().load_image("ui/pause_main_backdrop");
+	backdrop_filenames[PAUSE_MAIN_MENU] = "ui/pause_main_backdrop";
+
+	//video settings
+	ImageLoader::get_instance().load_image("ui/pause_video_backdrop");
+	backdrop_filenames[PAUSE_VIDEO_MENU] = "ui/pause_video_backdrop";
+
+	// controls settings
+	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
+	backdrop_filenames[PAUSE_CONTROLS_MENU] = "ui/pause_controls_backdrop";
+
+	// keyboard controls settings
+	ImageLoader::get_instance().load_image("ui/pause_controls_keyboard_backdrop");
+	backdrop_filenames[PAUSE_CONTROLS_MENU_KEYBOARD] = "ui/pause_controls_keyboard_backdrop";
+
+	// controller controls settings
+	ImageLoader::get_instance().load_image("ui/pause_controls_controller_backdrop");
+	backdrop_filenames[PAUSE_CONTROLS_MENU_CONTROLLER] = "ui/pause_controls_controller_backdrop";
+}
+
+void PauseScreen::load_menus()
+{
+	//main menu
 	menus[PAUSE_MAIN_MENU] = std::make_unique<MenuManager>();
 	menus[PAUSE_MAIN_MENU]->load_xml_content("pause_main_menu");
-	ImageLoader::get_instance().load_image("ui/pause_main_backdrop");
-	backdrops[PAUSE_MAIN_MENU] = ImageLoader::get_instance().get_image("ui/pause_main_backdrop");
 
 	//video settings
 	menus[PAUSE_VIDEO_MENU] = std::make_unique<MenuManager>();
 	menus[PAUSE_VIDEO_MENU]->load_xml_content("pause_video_menu");
-	ImageLoader::get_instance().load_image("ui/pause_video_backdrop");
-	backdrops[PAUSE_VIDEO_MENU] = ImageLoader::get_instance().get_image("ui/pause_video_backdrop");
 
 	// controls settings
 	menus[PAUSE_CONTROLS_MENU] = std::make_unique<MenuManager>();
-	menus[PAUSE_CONTROLS_MENU]->load_xml_content("pause_controls_menu");
-	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
-	backdrops[PAUSE_CONTROLS_MENU] = ImageLoader::get_instance().get_image("ui/pause_controls_backdrop");
+	menus[PAUSE_CONTROLS_MENU]->load_xml_content("pause_controls_menu");;
 
 	// keyboard controls settings
 	menus[PAUSE_CONTROLS_MENU_KEYBOARD] = std::make_unique<ControlsMenuManager>();
 	menus[PAUSE_CONTROLS_MENU_KEYBOARD]->load_xml_content("pause_controls_menu_keyboard");
-	ImageLoader::get_instance().load_image("ui/pause_controls_keyboard_backdrop");
-	backdrops[PAUSE_CONTROLS_MENU_KEYBOARD] = ImageLoader::get_instance().get_image("ui/pause_controls_keyboard_backdrop");
 
 	// controller controls settings
 	menus[PAUSE_CONTROLS_MENU_CONTROLLER] = std::make_unique<ControlsMenuManager>();
 	menus[PAUSE_CONTROLS_MENU_CONTROLLER]->load_xml_content("pause_controls_menu_controller");
-	ImageLoader::get_instance().load_image("ui/pause_controls_controller_backdrop");
-	backdrops[PAUSE_CONTROLS_MENU_CONTROLLER] = ImageLoader::get_instance().get_image("ui/pause_controls_controller_backdrop");
 }
 
 void PauseScreen::load_config_settings()
@@ -75,7 +90,7 @@ void PauseScreen::load_config_settings()
 
 void PauseScreen::unload_content()
 {
-	backdrops.clear();
+	//backdrops.clear();
 	GameScreen::unload_content();
 }
 

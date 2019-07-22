@@ -14,11 +14,11 @@ class InventoryScreen :
 private:
 	
 	//UI components
-	ALLEGRO_BITMAP* inventory_backdrop;
-	ALLEGRO_BITMAP* item_box_hotbar;
-	ALLEGRO_BITMAP* item_box_selected;
-	ALLEGRO_BITMAP* item_box_inventory;
-	ALLEGRO_BITMAP* item_drag_selection;
+	ALLEGRO_BITMAP* inventory_backdrop();
+	ALLEGRO_BITMAP* item_box_hotbar();
+	ALLEGRO_BITMAP* item_box_selected();
+	ALLEGRO_BITMAP* item_box_inventory();
+	ALLEGRO_BITMAP* item_drag_selection();
 
 	//inventory
 	Inventory *inventory;
@@ -32,6 +32,7 @@ public:
 	InventoryScreen();
 	~InventoryScreen();
 	virtual void load_content();
+	virtual void load_fonts();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	void draw_inventory(ALLEGRO_DISPLAY *display);
 	void draw_hotbar(ALLEGRO_DISPLAY *display);

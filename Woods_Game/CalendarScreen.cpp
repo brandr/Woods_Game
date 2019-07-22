@@ -1,5 +1,40 @@
 #include "CalendarScreen.h"
 
+ALLEGRO_BITMAP * CalendarScreen::calendar_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/calendar_backdrop");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::calendar_backdrop_dialog()
+{
+	return ImageLoader::get_instance().get_image("ui/calendar_backdrop_dialog");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::arrow_left()
+{
+	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_left");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::arrow_right()
+{
+	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_right");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::arrow_left_disabled()
+{
+	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_left_disabled");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::arrow_right_disabled()
+{
+	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_right_disabled");
+}
+
+ALLEGRO_BITMAP * CalendarScreen::check_mark()
+{
+	return ImageLoader::get_instance().get_image("ui/calendar/check_mark");
+}
+
 const int CalendarScreen::selected_month_index()
 {
 	if (this->month_index < 0 && this->global_time != NULL) {
@@ -85,28 +120,21 @@ CalendarScreen::~CalendarScreen()
 
 void CalendarScreen::load_content()
 {
-	// calendar gridlines and days of week, applicable for any month
+	// ui icons
 	ImageLoader::get_instance().load_image("ui/calendar_backdrop");
 	ImageLoader::get_instance().load_image("ui/calendar_backdrop_dialog");
-	calendar_backdrop = ImageLoader::get_instance().get_image("ui/calendar_backdrop");
-	calendar_backdrop_dialog = ImageLoader::get_instance().get_image("ui/calendar_backdrop_dialog");
-
-	// font for day numbers and marked days
-	font_map[FONT_CALENDAR_MONTH] = al_load_font("resources/fonts/ArialBlack.ttf", 36, NULL);
-	font_map[FONT_CALENDAR_DAYS] = al_load_font("resources/fonts/ArialBlack.ttf", 12, NULL);
-	
-	// ui icons
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_calendar_left");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_calendar_right");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_calendar_left_disabled");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_calendar_right_disabled");
 	ImageLoader::get_instance().load_image("ui/calendar/check_mark");
-	
-	arrow_left = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_left");
-	arrow_right = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_right");
-	arrow_left_disabled = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_left_disabled");
-	arrow_right_disabled = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_calendar_right_disabled");
-	check_mark = ImageLoader::get_instance().get_image("ui/calendar/check_mark");
+}
+
+void CalendarScreen::load_fonts()
+{
+	// font for day numbers and marked days
+	font_map[FONT_CALENDAR_MONTH] = al_load_font("resources/fonts/ArialBlack.ttf", 36, NULL);
+	font_map[FONT_CALENDAR_DAYS] = al_load_font("resources/fonts/ArialBlack.ttf", 12, NULL);
 }
 
 void CalendarScreen::draw(ALLEGRO_DISPLAY * display)
@@ -114,12 +142,12 @@ void CalendarScreen::draw(ALLEGRO_DISPLAY * display)
 	if (this->global_time == NULL) {
 		return;
 	}
-	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2;
-	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2;
-	al_draw_bitmap(calendar_backdrop, x1, y1, NULL);
+	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2;
+	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2;
+	al_draw_bitmap(calendar_backdrop(), x1, y1, NULL);
 
 	const int x2 = (al_get_display_width(display)) / 2 - 40;
-	const int y2 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + 12;
+	const int y2 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + 12;
 	const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_CALENDAR_MONTH);
 	al_draw_text(font_map[FONT_CALENDAR_MONTH], al_map_rgb(rgb[0], rgb[1], rgb[2]), x2, y2, 0, this->month_str().c_str());
 
@@ -139,8 +167,8 @@ void CalendarScreen::draw_day_labels(ALLEGRO_DISPLAY * display)
 	for (int row = 0; row < 6; row++ && day_num <= this->num_days_in_month()) {
 		col = col % 7;
 		while (col < 7 && day_num <= this->num_days_in_month()) {
-			const int x = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + (col * 70) + 26;
-			const int y = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + (row * 53) + 100;
+			const int x = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + (col * 70) + 26;
+			const int y = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + (row * 53) + 100;
 			const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_CALENDAR_DAYS);
 			al_draw_text(font_map[FONT_CALENDAR_DAYS], al_map_rgb(rgb[0], rgb[1], rgb[2]), x, y, 0, std::to_string(day_num).c_str());
 			day_num++;
@@ -152,15 +180,15 @@ void CalendarScreen::draw_day_labels(ALLEGRO_DISPLAY * display)
 void CalendarScreen::draw_month_arrows(ALLEGRO_DISPLAY * display)
 {
 	// left arrow
-	ALLEGRO_BITMAP * left = this->may_decrement_month() ? this->arrow_left : this->arrow_left_disabled;
-	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + 16;
-	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + 22;
+	ALLEGRO_BITMAP * left = this->may_decrement_month() ? this->arrow_left() : this->arrow_left_disabled();
+	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + 16;
+	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
 	al_draw_bitmap(left, x1, y1, 0);
 
 	// right arrow
-	ALLEGRO_BITMAP * right = this->may_increment_month() ? this->arrow_right : this->arrow_right_disabled;
-	const int x2 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + al_get_bitmap_width(calendar_backdrop) - 48;
-	const int y2 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + 22;
+	ALLEGRO_BITMAP * right = this->may_increment_month() ? this->arrow_right() : this->arrow_right_disabled();
+	const int x2 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + al_get_bitmap_width(calendar_backdrop()) - 48;
+	const int y2 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
 	al_draw_bitmap(right, x2, y2, 0);
 }
 
@@ -168,8 +196,8 @@ void CalendarScreen::draw_selection_ui(ALLEGRO_DISPLAY * display)
 {
 	const int select_x = this->select_pos.first, select_y = this->select_pos.second;
 	if (select_y < 0 || select_x < 0) {
-		const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + 13;
-		const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + 13;
+		const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + 13;
+		const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + 13;
 		const int x2 = x1 + 508;
 		const int y2 = y1 + 49;
 
@@ -178,8 +206,8 @@ void CalendarScreen::draw_selection_ui(ALLEGRO_DISPLAY * display)
 		al_draw_line(x1, y1, x2, y1, al_map_rgb(220, 0, 0), 2.0);
 		al_draw_line(x1, y2, x2, y2, al_map_rgb(220, 0, 0), 2.0);
 	} else {
-		const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + (select_x * 70) + 20;
-		const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + (select_y * 53) + 96;
+		const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + (select_x * 70) + 20;
+		const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + (select_y * 53) + 96;
 		const int x2 = x1 + 70;
 		const int y2 = y1 + 53;
 
@@ -203,10 +231,10 @@ void CalendarScreen::draw_symbols_ui(ALLEGRO_DISPLAY * display)
 			for (int row = 0; row < 6; row++ && day_num <= this->num_days_in_month()) {
 				col = col % 7;
 				while (col < 7 && day_num <= this->num_days_in_month() && (day_num < day || this->selected_month_index() < mon)) {
-					const int x = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop)) / 2 + (col * 70) + 46;
-					const int y = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop)) / 2 + (row * 53) + 120;
+					const int x = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop())) / 2 + (col * 70) + 46;
+					const int y = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop())) / 2 + (row * 53) + 120;
 					if (this->may_select_day_at_pos(col, row)) {
-						al_draw_bitmap(this->check_mark, x, y, 0);
+						al_draw_bitmap(this->check_mark(), x, y, 0);
 					}
 					day_num++;
 					col++;
@@ -218,13 +246,10 @@ void CalendarScreen::draw_symbols_ui(ALLEGRO_DISPLAY * display)
 
 void CalendarScreen::draw_confirm_dialog_ui(ALLEGRO_DISPLAY * display)
 {
-	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop_dialog)) / 2;
-	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop_dialog)) / 2;
-	al_draw_bitmap(calendar_backdrop_dialog, x1, y1, NULL);
+	const int x1 = (al_get_display_width(display) - al_get_bitmap_width(calendar_backdrop_dialog())) / 2;
+	const int y1 = (al_get_display_height(display) - al_get_bitmap_height(calendar_backdrop_dialog())) / 2;
+	al_draw_bitmap(calendar_backdrop_dialog(), x1, y1, NULL);
 	this->player->get_open_dialog()->draw(display, font_map[FONT_CALENDAR_DAYS], x1 + 4, y1 + 4);
-	//const std::string confirm_text = "Go back to the selected day?";
-
-	//TODO: use an actual Dialog
 }
 
 void CalendarScreen::update()

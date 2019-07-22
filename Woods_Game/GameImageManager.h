@@ -40,13 +40,17 @@
 #include "utility"  // for pair
 #include "xstring"  // for string
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
+#include "allegro5/threads.h"
 #include "World.h"
 #include "Player.h"
 #include "FileManager.h"
 #include "GlobalTime.h"
 #include "Cutscene.h"
 #include "InteractActionManager.h"
+#include "LoadingData.h"
 #include "boost/filesystem.hpp"
+
+
 
 class GameImageManager
 {
@@ -59,6 +63,14 @@ private:
 	GlobalTime * current_global_time = NULL;
 	ALLEGRO_BITMAP * light_filter = NULL;
 	void load_player_from_xml(std::string filepath, std::string player_key);
+
+	ALLEGRO_THREAD * loading_thread;
+	LoadingData thread_data;
+
+	// async functions
+	static void *load_func_advance_day(ALLEGRO_THREAD *thr, void *arg);
+	static void *load_func_save_game(ALLEGRO_THREAD *thr, void *arg);
+	static void *load_func_load_from_save(ALLEGRO_THREAD *thr, void *arg);
 public:
 	Level* current_level;
 	Player* player;
@@ -69,6 +81,7 @@ public:
 	void full_load_game_from_save(const std::string filepath);
 	void load_game_from_save(const int day, const int time);
 	void save_game();
+	static void save_game(World * world, GlobalTime * global_time);
 	void set_game_mode(int game_mode);
 	int get_game_mode();
 	Player* get_player();
@@ -79,7 +92,6 @@ public:
 	const std::string date_display_string();
 	void time_update();
 	void npc_update();
-	void update_new_day();
 	GlobalTime * get_current_global_time();
 	const int get_current_minutes();
 	const std::string get_current_month_str();

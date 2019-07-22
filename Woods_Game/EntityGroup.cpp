@@ -2,6 +2,14 @@
 
 
 
+Rect EntityGroup::collide_rect()
+{
+	return Rect(
+		this->get_x() + this->get_collide_x_offset(),
+		this->get_y() + this->get_collide_y_offset(), 
+		this->get_collide_width(), this->get_collide_height());
+}
+
 EntityGroup::EntityGroup()
 {
 	this->setClassName("EntityGroup");
@@ -10,6 +18,10 @@ EntityGroup::EntityGroup()
 	this->Register("EntitySheetRow", &entity_sheet_row);	
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
+	this->Register("CollideXOffset", &collide_x_offset);
+	this->Register("CollideYOffset", &collide_y_offset);
+	this->Register("CollideWidth", &collide_width);
+	this->Register("CollideHeight", &collide_height);
 	this->Register("EntityGroupName", &entity_group_name);
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
@@ -23,6 +35,10 @@ EntityGroup::EntityGroup(std::pair<int, int> root_offset)
 	this->Register("EntitySheetRow", &entity_sheet_row);
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
+	this->Register("CollideXOffset", &collide_x_offset);
+	this->Register("CollideYOffset", &collide_y_offset);
+	this->Register("CollideWidth", &collide_width);
+	this->Register("CollideHeight", &collide_height);
 	this->Register("EntityGroupName", &entity_group_name);
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
@@ -71,6 +87,21 @@ void EntityGroup::set_root_pos(std::pair<int, int> root_pos)
 	this->root_pos_x = root_pos.first, this->root_pos_y = root_pos.second;
 }
 
+void EntityGroup::set_collide_offset(const std::pair<int, int> offset)
+{
+	this->collide_x_offset = offset.first, this->collide_y_offset = offset.second;
+}
+
+void EntityGroup::set_collide_dimensions(const std::pair<int, int> dimensions)
+{
+	this->collide_width = dimensions.first, this->collide_height = dimensions.second;
+}
+
+const bool EntityGroup::intersects_area(Rect area)
+{
+	return this->collide_rect().intersects_rect(area);
+}
+
 std::string EntityGroup::get_entity_group_name()
 {
 	return this->entity_group_name.value();
@@ -79,6 +110,26 @@ std::string EntityGroup::get_entity_group_name()
 std::pair<int, int> EntityGroup::get_root_pos()
 {
 	return std::pair<int, int>(root_pos_x.value(), root_pos_y.value());
+}
+
+const int EntityGroup::get_collide_x_offset()
+{
+	return this->collide_x_offset.value();
+}
+
+const int EntityGroup::get_collide_y_offset()
+{
+	return this->collide_y_offset.value();
+}
+
+const int EntityGroup::get_collide_width()
+{
+	return this->collide_width.value();
+}
+
+const int EntityGroup::get_collide_height()
+{
+	return this->collide_height.value();
 }
 
 void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)

@@ -131,6 +131,11 @@ Level * Dungeon::level_at(int x, int y)
 	return level;
 }
 
+Level * Dungeon::level_at_index(const int index)
+{
+	return this->level_list[index];
+}
+
 Level * Dungeon::level_with_name(std::string name)
 {
 	for (Level * level : this->level_list) {
@@ -164,6 +169,17 @@ Level * Dungeon::find_level_with_path_node_key(const std::string node_key)
 	return NULL;
 }
 
+Level * Dungeon::find_any_level_with_node()
+{
+	for (Level * level : this->level_list) {
+		if (level->has_any_path_node())
+		{
+			return level;
+		}
+	}
+	return NULL;
+}
+
 PathNode * Dungeon::find_path_node_with_key(const std::string node_key)
 {
 	for (Level * level : this->level_list) {
@@ -189,6 +205,11 @@ std::string Dungeon::get_dungeon_name()
 std::vector<Level*> Dungeon::get_level_list()
 {
 	return this->level_list;
+}
+
+const int Dungeon::get_level_list_count()
+{
+	return this->level_list.size();
 }
 
 void Dungeon::clear_all_beings()

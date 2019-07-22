@@ -65,9 +65,17 @@ void Cutscene::add_effect(const std::string effect_key, const int duration)
 
 void Cutscene::add_action(const std::string action_key)
 {
+	this->add_action(action_key, "");
+}
+
+void Cutscene::add_action(const std::string action_key, const std::string effect_key)
+{
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = action_key;
 	block->duration = 1;
+	if (effect_key != "") {
+		block->effect_key = effect_key;
+	}
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
@@ -77,25 +85,38 @@ void Cutscene::add_global_time_update(const int day, const int time)
 	block->action_key = ACTION_UPDATE_GLOBAL_TIME;
 	block->global_time = new GlobalTime(day, time);
 	block->duration = 1;
+	block->effect_key = EFFECT_DISPLAY_BLACK;
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 }
 
 void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_up_time)
 {
-	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
 	block->duration = 1;
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
+	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+
 }
 
 void Cutscene::add_load_game_update(const int day, const int time)
 {
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_LOAD_GAME;
-	block->global_time = new GlobalTime(day, time);
 	block->duration = 1;
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	this->add_global_time_update(day, time);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	
+	//this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
+	//this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 }
 
 
@@ -165,6 +186,8 @@ const bool CutsceneBlock::process_action()
 		} else if (this->action_key == ACTION_LOAD_GAME) {
 			return true;
 		} else if (this->action_key == ACTION_UPDATE_NEW_DAY) {
+			return true;
+		} else if (this->action_key == ACTION_AWAIT_LOAD) {
 			return true;
 		}
 	}

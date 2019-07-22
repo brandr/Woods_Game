@@ -60,8 +60,6 @@ public:
 	void add_edge(const int row, const int dir, std::string tile_key);
 	std::vector<TileEdge*> get_tile_edges();
 	const bool has_edges();
-	//void set_edge_priority(int priority);
-	//int get_edge_priority();
 	void set_tile_pos_x(const int x);
 	void set_tile_pos_y(const int y);
 	void set_tile_sheet_col(const int col);

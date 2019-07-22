@@ -53,7 +53,7 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-void Player::update(Level * level, const int game_mode)
+void Player::update(Level * level, GlobalTime * time, const int game_mode)
 {
 	const std::pair<int, int> level_dimensions = level->get_dimensions();
 	std::vector<Entity*> interactables = level->get_interactables(this);
@@ -73,7 +73,7 @@ void Player::update(Level * level, const int game_mode)
 		break;
 	}
 
-	Being::update(level, game_mode);
+	Being::update(level, time, game_mode);
 	if (this->interacting) {
 		this->interact_update(interactables, nearby_tiles, level_dimensions);
 	}
@@ -367,19 +367,17 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 void Player::sleep_in_bed(GlobalTime * current_time)
 {
 	Cutscene * cutscene = new Cutscene();
-	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
-	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
 	cutscene->add_advance_day_update(current_time, this->wake_up_time());
-	cutscene->add_action(ACTION_SAVE_GAME);
 	this->active_cutscene = cutscene;
 }
 
+//TODO: do this async
 void Player::load_game_for_day(const int day)
 {
 	Cutscene * cutscene = new Cutscene();
-	cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	//cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	cutscene->add_load_game_update(day, this->wake_up_time());
-	cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
+	//cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
 	this->active_cutscene = cutscene;
 }
 

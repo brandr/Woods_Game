@@ -79,6 +79,8 @@ public:
 	std::pair<int, int> get_entity_group_image_dimensions(std::string name);
 	std::pair<int, int> get_entity_group_image_dimensions_by_index(int index);
 	std::pair<int, int> get_entity_group_root_offset(const int row);
+	const std::pair<int, int> get_entity_group_collide_offset(const int row);
+	const std::pair<int, int> get_entity_group_collide_dimensions(const int row);
 	std::pair<int, int> get_entity_group_center_offset(const int row);
 	std::vector<EntityComponentData*> get_entity_group_components(const int row);
 	const int get_entity_group_sheet_image_cols_by_index(const int index);

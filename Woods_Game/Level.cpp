@@ -151,6 +151,8 @@ void Level::generate_entity_groups()
 		const int eg_num_sheet_cols = this->tileset->get_entity_group_sheet_image_cols_by_index(eg_index);
 		const int min_spawn_tx = rule->min_spawn_dist_tx.value(), min_spawn_ty = rule->min_spawn_dist_ty.value();
 		const std::pair<int, int> root_offset = this->tileset->get_entity_group_root_offset(eg_index);
+		//const std::pair<int, int> collide_offset = this->tileset->get_entity_group_collide_offset(eg_index);
+		//const std::pair<int, int> collide_dimensions = this->tileset->get_entity_group_collide_dimensions(eg_index);
 		const std::pair<int, int> eg_dim = this->tileset->get_entity_group_image_dimensions_by_index(eg_index);
 		const std::vector<int> allowed_tiles = rule->get_allowed_spawn_tile_indeces();
 		std::vector<std::pair<int, int>> candidate_tiles;
@@ -662,8 +664,8 @@ void Level::reload_tiles(Level &copy_level)
 					const std::pair<int, int> ss_pos(copy_block->get_entity_sheet_col(), copy_block->get_entity_sheet_row());
 					const std::pair<int, int> pos(t->get_tile_pos_x(), t->get_tile_pos_y());
 					t->replace_block(this->tileset, block_index, ss_pos, pos);
-					const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-					b->refresh_mask();
+					//const std::string filename = tileset->get_full_block_sheet_filename(block_index);
+					//refresh_mask();
 				}
 			} else if (copy_block == NULL) {
 				t->remove_block();
@@ -874,6 +876,8 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	const int eg_index = egd->get_entity_group_index();
 	const std::pair<int, int> ss_offset(eg->get_entity_sheet_col(), eg->get_entity_sheet_row());
 	const std::pair<int, int> root_off = this->tileset->get_entity_group_root_offset(eg_index);
+	const std::pair<int, int> collide_off = this->tileset->get_entity_group_collide_offset(eg_index);
+	const std::pair<int, int> collide_dim = this->tileset->get_entity_group_collide_dimensions(eg_index);
 	const std::pair<int, int> center_off = this->tileset->get_entity_group_center_offset(eg_index);
 	const std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(eg_index);
 	const std::pair<int, int> root_pos = eg->get_root_pos();
@@ -905,6 +909,8 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	eg->set_rect(group_pos.first, group_pos.second,
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
 	eg->set_center_offset(center_off);
+	eg->set_collide_offset(collide_off);
+	eg->set_collide_dimensions(collide_dim);
 	eg->load_mask(sheet_filename + "/entity_groups/" + eg->get_entity_group_name());
 }
 
@@ -1070,7 +1076,7 @@ void Level::unload_content()
 	beings.clear();
 }
 
-void Level::update(const int game_mode)
+void Level::update(GlobalTime * time, const int game_mode)
 {
 	std::pair<int, int> dimensions = get_dimensions();
 	const int b_size = beings.size();
@@ -1078,7 +1084,7 @@ void Level::update(const int game_mode)
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
 			std::vector<Entity*> interactables = get_interactables(beings[i]);
 			std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
-			beings[i]->update(this, game_mode);
+			beings[i]->update(this, time, game_mode);
 		}
 		else {
 			// TODO: better error handling
@@ -1178,6 +1184,17 @@ void Level::remove_player()
 	remove_beings(PLAYER);
 }
 
+void Level::remove_being(Being * b)
+{
+	const int size = beings.size();
+	for (int i = size - 1; i >= 0; i--) {
+		if (beings[i] == b) {
+			beings.erase(std::remove(beings.begin(), beings.end(), beings[i]), beings.end());
+			return;
+		}
+	}
+}
+
 void Level::remove_beings(const int type)
 {
 	const int size = beings.size();
@@ -1222,6 +1239,20 @@ std::vector<Entity*> Level::get_interactables(Entity * entity, const bool ignore
 			if (b && b != entity) {
 				interactables.push_back(b);
 			}
+		}
+	}
+	return interactables;
+}
+
+std::vector<Entity*> Level::get_moving_interactables(Entity * entity)
+{
+	std::vector<Entity*> interactables;
+	if (entity->get_type() != PLAYER) {
+		interactables.push_back(this->get_player());
+	}
+	for (Being * b : this->beings) {
+		if (b && b != entity) {
+			interactables.push_back(b);
 		}
 	}
 	return interactables;
@@ -1438,6 +1469,20 @@ PathNode * Level::find_path_node_with_key(const std::string node_key)
 	return NULL;
 }
 
+const bool Level::has_any_path_node()
+{
+	return this->find_any_path_node() != NULL;
+}
+
+PathNode * Level::find_any_path_node()
+{
+	const int size = this->path_nodes.size();
+	if (size > 0) {
+		return this->path_nodes.getItem(0);
+	}
+	return NULL;
+}
+
 const bool Level::has_spawner_for_key(const std::string spawn_key)
 {
 	return this->spawner_for_key(spawn_key) != NULL;
@@ -1462,6 +1507,7 @@ void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
 		npc->set_starting_pos(spawner->get_x(), spawner->get_y());
 		npc->load_content_from_attributes();
 		npc->set_current_level_key(this->get_filename());
+		npc->cancel_current_pathing();
 		this->add_being(npc);
 	}
 }
@@ -1469,11 +1515,13 @@ void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
 EntityGroup * Level::create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	std::pair<int, int> root_off = tileset->get_entity_group_root_offset(index);
+	std::pair<int, int> collide_off = tileset->get_entity_group_collide_offset(index);
+	std::pair<int, int> collide_dim = tileset->get_entity_group_collide_dimensions(index);
 	std::pair<int, int> center_off = tileset->get_entity_group_center_offset(index);
 	EntityGroupData* group_data = tileset->get_entity_group_data_by_index(index);
 	std::vector<EntityComponentData*> comp_data = tileset->get_entity_group_components(index);
-	std::pair<int, int> root_pos(pos.first, pos.second);
-	std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
+	const std::pair<int, int> root_pos(pos.first, pos.second);
+	const std::pair<int, int> group_pos(root_pos.first - root_off.first, root_pos.second - root_off.second);
 	const std::pair<int, int> entity_group_image_dimensions = this->tileset->get_entity_group_image_dimensions_by_index(index);
 	std::vector<Entity*> entity_list;
 	// load the images separately for each component
@@ -1502,6 +1550,8 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 		entity_group_image_dimensions.first, entity_group_image_dimensions.second);
 	e_group->set_center_offset(center_off);
 	e_group->set_root_pos(root_pos);
+	e_group->set_collide_offset(collide_off);
+	e_group->set_collide_dimensions(collide_dim);
 	e_group->load_mask(filename_start + "/entity_groups/" + group_data->get_entity_group_name());
 	return e_group;
 }

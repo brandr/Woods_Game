@@ -19,6 +19,12 @@ private:
 	xmls::xInt root_pos_x;
 	xmls::xInt root_pos_y;
 	xmls::xString entity_group_name;
+	xmls::xInt collide_x_offset;
+	xmls::xInt collide_y_offset;
+	xmls::xInt collide_width;
+	xmls::xInt collide_height;
+
+	Rect collide_rect();
 public:
 	EntityGroup();
 	EntityGroup(std::pair<int, int> root_offset);
@@ -31,8 +37,15 @@ public:
 	std::vector<Entity*> get_entities();
 	void set_entities(std::vector<Entity*> entities);
 	void set_root_pos(std::pair<int, int> root_pos);
+	void set_collide_offset(const std::pair<int, int> offset);
+	void set_collide_dimensions(const std::pair<int, int> dimensions);
+	virtual const bool intersects_area(Rect collide_rect);
 	std::string get_entity_group_name();
 	std::pair<int, int> get_root_pos();
+	const int get_collide_x_offset();
+	const int get_collide_y_offset();
+	const int get_collide_width();
+	const int get_collide_height();
 };
 
 #endif

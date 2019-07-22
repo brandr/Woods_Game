@@ -155,6 +155,15 @@
     <Filter Include="Pathing\Source Files">
       <UniqueIdentifier>{6df0917c-fbbe-4ddd-84ef-0b86e752975f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AI">
+      <UniqueIdentifier>{d3e17301-76f1-4c54-beba-41c348e582c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Header Files">
+      <UniqueIdentifier>{4f1d2c5f-4762-4d45-85fe-6cb9bee29488}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI\Source Files">
+      <UniqueIdentifier>{c7aa5685-e9a4-4a1b-88f2-8ea1f8c17cb5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -359,6 +368,18 @@
     <ClInclude Include="DjikstraPath.h">
       <Filter>Pathing\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AIState.h">
+      <Filter>AI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingScreen.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NPCSchedule.h">
+      <Filter>Time\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LoadingData.h">
+      <Filter>Utilities\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -561,6 +582,15 @@
     </ClCompile>
     <ClCompile Include="DjikstraPath.cpp">
       <Filter>Pathing\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AIState.cpp">
+      <Filter>AI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LoadingScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NPCSchedule.cpp">
+      <Filter>Time\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

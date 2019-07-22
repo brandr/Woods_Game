@@ -1,5 +1,30 @@
 #include "InventoryScreen.h"
 
+ALLEGRO_BITMAP * InventoryScreen::inventory_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/inventory_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_box_hotbar()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_box_selected()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1_light");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_box_inventory()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1_dark");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_drag_selection()
+{
+	return ImageLoader::get_instance().get_image("ui/item_selection_1");
+}
+
 InventoryScreen::InventoryScreen()
 {
 }
@@ -17,22 +42,19 @@ void InventoryScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/item_box_1_dark");
 	ImageLoader::get_instance().load_image("ui/item_selection_1");
-	inventory_backdrop = ImageLoader::get_instance().get_image("ui/inventory_backdrop");
-	item_box_hotbar = ImageLoader::get_instance().get_image("ui/item_box_1");
-	item_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
-	item_box_inventory = ImageLoader::get_instance().get_image("ui/item_box_1_dark");
-	item_drag_selection = ImageLoader::get_instance().get_image("ui/item_selection_1");
-	
-	// load font
+}
+
+void InventoryScreen::load_fonts()
+{
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 {
-	const int x = (al_get_display_width(display) - al_get_bitmap_width(inventory_backdrop))/2;
-	const int y = (al_get_display_height(display) - al_get_bitmap_height(inventory_backdrop)) / 2;
-	al_draw_bitmap(inventory_backdrop, x, y, NULL);
+	const int x = (al_get_display_width(display) - al_get_bitmap_width(inventory_backdrop()))/2;
+	const int y = (al_get_display_height(display) - al_get_bitmap_height(inventory_backdrop())) / 2;
+	al_draw_bitmap(inventory_backdrop(), x, y, NULL);
 	draw_inventory(display);
 	draw_hotbar(display);
 	
@@ -43,9 +65,9 @@ void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
 	const std::vector<std::vector<Item*>> inventory_items = inventory->get_inventory_items();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
-	const int box_width = al_get_bitmap_width(item_box_hotbar);
-	const int box_height = al_get_bitmap_height(item_box_hotbar);
-	const int backdrop_height = al_get_bitmap_height(inventory_backdrop);
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
 	const int rows = inventory_items.size();
 	const int cols = inventory_items[0].size();
 	for (int row = 0; row < rows; row++) {
@@ -53,16 +75,16 @@ void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
 		for (int col = 0; col < cols; col++) {
 			const float x = (width - box_width*cols) / 2.0 + col*box_width;
 			if (col == inventory_selection.first && row == inventory_selection.second) {
-				al_draw_bitmap(item_box_selected, x, y, 0);
+				al_draw_bitmap(item_box_selected(), x, y, 0);
 			}
 			else {
-				al_draw_bitmap(item_box_inventory, x, y, 0);
+				al_draw_bitmap(item_box_inventory(), x, y, 0);
 			}
 			Item* item = inventory->get_item(col, row);
 			if (item && !(dragging_selection.first == col && dragging_selection.second == row))
 				item->draw(display, x, y);
 			if (col == dragging_selection.first && row == dragging_selection.second) {
-				al_draw_bitmap(item_drag_selection, x, y, 0);
+				al_draw_bitmap(item_drag_selection(), x, y, 0);
 			}
 		}
 	}
@@ -77,21 +99,21 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 {
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
-	const int box_width = al_get_bitmap_width(item_box_hotbar);
-	const int box_height = al_get_bitmap_height(item_box_hotbar);
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
 	const int hotbar_index = inventory->get_hotbar_index();
-	const float y = (height + al_get_bitmap_height(inventory_backdrop))/2 - box_height - 36;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop()))/2 - box_height - 36;
 	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size) / 2 + i*box_width;
 		if (!selecting_internal_inventory() && i == hotbar_index) {
-			al_draw_bitmap(item_box_selected, x, y, 0);
+			al_draw_bitmap(item_box_selected(), x, y, 0);
 		}
 		else {
-			al_draw_bitmap(item_box_hotbar, x, y, 0);
+			al_draw_bitmap(item_box_hotbar(), x, y, 0);
 		}
 		if (i == dragging_selection.first && dragging_selection.second < 0) {
-			al_draw_bitmap(item_drag_selection, x, y, 0);
+			al_draw_bitmap(item_drag_selection(), x, y, 0);
 		}
 		Item* item = inventory->get_hotbar_item(i);
 		if (item && !(dragging_selection.first == i && dragging_selection.second < 0)) 

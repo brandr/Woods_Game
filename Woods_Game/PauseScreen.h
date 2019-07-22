@@ -15,7 +15,8 @@ class PauseScreen:
 	public GameScreen
 {
 private:
-	std::map<int, ALLEGRO_BITMAP*> backdrops;
+	//std::map<int, ALLEGRO_BITMAP*> backdrops;
+	std::map<int, std::string> backdrop_filenames;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
 	int menu_key = PAUSE_MAIN_MENU;
 public:
@@ -26,6 +27,7 @@ public:
 	ALLEGRO_BITMAP* current_backdrop();
 	MenuManager& current_menu_manager();
 	virtual void load_content();
+	void load_menus();
 	void load_config_settings();
 	virtual void unload_content();
 	virtual void update();

@@ -1,53 +1,126 @@
 Woods game todolist
 
 ---------------------------------------------------
-Prioritization
+Code Prioritization
 ---------------------------------------------------
 
-Last updated 7/11/2019
+Last updated 7/20/2019
 
 totals don't include ongoing stuff 
 
-Total: 103-160 days (~4-6 months, done by Feb 2020)
+Total: 103-158 days (~4-5 months, done by Mar 2020)
 
-1. NPC pathing between levels
+1. Fix performance issues
+	(4-8 days)
+2. Finish NPC pathing/AIState stuff (fix pathing through genned woods)
+	(4-8 days)
+2. NPC schedule
+	(4-8 days)
+3. Quest/NPC triggers
 	(5-10 days)
-2. AIBeing/NPC state decision making
+4. NPC dialogue calculation
 	(5-10 days)
-3. NPC schedule
-	(5-10 days)
-4. Quest/NPC triggers
-	(5-10 days)
-5. NPC dialogue calculation
-	(5-10 days)
-6. Cutscenes
+5. Cutscenes
 	(15-20 days)
+6. Loading screens/prorgress bars
+	(2-5 days)
+
+(clean up todos and try to think of what's missing here)	
+
+
 7. Animals/bugs
 	(10-15 days)
-8. Map
+8. Animation/image code stuff
+	(10-15 days)
+9. Menu/control stuff
+	(10-15 days)
+10. Inventory/item stuff (shovel?)
 	(5-10 days)
-9. Inventory/item stuff (shovel?)
+11. Encyclopedia
+	(10-15 days)
+12. Map
 	(5-10 days)
-10. Figure out how to force end of day (otherwise saving gets weird after midnight)
-	(1-5 days)
-11. Wake-up time (alarm clock?)
-	(1-5 days)
-12. Animation/image code stuff
+
+(clean up todos and try to think of what's missing here)	
+
+13. Figure out how to force end of day (otherwise saving gets weird after midnight)
+	(2-5 days)
+14. Wake-up time (alarm clock?)
+	(2-5 days)
+15. Stamina/resource management
+	(5-10 days)
+16. Audio
 	(10-15 days)
-13. Menu/control stuff
-	(10-15 days)
-14. Encyclopedia
-	(10-15 days)
-15. Audio
-	(10-15 days)
-16. Content!
+17. Content!
 	(???)
 
 Ongoing tasks:
 
-1. improve memory usage
+1. improve memory usage/performance
 2. fix bugs
 3. streamline level editor
+4. come up with more content
+
+---------------------------------------------------
+NPCs
+---------------------------------------------------
+
+NPC pathing
+	- fix how NPCs path through genned woods
+		* seem to stop when they shouldn't
+	- improve slowdown that happens when recalculating djikstra paths
+		* slowest part seems to be calculating shortest tile path (after initializing tile path)
+		* see if we can use allegro threading to make the actual path calculation asynchronous after creating DjikstraPaths
+			# NPCs stand still while calculating and have a "locked" state
+			# go through the tile pathing method and see which things the mutex needs to lock
+				$ probably need some kind of temporary snapshot or something
+		* could possibly better caching by using just the width/height of the npc as a key/blocked tile check
+	- when hitting a "next level" facing node, need to animate walking to next level
+		* might need to serialize walk to/from direction
+		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
+		* make sure next level traveling behaivor also handles going through doors into houses
+			# probably don't want an animation, just a door shutting/slamming sound
+	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
+		* need to figure out how a typical case of the player talking to an NPC should work
+			# could have them stop and look at you when you get close rather than just avoiding (depending on personality)
+		* also need to treat people (the player and other NPCs, and maybe animals) differently from other interactables
+			# could have NPCs have different personality types/moods that determine their reaction to being blocked: go around, push past, stop, etc
+	- Set a debug launch argument to control whether test rect bitmaps appear
+		* Manage the bitmaps through ImageLoader
+		* instead of launch argument, could add console commands
+
+AIState/NPC schedule
+	- extend schedule logic to "go to place and do an animation" or 
+		 "go to place and wander around" rather than standing on specific tiles at specific times
+		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
+	- Extend schedule classification beyond default day schedule
+	- IDEA: could serialize AIState rules somewhere ("personality types?")
+	- use schedule logic to determine NPC spawn locations
+		* might be able to do this by using existing pathing logic and just spawning NPCs directly onto PathNodes
+			# Gets complicated because we then have to answer the question "how long does it take to walk from X to Y"?
+			# Therefore we may just want serialized (in schedule) time ranges during which the NPC spawns at certain places
+
+Add NPC quest triggers
+	- could make the first quest getting some item from the store with money from the player's mom
+		* can also just choose to keep the money
+	- these quest triggers need to tie into time travel (think of majora's mask)
+	- definitely want to think of several examples and notepad out before starting to implement these
+	- incorporate into schedule logic
+
+Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
+	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
+	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
+	- allow these conditions to be "anded" together and give them ordinals so calculation is either
+		* might be able to do something with | and flags corresponding to the orders
+	- weight some options to be more likely than others using integer values
+	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
+		* should this random chance be weighted?
+	- one condition might be "does the player have this item"
+
+Experiment with some basic cutscenes
+	- could have one with Renaldo preaching about the neighorhood watch as a test
+
+Dialog portrait image
 
 ---------------------------------------------------
 Level editor
@@ -64,23 +137,25 @@ Tiled Images
 Memory management/error handling
 ---------------------------------------------------
 
+Fix performance when going to large levels
+
+Fix the delay on startup
+	* almost completely fixed -- I think it should work to just not give the player control for a few seconds after loading
+		# need to display the screen during this time because processing bitmaps is likely the source of slowdown
+
+Asynchronous loading screen
+	* https://www.allegro.cc/forums/thread/615021
+	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
+	* add a progress bar (remember to use mutex)
+		# how to quantity loading progress? (could split into levels)
+	* If necessary, could make it so we asynchronously load only adjacent levels to the current one
+		# need to be careful to ensure the player can't walk to the edge before we finish loading
+		# in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
+		# would probably want to figure out how I'm actually going to use dungeons
+
 Use the heap profiler whenever debugging memory usage because it's extremely helpful
 
 Watch out for a leak in NPC.choose_dialog()
-
-Make it so we load asynchronously when using the calendar (do it during the fade)
-	* This is a good place to fix the way the player "teleports" to the spawn location
-
-Could make it so we asynchronously load only adjacent levels to the current one (need to be careful to ensure the player can't walk to the edge before we finish loading)
-	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
-		# would probably want to figure out how I'm actually going to use dungeons
-
-Decide how to handle player leaving the level when there's no corresponding level
-	* probably want to not let them leave if we know this will happen, and push them back into a legal position
-
-ImageLoader.load_image() is responsible for a huge portion of memory usage, so see if we can make it less expensive
-	* might be possible using bitmap settings since the memory being allocated is in al_create_bitmap()
-	* keep an eye out for redundant bitmap creation
 
 Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
 	* remember to re-save levels in the editor after making this change or any others like it
@@ -108,13 +183,13 @@ There's sometimes an exception on closing the window
 	* seems to have something to do with randomized procedural generation, because it only happens some of the time
 	* exception has something to do with level's tile rows -- happens in Level.unload_content()
 
+Exception when going to a level that doesn't exist
+
 ---------------------------------------------------
 Art/content
 ---------------------------------------------------
 
-Draw aleepee
-
-Draw Renaldo
+Draw Aleepee and Renaldo
 
 Draw the leaves for the large tree sprite
 	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
@@ -159,72 +234,21 @@ Figure out how to scale object/ui sizes with resolution
 	* might not be feasible
 
 Make custom mouse cursor
-
----------------------------------------------------
-NPCs
----------------------------------------------------
-
-NPC pathing
-	- when hitting a "next level" facing node, need to turn off pathing while we walk to the next level
-		* might need to serialize walk to/from direction
-		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
-		* make sure next level traveling behaivor also handles going through doors into houses
-	- make NPCs stop and wait after being blocked before actually pathing
-		* this requires a larger state/timer system, so plan that out carefully
-		* refactor the "current dest node key" logic to something like "do we have a destination we want to walk to right now but don't know the way?"
-			# waiting should always block pathing so we nevr get slowdown from constant recalculation
-	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
-		* need to figure out how a typical case of the player talking to an NPC should work
-		* also need to treat people (the player and other NPCs, and maybe animals) differently from other interactables
-			# could have NPCs have different personality types/moods that determine their reaction to being blocked: go around, push past, stop, etc
-	- can probably modify the pathing algorithm a bit to make NPCs prefer trails and/or factor them into the "cost" formula
-		* cost could be 1.0 divided by the average of move speeds of the tiles
-		* could also make it so we generate some kind of serialized node objects along with trails in level gen, which then become primary destinations for NPCs
-			traveling through genned woods
-	- Set a debug launch argument to control whether test rect bitmaps appear
-		* Manage the bitmaps through ImageLoader
-		* instead of launch argument, could add console commands
-
-Probably want to add a uniquely identifying key to serialized NPCs
-
-Make NPCs walk around outside programatically and have varying habits throughout the day
-	- there should definitely be a per-frame update for NPCs, but could also have "update clocks" that go off every so often
-	- need to figure out how to process NPC movements when they're not on the same Level as the player
-		* maybe get less fine-grain and just process what level they're in at any given time based on time of day,
-			what they're doing, the weather, etc
-
-Add NPC schedules/quest triggers
-	* could make the first quest getting some item from the store with money from the player's mom
-		# can also just choose to keep the money
-	* these quest triggers need to tie into time travel (think of majora's mask)
-
-Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
-	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
-	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
-	- allow these conditions to be "anded" together and give them ordinals so calculation is either
-		* might be able to do something with | and flags corresponding to the orders
-	- weight some options to be more likely than others using integer values
-	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
-
-Consider implementing animals before fully implementing NPCs since they should be simpler
-	- Animals probably won't travel between levels, and will be generated from templates, 
-		rather than than 1 to 1 serialized data <-> game object relationship
-
-Experiment with some basic cutscenes
-	* could have one with Renaldo preaching about the neighorhood watch as a test
-
-Dialog portrait image
+	* at this point probably go through UI/controls and add mouse controls where appropriate
 
 ---------------------------------------------------
 Animals
 ---------------------------------------------------
 
 Add animals
+	* might be a good time to start on encyclopedia
 	* keep track of which animals live in the area and let them move between levels, like NPCs
 	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
 	* maybe some animal types are set to only appear n days into the game
 	* add bugs too (possibly first, they might be easier and make more sense to interact with)
 		# some bugs might be under rocks
+	* Animals might not travel between levels, and will be generated from templates, 
+		rather than than 1 to 1 serialized data <-> game object relationship
 
 ---------------------------------------------------
 Map
@@ -273,8 +297,10 @@ Day/night cycle
 Stamina
 ---------------------------------------------------
 	
-IDEA: Stamina should drain slowly when walking and faster when running since time and stamina are both limited resources
-	* running should be significantly less stamina-efficient -- it shouldn't only drain faster, you should lose more stamina per unit traveled than when walking
+IDEA: Stamina could drain slowly when walking and faster when running since time and stamina are both limited resources
+	* running should be significantly less stamina-efficient 
+		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than when walking
+	* need to add a run button, also consider how this works with analog stick (need smooth stamina formula)
 
 IDEA: Stamina upgrades could be the only thing you take with you when reloading
 
@@ -315,4 +341,4 @@ Audio
 Add music
 	* The Eye of Pan has a special theme that is hidden inside other tracks
 
-Dialog sounds like in animal crossing
+Dialog sounds (like in animal crossing)

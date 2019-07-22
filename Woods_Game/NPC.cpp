@@ -4,24 +4,21 @@
 
 void NPC::clear_primary_destinations()
 {
-	//temp
-	this->current_destination_node_key = "";
-	//temp
 	AIBeing::clear_primary_destinations();
 }
 
-void NPC::mark_destination_reached(const std::string dest_key)
+const std::string NPC::calculate_destination_node_key(GlobalTime * time)
 {
-	//TEMP
-	if (dest_key == this->current_destination_node_key) {
-		this->current_destination_node_key = "";
-	}
-	//TEMP
+	//TEMP. should probably have more AIState filtering before we get here.
+	const std::string scheduled_node_key = this->schedule.scheduled_node_key(time);
+	return scheduled_node_key;
 }
 
 NPC::NPC()
 {
 	setClassName("NPC");
+	Register("npc_key", &npc_key);
+	Register("schedule", &(this->schedule));
 	Register("start_level_key", &start_level_key);
 	Register("default_spawn_level_key", &default_spawn_level_key);
 	Register("animation_spritesheet_key", &animation_spritesheet_key);
@@ -41,14 +38,19 @@ NPC::~NPC()
 {
 }
 
-void NPC::update(Level * level, const int game_mode)
+void NPC::update(Level * level, GlobalTime * time, const int game_mode)
 {
-	AIBeing::update(level, game_mode);
+	AIBeing::update(level, time, game_mode);
 }
 
 void NPC::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	AIBeing::draw(display, x_offset, y_offset);
+}
+
+const std::string NPC::get_npc_key()
+{
+	return this->npc_key.value();
 }
 
 const std::string NPC::get_start_level_key()
@@ -69,13 +71,14 @@ const std::string NPC::get_start_spawn_key()
 
 const std::string NPC::get_current_spawn_key()
 {
-	//TODO: logic to tell us which spawenr we should use if not default
+	//TODO: logic to tell us which spawenr we should use if not default (like schedule and quest triggers)
 	return this->default_spawn_key.value();
 }
 
 Dialog * NPC::choose_dialog(Player * player)
 {
 	//TODO: don't immediately choose default dialog text, check for other things
+	//TODO: use schedule, quest triggers, etc
 	const std::string default_text = this->get_default_dialog_text();
 	if (!default_text.empty()) {
 		Dialog * dialog = new Dialog();
@@ -119,11 +122,5 @@ const std::string NPC::get_current_level_key()
 
 const std::string NPC::get_current_destination_node_key()
 {
-	//TODO: calculate from schedule
-	return this->current_destination_node_key; //TEMP. the location the npc should be at should come from the npc's schedule.
-}
-
-void NPC::clear_pathing_destination()
-{
-	this->current_destination_node_key = "";
+	return this->ai_state.get_current_destination_node_key();
 }

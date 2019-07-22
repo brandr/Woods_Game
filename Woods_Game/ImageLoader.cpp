@@ -43,6 +43,15 @@ void ImageLoader::unload_content()
 	image_map.swap(std::map<std::pair<std::string, std::string>, ALLEGRO_BITMAP*>());
 }
 
+void ImageLoader::convert_bitmaps_to_video()
+{
+	al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
+	for (auto const &it : image_map) {
+		ALLEGRO_BITMAP * image_bmp = it.second;
+		al_convert_bitmap(image_bmp);
+	}
+}
+
 const bool ImageLoader::image_exists(const std::string filename)
 {
 	const std::string full_filename = ImageLoader::full_filename(filename);

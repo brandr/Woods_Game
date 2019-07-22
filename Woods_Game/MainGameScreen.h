@@ -28,11 +28,11 @@ private:
 	Controls keyboard_controls;
 	Controls controller_controls;
 	//UI components
-	ALLEGRO_BITMAP* hotbar_box;
-	ALLEGRO_BITMAP* hotbar_box_selected;
-	ALLEGRO_BITMAP* dialog_backdrop_full_width;
-	ALLEGRO_BITMAP* clock_backdrop;
-	ALLEGRO_BITMAP* option_arrow;
+	ALLEGRO_BITMAP* hotbar_box();
+	ALLEGRO_BITMAP* hotbar_box_selected();
+	ALLEGRO_BITMAP* dialog_backdrop_full_width();
+	ALLEGRO_BITMAP* clock_backdrop();
+	ALLEGRO_BITMAP* option_arrow();
 public:
 	MainGameScreen();
 	~MainGameScreen();
@@ -48,6 +48,7 @@ public:
 	virtual void stop_taking_mappable_input_controller();
 	virtual void set_input_map();
 	virtual void load_content();
+	virtual void load_fonts();
 	void load_ui_content();
 	void start_new_game(const std::string world_key);
 	void load_game(const std::string filepath);

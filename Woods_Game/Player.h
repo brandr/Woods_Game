@@ -5,6 +5,7 @@
 
 #include "Cutscene.h"
 #include "Dialog.h"
+#include "GlobalTime.h"
 #include "Inventory.h"
 #include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
 #include "allegro5/bitmap_draw.h"  // for al_draw_bitmap
@@ -51,7 +52,7 @@ public:
 	virtual int get_type();
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
-	virtual void update(Level * level, const int game_mode);
+	virtual void update(Level * level, GlobalTime *time, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
 	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);

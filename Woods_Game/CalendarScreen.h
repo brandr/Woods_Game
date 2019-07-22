@@ -21,15 +21,17 @@ class CalendarScreen :
 {
 private:
 	// UI components
-	ALLEGRO_BITMAP * calendar_backdrop;
-	ALLEGRO_BITMAP * calendar_backdrop_dialog;
+	ALLEGRO_BITMAP * calendar_backdrop();
+	ALLEGRO_BITMAP * calendar_backdrop_dialog();
+	ALLEGRO_BITMAP* arrow_left();
+	ALLEGRO_BITMAP* arrow_right();
+	ALLEGRO_BITMAP* arrow_left_disabled();
+	ALLEGRO_BITMAP* arrow_right_disabled();
+	ALLEGRO_BITMAP* check_mark();
+
 	GlobalTime * global_time;
 	Player * player;
-	ALLEGRO_BITMAP* arrow_left;
-	ALLEGRO_BITMAP* arrow_right;
-	ALLEGRO_BITMAP* arrow_left_disabled;
-	ALLEGRO_BITMAP* arrow_right_disabled;
-	ALLEGRO_BITMAP* check_mark;
+	
 	int month_index = -1;
 	std::pair<int, int> select_pos = std::pair<int,int>(-1, -1);
 	const int selected_month_index();
@@ -43,6 +45,7 @@ public:
 	CalendarScreen();
 	~CalendarScreen();
 	virtual void load_content();
+	virtual void load_fonts();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	void draw_day_labels(ALLEGRO_DISPLAY *display);
 	void draw_month_arrows(ALLEGRO_DISPLAY *display);

@@ -329,7 +329,7 @@ const int GameImage::calculate_direction(GameImage * other)
 	return DIR_NEUTRAL;
 }
 
-bool GameImage::intersects_area(Rect area)
+const bool GameImage::intersects_area(Rect area)
 {
 	return rect.intersects_rect(area);
 }

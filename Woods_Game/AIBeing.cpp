@@ -1,6 +1,35 @@
 #include "AIBeing.h"
 #include "Level.h"
 
+void AIBeing::ai_timer_update()
+{
+	this->ai_state.timer_update();
+}
+
+// TODO: consider moving this around/reorganizing into a more general order of operations for state flow
+void AIBeing::request_pathing_update(Level * level, GlobalTime * time)
+{
+	if (this->ai_state.is_idle()) {
+		std::string node_key = this->ai_state.get_current_destination_node_key();
+		if (node_key == "") {;
+			node_key = this->calculate_destination_node_key(time);
+			this->ai_state.set_current_destination_node_key(node_key);
+		}
+		if (node_key != "") {
+			bool close_enough = false;
+			PathNode * matching_node = level->find_path_node_with_key(node_key);
+			if (matching_node != NULL) {
+				const float x_dist = this->get_x() - matching_node->get_x(),
+					y_dist = this->get_y() - matching_node->get_y();
+				close_enough =(std::abs(x_dist) < 2.0 * TILE_SIZE && std::abs(y_dist) < 2.0*TILE_SIZE);
+			}
+			if (!close_enough) {
+				this->set_needs_pathing_calculation(node_key);
+			}
+		}
+	}
+}
+
 void AIBeing::destination_update(Level * level)
 {
 	//TEMP
@@ -28,22 +57,37 @@ void AIBeing::destination_update(Level * level)
 		// when we reach our current destination, remove it
 		if (std::abs(x_dist) < 1
 			&& std::abs(y_dist) < 1) {
-			this->xvel = 0, this->yvel = 0;
 			if (primary) {
 				const std::string dest_key = next_dest.first;
 				this->mark_destination_reached(dest_key);
 				this->primary_destinations.erase(this->primary_destinations.begin());
+				// if our path is taking us to another level, set a flag here saying we need to move the npc to that level
+				PathNode * dest_node = level->find_path_node_with_key(dest_key);
+				if (dest_node == NULL) {
+					this->clear_primary_destinations();
+				} else {
+					std::vector<NextLevelNode *> next_level_nodes = dest_node->get_next_level_nodes();
+					// only go to the next level if we just stepped onto the node
+					if ((std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) && next_level_nodes.size() > 0) {
+						NextLevelNode * next_level_node = next_level_nodes[0];
+						const std::string next_level_key = next_level_node->level_id.value();
+						const std::string next_level_node_key = next_level_node->node_id.value();
+						this->ai_state.set_is_requesting_next_level(next_level_key, next_level_node_key);
+					}
+				}
 			} else {
 				this->secondary_destinations.erase(this->secondary_destinations.begin());
 			}
+			this->xvel = 0, this->yvel = 0;
+			this->anim_state = ANIM_STATE_NEUTRAL;
 		}
 		else {
 			// see if there is an obstacle in the tile we are walking into
 			int start_x = this->get_x() / TILE_SIZE, start_y = this->get_y() / TILE_SIZE;
 			const std::pair<int, int> start_pos = std::pair<int, int>(start_x, start_y);
 			// cap xoff and yoff based on how far we're actually going to travel
-			const int xoff_t = std::abs(this->xvel) >= 1 ? (this->xvel / std::abs(this->xvel)) : 0;
-			const int yoff_t = std::abs(this->xvel) < 1 && std::abs(this->yvel) >= 1 ? (this->yvel / std::abs(this->yvel)) : 0;
+			const int xoff_t = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel)) : 0;
+			const int yoff_t = std::abs(this->xvel) == 0 && std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel)) : 0;
 			const int xoff = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel))
 				* std::min(std::abs(xoff_t) * TILE_SIZE, (int)std::abs(x_dist)) : 0;
 			const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
@@ -77,8 +121,7 @@ void AIBeing::destination_update(Level * level)
 						// we're next to the primary destination and it's blocked, so we can't go there at all
 						if (std::abs(x_dist_p) < TILE_SIZE * 2 && std::abs(y_dist_p) < TILE_SIZE * 2) {
 							failed = true;
-						}
-						else {
+						} else {
 							const std::pair<int, int> closest_pos
 								= this->find_closest_open_tile_pos(
 									primary_pos, all_interactables, nearby_tiles, level_dimensions);
@@ -121,7 +164,12 @@ void AIBeing::destination_update(Level * level)
 	{
 		if (this->primary_destinations.empty() && this->secondary_destinations.empty()) {
 			this->xvel = 0, this->yvel = 0;
-			this->anim_state = ANIM_STATE_NEUTRAL;
+			// TODO: if we need the fact that we reached a destination as context, this may be incorrect
+			if (this->ai_state.is_walking()) {
+				//TODO: this might be wrong since the AI could be standing still doing something
+				this->ai_state.set_is_idle();
+				anim_state = ANIM_STATE_NEUTRAL;
+			}
 			return;
 		}
 		const std::pair<std::string, std::pair<int, int>> next_dest = this->get_next_destination();
@@ -155,6 +203,7 @@ void AIBeing::destination_update(Level * level)
 			else direction = DIR_UP;
 		}
 		if (this->xvel > 0 || this->yvel > 0) {
+			this->ai_state.set_is_walking();
 			anim_state = ANIM_STATE_WALKING;
 		}
 	}
@@ -223,6 +272,34 @@ const std::pair<int, int> AIBeing::find_closest_open_tile_pos(const std::pair<in
 		return !this->empty_at(check_rect, interactables);
 	}
 
+	void AIBeing::set_is_processing(const bool value)
+	{
+		if (value) {
+			this->ai_state.set_is_locked();
+		} else {
+			this->ai_state.set_is_idle();
+		}
+		
+	}
+
+	const bool AIBeing::needs_pathing_calculation()
+	{
+		return this->ai_state.is_requesting_path();
+	}
+
+	void AIBeing::set_needs_pathing_calculation(const std::string dest_node_key)
+	{
+		this->ai_state.set_is_requesting_path();
+		this->ai_state.set_current_destination_node_key(dest_node_key);
+	}
+
+	void AIBeing::cancel_current_pathing()
+	{
+		//TEMP -- might need more logic based on the context under which we're stopping
+		this->ai_state.set_is_waiting(AI_PATH_BLOCKED_WAIT_TIME);
+		this->ai_state.set_current_destination_node_key("");
+	}
+
 	void AIBeing::clear_primary_destinations()
 	{
 		this->primary_destinations.clear();
@@ -233,29 +310,61 @@ const std::pair<int, int> AIBeing::find_closest_open_tile_pos(const std::pair<in
 		// override in subclasses
 	}
 
+	void AIBeing::set_ai_state(const int state_key)
+	{
+		this->ai_state.set_state_key(state_key);
+	}
+
+	// abstract AIBeings do not use node pathing. Override this in subclasses.
+	const std::string AIBeing::calculate_destination_node_key(GlobalTime * time)
+	{
+		return "";
+	}
+
+	void AIBeing::set_is_starting_path()
+	{
+		this->set_ai_state(AI_STATE_STARTING_PATH);
+	}
+
+	const bool AIBeing::is_requesting_next_level()
+	{
+		return this->ai_state.is_requesting_next_level();
+	}
+
+	const std::string AIBeing::get_requested_next_level_key()
+	{
+		return this->ai_state.is_requesting_next_level()
+			? this->ai_state.get_requested_next_level_key() : "";
+	}
+
+	const std::string AIBeing::get_requested_next_level_node_key()
+	{
+		return this->ai_state.is_requesting_next_level()
+			? this->ai_state.get_requested_next_level_node_key() : "";
+	}
+
 	AIBeing::AIBeing()
 {
 	direction = DIR_NEUTRAL;
 	anim_state = ANIM_NEUTRAL;
 	solid = true;
+	this->set_ai_state(AI_STATE_IDLE);
 }
 
 AIBeing::~AIBeing()
 {
 }
 
-void AIBeing::update(Level * level, const int game_mode)
+void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
 {
 	// idea: "wandering" state when being has nothing else to do (how to determine allowed wander area?)
 	// put destination calculations before walk update so we don't start walking in the wrong direction
-
-	//temp -- pass in level
-	TileSet * tileset = level->get_tileset();
-	//temp
 	
+	this->ai_timer_update();
+	this->request_pathing_update(level, time);
 	this->destination_update(level);
 	this->walk_update();
-	Being::update(level, game_mode);
+	Being::update(level, time, game_mode);
 }
 
 void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -274,8 +383,8 @@ void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_
 	const float x_dist = next_pos.first - this->get_x(),
 		y_dist = next_pos.second - this->get_y();
 
-	const int xoff_t = std::abs(this->xvel) >= 1 ? (this->xvel / std::abs(this->xvel)) : 0;
-	const int yoff_t = std::abs(this->xvel) < 1 && std::abs(this->yvel) >= 1 ? (this->yvel / std::abs(this->yvel)) : 0;
+	const int xoff_t = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel)) : 0;
+	const int yoff_t = std::abs(this->xvel) == 0 && std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel)) : 0;
 	const int xoff = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel))
 		* std::min(std::abs(xoff_t) * TILE_SIZE, (int)std::abs(x_dist)) : 0;
 	const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))

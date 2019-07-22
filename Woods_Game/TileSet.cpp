@@ -486,6 +486,22 @@ std::pair<int, int> TileSet::get_entity_group_root_offset(const int row)
 	return this->entity_group_types.getItem(row)->get_root_offset();
 }
 
+const std::pair<int, int> TileSet::get_entity_group_collide_offset(const int row)
+{
+	if (row < 0 || row > this->entity_group_types.size()) {
+		return std::pair<int, int>(0, 0);
+	}
+	return this->entity_group_types.getItem(row)->get_collide_offset();
+}
+
+const std::pair<int, int> TileSet::get_entity_group_collide_dimensions(const int row)
+{
+	if (row < 0 || row > this->entity_group_types.size()) {
+		return std::pair<int, int>(0, 0);
+	}
+	return this->entity_group_types.getItem(row)->get_collide_dimensions();
+}
+
 
 std::pair<int, int> TileSet::get_entity_group_center_offset(const int row)
 {

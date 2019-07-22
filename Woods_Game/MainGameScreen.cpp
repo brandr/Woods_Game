@@ -200,6 +200,31 @@ void register_mouse_click_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle
 	}
 }
 
+ALLEGRO_BITMAP * MainGameScreen::hotbar_box()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::hotbar_box_selected()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1_light");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::dialog_backdrop_full_width()
+{
+	return ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::clock_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/time_date_backdrop");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::option_arrow()
+{
+	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
+}
+
 MainGameScreen::MainGameScreen()
 {
 	set_input_map();
@@ -452,12 +477,11 @@ void MainGameScreen::set_input_map()
 
 void MainGameScreen::load_content()
 {
-	//TODO: need to load content differently depending on whether we're starting a new game, loading a save, etc.
-	game_image_manager.load_content();
 	pause_screen.load_content();
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
 	calendar_screen.load_content();
+
 	GlobalTime * global_time = game_image_manager.get_current_global_time();
 	calendar_screen.set_global_time(global_time);
 	calendar_screen.set_player(game_image_manager.get_player());
@@ -465,7 +489,22 @@ void MainGameScreen::load_content()
 	set_default_controls();
 	set_mappable_controls();
 	set_mappable_input_list();
+
 	load_ui_content();
+}
+
+//TODO: loading fonts causes problems if we load async. Look for a way to convert font bitmaps to video bitmaps after loading.
+void MainGameScreen::load_fonts()
+{
+
+	// this is where we load fonts for the pause screen
+	this->pause_screen.load_menus();
+	this->inventory_screen.load_fonts();
+	this->calendar_screen.load_fonts();
+
+	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
+	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
+	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 }
 
 void MainGameScreen::load_ui_content()
@@ -475,15 +514,6 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
 	ImageLoader::get_instance().load_image("ui/time_date_backdrop");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
-
-	hotbar_box = ImageLoader::get_instance().get_image("ui/item_box_1");
-	hotbar_box_selected = ImageLoader::get_instance().get_image("ui/item_box_1_light");
-	dialog_backdrop_full_width = ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
-	clock_backdrop = ImageLoader::get_instance().get_image("ui/time_date_backdrop");
-	option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
-	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL); 
-	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", DIALOG_FONT_SIZE, NULL);
-	font_map[FONT_CLOCK] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 	//TODO: other UI components like stamina
 }
 
@@ -653,8 +683,8 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 	Inventory& inventory = game_image_manager.get_player()->get_inventory();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
-	const int box_width = al_get_bitmap_width(hotbar_box);
-	const int box_height = al_get_bitmap_height(hotbar_box);
+	const int box_width = al_get_bitmap_width(hotbar_box());
+	const int box_height = al_get_bitmap_height(hotbar_box());
 	const int hotbar_index = inventory.get_hotbar_index();
 	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
@@ -662,10 +692,10 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		const float y = height - box_height - 12;
 		const int num = i < 9 ? i + 1 : 0;
 		if (i == hotbar_index) {
-			al_draw_bitmap(hotbar_box_selected, x, y, 0);
+			al_draw_bitmap(hotbar_box_selected(), x, y, 0);
 		}
 		else {
-			al_draw_bitmap(hotbar_box, x, y, 0);
+			al_draw_bitmap(hotbar_box(), x, y, 0);
 		}
 		const std::vector<int> rgb = MenuItem::string_to_rgb(FONT_COLOR_HOTBAR);
 		al_draw_text(font_map[FONT_HOTBAR], al_map_rgb(rgb[0], rgb[1], rgb[2]), x + 8.0f, y + 5.0f, 0, std::to_string(num).c_str());
@@ -676,9 +706,9 @@ void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 
 void MainGameScreen::draw_clock(ALLEGRO_DISPLAY * display)
 {
-	const int x = al_get_display_width(display) - al_get_bitmap_width(clock_backdrop) - 8;
+	const int x = al_get_display_width(display) - al_get_bitmap_width(clock_backdrop()) - 8;
 	const int y = 8;
-	al_draw_bitmap(clock_backdrop, x, y, NULL);
+	al_draw_bitmap(clock_backdrop(), x, y, NULL);
 	const std::string date_str = game_image_manager.date_display_string();
 	const std::string time_str = game_image_manager.time_display_string();
 	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, date_str.c_str());
@@ -694,9 +724,9 @@ void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
 {
 	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
 	if (dialog) {
-		const int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width)) / 2;
+		const int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width())) / 2;
 		const int y = 10;
-		al_draw_bitmap(dialog_backdrop_full_width, x, y, 0);
+		al_draw_bitmap(dialog_backdrop_full_width(), x, y, 0);
 		dialog->draw(display, font_map[FONT_DIALOG], x, y);
 		//TODO: draw avatar
 		//TODO: scrolling text (button speeds up)

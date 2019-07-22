@@ -114,6 +114,11 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	InputManager input;
 	al_start_timer(timer);
 	
+	// for fps counter
+	double old_time = al_get_time();
+	//TEMP
+	ALLEGRO_FONT *fps_font = al_load_ttf_font("resources/fonts/ArialBlack.ttf", 14, 0);
+	//TEMP
 
 	// game loop
 	bool done = false, draw = true;
@@ -133,9 +138,26 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 		if (draw) {
 			draw = false;
 			ScreenManager::get_instance().draw(display);
+
+			//temp
+			// update fps counter
+			double new_time = al_get_time();
+			double delta = new_time - old_time;
+			double fps = 1.0 / (delta);
+			old_time = new_time;
+			
+			al_draw_text(fps_font, al_map_rgb(255, 0, 0), 72, 16, ALLEGRO_ALIGN_LEFT, ("FPS: " + std::to_string(fps)).c_str());
+			if (fps < 10.0) {
+				std::cout << "Low FPS: " << std::to_string(fps) << "\n";
+			}
+			//temp
+
+			
+
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
+		
 	}
 	ImageLoader::get_instance().unload_content();
 	ScreenManager::get_instance().unload_content();
@@ -150,8 +172,6 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	al_uninstall_mouse();
 	al_uninstall_keyboard();
 	al_uninstall_system();
-	// show memory leaks
-	_CrtDumpMemoryLeaks();
 }
 
 int initialize_allegro_libraries() {
@@ -168,8 +188,6 @@ int initialize_allegro_libraries() {
 
 int main(int argc, char *argv[])
 {
-	// show memory leaks
-	_CrtDumpMemoryLeaks();
 	const std::string run_mode = argc > 1 ? argv[1] : RUN_GAME;
 	ALLEGRO_DISPLAY *display; 
 	if (run_mode == RUN_GAME || run_mode == LEVEL_EDITOR) {

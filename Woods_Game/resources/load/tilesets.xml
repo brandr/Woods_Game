@@ -227,6 +227,10 @@
                 <Member Name="entity_group_index">0</Member>
                 <Member Name="root_offset_x">0</Member>
                 <Member Name="root_offset_y">128</Member>
+                <Member Name="collide_offset_x">0</Member>
+                <Member Name="collide_offset_y">142</Member>
+                <Member Name="collide_width">75</Member>
+                <Member Name="collide_height">50</Member>
                 <Member Name="center_offset_x">32</Member>
                 <Member Name="center_offset_y">175</Member>
                 <Member Name="entity_group_image_width">64</Member>
@@ -253,6 +257,10 @@
                 <Member Name="entity_group_index">1</Member>
                 <Member Name="root_offset_x">64</Member>
                 <Member Name="root_offset_y">512</Member>
+                <Member Name="collide_offset_x">90</Member>
+                <Member Name="collide_offset_y">536</Member>
+                <Member Name="collide_width">70</Member>
+                <Member Name="collide_height">40</Member>
                 <Member Name="center_offset_x">126</Member>
                 <Member Name="center_offset_y">557</Member>
                 <Member Name="entity_group_image_width">256</Member>
@@ -382,6 +390,10 @@
                 <Member Name="entity_group_index">0</Member>
                 <Member Name="root_offset_x">0</Member>
                 <Member Name="root_offset_y">0</Member>
+                <Member Name="collide_offset_x">0</Member>
+                <Member Name="collide_offset_y">0</Member>
+                <Member Name="collide_width">128</Member>
+                <Member Name="collide_height">128</Member>
                 <Member Name="center_offset_x">89</Member>
                 <Member Name="center_offset_y">72</Member>
                 <Member Name="entity_group_image_width">128</Member>
@@ -493,6 +505,10 @@
                 <Member Name="entity_group_index">0</Member>
                 <Member Name="root_offset_x">0</Member>
                 <Member Name="root_offset_y">128</Member>
+                <Member Name="collide_offset_x">0</Member>
+                <Member Name="collide_offset_y">142</Member>
+                <Member Name="collide_width">75</Member>
+                <Member Name="collide_height">50</Member>
                 <Member Name="center_offset_x">32</Member>
                 <Member Name="center_offset_y">175</Member>
                 <Member Name="entity_group_image_width">64</Member>

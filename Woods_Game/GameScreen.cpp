@@ -100,6 +100,10 @@ void GameScreen::load_content()
 {
 }
 
+void GameScreen::load_fonts()
+{
+}
+
 void GameScreen::unload_content()
 {
 	for (std::map<int, ALLEGRO_FONT*>::iterator it = font_map.begin(); it != font_map.end(); ++it) {

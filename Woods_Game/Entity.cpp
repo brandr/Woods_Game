@@ -391,6 +391,10 @@ EntityData::EntityData()
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);
 	Register("root_offset_y", &root_offset_y);
+	Register("collide_offset_x", &collide_offset_x);
+	Register("collide_offset_y", &collide_offset_y);
+	Register("collide_width", &collide_width);
+	Register("collide_height", &collide_height);
 	Register("center_offset_x", &center_offset_x);
 	Register("center_offset_y", &center_offset_y);
 	Register("solid", &solid);
@@ -501,6 +505,16 @@ std::string EntityData::get_entity_data_key()
 std::pair<int, int> EntityData::get_root_offset()
 {
 	return std::pair<int, int>(this->root_offset_x.value(), this->root_offset_y.value());
+}
+
+const std::pair<int, int> EntityData::get_collide_offset()
+{
+	return std::pair<int, int>(this->collide_offset_x.value(), this->collide_offset_y.value());
+}
+
+const std::pair<int, int> EntityData::get_collide_dimensions()
+{
+	return std::pair<int, int>(this->collide_width.value(), this->collide_height.value());
 }
 
 std::pair<int, int> EntityData::get_center_offset()

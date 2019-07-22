@@ -95,16 +95,18 @@ public:
 	void clear_all_beings();
 	void save_to_xml();
 	void unload_content();
-	void update(const int game_mode);
+	void update(GlobalTime * time, const int game_mode);
 	void draw(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);
 	void add_being(Being *b);
 	void remove_player();
+	void remove_being(Being *b);
 	void remove_beings(const int type);
 	Being * get_player();
 	std::vector<Entity*> get_interactables(Entity*);
 	std::vector<Entity*> get_interactables(Entity*, const bool ignore_moving_obstacles);
+	std::vector<Entity*> get_moving_interactables(Entity* entity);
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
@@ -129,6 +131,8 @@ public:
 	PathNode * create_path_node(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
 	const bool has_path_node_for_key(const std::string node_key);
 	PathNode * find_path_node_with_key(const std::string node_key);
+	const bool has_any_path_node();
+	PathNode * find_any_path_node();
 	// tile stuff
 	void set_tile(Tile * tile, std::pair<int, int> pos);
 	Tile *get_tile(int x, int y);

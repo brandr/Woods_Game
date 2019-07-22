@@ -5,6 +5,8 @@
 #include "AIBeing.h"
 #include "Dialog.h"
 #include "DjikstraPath.h"
+#include "GlobalTime.h"
+#include "NPCSchedule.h"
 #include "PathNode.h"
 #include "XMLSerialization.h"
 #include <math.h>
@@ -14,6 +16,8 @@ class Player;
 class NPC : public AIBeing, public xmls::Serializable
 {
 private:
+	NPCSchedule schedule;
+	xmls::xString npc_key;
 	xmls::xString start_level_key; // level where the NPC starts the game
 	xmls::xString default_spawn_level_key;
 	xmls::xString start_spawn_key;
@@ -21,15 +25,17 @@ private:
 	xmls::xString default_dialog_text;
 
 	std::string current_level_key = "";
-	std::string current_destination_node_key = "n_east_a"; //temp
+	std::string current_position_node_key = "";
+	bool is_processing = false; //TEMP. replace with AI state for AIBeing
 protected:
 	virtual void clear_primary_destinations();
-	virtual void mark_destination_reached(const std::string dest_key);
+	virtual const std::string calculate_destination_node_key(GlobalTime * time);
 public:
 	NPC();
 	~NPC();
-	virtual void update(Level * level, const int game_mode);
+	virtual void update(Level * level, GlobalTime * time, const int game_mode);
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	const std::string get_npc_key();
 	const std::string get_start_level_key();
 	const std::string get_current_spawn_level_key();
 	const std::string get_start_spawn_key();
@@ -40,7 +46,6 @@ public:
 	void set_current_level_key(const std::string level_key);
 	const std::string get_current_level_key();
 	const std::string get_current_destination_node_key();
-	void clear_pathing_destination(); //temp
 };
 
 #endif

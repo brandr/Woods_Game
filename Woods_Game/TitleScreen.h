@@ -19,7 +19,6 @@ class TitleScreen:
 {
 private:
 	ALLEGRO_FONT *font;
-	//std::map<int, ALLEGRO_BITMAP*> backdrops;
 	std::map<int, std::string> backdrop_filenames;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
 	int menu_key = TITLE_MAIN_MENU;

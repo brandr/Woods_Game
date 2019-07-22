@@ -35,6 +35,7 @@ public:
 	~ImageLoader();
 	void load_content();
 	void unload_content();
+	void convert_bitmaps_to_video();
 	const bool image_exists(const std::string filename);
 	const bool keyed_image_exists(const std::string image_key, const int width, const int height, const std::string suffix);
 	const bool keyed_image_exists(const std::string key);

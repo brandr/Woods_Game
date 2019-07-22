@@ -16,7 +16,7 @@ Being::~Being()
 {
 }
 
-void Being::update(Level * level, const int game_mode)
+void Being::update(Level * level, GlobalTime * time, const int game_mode)
 {
 	collision_update(level, game_mode);
 	movement_update(level, game_mode);
@@ -254,7 +254,7 @@ void Being::collision_update(Level * level, const int game_mode)
 {
 	std::vector<Entity*> interactables = level->get_interactables(this); //TEMP?
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	colliding_entities.clear();
+	this->colliding_entities.clear();
 	int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i]->get_block();
@@ -262,11 +262,12 @@ void Being::collision_update(Level * level, const int game_mode)
 	}
 	const int size = interactables.size();
 	for (int i = 0; i < size; i++) {
-		if (interactables[i]->get_mask() && Mask_Collide(this->get_mask(), interactables[i]->get_mask(),
-			get_x() - interactables[i]->get_x(),
-			get_y() - interactables[i]->get_y())) {
-			Entity* e = interactables[i];
-			colliding_entities.push_back(e);
+		Entity * other = interactables[i];
+		if (other && other->get_mask() && Mask_Collide(this->get_mask(), other->get_mask(),
+			get_x() - other->get_x(),
+			get_y() - other->get_y())) {
+			Entity* e = other;
+			this->colliding_entities.push_back(e); 
 			collide_with_entity(e);
 		}
 	}
@@ -331,7 +332,7 @@ const bool Being::empty_at(Rect collide_rect, Level * level, const bool ignore_m
 
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
-		if (e != this && e->is_solid() && e->intersects_area(r)) {
+		if (e && e != this && e->is_solid() && e->intersects_area(r)) {
 			return false;
 		}
 	}
@@ -342,7 +343,8 @@ const bool Being::precise_empty_at(std::vector<Entity*> interactables, const int
 	if (!this->get_mask()) return true;
 	const int size = interactables.size();
 	for (int i = 0; i < size; i++) {
-		if (interactables[i]->is_solid() 
+		if (interactables[i] 
+			&& interactables[i]->is_solid() 
 			&& interactables[i]->get_mask() 
 			&& Mask_Collide(this->get_mask(), interactables[i]->get_mask(),
 				 (get_x() + xoff) - interactables[i]->get_x(),

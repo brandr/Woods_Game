@@ -37,7 +37,7 @@ protected:
 public:
 	Being();
 	~Being();
-	virtual void update(Level * level, const int game_mode);
+	virtual void update(Level * level, GlobalTime * time, const int game_mode);
 	//virtual void update(TileSet * tileset, std::vector<Entity*>, std::vector<Tile*>, const std::pair<int, int>, const int);
 	virtual void animation_update(const int game_mode);
 	void set_xvel(int);

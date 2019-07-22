@@ -17,6 +17,7 @@ enum SCREEN_FLAGS {
 	FLAG_CHANGE_TO_MAIN_GAME, 
 	FLAG_CHANGE_TO_TITLE, 
 	FLAG_START_NEW_GAME, 
+	FLAG_FINISH_LOADING,
 	FLAG_LOAD_GAME,
 	FLAG_RESUME_GAME, 
 	FLAG_QUIT_GAME
@@ -47,6 +48,7 @@ public:
 	GameScreen();
 	~GameScreen();
 	virtual void load_content();
+	virtual void load_fonts();
 	virtual void unload_content();
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);

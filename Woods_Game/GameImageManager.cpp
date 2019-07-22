@@ -59,10 +59,14 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.load_dungeons();
 	this->world.load_npcs();
 	this->world.generate_levels();
-	load_player_from_xml("resources/load/player", this->world.get_player_key()); //TODO: Should we look for a default player? Create one with some settings entered at the start?
+	//TODO: Should we look for a default player? Create one with some settings entered at the start?
+	load_player_from_xml("resources/load/player", this->world.get_player_key()); 
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->save_game();
-
+	this->world.recalculate_npc_paths();
+	this->thread_data.world = &(this->world);
+	this->thread_data.player = this->player;
+	this->thread_data.ready = true;
 }
 
 void GameImageManager::full_load_game_from_save(const std::string save_file)
@@ -91,56 +95,12 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->world.reload_dungeons(dungeons_path);
 	//this->world.load_npcs(); //TODO: need to reload NPCS?
 	this->save_game();
-	//TODO: fix the part where we cut to black right after loading (maybe need to load asynchronously while fading to black)
-	//TODO: fix memory issues that hapen when reloading
+	
 }
 
 void GameImageManager::save_game()
 {
-	//TODO: make sure "world" data can be managed across days in terms of things like NPC interactions
-	//		might want different types of data files besides world to manage some NPC stuff
-	const std::string save_file_name = this->world.get_world_key();
-	const std::string day_str = "day_" + std::to_string(this->current_global_time->get_day());
-	this->world.set_current_day(this->current_global_time->get_day());
-	std::string save_file_dir = "resources/load/saves/" + save_file_name;
-	if (!boost::filesystem::is_directory(save_file_dir)) {
-		boost::filesystem::create_directory(save_file_dir);
-	}
-	save_file_dir += "/" + day_str;
-	if (!boost::filesystem::is_directory(save_file_dir)) {
-		boost::filesystem::create_directory(save_file_dir);
-	}
-	FileManager filemanager;
-	const std::string world_file_path = "resources/load/saves/" + save_file_name + "/worlds";
-	std::map<std::string, std::string> attributes;
-	attributes["Type"] = "World";
-	attributes["Version"] = "1";
-	attributes["WorldKey"] = save_file_name;
-	file_manager.create_xml_file(world_file_path);
-	file_manager.save_xml_content(world_file_path, "SerializableClass", attributes);
-	const std::string world_xml = this->world.toXML();
-	//TODO: when to update NPCs? (I think these get serialized in world)
-	file_manager.replace_xml_content(world_file_path, "SerializableClass", "WorldKey", save_file_name, world_xml);
-	const std::string dungeon_dir = save_file_dir + "/dungeons";
-	if (!boost::filesystem::is_directory(dungeon_dir)) {
-		boost::filesystem::create_directory(dungeon_dir);
-	}
-	for (std::shared_ptr<Dungeon> d : this->world.get_dungeons()) {
-		const std::string dungeon_path = dungeon_dir + "/" + d->get_dungeon_name();
-		file_manager.create_xml_file(dungeon_path);
-		std::vector<Level*> levels = d->get_level_list();
-		for (Level *level : levels) {
-			std::map<std::string, std::string> attributes;
-			attributes["Type"] = "Level";
-			attributes["Version"] = "1";
-			attributes["LevelKey"] = level->get_filename();
-			file_manager.save_xml_content(dungeon_path, "SerializableClass", attributes);
-			const std::string level_xml = level->toXML();
-			file_manager.replace_xml_content(dungeon_path, "SerializableClass", "LevelKey", level->get_filename(), level_xml);
-		}
-	}
-	const std::string save_file_path = save_file_dir + "/" + day_str;
-	file_manager.create_xml_file(save_file_path);
+	World::save_game(&(this->world), this->current_global_time);
 }
 
 void GameImageManager::set_game_mode(int game_mode)
@@ -160,8 +120,56 @@ void GameImageManager::load_player_from_xml(std::string filepath, std::string pl
 	file_manager.load_xml_content(player, filepath, "SerializableClass", "PlayerKey", player_key);
 	player->load_content_from_attributes();
 	player->load_additional_masks_from_attributes("player");
-	this->current_level = this->world.extract_current_level(player);
+	this->current_level = this->world.extract_current_level(player, "");
 	this->current_level->add_being(player);
+}
+
+void * GameImageManager::load_func_advance_day(ALLEGRO_THREAD * thr, void * arg)
+{
+	
+	LoadingData *data = (LoadingData *)arg;
+	al_lock_mutex(data->mutex);
+	data->ready = false;
+	data->world->update_new_day(data->player, data->current_level_key);
+	data->world->recalculate_npc_paths();
+	data->ready = true;
+	al_broadcast_cond(data->cond);
+	al_unlock_mutex(data->mutex);
+	return NULL;
+}
+
+void * GameImageManager::load_func_save_game(ALLEGRO_THREAD * thr, void * arg)
+{
+	LoadingData *data = (LoadingData *)arg;
+	al_lock_mutex(data->mutex);
+	data->ready = false;
+	World::save_game(data->world, data->global_time);
+	data->world->recalculate_npc_paths();
+	data->ready = true;
+	al_broadcast_cond(data->cond);
+	al_unlock_mutex(data->mutex);
+	return NULL;
+}
+
+void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * arg)
+{
+	FileManager filemanager;
+	LoadingData *data = (LoadingData *)arg;
+	al_lock_mutex(data->mutex);
+	data->ready = false;
+
+	const std::string world_key = data->world->get_world_key();
+	const std::string filename = "resources/load/saves/" + world_key + "/worlds";
+	//const int x = data->player->get_x(), y = data->player->get_y();
+	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(data->global_time->get_day()) + "/dungeons";
+	data->world->reload_dungeons(dungeons_path);
+	//TODO: make sure NPCs show up in the correct places after reolading
+	data->world->load_npcs(); //TODO: need to reload NPCS? (this could be where we reload paths)
+	data->world->recalculate_npc_paths();
+	data->ready = true;
+	al_broadcast_cond(data->cond);
+	al_unlock_mutex(data->mutex);
+	return NULL;
 }
 
 Player * GameImageManager::get_player()
@@ -184,6 +192,11 @@ void GameImageManager::unload_level_content()
 
 void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::pair<float,float>> joystick_map)
 {
+	// need to keep the world threadsafe
+	if (!this->thread_data.ready) {
+		return;
+	}
+	al_lock_mutex(this->thread_data.mutex);
 	const int game_mode = get_game_mode();
 	if (game_mode != TOP_DOWN) { return; }
 	std::pair<int, int> dimensions = current_level->get_dimensions();
@@ -191,25 +204,31 @@ void GameImageManager::update(std::map<int, bool> input_map, std::map<int, std::
 		if (player->get_exit_level_flag()) {
 			//TODO: check to make sure there is a next level in the given direction here
 			change_player_level();
+			al_unlock_mutex(this->thread_data.mutex);
 			return;
 		}
 		if (player->has_open_dialog()) {
 			set_game_mode(MAIN_GAME_DIALOG);
+			al_unlock_mutex(this->thread_data.mutex);
 			return;
 		}
 		if (player->has_active_cutscene()) {
 			set_game_mode(CUTSCENE);
+			al_unlock_mutex(this->thread_data.mutex);
 			return;
 		}
 		if (player->get_should_open_calendar()) {
 			set_game_mode(CALENDAR);
+			al_unlock_mutex(this->thread_data.mutex);
 			return;
 		}
 		player->update_input(input_map, joystick_map, game_mode);
 	}
-	current_level->update(game_mode);
+	current_level->update(this->get_current_global_time(), game_mode);
 	this->time_update();
 	this->npc_update();
+	//al_broadcast_cond(this->thread_data.cond);
+	al_unlock_mutex(this->thread_data.mutex);
 }
 
 const std::string GameImageManager::time_display_string()
@@ -239,14 +258,7 @@ void GameImageManager::time_update()
 
 void GameImageManager::npc_update()
 {
-	this->world.npc_update();
-}
-
-void GameImageManager::update_new_day()
-{
-	this->world.update_new_day(this->player);
-	this->current_level = this->world.extract_current_level(player);
-	this->current_level->add_being(player);
+	this->world.npc_update(this->current_global_time, this->game_mode);
 }
 
 GlobalTime * GameImageManager::get_current_global_time()
@@ -300,38 +312,41 @@ void GameImageManager::change_player_level()
 		int grid_y = current_level->get_grid_y();
 		int width = current_level->get_width();
 		int height = current_level->get_height();
+		const int level_width = STANDARD_LEVEL_GRID_WIDTH;
+		const int level_height = STANDARD_LEVEL_GRID_HEIGHT;
 
 		enum { UP, DOWN, LEFT, RIGHT };
 		int direction = 0;
 		//up
 		if (player->get_y() + player->get_height() < 0) {
-			x = grid_x, y = grid_y - 1;
+			x = grid_x + player->get_x()/level_width, y = grid_y - 1;
 			direction = UP;
 		}
 
 		//down
 		else if (player->get_y() > height) {
-			x = grid_x, y = grid_y + current_level->get_grid_height();
+			x = grid_x + player->get_x() / level_width, y = grid_y + current_level->get_grid_height();
 			direction = DOWN;
 		}
 		//left
 		else if (player->get_x() + player->get_width() < 0) {
-			x = grid_x - 1, y = grid_y;
+			x = grid_x - 1, y = grid_y + player->get_y() / level_height;
 			direction = LEFT;
 		}
 
 		//right
 		else if (player->get_x() > width) {
-			x = grid_x + current_level->get_grid_width(), y = grid_y;
+			x = grid_x + current_level->get_grid_width(), y = grid_y + player->get_y() / level_height;
 			direction = RIGHT;
 		}
 		else {
 			std::cout << "ERROR: no direction " << std::endl;
 		}
+		
 		next_level = world.get_current_dungeon()->level_at(x, y);
-		const int level_width = STANDARD_LEVEL_GRID_WIDTH;
-		const int level_height = STANDARD_LEVEL_GRID_HEIGHT;
-		const float player_offset_x = fmod(player->get_x(), level_width), player_offset_y = fmod(player->get_y(), level_height);
+		const float player_offset_x
+			= (x -next_level->get_grid_x())*level_width + fmod(player->get_x(), level_width),
+			player_offset_y = (y - next_level->get_grid_y())*level_height + fmod(player->get_y(), level_height);
 		int grid_offset_x = next_level->get_grid_x() - current_level->get_grid_x();
 		int grid_offset_y = next_level->get_grid_y() - current_level->get_grid_y();
 		switch (direction) {
@@ -464,23 +479,49 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 {
 	if (cutscene != NULL && cutscene->has_action()) {
 		const std::string action_key = cutscene->get_active_action_key();
-		if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
+		if (action_key == ACTION_AWAIT_LOAD) {
+			if (this->thread_data.ready) {
+				al_lock_mutex(this->thread_data.mutex);
+				cutscene->advance_block();
+				al_unlock_mutex(this->thread_data.mutex);
+			}
+		} else if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
 			GlobalTime * updated_time = cutscene->get_active_global_time();
 			if (updated_time != NULL) {
 				this->current_global_time->copy(updated_time);
 				cutscene->advance_block();
 			}
 		} else if (action_key == ACTION_SAVE_GAME) {
-			this->save_game();
+			al_lock_mutex(this->thread_data.mutex);
+			this->thread_data.global_time = this->current_global_time;
+			al_unlock_mutex(this->thread_data.mutex);
+			this->loading_thread = al_create_thread(load_func_save_game, &(this->thread_data));
+			al_start_thread(this->loading_thread);
+			al_rest(0.001); // give time to lock the mutex
 			cutscene->advance_block();
 		} else if (action_key == ACTION_LOAD_GAME) {
-			GlobalTime * updated_time = cutscene->get_active_global_time();
-			if (updated_time != NULL) {
-				this->load_game_from_save(updated_time->get_day(), updated_time->get_time());
-				cutscene->advance_block();
+			if (this->loading_thread != NULL) {
+				al_destroy_thread(this->loading_thread);
 			}
+			GlobalTime * updated_time = cutscene->get_active_global_time();
+			//if (this->current_global_time != NULL) {
+			//	delete this->current_global_time;
+			//}
+			//this->current_global_time = new GlobalTime(updated_time->get_day(), updated_time->get_time());
+			this->thread_data.current_level_key = this->current_level->get_filename();
+			//this->thread_data.global_time = this->current_global_time;
+			this->loading_thread = al_create_thread(load_func_load_from_save, &(this->thread_data));
+			al_start_thread(this->loading_thread);
+			al_rest(0.01); // give time to lock the mutex
+			cutscene->advance_block();
 		} else if (action_key == ACTION_UPDATE_NEW_DAY) {
-			this->update_new_day();
+			if (this->loading_thread != NULL) {
+				al_destroy_thread(this->loading_thread);
+			}
+			this->thread_data.current_level_key = this->current_level->get_filename();
+			this->loading_thread = al_create_thread(load_func_advance_day, &(this->thread_data));
+			al_start_thread(this->loading_thread);
+			al_rest(0.001); // give time to lock the mutex
 			cutscene->advance_block();
 		}
 	}

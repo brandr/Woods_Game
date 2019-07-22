@@ -122,7 +122,7 @@ public:
 	float get_width();
 	float get_height();
 	virtual bool contains_point(int, int);
-	virtual bool intersects_area(Rect);
+	virtual const bool intersects_area(Rect);
 	virtual bool outside_level(std::pair<int, int>);
 	static Animation *load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions);
 };
