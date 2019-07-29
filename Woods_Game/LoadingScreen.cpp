@@ -16,16 +16,17 @@ void LoadingScreen::load_content()
 
 void LoadingScreen::unload_content()
 {
+	if (this->font) {
+		al_destroy_font(this->font);
+	}
 }
 
 void LoadingScreen::update()
 {
 	animation_index = (animation_index + 1) % 180;
-	//al_lock_mutex(this->thread_data.mutex);
 	if (this->thread_data.ready && this->get_screen_flag() != FLAG_FINISH_LOADING) {
 		this->set_screen_flag(FLAG_FINISH_LOADING);
 	}
-	//al_unlock_mutex(this->thread_data.mutex);
 }
 
 void LoadingScreen::draw(ALLEGRO_DISPLAY * display)
@@ -93,7 +94,7 @@ void * LoadingScreen::load_func_load_game(ALLEGRO_THREAD * thr, void * arg)
 	std::cout << "begin loading\n";
 	data->next_screen = new MainGameScreen();
 	((MainGameScreen *)data->next_screen)->load_game(data->next_screen_key);
-	//((MainGameScreen *)data->next_screen)->load_content();
+	((MainGameScreen *)data->next_screen)->load_content();
 	data->ready = true;
 	al_broadcast_cond(data->cond);
 	std::cout << "done loading\n";

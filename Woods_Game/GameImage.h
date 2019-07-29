@@ -38,12 +38,11 @@ enum GAME_MODES{
 	CALENDAR,
 	TITLE_SCREEN
 };
+
 enum TYPES{PLAYER, BLOCK, GAME_IMAGE, ENTITY_GROUP};
 enum FACING_DIRECTIONS { DIR_NEUTRAL, DIR_LEFT, DIR_RIGHT, DIR_UP, DIR_DOWN };
 enum JOYSTICKS { LEFT_STICK = 0, RIGHT_STICK = 1 };
 enum COUNTERS { BOUNCE, SWING, COUNTER_PLANT_DAY_UPDATE };
-
-
 
 class ImageLoader;
 class GameImage
@@ -71,6 +70,10 @@ protected:
 	xmls::xString animation_spritesheet_key;
 	xmls::xInt center_offset_x;
 	xmls::xInt center_offset_y;
+	xmls::xInt collide_x_offset;
+	xmls::xInt collide_y_offset;
+	xmls::xInt collide_width;
+	xmls::xInt collide_height;
 	xmls::xInt spritesheet_frame_width;
 	xmls::xInt spritesheet_frame_height;
 	xmls::Collection<AnimationData> animation_data;
@@ -81,6 +84,7 @@ protected:
 	Rect* image_subsection = NULL;
 	std::vector<std::pair<std::string, Rect>> additional_image_layer_data;
 	Rect rect;
+	Rect collide_rect;
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
@@ -115,6 +119,8 @@ public:
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();
+	Rect * get_collide_rect();
+	Rect * get_rect_for_collision();
 	std::vector<ALLEGRO_BITMAP*> get_additional_image_layers();
 	std::pair<float, float> get_rect_center();
 	float get_x();

@@ -36,30 +36,24 @@ Item * Item::empty_item()
 	return new Item();
 }
 
-void Item::load_content(std::string filename, int item_key)
+void Item::load_content(std::string name, int item_key)
 {
-	std::string full_filename = "resources/images/item_icons/" + filename + ".png";
-	icon = al_load_bitmap(full_filename.c_str());
-	al_convert_mask_to_alpha(icon, al_map_rgb(255, 0, 255));
-	this->item_name = filename;
+	std::string full_filename = "item_icons/" + name;
+	ImageLoader::get_instance().load_image(full_filename);
+	this->item_name = name;
 	this->item_key = item_key;
 }
 
 void Item::load_content_from_attributes()
 {
 	if (!this->is_empty()) {
-		std::string full_filename = "resources/images/item_icons/" + this->get_filename() + ".png";
-		icon = al_load_bitmap(full_filename.c_str());
-		al_convert_mask_to_alpha(icon, al_map_rgb(255, 0, 255));
+		std::string full_filename = "item_icons/" + this->get_filename();
+		ImageLoader::get_instance().load_image(full_filename);
 	}
 }
 
 void Item::unload_content()
 {
-	if (icon) {
-		al_destroy_bitmap(icon);
-		icon = NULL;
-	}
 }
 
 void Item::swap_with_item(Item * other)
@@ -78,8 +72,6 @@ void Item::swap_with_item(Item * other)
 	// swap values
 	this->item_key = key2, other->item_key = key1;
 	this->item_name = name2, other->item_name = name1;
-	//this->set_inventory_pos(xpos2, ypos2);
-	//other->set_inventory_pos(xpos1, ypos1);
 	this->set_item_attributes(attr2);
 	other->set_item_attributes(attr1);
 	this->load_content_from_attributes();
@@ -89,6 +81,8 @@ void Item::swap_with_item(Item * other)
 void Item::draw(ALLEGRO_DISPLAY * display, float x, float y)
 {
 	if (!this->is_empty()) {
+		std::string full_filename = "item_icons/" + this->get_filename();
+		ALLEGRO_BITMAP * icon = ImageLoader::get_instance().get_image(full_filename);
 		al_draw_bitmap(icon, x, y, 0);
 	}
 }

@@ -56,8 +56,8 @@
 					<Class Type="DaySchedule" Name="default_day_schedule" Version="1">
 						<Collection Name="schedule_blocks">
             				<Class Type="ScheduleTimeBlock" Version="1">
-                				<Member Name="start_time">0</Member>
-                				<Member Name="stop_time">20000</Member>
+                				<Member Name="start_time">1500</Member>
+                				<Member Name="stop_time">2000</Member>
                 				<Member Name="node_key">stranger_house_a</Member>
             				</Class>
         				</Collection>

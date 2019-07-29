@@ -1,11 +1,3 @@
-#ifdef _DEBUG
-#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-// Replace _NORMAL_BLOCK with _CLIENT_BLOCK if you want the
-// allocations to be of _CLIENT_BLOCK type
-#else
-#define DBG_NEW new
-#endif
-
 #ifndef MENUITEM_H
 #define MENUITEM_H
 
@@ -35,7 +27,7 @@ class MenuItem: public xmls::Serializable
 private:
 	std::map<int, std::string> menu_bindings;
 	Animation* animation;
-	ALLEGRO_BITMAP* menu_image;
+	ALLEGRO_BITMAP* menu_image();
 	xmls::xString menu_text;
 	xmls::xString image_filename = "";
 	xmls::xFloat x_pos;
@@ -51,8 +43,8 @@ private:
 	xmls::xString controls_input_label = "";
 	xmls::xString left_bracket_filename = "";
 	xmls::xString right_bracket_filename = "";
-	ALLEGRO_BITMAP* left_bracket; 
-	ALLEGRO_BITMAP* right_bracket;
+	ALLEGRO_BITMAP* left_bracket(); 
+	ALLEGRO_BITMAP* right_bracket();
 public:
 	MenuItem();
 	~MenuItem();
@@ -68,7 +60,6 @@ public:
 	const std::string get_menu_binding(const int bind_key);
 	void set_text(std::string);
 	std::string get_text();
-	void set_image(ALLEGRO_BITMAP *image);
 	void set_position(std::pair<float, float> position);
 	void set_selection_action_key(std::string key);
 	void set_confirm_action_key(std::string key);
@@ -77,7 +68,6 @@ public:
 	void set_controls_action_key(std::string action_key);
 	void set_controls_input_key(std::string input_key);
 	void set_controls_input_label(std::string input_label);
-	void set_selection_brackets(ALLEGRO_BITMAP* left_bracket, ALLEGRO_BITMAP* right_bracket);
 	void set_selection_bracket_filenames(std::string left_filename, std::string right_filename);
 	void set_image_filename(std::string filename);
 	std::pair<float, float> get_text_pos(float x_off, float y_off, float width, float height);
@@ -98,5 +88,4 @@ public:
 	static std::vector<int> brightened_color(std::vector<int> color, int brightness);
 	static std::vector<int> darkened_color(std::vector<int> color, int darkness);
 };
-
 #endif

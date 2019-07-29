@@ -9,6 +9,7 @@
 #include "xstring"             // for string
 #include <memory>              // for allocator
 #include "XMLSerialization.h"
+#include "ImageLoader.h"
 
 enum ITEM_KEYS{ITEM_SHEARS = 0, ITEM_MALLET = 1};
 
@@ -22,7 +23,7 @@ struct ItemAttribute : public xmls::Serializable {
 class Item : public xmls::Serializable
 {
 private:
-	ALLEGRO_BITMAP *icon;
+	//ALLEGRO_BITMAP *icon;
 	xmls::xInt item_key;
 	xmls::xString item_name;
 	xmls::xInt inventory_pos_x;

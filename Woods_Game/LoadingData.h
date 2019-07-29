@@ -6,7 +6,6 @@
 #include "GlobalTime.h"
 #include "allegro5/threads.h"
 
-//class Player;
 class World;
 class LoadingData {
 
@@ -20,7 +19,7 @@ public:
 	std::string current_level_key;
 	GlobalTime * global_time;
 	std::string next_screen_key;
-	bool           ready;
+	bool ready;
 
 	LoadingData() : mutex(al_create_mutex()),
 		cond(al_create_cond()),

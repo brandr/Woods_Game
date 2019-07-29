@@ -17,7 +17,7 @@ Level * World::get_level_with_key(const std::string level_key)
 
 PathNodeDjikstraPath * World::get_node_djikstra_path(NPC * npc)
 {
-	const std::string node_djikstra_path_key = this->get_node_djikstra_path_key(npc);
+	const std::string node_djikstra_path_key = this->get_node_djikstra_path_key(npc->get_npc_key());
 	auto it = this->node_djikstra_path_map.find(node_djikstra_path_key);
 	if (it == this->node_djikstra_path_map.end()) {
 		this->node_djikstra_path_map[node_djikstra_path_key] = new PathNodeDjikstraPath(this, npc);
@@ -25,9 +25,19 @@ PathNodeDjikstraPath * World::get_node_djikstra_path(NPC * npc)
 	return this->node_djikstra_path_map[node_djikstra_path_key];
 }
 
-const std::string World::get_node_djikstra_path_key(NPC * npc)
+PathNodeDjikstraPath * World::get_mapped_node_djikstra_path(const std::string npc_key)
 {
-	return "npcKey-" + npc->get_npc_key();
+	const std::string node_djikstra_path_key = this->get_node_djikstra_path_key(npc_key);
+	auto it = this->node_djikstra_path_map.find(node_djikstra_path_key);
+	if (it == this->node_djikstra_path_map.end()) {
+		return NULL;
+	}
+	return this->node_djikstra_path_map[node_djikstra_path_key];
+}
+
+const std::string World::get_node_djikstra_path_key(const std::string npc_key)
+{
+	return "npcKey-" + npc_key;
 }
 
 TileDjikstraPath * World::get_tile_djikstra_path(Level * level, NPC * npc)
@@ -40,12 +50,55 @@ TileDjikstraPath * World::get_tile_djikstra_path(Level * level, NPC * npc)
 	return this->tile_djikstra_path_map[path_key];
 }
 
+TileDjikstraPath * World::get_mapped_tile_djikstra_path(Level * level, NPC * npc)
+{
+	const std::string path_key = this->get_tile_djikstra_path_key(level, npc);
+	auto it = this->tile_djikstra_path_map.find(path_key);
+	if (it == this->tile_djikstra_path_map.end()) {
+		return NULL;
+	}
+	return this->tile_djikstra_path_map[path_key];
+}
+
 const std::string World::get_tile_djikstra_path_key(Level * level, NPC * npc)
 {
 	return "levelKey-" + level->get_filename() + ":npcKey-" + npc->get_npc_key();
 }
 
-void World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
+// TODO: something in here causes a lot of slowdown that persists even when this is not being called
+// TODO: make as much of this method async as possible
+//		first, need to refactor out places where we use NPC and current level and replace with cached values
+const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
+{
+	bool has_found_path = false;
+	Level * destination_level = this->get_npc_destination_level(npc);
+	PathNode * destination_node = this->get_npc_destination_node(npc);
+	TileDjikstraPath * tile_djikstra_path = NULL;
+	const std::pair<int, int> npc_t_pos(npc->get_x() / TILE_SIZE, npc->get_y() / TILE_SIZE);
+	if (destination_level != NULL && destination_node != NULL) {
+		npc->clear_primary_destinations();
+		double start_create_tile_path_time = al_get_time();
+
+		tile_djikstra_path = this->get_mapped_tile_djikstra_path(current_npc_level, npc);
+		//TODO: marking blocked tiles is probably the last thing we need to do before the async part of the method
+		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc);
+
+		//TODO: this call or something inside it should be async (this means we can't return right away saying whether we found a path
+		has_found_path 
+			= this->calculate_npc_pathing(npc, current_npc_level, tile_djikstra_path, destination_node->get_node_id(), destination_level->get_filename());	
+	}
+		
+	//if (!has_found_path) {
+		//TODO: might need to tell the NPC not to bother looking for that path again
+	//	npc->cancel_current_pathing();
+	//}
+	return has_found_path;
+}
+
+//TODO: make this method or stuff inside it async
+//could store primary dests to add, whether we should cancel npc pathing, etc in thread data
+const bool World::calculate_npc_pathing(
+	NPC * npc, Level * current_npc_level, TileDjikstraPath * tile_djikstra_path, const std::string dest_node_id, const std::string dest_level_key)
 {
 	double start_time = al_get_time();
 	double accounted_time = 0.0;
@@ -56,168 +109,95 @@ void World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 		std::cout << "--------------------------------------\n";
 		std::cout << "START calculating npc pathing\n\n";
 	}
-	
 
 	bool has_found_path = false;
-	Level * destination_level = this->get_npc_destination_level(npc);
-	PathNode * destination_node = this->get_npc_destination_node(npc);
-	if (destination_level != NULL && destination_node != NULL) {
-		const std::string dest_node_id = destination_node->get_node_id();
-		std::vector<PathNode *> current_level_path_nodes = current_npc_level->get_path_nodes();
 
-		double start_create_tile_path_time = al_get_time();
+	// TODO: probably want to pass these in so we don't need to look at the npc
+	const std::pair<int, int> npc_t_pos(npc->get_x() / TILE_SIZE, npc->get_y() / TILE_SIZE);
+	const std::string current_npc_level_key = current_npc_level->get_filename();
+	std::vector<PathNode *> current_level_path_nodes = current_npc_level->get_path_nodes(); //TODO: could potentially get these as IDs to not deal with GameImages
+	const std::string npc_key = npc->get_npc_key();
+	// TODO: should this be collide pos instead of npc's regular pos?
+	const std::pair<int, int> start_npc_pos((int)npc->get_x(), (int)npc->get_y());
 
-		TileDjikstraPath * tile_djikstra_path = this->get_tile_djikstra_path(current_npc_level, npc);
-		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc);
+	bool should_force = false;
+	bool should_unset_forced_destination = false;
+	std::vector<std::pair<std::string, std::pair<int, int>>> primary_destinations;
 
-		if (enable_logging) {
-			double finish_create_tile_path_time = al_get_time();
-			double delta_p2 = finish_create_tile_path_time - start_create_tile_path_time;
-			std::cout << "Time to initalize tile path: " << std::to_string(delta_p2) << " seconds\n\n";
-			accounted_time += delta_p2;
-		}
+	const std::pair<std::string, std::pair<int, int>> forced_dest = npc->get_forced_destination();
 
-		const std::pair<int, int> npc_t_pos(npc->get_x() / TILE_SIZE, npc->get_y() / TILE_SIZE);
-		float shortest_current_level_node_dist = -1;
-		float second_shortest_current_level_node_dist = -1;
-		PathNode * closest_node = NULL;
-		PathNode * second_closest_node = NULL;
-		for (PathNode * current_level_node : current_level_path_nodes) {
+	PathNodeDjikstraPath * node_djikstra_path = this->get_mapped_node_djikstra_path(npc_key);
 
-			const std::pair<int, int> current_level_node_pos(current_level_node->get_x() / TILE_SIZE, current_level_node->get_y() / TILE_SIZE);
-			
-			double start_get_tile_path_time = al_get_time();
-
-			// TODO: this is the currently the slowest part, so improve it and/or make it async
-			const std::pair<std::vector<std::pair<int, int>>, float> current_level_node_shortest_path
-				= tile_djikstra_path->calculate_shortest_tile_path(npc_t_pos, current_level_node_pos);
-
-			if (enable_logging) {
-				double end_get_tile_path_time = al_get_time();
-				double delta_t2 = end_get_tile_path_time - start_get_tile_path_time;
-				std::cout << "Time to calculate shortest tile path: " << std::to_string(delta_t2) << " seconds\n\n";
-				accounted_time += delta_t2;
-			}
-
-			const float next_node_dist = current_level_node_shortest_path.second;
-			std::vector<std::pair<int, int>> next_node_path = current_level_node_shortest_path.first;
-
-			if (next_node_dist < 0) {
-				continue;
-			} else {
-				if (shortest_current_level_node_dist < 0
-					|| next_node_dist < shortest_current_level_node_dist) {
-
-					// the closest becomes the second closest
-					second_shortest_current_level_node_dist = shortest_current_level_node_dist;
-					second_closest_node = closest_node;
-
-					shortest_current_level_node_dist = next_node_dist;
-					closest_node = current_level_node;
-					
-				} else if (second_shortest_current_level_node_dist < 0
-					|| next_node_dist < second_shortest_current_level_node_dist) {
-					second_shortest_current_level_node_dist = next_node_dist;
-					second_closest_node = current_level_node;
-				}
-			}
-		}
-		if (shortest_current_level_node_dist < 0 || closest_node == NULL) {
-			npc->cancel_current_pathing();
-		} else if (second_shortest_current_level_node_dist < 0 || second_closest_node == NULL) {
-			// there is only one possible destination, so we'll path there
-			const std::pair<int, int> primary_dest(closest_node->get_x(), closest_node->get_y());
-			npc->add_primary_destination(primary_dest, closest_node->get_node_id());
-			has_found_path = true;
-		} else {
-			// This is the only case where we have to use actual PathNode pathing,
-			// because there is more than one relevant PathNode on the level.
-
-			double start_get_path_time = al_get_time();
-			
-			PathNodeDjikstraPath * node_djikstra_path = this->get_node_djikstra_path(npc);
-			
-			if (enable_logging) {
-				double end_get_path_time = al_get_time();
-				double delta_2 = end_get_path_time - start_get_path_time;
-				std::cout << "Time to initialize node path: " << std::to_string(delta_2) << " seconds\n\n";
-				accounted_time += delta_2;
-			}
-
-			double start_calculate_node_path_time = al_get_time();
-
-			std::pair<std::vector<DjikstraNode*>, float> shortest_path_from_closest
-				= node_djikstra_path->calculate_shortest_node_path(this,
-					closest_node, current_npc_level->get_filename(), destination_node, destination_level->get_filename());
-
-			std::pair<std::vector<DjikstraNode*>, float> shortest_path_from_second_closest
-				= node_djikstra_path->calculate_shortest_node_path(this,
-					second_closest_node, current_npc_level->get_filename(), destination_node, destination_level->get_filename());
-
-			if (enable_logging) {
-				double end_calculate_node_path_time = al_get_time();
-				double delta_3 = end_calculate_node_path_time - start_calculate_node_path_time;
-				std::cout << "Time to calculate shortest node path: " << std::to_string(delta_3) << " seconds\n\n";
-				accounted_time += delta_3;
-			}
-
-			std::vector<DjikstraNode*> node_list_from_closest = shortest_path_from_closest.first;
-			std::vector<DjikstraNode*> node_list_from_second_closest = shortest_path_from_second_closest.first;
-
-			const float shortest_from_closest_cost = shortest_path_from_closest.second;
-			const float shortest_from_second_closest_cost = shortest_path_from_second_closest.second;
-
-			const bool can_path_from_closest = shortest_from_closest_cost >= 0
-				&& !node_list_from_closest.empty();
-			const bool can_path_from_second_closest = shortest_from_second_closest_cost >= 0
-				&& !node_list_from_second_closest.empty();
-
-			std::vector<DjikstraNode*> path_to_execute;
-			// we can just go straight to the destination node
-			if (closest_node->get_node_id() == dest_node_id) {
-				npc->cancel_current_pathing();
-			} else if (!can_path_from_closest && !can_path_from_second_closest) {
-				path_to_execute = node_list_from_closest;
-			} else if (can_path_from_closest && !can_path_from_second_closest) {
-				path_to_execute = node_list_from_closest;
-			} else if (!can_path_from_closest && can_path_from_second_closest) {
-				path_to_execute = node_list_from_second_closest;
-			} else {
-				path_to_execute = shortest_from_closest_cost <= shortest_from_second_closest_cost
-					? node_list_from_closest : node_list_from_second_closest;
-			}
-			if (path_to_execute.empty()) {
-				npc->cancel_current_pathing();
-			} else {
-				// path to every node on the path that is on the current level.
-				// we do not path to the next level because we can just recalculate after reaching it.
-				const int path_to_execute_size = path_to_execute.size();
-				for (int i = 0; i < path_to_execute_size; i++) {
-					DjikstraNode * node_to_execute = path_to_execute[i];
-					const std::string level_key = node_to_execute->level_key;
-					if (level_key != current_npc_level->get_filename()) {
-						break;
-					}
-					// add the node as our next destination
-					npc->add_primary_destination(node_to_execute->position, node_to_execute->node_key);
-					has_found_path = true;
-				}
-			}
-		}
+	auto it = this->djikstra_path_data_map.find(npc_key);
+	if (it != this->djikstra_path_data_map.end()) {
+		delete it->second;
 	}
-	if (has_found_path) {
+
+	DjikstraPathData * path_data = new DjikstraPathData();
+
+	path_data->current_level_key = current_npc_level_key;
+	path_data->npc_key = npc_key;
+	path_data->dest_level_key = dest_level_key;
+	path_data->dest_node_id = dest_node_id;
+	path_data->start_npc_pos = start_npc_pos;
+	path_data->npc_t_pos = npc_t_pos;			//TODO: this might be redundant given npc_t_pos, also it should probably be collide pos
+	path_data->current_level_path_nodes = current_level_path_nodes;
+	path_data->forced_dest = forced_dest;
+	path_data->tile_djikstra_path = tile_djikstra_path;
+	path_data->node_djikstra_path = node_djikstra_path;
+	path_data->ready = false;
+
+	this->djikstra_path_data_map[npc_key] = path_data;
+
+
+	npc->set_is_processing(true);
+
+	//TODO: during NPC update, need to check for ready data to see if we need to unlock
+	//TODO: copy the stuff below the commented section to a separate method we call when unlocking the NPC after we finish pathing
+
+	ALLEGRO_THREAD * pathing_thread = al_create_thread(PathNodeDjikstraPath::func_calculate_npc_pathing, path_data);
+
+	auto it_2 = this->djikstra_path_thread_map.find(npc_key);
+	if (it_2 != this->djikstra_path_thread_map.end()) {
+		al_destroy_thread(it_2->second);
+		this->djikstra_path_thread_map[npc_key] = NULL;
+	}
+
+	this->djikstra_path_thread_map[npc_key] = pathing_thread;
+
+	al_start_thread(pathing_thread);
+
+	return has_found_path;
+}
+
+void World::finish_pathing(NPC * npc)
+{
+	DjikstraPathData * path_data = this->djikstra_path_data_map[npc->get_npc_key()];
+
+	//npc->set_is_processing(false);
+
+	std::pair<std::vector<std::pair<int, int>>, float> tile_path_to_primary = path_data->tile_path_to_primary; //TODO: this should come from thread data
+
+	if (path_data->has_found_path) {
+		if (path_data->should_unset_forced_destination) {
+			npc->set_forced_destination(std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1)));
+		}
+
+		for (std::pair<std::string, std::pair<int, int>> primary_dest : path_data->primary_destinations) {
+			// looks backwards, but this is correct
+			npc->add_primary_destination(primary_dest.second, primary_dest.first);
+		}
+
+		// TODO: second part of the pair is distance, so incorporate that if the NPC is going to care about travel time
+		std::vector<std::pair<std::string, std::pair<int, int>>> secondary_dests;
+		for (std::pair<int, int> secondary_dest : tile_path_to_primary.first) {
+			secondary_dests.push_back(std::pair<std::string, std::pair<int, int>>
+				("", std::pair<int, int>(secondary_dest.first * TILE_SIZE, secondary_dest.second * TILE_SIZE)));
+		}
+		npc->set_secondary_destinations(secondary_dests);
 		npc->set_is_starting_path();
 	} else {
-		//TODO: might need to tell the NPC not to bother looking for that path again
 		npc->cancel_current_pathing();
-	}
-	
-	if (enable_logging) {
-		double end_time = al_get_time();
-		double delta = end_time - start_time;
-		std::cout << "FINISH calculating npc pathing. Time to calculate: " + std::to_string(delta) + "\n";
-		std::cout << "Unaccounted time: " << std::to_string(delta - accounted_time) << "(" << std::to_string(100.0 * (accounted_time / delta)) << "% accounted for)\n";
-		std::cout << "--------------------------------------\n";
 	}
 }
 
@@ -485,6 +465,7 @@ void World::save_game(World * world, GlobalTime * global_time)
 }
 
 // updates all NPCs, even if they aren't on the current level
+
 //TODO: eventually this will incorporate NPC schedules, but just feed fake data for now
 void World::npc_update(GlobalTime * time, const int game_mode)
 {
@@ -492,38 +473,44 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 	const int size = this->npcs.size();
 	for (int i = 0; i < size; i++) {
 		NPC * npc = this->npcs.getItem(i);
-		const std::string current_level_key = npc->get_current_level_key();
-		Level * current_npc_level = this->get_level_with_key(current_level_key);
-		if (current_npc_level != NULL) {
-			// the npc is on another level, so we need to update it separate from the level's being list
-			// TODO: might want to always update NPCs here and just handle level beings differently in general
-			if (current_level_key != active_level->get_filename()) {
-				npc->update(current_npc_level, time, game_mode);
+		if (npc->is_locked()) {
+			DjikstraPathData * path_data = NULL;
+			bool has_finished_pathing = false;
+			auto it = this->djikstra_path_data_map.find(npc->get_npc_key());
+			if (it != this->djikstra_path_data_map.end()) {
+				path_data = this->djikstra_path_data_map[npc->get_npc_key()];
+				has_finished_pathing = path_data->ready;
 			}
-			// transport the npc to the next level if appropriate
-			if (npc->is_requesting_next_level()) {
-				const std::string next_level_key = npc->get_requested_next_level_key();
-				
-				Level * npc_next_level = this->get_level_with_key(next_level_key);
-				if (npc_next_level == NULL) {
-					//TODO: error handling
-				} else {
-					// move the npc to the next level
-					const std::string next_level_node_key = npc->get_requested_next_level_node_key();
-					PathNode * next_level_node = npc_next_level->find_path_node_with_key(next_level_node_key);
-					// TODO: error handling
-					const std::pair<int, int> next_level_node_pos(next_level_node->get_x(), next_level_node->get_y());
-					this->move_npc_to_level(npc, current_npc_level, npc_next_level, next_level_node_pos);
-					npc->set_is_processing(false);
+			if (path_data && has_finished_pathing) {
+				this->finish_pathing(npc);
+			}
+		} else {
+			const std::string current_level_key = npc->get_current_level_key();
+			Level * current_npc_level = this->get_level_with_key(current_level_key);
+			if (current_npc_level != NULL) {
+				// the level itself will not call update method for NPCs, so call it here
+				npc->update(current_npc_level, time, game_mode);
+				// transport the npc to the next level if appropriate
+				if (npc->is_requesting_next_level()) {
+					const std::string next_level_key = npc->get_requested_next_level_key();
+
+					Level * npc_next_level = this->get_level_with_key(next_level_key);
+					if (npc_next_level == NULL) {
+						//TODO: error handling
+					} else {
+						// move the npc to the next level
+						const std::string next_level_node_key = npc->get_requested_next_level_node_key();
+						PathNode * next_level_node = npc_next_level->find_path_node_with_key(next_level_node_key);
+						// TODO: error handling
+						const std::pair<int, int> next_level_node_pos(next_level_node->get_x(), next_level_node->get_y());
+						this->move_npc_to_level(npc, current_npc_level, npc_next_level, next_level_node_pos);
+						npc->set_is_processing(false);
+					}
 				}
-			} else if (npc->needs_pathing_calculation()) { 
-				//TODO: figure out if we can actually calculate asynchronously here
-				// probably the main problem is that we can't read tiles/entities async
-				npc->set_is_processing(true);
-				this->calculate_npc_pathing(npc, current_npc_level);
-				//std::future<void> fut_npc_pathing(
-				//	std::async(
-				//		launch::async, &World::calculate_npc_pathing, this, npc, current_npc_level));
+				else if (npc->needs_pathing_calculation()) {
+					npc->set_is_processing(true);
+					this->calculate_npc_pathing(npc, current_npc_level);
+				}
 			}
 		}
 	}

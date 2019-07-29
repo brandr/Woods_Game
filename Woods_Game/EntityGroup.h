@@ -10,8 +10,7 @@
 #include "XMLSerialization.h"
 #include <memory>              // for allocator
 
-//TODO: serializable stuff
-class EntityGroup:
+class EntityGroup :
 	public xmls::Serializable, public Entity
 {
 private:
@@ -19,18 +18,11 @@ private:
 	xmls::xInt root_pos_x;
 	xmls::xInt root_pos_y;
 	xmls::xString entity_group_name;
-	xmls::xInt collide_x_offset;
-	xmls::xInt collide_y_offset;
-	xmls::xInt collide_width;
-	xmls::xInt collide_height;
-
-	Rect collide_rect();
 public:
 	EntityGroup();
 	EntityGroup(std::pair<int, int> root_offset);
 	~EntityGroup();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
-	void draw_bitmap_from_entities(std::vector<Entity *> entities);
 	virtual int get_type();
 	void set_entity_group_name(std::string name);
 	void set_sheet_pos(int col, int row);
@@ -42,10 +34,6 @@ public:
 	virtual const bool intersects_area(Rect collide_rect);
 	std::string get_entity_group_name();
 	std::pair<int, int> get_root_pos();
-	const int get_collide_x_offset();
-	const int get_collide_y_offset();
-	const int get_collide_width();
-	const int get_collide_height();
 };
 
 #endif

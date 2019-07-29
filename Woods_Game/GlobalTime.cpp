@@ -215,6 +215,11 @@ const int GlobalTime::get_current_minutes()
 	return (((this->time) * 60 / TIME_RATIO) % (TIME_RATIO * 60 * 24));
 }
 
+const int GlobalTime::get_total_minutes()
+{
+	return ((this->time) * 60 / TIME_RATIO);
+}
+
 const int GlobalTime::get_day()
 {
 	return this->day;

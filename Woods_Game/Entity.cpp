@@ -10,9 +10,10 @@ const std::string Entity::image_filename_suffix()
 		const int mature = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_MATURE_AGE);
 		if (current >= mature) {
 			return "";
-		} else {
+		}
+		else {
 			const int num_stages = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_NUM_STAGES);
-			const int stage_index = current / (mature/num_stages) + 1;
+			const int stage_index = current / (mature / num_stages) + 1;
 			return "_stage_" + std::to_string(stage_index);
 		}
 	}
@@ -41,7 +42,7 @@ void Entity::copy_entity_attributes(Entity * other)
 Rect * Entity::get_bitmap_subsection()
 {
 	//override this for subclasses
-	return nullptr;
+	return NULL;
 }
 
 void Entity::set_solid(const bool solid)
@@ -56,7 +57,9 @@ void Entity::set_visible(const bool visible)
 
 bool Entity::is_solid()
 {
-	if (get_entity_attribute(E_ATTR_BROKEN) > 0) return false;
+	if (get_entity_attribute(E_ATTR_BROKEN) > 0) {
+		return false;
+	}
 	return solid.value();
 }
 
@@ -65,7 +68,7 @@ bool Entity::is_visible()
 	return visible.value();
 }
 
-void Entity::load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int,int> frame_dimensions)
+void Entity::load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int, int> frame_dimensions)
 {
 	//TODO: consider including animation speed if we decide we want different animation speeds
 	const std::string filename_prefix = filename + "/effects/";
@@ -87,8 +90,12 @@ void Entity::load_content_from_attributes()
 	GameImage::load_content_from_attributes();
 	this->rect.x = this->entity_starting_pos_x.value();
 	this->rect.y = this->entity_starting_pos_y.value();
-	this->rect.width = std::max((int) this->rect.width, this->spritesheet_frame_width.value());
-	this->rect.height = std::max((int) this->rect.height, this->spritesheet_frame_height.value());
+	this->rect.width = std::max((int)this->rect.width, this->spritesheet_frame_width.value());
+	this->rect.height = std::max((int)this->rect.height, this->spritesheet_frame_height.value());
+	this->collide_rect.x = this->rect.x + this->collide_x_offset.value();
+	this->collide_rect.y = this->rect.y + this->collide_y_offset.value();
+	this->collide_rect.width = this->collide_width.value();
+	this->collide_rect.height = this->collide_height.value();
 }
 
 void Entity::unload_content()
@@ -128,7 +135,6 @@ void Entity::durability_update()
 {
 
 }
-
 
 void Entity::mark_needs_plant_day_update()
 {
@@ -199,7 +205,6 @@ void Entity::entity_break()
 	auto it = entity_effects.find("break");
 	if (it == entity_effects.end()) return;
 	entity_effects["break"].set_effect_active(true);
-
 }
 
 void Entity::set_entity_data_index(int index)
@@ -379,7 +384,7 @@ std::vector<std::string> Entity::get_entity_effect_names()
 
 EntityData::EntityData()
 {
-	
+
 	setClassName("EntityData");
 	Register("entity_data_key", &entity_data_key);
 	Register("entity_data_index", &entity_data_index);
@@ -464,7 +469,7 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_interact_
 	const int size = this->interact_actions.size();
 	for (int i = 0; i < size; i++) {
 		data.push_back(std::pair<std::string, std::string>(
-			this->interact_actions.getItem(i)->get_interact_action_key(), 
+			this->interact_actions.getItem(i)->get_interact_action_key(),
 			this->interact_actions.getItem(i)->get_function_name()));
 	}
 	return data;
@@ -639,4 +644,35 @@ EntitySpawnTileRule::EntitySpawnTileRule()
 {
 	this->setClassName("EntitySpawnTileRule");
 	this->Register("tile_type_index", &tile_type_index);
+}
+
+//TODO: store this as a variable like rect instead of setting it like this
+/*
+Rect Entity::collide_rect()
+{
+return Rect(
+this->get_x() + this->get_collide_x_offset(),
+this->get_y() + this->get_collide_y_offset(),
+this->get_collide_width(), this->get_collide_height());
+}
+*/
+
+const int Entity::get_collide_x_offset()
+{
+	return this->collide_x_offset.value();
+}
+
+const int Entity::get_collide_y_offset()
+{
+	return this->collide_y_offset.value();
+}
+
+const int Entity::get_collide_width()
+{
+	return this->collide_width.value();
+}
+
+const int Entity::get_collide_height()
+{
+	return this->collide_height.value();
 }

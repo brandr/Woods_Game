@@ -28,7 +28,6 @@ private:
 	std::string current_position_node_key = "";
 	bool is_processing = false; //TEMP. replace with AI state for AIBeing
 protected:
-	virtual void clear_primary_destinations();
 	virtual const std::string calculate_destination_node_key(GlobalTime * time);
 public:
 	NPC();
@@ -46,6 +45,7 @@ public:
 	void set_current_level_key(const std::string level_key);
 	const std::string get_current_level_key();
 	const std::string get_current_destination_node_key();
+	virtual void clear_primary_destinations();
 };
 
 #endif

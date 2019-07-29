@@ -148,6 +148,7 @@ const std::vector<ALLEGRO_BITMAP*> CutsceneBlock::get_filters(ALLEGRO_DISPLAY * 
 	return filters;
 }
 
+//TODO: probably want to handle all bitmap creation through ImageLoader
 ALLEGRO_BITMAP * CutsceneBlock::find_or_create_filter(ALLEGRO_DISPLAY *display, const int r, const int g, const int b, const int a)
 {
 	const int width = al_get_display_width(display), height = al_get_display_height(display);
@@ -157,8 +158,7 @@ ALLEGRO_BITMAP * CutsceneBlock::find_or_create_filter(ALLEGRO_DISPLAY *display, 
 	if (!ImageLoader::get_instance().keyed_image_exists(IMAGE_KEY_FILLED_RECT, width, height, suffix)) {
 		filter = al_create_bitmap(width, height);
 		ImageLoader::get_instance().set_keyed_image(filter, IMAGE_KEY_FILLED_RECT, width, height, suffix);
-	}
-	else {
+	} else {
 		filter = ImageLoader::get_instance().get_keyed_image(IMAGE_KEY_FILLED_RECT, width, height, suffix);
 	}
 	al_set_target_bitmap(filter);

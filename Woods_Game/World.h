@@ -1,6 +1,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "DjikstraPath.h"
+#include "DjiktraPathData.h"
 #include "Dungeon.h"
 #include "DungeonData.h"
 #include "FileManager.h"
@@ -11,12 +13,14 @@
 #include "FileManager.h"
 #include <future>
 #include <memory>
+#include "allegro5/threads.h"
+
 class ImageLoader;
 class Player;
 class World : public xmls::Serializable
 {
 private:
-	//std::vector <std::shared_ptr<Dungeon>> dungeons;
+
 	std::vector <std::shared_ptr<Dungeon>> dungeons;
 
 	xmls::xString world_key;
@@ -30,12 +34,19 @@ private:
 
 	std::map<std::string, PathNodeDjikstraPath *> node_djikstra_path_map;
 	std::map<std::string, TileDjikstraPath *> tile_djikstra_path_map;
+
+	std::map<std::string, DjikstraPathData *> djikstra_path_data_map;
+	std::map<std::string, ALLEGRO_THREAD * > djikstra_path_thread_map;
 	
 	PathNodeDjikstraPath * get_node_djikstra_path(NPC * npc);
-	const std::string get_node_djikstra_path_key(NPC * npc);
+	PathNodeDjikstraPath * get_mapped_node_djikstra_path(const std::string npc_key);
+	const std::string get_node_djikstra_path_key(const std::string npc_key);
 	TileDjikstraPath * get_tile_djikstra_path(Level * level, NPC * npc);
+	TileDjikstraPath * get_mapped_tile_djikstra_path(Level * level, NPC * npc);
 	const std::string get_tile_djikstra_path_key(Level * level, NPC * npc);
-	void calculate_npc_pathing(NPC * npc, Level * current_npc_level);
+	const bool calculate_npc_pathing(NPC * npc, Level * current_npc_level);
+	const bool calculate_npc_pathing(NPC * npc, Level * current_npc_level, TileDjikstraPath * tile_djikstra_path, const std::string dest_node_id, const std::string dest_level_key);
+	void finish_pathing(NPC * npc);
 	void move_npc_to_level(NPC * npc, Level * current_level, Level * dest_level, const std::pair<int, int> position);
 	Level * find_level_with_spawn_key(const std::string spawn_key);
 	PathNode * find_path_node_with_key(const std::string node_key);

@@ -380,6 +380,9 @@
     <ClInclude Include="LoadingData.h">
       <Filter>Utilities\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DjiktraPathData.h">
+      <Filter>Pathing\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">

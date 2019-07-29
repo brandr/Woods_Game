@@ -403,16 +403,27 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 {
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
-	if (this->light_filter == NULL) {
-		this->light_filter = al_create_bitmap(width, height);
+	ALLEGRO_BITMAP * filter = NULL;
+	const std::string suffix = "";
+	if (!ImageLoader::get_instance().keyed_image_exists(IMAGE_KEY_FILLED_RECT, width, height, suffix)) {
+		filter = al_create_bitmap(width, height);
+		ImageLoader::get_instance().set_keyed_image(filter, IMAGE_KEY_FILLED_RECT, width, height, suffix);
+	} else {
+		filter = ImageLoader::get_instance().get_keyed_image(IMAGE_KEY_FILLED_RECT, width, height, suffix);
 	}
+	//if (this->light_filter == NULL) {
+	//	this->light_filter = al_create_bitmap(width, height);
+	//}
 
-	al_set_target_bitmap(this->light_filter);
-	if (al_get_bitmap_width(this->light_filter) != width 
-		|| al_get_bitmap_height(this->light_filter) != height) {
-		al_destroy_bitmap(this->light_filter);
+	
+	al_set_target_bitmap(filter);
+	/*
+	if (al_get_bitmap_width(filter) != width
+		|| al_get_bitmap_height(filter) != height) {
+		al_destroy_bitmap(filter);
 		this->light_filter = al_create_bitmap(width, height);
 	}
+	*/
 	// (4 AM) blue, darkest -> (6 AM) orange, lighter -> (8 AM) yellow, ligthest -> orange, lighter (6 PM) -> blue, darkest (8 PM)
 	const float minutes = this->get_current_minutes();
 	int r = 0;
@@ -457,7 +468,7 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 	}
 	al_clear_to_color(al_map_rgba(r, g, b, a));
 	al_set_target_bitmap(al_get_backbuffer(display));
-	al_draw_bitmap(this->light_filter, 0, 0, 0);
+	al_draw_bitmap(filter, 0, 0, 0);
 }
 
 void GameImageManager::resume()

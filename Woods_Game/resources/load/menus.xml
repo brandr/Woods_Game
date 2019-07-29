@@ -77,8 +77,8 @@
                 <Member Name="yPos">30</Member>
                 <Member Name="SelectionActionKey">select_options</Member>
                 <Member Name="ConfirmActionKey">set_resolution</Member>
-                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L.png</Member>
-                <Member Name="RightBracketFilename">ui/brackets/bracket_1R.png</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
                 <Member Name="StoredOptionsIndex">1</Member>
                 <Member Name="ControlsActionKey"/>
                 <Member Name="ControlsInputKey"/>
@@ -99,8 +99,8 @@
                 <Member Name="yPos">60</Member>
                 <Member Name="SelectionActionKey">select_options</Member>
                 <Member Name="ConfirmActionKey">set_screen_style</Member>
-                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L.png</Member>
-                <Member Name="RightBracketFilename">ui/brackets/bracket_1R.png</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
                 <Member Name="StoredOptionsIndex">2</Member>
                 <Member Name="ControlsActionKey"/>
                 <Member Name="ControlsInputKey"/>

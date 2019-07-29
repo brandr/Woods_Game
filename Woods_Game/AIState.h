@@ -30,6 +30,7 @@ public:
 	void set_is_idle();
 	const bool is_idle();
 	void set_is_locked();
+	const bool is_locked();
 	void set_is_waiting(const int wait_time);
 	const bool is_waiting();
 	void set_is_walking();

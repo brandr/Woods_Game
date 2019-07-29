@@ -1,21 +1,11 @@
 #include "EntityGroup.h"
 
-
-
-Rect EntityGroup::collide_rect()
-{
-	return Rect(
-		this->get_x() + this->get_collide_x_offset(),
-		this->get_y() + this->get_collide_y_offset(), 
-		this->get_collide_width(), this->get_collide_height());
-}
-
 EntityGroup::EntityGroup()
 {
 	this->setClassName("EntityGroup");
 	this->Register("Solid", &(this->solid));
 	this->Register("EntitySheetCol", &entity_sheet_col);
-	this->Register("EntitySheetRow", &entity_sheet_row);	
+	this->Register("EntitySheetRow", &entity_sheet_row);
 	this->Register("RootPosX", &root_pos_x);
 	this->Register("RootPosY", &root_pos_y);
 	this->Register("CollideXOffset", &collide_x_offset);
@@ -50,12 +40,7 @@ EntityGroup::~EntityGroup()
 {
 	this->entities.clear();
 }
-/*
-void EntityGroup::set_content(std::string image_filename, Rect * image_subsection, std::pair<int, int> position)
-{
-	//TODO
-}
-*/
+
 int EntityGroup::get_type()
 {
 	return ENTITY_GROUP;
@@ -90,16 +75,23 @@ void EntityGroup::set_root_pos(std::pair<int, int> root_pos)
 void EntityGroup::set_collide_offset(const std::pair<int, int> offset)
 {
 	this->collide_x_offset = offset.first, this->collide_y_offset = offset.second;
+	this->collide_rect.x = this->rect.x + offset.first, this->collide_rect.y = this->rect.y + offset.second;
 }
 
 void EntityGroup::set_collide_dimensions(const std::pair<int, int> dimensions)
 {
 	this->collide_width = dimensions.first, this->collide_height = dimensions.second;
+	this->collide_rect.width = dimensions.first, this->collide_rect.height = dimensions.second;
 }
 
+//TODO: either call this less often and/or make it more efficient
 const bool EntityGroup::intersects_area(Rect area)
 {
-	return this->collide_rect().intersects_rect(area);
+	if (this->collide_rect.width > 0 && this->collide_rect.height > 0) {
+		return this->collide_rect.intersects_rect(area);
+	} else {
+		return this->rect.intersects_rect(area);
+	}
 }
 
 std::string EntityGroup::get_entity_group_name()
@@ -112,36 +104,10 @@ std::pair<int, int> EntityGroup::get_root_pos()
 	return std::pair<int, int>(root_pos_x.value(), root_pos_y.value());
 }
 
-const int EntityGroup::get_collide_x_offset()
-{
-	return this->collide_x_offset.value();
-}
-
-const int EntityGroup::get_collide_y_offset()
-{
-	return this->collide_y_offset.value();
-}
-
-const int EntityGroup::get_collide_width()
-{
-	return this->collide_width.value();
-}
-
-const int EntityGroup::get_collide_height()
-{
-	return this->collide_height.value();
-}
-
 void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	int size = entities.size();
 	for (int i = 0; i < size; i++) {
 		entities[i]->draw(display, x_offset, y_offset);
 	}
-}
-
-//TODO: eventually, all bitmaps should ultimately be findable in the imageloader (this is the point of gameimages)
-void EntityGroup::draw_bitmap_from_entities(std::vector<Entity*> entities)
-{
-
 }

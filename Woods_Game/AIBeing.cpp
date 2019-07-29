@@ -30,22 +30,8 @@ void AIBeing::request_pathing_update(Level * level, GlobalTime * time)
 	}
 }
 
-void AIBeing::destination_update(Level * level)
+void AIBeing::destination_update(Level * level, GlobalTime * time)
 {
-	//TEMP
-	const std::pair<int, int> level_dimensions = level->get_dimensions();
-	std::vector<Entity*> interactables = level->get_interactables(this);
-	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	//TEMP
-
-	std::vector<Entity*> all_interactables;
-	all_interactables.insert(all_interactables.end(), interactables.begin(), interactables.end());
-	for (Tile * t : nearby_tiles) {
-		Block * b = t->get_block();
-		if (b != NULL && !b->is_empty() && b->is_solid()) {
-			all_interactables.push_back(b);
-		}
-	}
 	const bool primary = this->secondary_destinations.empty();
 	std::vector<std::pair<std::string, std::pair<int, int>>> destinations
 		= primary ? this->primary_destinations : this->secondary_destinations;
@@ -68,11 +54,15 @@ void AIBeing::destination_update(Level * level)
 				} else {
 					std::vector<NextLevelNode *> next_level_nodes = dest_node->get_next_level_nodes();
 					// only go to the next level if we just stepped onto the node
-					if ((std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) && next_level_nodes.size() > 0) {
+					//TODO: might need a better check here
+					if (next_level_nodes.size() > 0) {
 						NextLevelNode * next_level_node = next_level_nodes[0];
 						const std::string next_level_key = next_level_node->level_id.value();
 						const std::string next_level_node_key = next_level_node->node_id.value();
 						this->ai_state.set_is_requesting_next_level(next_level_key, next_level_node_key);
+					} else {
+						// if we just reached a primary dest on the same level, set idle so we can request pathing
+						this->set_ai_state(AI_STATE_IDLE);
 					}
 				}
 			} else {
@@ -80,8 +70,7 @@ void AIBeing::destination_update(Level * level)
 			}
 			this->xvel = 0, this->yvel = 0;
 			this->anim_state = ANIM_STATE_NEUTRAL;
-		}
-		else {
+		} else {
 			// see if there is an obstacle in the tile we are walking into
 			int start_x = this->get_x() / TILE_SIZE, start_y = this->get_y() / TILE_SIZE;
 			const std::pair<int, int> start_pos = std::pair<int, int>(start_x, start_y);
@@ -93,7 +82,8 @@ void AIBeing::destination_update(Level * level)
 			const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
 				* std::min(std::abs(yoff_t) * TILE_SIZE, (int)std::abs(y_dist)) : 0;
 			bool failed = false;
-			const bool blocked = this->pathing_blocked_at(this->get_x() + xoff, this->get_y() + yoff, all_interactables);
+			//TODO: this is getting called too often and/or for too many interactables
+			const bool blocked = this->pathing_blocked_at(this->get_x() + xoff, this->get_y() + yoff, level, false);
 			if (!blocked) {
 				if (!primary && this->secondary_destinations.size() > 1) {
 					const std::pair<std::string, std::pair<int, int>> first_dest = this->secondary_destinations[0];
@@ -114,7 +104,7 @@ void AIBeing::destination_update(Level * level)
 					const std::pair<int, int> primary_pos = primary_dest.second;
 					std::pair<int, int> pathing_dest(primary_pos.first / TILE_SIZE, primary_pos.second / TILE_SIZE);
 					// the primary destination is blocked, so we can't path directly to it
-					if (this->pathing_blocked_at(primary_pos.first, primary_pos.second, all_interactables)) {
+					if (this->pathing_blocked_at(primary_pos.first, primary_pos.second, level, false)) {
 						const float x_dist_p
 							= primary_pos.first - this->get_x(),
 							y_dist_p = primary_pos.second - this->get_y();
@@ -122,30 +112,25 @@ void AIBeing::destination_update(Level * level)
 						if (std::abs(x_dist_p) < TILE_SIZE * 2 && std::abs(y_dist_p) < TILE_SIZE * 2) {
 							failed = true;
 						} else {
+							//TODO: Might need to refactor this to be part of world.cpp pathing logic
+							
 							const std::pair<int, int> closest_pos
-								= this->find_closest_open_tile_pos(
-									primary_pos, all_interactables, nearby_tiles, level_dimensions);
+								= this->find_closest_open_tile_pos(level, primary_pos);
 							if (closest_pos.first >= 0 && closest_pos.second >= 0) {
 								pathing_dest = closest_pos;
-							}
-							else {
+							} else {
 								failed = true;
 							}
 						}
 					}
 					if (!failed) {
-						const std::pair<std::vector<std::pair<int, int>>, int> path_nodes
-							= this->calculate_shortest_path(start_pos, level, pathing_dest);
-						if (path_nodes.first.empty() || path_nodes.second == -1) {
-							failed = true;
-						}
-						else {
-							for (std::pair<int, int> p_node : path_nodes.first) {
-								std::pair<std::string, std::pair<int, int>> 
-									p_node_dest("", std::pair<int, int>(p_node.first*TILE_SIZE, p_node.second*TILE_SIZE));
-								this->secondary_destinations.push_back(p_node_dest);
-							}
-						}
+						//TODO: pass this and world npc pathing through the same central place so we can call them async
+						//			can't just set idle here or we'll lose track of pathing_dest, which we need to know
+						// could have a "forced next destination" or something
+						this->xvel = 0, this->yvel = 0;
+						this->ai_state.set_is_idle();
+						this->forced_destination = primary_dest;
+						this->clear_primary_destinations();
 					}
 					if (failed) {
 						if (primary) {
@@ -162,10 +147,11 @@ void AIBeing::destination_update(Level * level)
 }
 	void AIBeing::walk_update()
 	{
-		if (this->primary_destinations.empty() && this->secondary_destinations.empty()) {
+		if (this->ai_state.is_requesting_path() || this->ai_state.is_idle() || 
+			(this->primary_destinations.empty() && this->secondary_destinations.empty())) {
 			this->xvel = 0, this->yvel = 0;
 			// TODO: if we need the fact that we reached a destination as context, this may be incorrect
-			if (this->ai_state.is_walking()) {
+			if (this->ai_state.is_idle() || this->ai_state.is_walking()) {
 				//TODO: this might be wrong since the AI could be standing still doing something
 				this->ai_state.set_is_idle();
 				anim_state = ANIM_STATE_NEUTRAL;
@@ -208,50 +194,36 @@ void AIBeing::destination_update(Level * level)
 		}
 	}
 
-	const std::pair<std::vector<std::pair<int, int>>, int> AIBeing::calculate_shortest_path(
-		const std::pair<int, int> origin_pos,
-		Level * level,
-		const std::pair<int, int> dest_tile_pos)
+	const std::pair<int, int> AIBeing::find_closest_open_tile_pos(Level * level, const std::pair<int, int> destination)
 	{
-	TileDjikstraPath tile_path(level, this, false);
-	const std::pair<std::vector<std::pair<int, int>>, int> calculated_path 
-		= tile_path.calculate_shortest_tile_path(origin_pos, dest_tile_pos);
-	return calculated_path;
-}
-
-const std::pair<int, int> AIBeing::find_closest_open_tile_pos(
-	const std::pair<int, int> destination,
-	std::vector<Entity*> interactables,
-	std::vector<Tile*> nearby_tiles,
-	const std::pair<int, int> level_dimensions)
-{
-	for (int range = 1; range < 3; range++) {
-		const std::pair<int, int> open_pos = this->find_closest_open_tile_pos(
-			destination, interactables, nearby_tiles, level_dimensions, range);
-		if (open_pos.first >= 0 && open_pos.second >= 0) {
-			return open_pos;
-		}
-	}
-	return std::pair<int, int>(-1, -1);
-}
-
-const std::pair<int, int> AIBeing::find_closest_open_tile_pos(const std::pair<int, int> destination, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, const std::pair<int, int> level_dimensions, const int range)
-{
-	for (int ty = -1*range; ty < 1 + range; ty++) {
-		for (int tx = -1*range; tx < 1 + range; tx++) {
-			const std::pair<int, int>
-				tile_center(destination.first / TILE_SIZE + tx, destination.second / TILE_SIZE + ty);
-			const int cx = std::max(
-				0, std::min(level_dimensions.first - TILE_SIZE, destination.first + tx * TILE_SIZE));
-			const int cy = std::max(
-				0, std::min(level_dimensions.second - TILE_SIZE, destination.second + ty * TILE_SIZE));
-			if (!this->pathing_blocked_at(cx, cy, interactables)) {
-				return std::pair<int, int>(cx / TILE_SIZE, cy / TILE_SIZE);
+		for (int range = 1; range < 3; range++) {
+			const std::pair<int, int> open_pos = this->find_closest_open_tile_pos(
+				level, destination, range);
+			if (open_pos.first >= 0 && open_pos.second >= 0) {
+				return open_pos;
 			}
 		}
+		return std::pair<int, int>(-1, -1);
 	}
-	return std::pair<int, int>(-1, -1);
-}
+
+	const std::pair<int, int> AIBeing::find_closest_open_tile_pos(Level * level, const std::pair<int, int> destination, const int range)
+	{
+		const std::pair<int, int> level_dimensions = level->get_dimensions();
+		for (int ty = -1 * range; ty < 1 + range; ty++) {
+			for (int tx = -1 * range; tx < 1 + range; tx++) {
+				const std::pair<int, int>
+					tile_center(destination.first / TILE_SIZE + tx, destination.second / TILE_SIZE + ty);
+				const int cx = std::max(
+					0, std::min(level_dimensions.first - TILE_SIZE, destination.first + tx * TILE_SIZE));
+				const int cy = std::max(
+					0, std::min(level_dimensions.second - TILE_SIZE, destination.second + ty * TILE_SIZE));
+				if (!this->pathing_blocked_at(cx, cy, level, false)) {
+					return std::pair<int, int>(cx / TILE_SIZE, cy / TILE_SIZE);
+				}
+			}
+		}
+		return std::pair<int, int>(-1, -1);
+	}
 
 
 	const std::pair<std::string, std::pair<int, int>> AIBeing::get_next_destination()
@@ -280,6 +252,11 @@ const std::pair<int, int> AIBeing::find_closest_open_tile_pos(const std::pair<in
 			this->ai_state.set_is_idle();
 		}
 		
+	}
+
+	const bool AIBeing::is_locked()
+	{
+		return this->ai_state.is_locked();
 	}
 
 	const bool AIBeing::needs_pathing_calculation()
@@ -362,7 +339,7 @@ void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
 	
 	this->ai_timer_update();
 	this->request_pathing_update(level, time);
-	this->destination_update(level);
+	this->destination_update(level, time);
 	this->walk_update();
 	Being::update(level, time, game_mode);
 }
@@ -370,8 +347,11 @@ void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
 void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	//TEMP
-	this->draw_adjacent_rect(display, x_offset, y_offset);
-	this->draw_destinations(display, x_offset, y_offset);
+	const bool should_draw_test_rects = true; //TEMP
+	if (should_draw_test_rects) {
+		this->draw_adjacent_rect(display, x_offset, y_offset);
+		this->draw_destinations(display, x_offset, y_offset);
+	}
 	//TEMP
 	Being::draw(display, x_offset, y_offset);
 }
@@ -390,6 +370,7 @@ void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_
 	const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
 		* std::min(std::abs(yoff_t) * TILE_SIZE, (int)std::abs(y_dist)) : 0;
 
+	
 	if (this->check_rect_bitmap == NULL) {
 		this->check_rect_bitmap = al_create_bitmap(this->get_width(), this->get_height());
 		al_set_target_bitmap(this->check_rect_bitmap);
@@ -422,6 +403,11 @@ void AIBeing::add_primary_destination(const std::pair<int, int> destination, con
 	this->primary_destinations.push_back(std::pair<std::string, std::pair<int, int>>(dest_key, destination));
 }
 
+const std::pair<int, int> AIBeing::first_primary_destination()
+{
+	return this->primary_destinations.size() > 0 ? this->primary_destinations[0].second : std::pair<int, int>(-1, -1);
+}
+
 const bool AIBeing::has_primary_destinations()
 {
 	return !this->primary_destinations.empty();
@@ -448,11 +434,25 @@ const bool AIBeing::has_primary_destination_with_key(const std::string dest_key)
 	return false;
 }
 
-const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level)
+void AIBeing::set_secondary_destinations(const std::vector<std::pair<std::string, std::pair<int, int>>> destinations)
 {
-	return this->pathing_blocked_at(x, y, level, false);
+	this->secondary_destinations.clear();
+	this->secondary_destinations = destinations;
 }
 
+const std::pair<std::string, std::pair<int, int>> AIBeing::get_forced_destination()
+{
+	return this->forced_destination;
+}
+
+void AIBeing::set_forced_destination(std::pair<std::string, std::pair<int, int>> value)
+{
+	this->forced_destination = value;
+}
+
+
+//TODO: call this less often or make it more efficient
+// is there a way to have faster checks for 
 const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles)
 {
 	Rect check_rect(x, y,

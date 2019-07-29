@@ -151,8 +151,6 @@ void Level::generate_entity_groups()
 		const int eg_num_sheet_cols = this->tileset->get_entity_group_sheet_image_cols_by_index(eg_index);
 		const int min_spawn_tx = rule->min_spawn_dist_tx.value(), min_spawn_ty = rule->min_spawn_dist_ty.value();
 		const std::pair<int, int> root_offset = this->tileset->get_entity_group_root_offset(eg_index);
-		//const std::pair<int, int> collide_offset = this->tileset->get_entity_group_collide_offset(eg_index);
-		//const std::pair<int, int> collide_dimensions = this->tileset->get_entity_group_collide_dimensions(eg_index);
 		const std::pair<int, int> eg_dim = this->tileset->get_entity_group_image_dimensions_by_index(eg_index);
 		const std::vector<int> allowed_tiles = rule->get_allowed_spawn_tile_indeces();
 		std::vector<std::pair<int, int>> candidate_tiles;
@@ -298,6 +296,36 @@ void Level::generate_blocks()
 			}
 		}
 	}
+}
+
+void Level::update_collide_buckets(Entity * e)
+{
+	Rect * collide_rect = e->get_collide_rect();
+	const std::vector<std::string> bucket_keys = this->collide_bucket_keys(collide_rect);
+	for (std::string bucket_key : bucket_keys) {
+		auto it = this->collide_buckets.find(bucket_key);
+		if (it == this->collide_buckets.end()) {
+			std::set<Entity*> entity_set;
+			this->collide_buckets[bucket_key] = entity_set;
+		}
+		this->collide_buckets[bucket_key].insert(e);
+	}
+}
+
+const std::vector<std::string> Level::collide_bucket_keys(Rect * collide_rect)
+{
+	// if the rect intersects a bucket at all, it belongs in that bucket
+	std::vector<std::string> bucket_keys;
+	if (collide_rect->width > 0 && collide_rect->height > 0) {
+		const int bucket_x1 = collide_rect->x / COLLIDE_BUCKET_WIDTH, bucket_y1 = collide_rect->y / COLLIDE_BUCKET_HEIGHT;
+		const int bucket_x2 = (collide_rect->x + collide_rect->width) / COLLIDE_BUCKET_WIDTH, bucket_y2 = (collide_rect->y + collide_rect->height) / COLLIDE_BUCKET_HEIGHT;
+		for (int y = bucket_y1; y < bucket_y2 + 1; y++) {
+			for (int x = bucket_x1; x < bucket_x2 + 1; x++) {
+				bucket_keys.push_back(std::to_string(x) + "," + std::to_string(y));
+			}
+		}
+	}
+	return bucket_keys;
 }
 
 const std::vector<std::pair<int, int>> Level::connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, 
@@ -624,6 +652,7 @@ void Level::load_tileset()
 
 void Level::load_from_xml()
 {
+	this->collide_buckets.clear();
 	this->load_tileset();
 	this->initialize_tiles();	//this also intializes blocks
 	this->draw_tile_edge_bitmaps();
@@ -850,6 +879,7 @@ void Level::generate_level()
 	if (!(this->gen_data.get_should_generate())) {
 		return;
 	}
+	this->collide_buckets.clear();
 	this->generate_tiles();
 	this->generate_paths();
 	this->generate_entity_groups();
@@ -912,6 +942,7 @@ void Level::initialize_entity_group(EntityGroup *eg)
 	eg->set_collide_offset(collide_off);
 	eg->set_collide_dimensions(collide_dim);
 	eg->load_mask(sheet_filename + "/entity_groups/" + eg->get_entity_group_name());
+	this->update_collide_buckets(eg);
 }
 
 void Level::initialize_tiled_images()
@@ -958,6 +989,7 @@ void Level::clear_level()
 	this->entity_groups.Clear();
 	this->tiled_image_layers.Clear();
 	this->initialize_empty();
+	this->collide_buckets.clear();
 }
 
 void Level::remove_tile_edges()
@@ -1082,11 +1114,13 @@ void Level::update(GlobalTime * time, const int game_mode)
 	const int b_size = beings.size();
 	for (int i = 0; i < b_size; i++) {
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
-			std::vector<Entity*> interactables = get_interactables(beings[i]);
-			std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
-			beings[i]->update(this, time, game_mode);
-		}
-		else {
+							// NPCs and other being are updated no matter what level they're on
+			
+			if (beings[i]->get_type() == PLAYER) {
+				std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
+				beings[i]->update(this, time, game_mode);
+			}
+		} else {
 			// TODO: better error handling
 			std::cout << "NULL BEING" << std::endl;
 		}
@@ -1244,6 +1278,34 @@ std::vector<Entity*> Level::get_interactables(Entity * entity, const bool ignore
 	return interactables;
 }
 
+std::vector<Entity*> Level::get_colliding_interactables(Entity * entity, Rect collide_rect, const bool ignore_moving_obstacles)
+{
+	std::vector<Entity*> interactables;
+	const std::vector<std::string> collide_keys = this->collide_bucket_keys(&collide_rect);
+	for (std::string collide_key : collide_keys) {
+		auto it = this->collide_buckets.find(collide_key);
+		if (it != this->collide_buckets.end()) {
+			const std::set<Entity*> bucket_entities = this->collide_buckets[collide_key];
+			for (Entity * e : bucket_entities) {
+				if (e != NULL && e != entity && e->is_solid() && e->intersects_area(collide_rect)) {
+					interactables.push_back(e);
+				}
+			}
+		}
+	}
+	if (!ignore_moving_obstacles) {
+		if (entity->get_type() != PLAYER) {
+			interactables.push_back(this->get_player());
+		}
+		for (Being * b : this->beings) {
+			if (b && b != entity && b->is_solid() && b->intersects_area(collide_rect)) {
+				interactables.push_back(b);
+			}
+		}
+	}
+	return interactables;
+}
+
 std::vector<Entity*> Level::get_moving_interactables(Entity * entity)
 {
 	std::vector<Entity*> interactables;
@@ -1251,7 +1313,7 @@ std::vector<Entity*> Level::get_moving_interactables(Entity * entity)
 		interactables.push_back(this->get_player());
 	}
 	for (Being * b : this->beings) {
-		if (b && b != entity) {
+		if (b && b != entity && b->get_type() != PLAYER) {
 			interactables.push_back(b);
 		}
 	}
@@ -1671,6 +1733,28 @@ std::vector<PathNode*> Level::get_path_nodes()
 		}
 	}
 	return nodes;
+}
+
+const bool Level::has_rect_collisions(Entity * entity, Rect collide_rect, const bool ignore_moving_obstacles)
+{
+	std::vector<Entity *> interactables = this->get_colliding_interactables(entity, collide_rect, ignore_moving_obstacles);
+	std::vector<Tile *> nearby_tiles = this->get_tiles_in_range(collide_rect.x / TILE_SIZE, collide_rect.y / TILE_SIZE,
+		collide_rect.width / TILE_SIZE, collide_rect.height / TILE_SIZE, 2);
+
+	for (Tile * t : nearby_tiles) {
+		Block * b = t->get_block();
+		if (b != NULL && !b->is_empty() && b->is_solid()) {
+			interactables.push_back(b);
+		}
+	}
+
+	for (Entity *e : interactables) {
+		//TODO: call this or empty_at() less often
+		if (e != NULL && e != entity && e->is_solid() && e->intersects_area(collide_rect)) {
+			return true;
+		}
+	}
+	return false;
 }
 
 std::string Level::get_dungeon_filename()

@@ -107,10 +107,15 @@ protected:
 	xmls::Collection<InteractAction> load_day_actions;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::xInt entity_data_index;
-	xmls::xInt entity_sheet_col;	
+	xmls::xInt entity_sheet_col;
 	xmls::xInt entity_sheet_row;
 	xmls::xInt entity_starting_pos_x;
 	xmls::xInt entity_starting_pos_y;
+	//Rect collide_rect();
+	const int get_collide_x_offset();
+	const int get_collide_y_offset();
+	const int get_collide_width();
+	const int get_collide_height();
 	std::map<int, int> counters;
 	std::map<std::string, EntityEffect> entity_effects;
 public:

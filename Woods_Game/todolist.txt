@@ -4,15 +4,13 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 7/20/2019
+Last updated 7/29/2019
 
 totals don't include ongoing stuff 
 
-Total: 103-158 days (~4-5 months, done by Mar 2020)
+Total: 99-150 days (~4-5 months, done by Mar 2020)
 
-1. Fix performance issues
-	(4-8 days)
-2. Finish NPC pathing/AIState stuff (fix pathing through genned woods)
+1. Finish NPC pathing/AIState stuff
 	(4-8 days)
 2. NPC schedule
 	(4-8 days)
@@ -66,20 +64,26 @@ NPCs
 ---------------------------------------------------
 
 NPC pathing
+	- Add collide rect serialization to NPCs and use it to say where we will walk/test collisions rather than using get_x and get_y
+		# in other words, base collisions on where their "feet" will be
+		# make sure collide rect contais the mask since that's why we care about collisions
+		# I think in addition to get_x and get_y this may replace some uses of TILE_SIZE in collision checks
+		# some of the collision changes may be in Being/Entity/Gameimage
+	- fix bug where NPC always looks to the side after reaching a primary dest
 	- fix how NPCs path through genned woods
+		* see if this is fixed by other fixes
 		* seem to stop when they shouldn't
-	- improve slowdown that happens when recalculating djikstra paths
-		* slowest part seems to be calculating shortest tile path (after initializing tile path)
-		* see if we can use allegro threading to make the actual path calculation asynchronous after creating DjikstraPaths
-			# NPCs stand still while calculating and have a "locked" state
-			# go through the tile pathing method and see which things the mutex needs to lock
-				$ probably need some kind of temporary snapshot or something
-		* could possibly better caching by using just the width/height of the npc as a key/blocked tile check
+	- Fix bug where NPCs sometmies "glide"
+		* see if this is fixed by other fixes
+		* probably happens because animation key isn't set to walk
 	- when hitting a "next level" facing node, need to animate walking to next level
-		* might need to serialize walk to/from direction
+		* might need to serialize walk to/from direction (or calculate somehow)
+		* set AIState to "leaving level" or something, set direction, and distance/time to walk (I feel like we shouldn't factor in tile speed)
 		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
 		* make sure next level traveling behaivor also handles going through doors into houses
 			# probably don't want an animation, just a door shutting/slamming sound
+	- fix bug where NPC gets confused if a being blocks its current rect
+		* probably need a separate set of behavior for this (stop and face person)
 	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
 		* need to figure out how a typical case of the player talking to an NPC should work
 			# could have them stop and look at you when you get close rather than just avoiding (depending on personality)
@@ -90,6 +94,9 @@ NPC pathing
 		* instead of launch argument, could add console commands
 
 AIState/NPC schedule
+	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
+		# this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
+		# note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- extend schedule logic to "go to place and do an animation" or 
 		 "go to place and wander around" rather than standing on specific tiles at specific times
 		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
@@ -123,25 +130,16 @@ Experiment with some basic cutscenes
 Dialog portrait image
 
 ---------------------------------------------------
-Level editor
----------------------------------------------------
-
-What to use tileset tab for?
-	* ideally could add new object types, edit global values, etc
-
-Tiled Images
-	* no room to put it on tileset tab-- need to reorganize it
-		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
-
----------------------------------------------------
 Memory management/error handling
 ---------------------------------------------------
 
-Fix performance when going to large levels
+Fix performance issues
+	* look into the font for the FPS counter since it's created right at the beginning
+		# also font for title screen? (might need to destroy)
+	* may want to try shrinking collision buckets where relevant
+	* make sure to update other async methods besides "start new game" to match
 
-Fix the delay on startup
-	* almost completely fixed -- I think it should work to just not give the player control for a few seconds after loading
-		# need to display the screen during this time because processing bitmaps is likely the source of slowdown
+When debugging performance, check for al_create_bitmap and al_load_font references to make sure we aren't using memory bitmaps after startup
 
 Asynchronous loading screen
 	* https://www.allegro.cc/forums/thread/615021
@@ -166,6 +164,21 @@ One possible problem might be in Tile.replace_block(). At some point, we create 
 	* can probably store these actions more globally (or do we already do this?)
 
 Fix build warnings
+
+If the tree bitmaps are ever a problem, could refactor image storage so we break large bitmaps into 64x64 subsections
+
+---------------------------------------------------
+Level editor
+---------------------------------------------------
+
+What to use tileset tab for?
+	* ideally could add new object types, edit global values, etc
+
+Tiled Images
+	* no room to put it on tileset tab-- need to reorganize it
+		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
+
+Fix bug where XML attributes can get saved twice after editing via ctrl-click
 
 ---------------------------------------------------
 Procedural generation
@@ -309,10 +322,6 @@ Contact with thorns should cost stamina (look for a "damage" attribute that I al
 ---------------------------------------------------
 Menus
 ---------------------------------------------------
-
-Make loading screen(s)
-	* will require setting up asynchronous calls
-	* could possibly have one with a progress bar and description of what we're doing when genning the world
 
 Need to make a "restore defaults" (or something similar) button for video configurations
 

@@ -73,6 +73,7 @@ void GameImage::set_content(std::string image_filename, Rect* image_subsection, 
 	this->image_filename = image_filename;
 	this->image_subsection = image_subsection;
 	rect.x = position.first, rect.y = position.second;
+	collide_rect.x = position.first + collide_x_offset.value(), collide_rect.y = position.second + collide_y_offset.value();
 }
 
 void GameImage::load_mask(std::string base_filename)
@@ -174,11 +175,13 @@ void GameImage::set_position(int x, int y)
 {
 	rect.x = x;
 	rect.y = y;
+	collide_rect.x = x + collide_x_offset.value(), collide_rect.y = y + collide_y_offset.value();
 }
 
 void GameImage::set_rect(int x, int y, int width, int height)
 {
 	rect.x = x, rect.y = y, rect.width = width, rect.height = height;
+	collide_rect.x = x + collide_x_offset.value(), collide_rect.y = y + collide_y_offset.value();
 }
 
 void GameImage::set_center_offset(std::pair<int, int> offset)
@@ -277,6 +280,16 @@ Rect * GameImage::get_image_subsection()
 	return image_subsection;
 }
 
+Rect * GameImage::get_collide_rect()
+{
+	return &(this->collide_rect);
+}
+
+Rect * GameImage::get_rect_for_collision()
+{
+	return this->collide_rect.width > 0 && this->collide_rect.height > 0 ? &(this->collide_rect) : &(this->rect);
+}
+
 std::vector<ALLEGRO_BITMAP*> GameImage::get_additional_image_layers()
 {
 	std::vector<ALLEGRO_BITMAP*> layers;
@@ -331,7 +344,7 @@ const int GameImage::calculate_direction(GameImage * other)
 
 const bool GameImage::intersects_area(Rect area)
 {
-	return rect.intersects_rect(area);
+	return this->get_rect_for_collision()->intersects_rect(area);
 }
 
 bool GameImage::outside_level(std::pair<int, int> level_dimensions)

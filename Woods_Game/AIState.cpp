@@ -41,6 +41,11 @@ void AIState::set_is_locked()
 	this->state_key = AI_STATE_LOCKED;
 }
 
+const bool AIState::is_locked()
+{
+	return this->state_key == AI_STATE_LOCKED;
+}
+
 void AIState::set_is_waiting(const int wait_time)
 {
 	this->state_key = AI_STATE_WAITING;

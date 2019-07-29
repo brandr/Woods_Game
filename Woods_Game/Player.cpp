@@ -66,6 +66,7 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 		update_side_scrolling(interactables, level_dimensions);
 		break;
 	case TOP_DOWN:
+		//TODO: might want this to use level rather than interactables
 		update_top_down(interactables, nearby_tiles, level_dimensions);
 		break;
 	case MAIN_GAME_DIALOG:
@@ -75,6 +76,7 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 
 	Being::update(level, time, game_mode);
 	if (this->interacting) {
+		//TODO: might want this to use level rather than interactables
 		this->interact_update(interactables, nearby_tiles, level_dimensions);
 	}
 	clear_input();
@@ -82,7 +84,8 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 
 void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair<int, int> level_dimensions)
 {
-	//TODO: joystick-based movement
+	// uncomment if we ever want side-scrolling physics
+	/*
 	if (jumping && on_ground(interactables)) jumping = false;
 	switch (direction) {
 	case DIR_LEFT:
@@ -101,6 +104,7 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 	if (check_move(MOVE_UP)) {
 		attempt_jump(interactables);
 	}
+	*/
 }
 
 void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)

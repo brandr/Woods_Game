@@ -23,6 +23,8 @@
 
 #define STANDARD_LEVEL_GRID_WIDTH 832;
 #define STANDARD_LEVEL_GRID_HEIGHT 640;
+#define COLLIDE_BUCKET_WIDTH 416 // half of level grid width
+#define COLLIDE_BUCKET_HEIGHT 320 //half of level grid height
 
 class Level : public xmls::Serializable
 {
@@ -43,6 +45,7 @@ private:
 	xmls::xInt grid_y;
 	xmls::xInt grid_width;
 	xmls::xInt grid_height;
+	std::map<std::string, std::set<Entity *>> collide_buckets; 
 	int width;
 	int height;
 	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer);
@@ -50,6 +53,8 @@ private:
 	void generate_tiles();
 	void generate_entity_groups();
 	void generate_blocks();
+	void update_collide_buckets(Entity * e);
+	const std::vector<std::string> collide_bucket_keys(Rect * collide_rect);
 	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, 
 		const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited, const int path_size);
 	const std::vector<std::pair<int, int>> generate_weaving_paths(const int tile_index, const std::pair<int, int> pos1, const std::pair<int, int> pos2, 
@@ -106,6 +111,7 @@ public:
 	Being * get_player();
 	std::vector<Entity*> get_interactables(Entity*);
 	std::vector<Entity*> get_interactables(Entity*, const bool ignore_moving_obstacles);
+	std::vector<Entity*> get_colliding_interactables(Entity* e, Rect collide_rect, const bool ignore_moving_obstacles);
 	std::vector<Entity*> get_moving_interactables(Entity* entity);
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
@@ -145,6 +151,7 @@ public:
 	Spawner * spawner_at_tile_pos(const std::pair<int, int> pos);
 	PathNode * path_node_at_tile_pos(const std::pair<int, int> pos);
 	std::vector<PathNode *> get_path_nodes();
+	const bool has_rect_collisions(Entity * e, Rect collide_rect, const bool ignore_moving_obstacles);
 	std::string get_dungeon_filename();
 	void set_dungeon_filename(std::string value);
 	std::string get_filename();

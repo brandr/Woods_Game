@@ -47,6 +47,7 @@ void Dungeon::unload_content()
 		Level * l = this->level_list[i];
 		if (l != NULL) {
 			l->unload_content();
+			l = NULL;
 		}
 	}
 	this->level_list.clear();

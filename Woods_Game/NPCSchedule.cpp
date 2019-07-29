@@ -67,5 +67,5 @@ ScheduleTimeBlock::~ScheduleTimeBlock()
 
 const bool ScheduleTimeBlock::matches_time(GlobalTime * time)
 {
-	return time->get_time() >= this->start_time.value() && time->get_current_minutes() < this->stop_time.value();
+	return time->get_total_minutes() >= this->start_time.value() && time->get_total_minutes() < this->stop_time.value();
 }

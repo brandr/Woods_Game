@@ -49,11 +49,29 @@ void ScreenManager::update()
 		if (current_screen->get_screen_flag() == FLAG_START_NEW_GAME) {
 			//TODO: how to determine where to load from? 
 			//options for world gen? how to know which save file/character name/etc?
+			
+			
 			const std::string world_key = "world_1";
+
+
+			al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
 			LoadingScreen * loading_screen = new LoadingScreen();
 			loading_screen->load_content();
 			add_screen(loading_screen, false);
 			loading_screen->start_new_game(world_key);
+			
+
+			//non-async for testing
+			
+			/*
+			MainGameScreen * game_screen = new MainGameScreen();
+			game_screen->start_new_game(world_key);
+			game_screen->load_content();
+			game_screen->load_fonts();
+			
+			add_screen(game_screen, false);
+			*/
+			//temp
 			return;
 		} else if (current_screen->get_screen_flag() == FLAG_LOAD_GAME) {
 			const std::string world_key = current_screen->get_load_game_filepath();
@@ -64,8 +82,12 @@ void ScreenManager::update()
 			return;
 		} else if (current_screen->get_screen_flag() == FLAG_FINISH_LOADING) {
 			((LoadingScreen*)current_screen)->finish_loading();
+			//((LoadingScreen*)current_screen)->unload_content();
 			//TODO: make sure we actually need to do this every time
 			ImageLoader::get_instance().convert_bitmaps_to_video();
+			
+			al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
+			al_convert_memory_bitmaps();
 			GameScreen * next_screen = ((LoadingScreen*)current_screen)->get_next_screen();
 			//TODO: load fonts async if possible
 			next_screen->load_fonts();

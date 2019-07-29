@@ -1,4 +1,20 @@
 #include "MenuItem.h"
+#include "ImageLoader.h"
+
+ALLEGRO_BITMAP * MenuItem::menu_image()
+{
+	return ImageLoader::get_instance().get_image(this->image_filename.value());
+}
+
+ALLEGRO_BITMAP * MenuItem::left_bracket()
+{
+	return ImageLoader::get_instance().get_image(this->left_bracket_filename.value());
+}
+
+ALLEGRO_BITMAP * MenuItem::right_bracket()
+{
+	return ImageLoader::get_instance().get_image(this->right_bracket_filename.value());
+}
 
 MenuItem::MenuItem()
 {
@@ -26,20 +42,13 @@ MenuItem::~MenuItem()
 
 void MenuItem::load_additional_content()
 {
-	const std::string prefix = "resources/images/";
 	if (this->image_filename.c_str() != NULL && this->image_filename.value() != "") {
-		std::string filename = prefix + this->image_filename.value();
-		this->set_image(al_load_bitmap(filename.c_str()));
+		ImageLoader::get_instance().load_image(this->image_filename.value());
 	}
 	if (this->left_bracket_filename.c_str() != NULL && this->left_bracket_filename.value() != ""
 		&& this->right_bracket_filename.c_str() != NULL && this->right_bracket_filename.value() != "") {
-		const std::string left_bracket_filepath = prefix + left_bracket_filename.value();
-		const std::string right_bracket_filepath = prefix + right_bracket_filename.value();
-		ALLEGRO_BITMAP* bracket_L = al_load_bitmap(left_bracket_filepath.c_str());
-		ALLEGRO_BITMAP* bracket_R = al_load_bitmap(right_bracket_filepath.c_str());
-		al_convert_mask_to_alpha(bracket_L, al_map_rgb(255, 0, 255));
-		al_convert_mask_to_alpha(bracket_R, al_map_rgb(255, 0, 255));
-		this->set_selection_brackets(bracket_L, bracket_R);
+		ImageLoader::get_instance().load_image(left_bracket_filename.value());
+		ImageLoader::get_instance().load_image(right_bracket_filename.value());
 	}
 	this->options_index = stored_options_index.value();
 }
@@ -47,22 +56,10 @@ void MenuItem::load_additional_content()
 
 void MenuItem::unload_content()
 {
-	if (menu_image) {
-		al_destroy_bitmap(menu_image);
-		menu_image = NULL;
-	}
 	if (animation) {
 		animation->unload_content();
 		delete animation;
 		animation = NULL;
-	}
-	if (left_bracket) {
-		al_destroy_bitmap(left_bracket);
-		left_bracket = NULL;
-	}
-	if (right_bracket) {
-		al_destroy_bitmap(right_bracket);
-		right_bracket = NULL;
 	}
 }
 
@@ -73,7 +70,7 @@ void MenuItem::draw(ALLEGRO_DISPLAY * display, float x_off, float y_off, float w
 	const std::vector<int> rgb = string_to_rgb(color_str);
 	if (selected) draw_selected(display, x_off, y_off, width, height, font, color_str, selection_style, option_selected);
 	else {
-		if (menu_image) al_draw_bitmap(menu_image, x_off + x_pos.value(), y_off + y_pos.value(), NULL);
+		if (menu_image()) al_draw_bitmap(menu_image(), x_off + x_pos.value(), y_off + y_pos.value(), NULL);
 		else if (menu_text.value() != "") {
 			al_draw_text(font, al_map_rgb(rgb[0], rgb[1], rgb[2]), x_off + x_pos.value(), y_off + y_pos.value(), NULL, menu_text.c_str());
 		}
@@ -97,7 +94,7 @@ void MenuItem::draw_selected(ALLEGRO_DISPLAY * display, float x_off, float y_off
 	std::vector<int> rgb;
 	if (selection_style == "brighten") rgb = brightened_color(string_to_rgb(color_str), 80);
 	else if (selection_style == "darken") rgb = darkened_color(string_to_rgb(color_str), 80);
-	if (menu_image) al_draw_bitmap(menu_image, x_off + x_pos.value(), y_off + y_pos.value(), 0);
+	if (menu_image()) al_draw_bitmap(menu_image(), x_off + x_pos.value(), y_off + y_pos.value(), 0);
 	else if (menu_text.value() != "") al_draw_text(font, al_map_rgb(rgb[0], rgb[1], rgb[2]), 
 		x_off + x_pos.value(), y_off + y_pos.value(), 
 		NULL, menu_text.c_str());
@@ -111,8 +108,8 @@ void MenuItem::draw_selected(ALLEGRO_DISPLAY * display, float x_off, float y_off
 		al_draw_text(font, al_map_rgb(rgb[0], rgb[1], rgb[2]), text_pos.first, text_pos.second,
 			NULL, current_option.c_str());
 		if (option_selected) {
-			al_draw_bitmap(left_bracket, left_bracket_pos.first, left_bracket_pos.second, 0);
-			al_draw_bitmap(right_bracket, right_bracket_pos.first, right_bracket_pos.second, 0);
+			al_draw_bitmap(left_bracket(), left_bracket_pos.first, left_bracket_pos.second, 0);
+			al_draw_bitmap(right_bracket(), right_bracket_pos.first, right_bracket_pos.second, 0);
 		}
 	}
 	if (controls_input_label.value() != "") {
@@ -166,11 +163,6 @@ std::string MenuItem::get_text()
 	return menu_text.value();
 }
 
-void MenuItem::set_image(ALLEGRO_BITMAP * image)
-{
-	menu_image = image;
-}
-
 void MenuItem::set_position(std::pair<float, float> position)
 {
 	this->position = position;
@@ -216,12 +208,12 @@ void MenuItem::set_controls_input_label(std::string input_label)
 {
 	this->controls_input_label = input_label;
 }
-
+/*
 void MenuItem::set_selection_brackets(ALLEGRO_BITMAP * left_bracket, ALLEGRO_BITMAP * right_bracket)
 {
 	this->left_bracket = left_bracket, this->right_bracket = right_bracket;
 }
-
+*/
 void MenuItem::set_selection_bracket_filenames(std::string left_filename, std::string right_filename)
 {
 	this->left_bracket_filename = left_filename;
@@ -259,12 +251,12 @@ std::pair<float, float> MenuItem::get_right_bracket_position(float x_off, float 
 
 std::pair<float, float> MenuItem::get_left_bracket_dimensions()
 {
-	return std::pair<float, float>(al_get_bitmap_width(left_bracket), al_get_bitmap_height(left_bracket));
+	return std::pair<float, float>(al_get_bitmap_width(left_bracket()), al_get_bitmap_height(left_bracket()));
 }
 
 std::pair<float, float> MenuItem::get_right_bracket_dimensions()
 {
-	return std::pair<float, float>(al_get_bitmap_width(right_bracket), al_get_bitmap_height(right_bracket));
+	return std::pair<float, float>(al_get_bitmap_width(right_bracket()), al_get_bitmap_height(right_bracket()));
 }
 
 std::pair<float, float> MenuItem::get_position()

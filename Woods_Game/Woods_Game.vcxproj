@@ -296,6 +296,7 @@
     <ClInclude Include="Cutscene.h" />
     <ClInclude Include="Dialog.h" />
     <ClInclude Include="DjikstraPath.h" />
+    <ClInclude Include="DjiktraPathData.h" />
     <ClInclude Include="Dungeon.h" />
     <ClInclude Include="DungeonData.h" />
     <ClInclude Include="DungeonEditorLayout.h" />

@@ -40,7 +40,10 @@ void TileSet::load_sheet_images(const std::string filename, const int sub_width,
 	for (int y = 0; y < sub_count_y; y++) {
 		for (int x = 0; x < sub_count_x; x++) {
 			Rect *sub_rect = new Rect(x * sub_width, y *sub_height, sub_width, sub_height);
-			ImageLoader::get_instance().load_image("tile_sheets/" + filename, *sub_rect);
+			if (!ImageLoader::get_instance().get_image("tile_sheets/" + filename, *sub_rect))
+			{
+				ImageLoader::get_instance().load_image("tile_sheets/" + filename, *sub_rect);
+			}
 		}
 	}
 }

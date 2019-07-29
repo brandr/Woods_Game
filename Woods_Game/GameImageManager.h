@@ -61,7 +61,7 @@ private:
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
 	GlobalTime * current_global_time = NULL;
-	ALLEGRO_BITMAP * light_filter = NULL;
+	//ALLEGRO_BITMAP * light_filter = NULL;
 	void load_player_from_xml(std::string filepath, std::string player_key);
 
 	ALLEGRO_THREAD * loading_thread;

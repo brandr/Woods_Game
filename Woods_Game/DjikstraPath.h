@@ -7,7 +7,9 @@
 #include <vector>
 #include <set>
 #include <map>
+#include "DjiktraPathData.h"
 #include "PathNode.h"
+#include "allegro5/threads.h"
 
 class Level;
 class NPC;
@@ -64,7 +66,6 @@ public:
 		const std::pair<int, int> start_t_pos,
 		const std::pair<int, int> dest_t_pos,
 		std::map<std::string, std::map<std::string, float>>& distances,
-		std::vector<std::pair<int, int>> ongoing_path, 
 		const float dist_tally);
 };
 
@@ -73,21 +74,23 @@ private:
 	void initialize_nodes(World * world, NPC * npc, Level * level, PathNode * dest_node);
 	void initialize_nodes(World * world, NPC * npc);
 	void initialize_node(World * world, NPC * npc, Level * level, PathNode * node);
-	DjikstraNode * get_djikstra_path_node(Level * level, PathNode * node);
-	const std::string path_node_map_key(Level * level, PathNode * node);
+	DjikstraNode * get_djikstra_path_node(const std::string level_key, const std::string node_key);
+	const std::string path_node_map_key(const std::string level_key, const std::string node_key);
 	std::pair<std::vector<DjikstraNode*>, float> calculate_shortest_node_path(
-		World * world,
-		PathNode * origin_node, const std::string origin_node_level_key,
-		PathNode * start_node, const std::string start_node_level_key,
-		PathNode * dest_node, const std::string dest_node_level_key,
-		std::map<std::string, std::map<std::string, float>>& distances, std::vector<PathNode*> ongoing_path, const float dist_tally);
+		const std::string origin_node_id, const std::string origin_node_level_key,
+		const std::string start_node_id, const std::string start_node_level_key,
+		const std::string dest_node_id, const std::string dest_node_level_key,
+		std::map<std::string, std::map<std::string, float>>& distances, 
+		const float dist_tally);
 public :
 	PathNodeDjikstraPath();
 	PathNodeDjikstraPath(World * world, NPC * npc, Level * level, PathNode * dest_node);
 	PathNodeDjikstraPath(World * world, NPC * npc);
 	~PathNodeDjikstraPath();
 	std::pair<std::vector<DjikstraNode*>, float> calculate_shortest_node_path(
-		World * world, PathNode * origin_node, const std::string origin_node_level_key, PathNode * dest_node, const std::string dest_node_level_key);
+		 const std::string origin_node_id, const std::string origin_node_level_key, const std::string dest_node_id, const std::string dest_node_level_key);
+	// async functions
+	static void *func_calculate_npc_pathing(ALLEGRO_THREAD *thr, void *arg);
 };
 
 #endif
