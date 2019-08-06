@@ -19,8 +19,9 @@ void AIBeing::request_pathing_update(Level * level, GlobalTime * time)
 			bool close_enough = false;
 			PathNode * matching_node = level->find_path_node_with_key(node_key);
 			if (matching_node != NULL) {
-				const float x_dist = this->get_x() - matching_node->get_x(),
-					y_dist = this->get_y() - matching_node->get_y();
+				Rect * collide_rect = this->get_rect_for_collision();
+				const float x_dist = collide_rect->x - matching_node->get_x(),
+					y_dist = collide_rect->y - matching_node->get_y();
 				close_enough =(std::abs(x_dist) < 2.0 * TILE_SIZE && std::abs(y_dist) < 2.0*TILE_SIZE);
 			}
 			if (!close_enough) {
@@ -38,8 +39,9 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 	if (!destinations.empty()) {
 		const std::pair<std::string, std::pair<int, int>> next_dest = destinations[0];
 		const std::pair<int, int> next_pos = next_dest.second;
-		const float x_dist = (float) (next_pos.first) - this->get_x(),
-			y_dist = (float) (next_pos.second) - this->get_y();
+		Rect * collide_rect = this->get_rect_for_collision();
+		const float x_dist = (float) (next_pos.first) - collide_rect->x,
+			y_dist = (float) (next_pos.second) - collide_rect->y;
 		// when we reach our current destination, remove it
 		if (std::abs(x_dist) < 1
 			&& std::abs(y_dist) < 1) {
@@ -72,7 +74,7 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 			this->anim_state = ANIM_STATE_NEUTRAL;
 		} else {
 			// see if there is an obstacle in the tile we are walking into
-			int start_x = this->get_x() / TILE_SIZE, start_y = this->get_y() / TILE_SIZE;
+			int start_x = collide_rect->x / TILE_SIZE, start_y = collide_rect->y / TILE_SIZE;
 			const std::pair<int, int> start_pos = std::pair<int, int>(start_x, start_y);
 			// cap xoff and yoff based on how far we're actually going to travel
 			const int xoff_t = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel)) : 0;
@@ -82,8 +84,7 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 			const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
 				* std::min(std::abs(yoff_t) * TILE_SIZE, (int)std::abs(y_dist)) : 0;
 			bool failed = false;
-			//TODO: this is getting called too often and/or for too many interactables
-			const bool blocked = this->pathing_blocked_at(this->get_x() + xoff, this->get_y() + yoff, level, false);
+			const bool blocked = this->pathing_blocked_at(collide_rect->x + xoff, collide_rect->y + yoff, level, false);
 			if (!blocked) {
 				if (!primary && this->secondary_destinations.size() > 1) {
 					const std::pair<std::string, std::pair<int, int>> first_dest = this->secondary_destinations[0];
@@ -106,8 +107,8 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 					// the primary destination is blocked, so we can't path directly to it
 					if (this->pathing_blocked_at(primary_pos.first, primary_pos.second, level, false)) {
 						const float x_dist_p
-							= primary_pos.first - this->get_x(),
-							y_dist_p = primary_pos.second - this->get_y();
+							= primary_pos.first - collide_rect->x,
+							y_dist_p = primary_pos.second - collide_rect->y;
 						// we're next to the primary destination and it's blocked, so we can't go there at all
 						if (std::abs(x_dist_p) < TILE_SIZE * 2 && std::abs(y_dist_p) < TILE_SIZE * 2) {
 							failed = true;
@@ -158,10 +159,11 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 			}
 			return;
 		}
+		Rect * collide_rect = this->get_rect_for_collision();
 		const std::pair<std::string, std::pair<int, int>> next_dest = this->get_next_destination();
 		const std::pair<int, int> next_pos = next_dest.second;
-		const float x_dist = next_pos.first - this->get_x(),
-			y_dist = next_pos.second - this->get_y();
+		const float x_dist = next_pos.first - collide_rect->x,
+			y_dist = next_pos.second - collide_rect->y;
 		const float b_speed = this->base_walk_speed.value();
 
 		int xoff = std::abs(x_dist) >= 1 ? (x_dist / std::abs(x_dist)) : 0;
@@ -178,17 +180,16 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 			this->yvel = (this->yvel / std::abs(this->yvel)) * std::abs(y_dist);
 		}
 
-		if (this->xvel >= 0) {
+		if (this->xvel > 0) {
 			if (this->xvel >= std::abs(this->yvel)) direction = DIR_RIGHT;
 			else if (this->yvel > 0) direction = DIR_DOWN;
 			else direction = DIR_UP;
-		}
-		else {
-			if (std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
+		} else {
+			if (std::abs(this->xvel) > 0 && std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
 			else if (this->yvel > 0) direction = DIR_DOWN;
-			else direction = DIR_UP;
+			else if (this->yvel < 0) direction = DIR_UP;
 		}
-		if (this->xvel > 0 || this->yvel > 0) {
+		if (std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) {
 			this->ai_state.set_is_walking();
 			anim_state = ANIM_STATE_WALKING;
 		}
@@ -239,8 +240,9 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 
 	const bool AIBeing::pathing_blocked_at(const int x, const int y, std::vector<Entity*> interactables)
 	{
+		Rect * collide_rect = this->get_rect_for_collision();
 		Rect check_rect(x, y,
-			this->get_width(), this->get_height());
+			collide_rect->width, collide_rect->height);
 		return !this->empty_at(check_rect, interactables);
 	}
 
@@ -251,7 +253,6 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 		} else {
 			this->ai_state.set_is_idle();
 		}
-		
 	}
 
 	const bool AIBeing::is_locked()
@@ -358,10 +359,11 @@ void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 
 void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
+	Rect * collide_rect = this->get_rect_for_collision();
 	const std::pair<std::string, std::pair<int, int>> next_dest = this->get_next_destination();
 	const std::pair<int, int> next_pos = next_dest.second;
-	const float x_dist = next_pos.first - this->get_x(),
-		y_dist = next_pos.second - this->get_y();
+	const float x_dist = next_pos.first - collide_rect->x,
+		y_dist = next_pos.second - collide_rect->y;
 
 	const int xoff_t = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel)) : 0;
 	const int yoff_t = std::abs(this->xvel) == 0 && std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel)) : 0;
@@ -372,12 +374,12 @@ void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_
 
 	
 	if (this->check_rect_bitmap == NULL) {
-		this->check_rect_bitmap = al_create_bitmap(this->get_width(), this->get_height());
+		this->check_rect_bitmap = al_create_bitmap(collide_rect->width, collide_rect->height);
 		al_set_target_bitmap(this->check_rect_bitmap);
 		al_clear_to_color(al_map_rgba(100, 0, 0, 100));
 		al_set_target_bitmap(al_get_backbuffer(display));
 	}
-	al_draw_bitmap(this->check_rect_bitmap, this->get_x() + xoff + x_offset, this->get_y() + yoff + y_offset, 0);
+	al_draw_bitmap(this->check_rect_bitmap, collide_rect->x + xoff + x_offset, collide_rect->y + yoff + y_offset, 0);
 }
 
 void AIBeing::draw_destinations(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -450,12 +452,15 @@ void AIBeing::set_forced_destination(std::pair<std::string, std::pair<int, int>>
 	this->forced_destination = value;
 }
 
-
-//TODO: call this less often or make it more efficient
-// is there a way to have faster checks for 
 const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles)
 {
+	Tile * t = level->get_tile(x / TILE_SIZE, y / TILE_SIZE);
+	TileSet * tileset = level->get_tileset();
+	if (!tileset->is_tile_npc_pathable(t->get_tile_type_index())) {
+		return true;
+	}
+	Rect * collide_rect = this->get_rect_for_collision();
 	Rect check_rect(x, y,
-		this->get_width(), this->get_height());
+		collide_rect->width, collide_rect->height);
 	return !this->empty_at(check_rect, level, ignore_moving_obstacles);
 }

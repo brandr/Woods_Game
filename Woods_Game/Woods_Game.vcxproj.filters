@@ -164,6 +164,15 @@
     <Filter Include="AI\Source Files">
       <UniqueIdentifier>{c7aa5685-e9a4-4a1b-88f2-8ea1f8c17cb5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Qualifiers">
+      <UniqueIdentifier>{12dc44cf-fa4d-498f-b8c4-62d6265b0300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Qualifiers\Header Files">
+      <UniqueIdentifier>{6b0be6f2-7b11-402b-b711-c8acf035bbdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Qualifiers\Source Files">
+      <UniqueIdentifier>{92d8f63b-4b79-4233-a7fc-047cfd39e94c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -383,6 +392,9 @@
     <ClInclude Include="DjiktraPathData.h">
       <Filter>Pathing\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Qualifier.h">
+      <Filter>Qualifiers\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -594,6 +606,9 @@
     </ClCompile>
     <ClCompile Include="NPCSchedule.cpp">
       <Filter>Time\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Qualifier.cpp">
+      <Filter>Qualifiers\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

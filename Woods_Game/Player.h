@@ -54,10 +54,12 @@ public:
 	void reset_entity_flags();
 	virtual void update(Level * level, GlobalTime *time, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
+	void update_top_down(Level * level);
 	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void interact_update(Level * level);
 	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	//time
 	const int wake_up_time();
@@ -74,6 +76,7 @@ public:
 	void end_active_cutscene();
 	//interact
 	const bool interact(Entity* e);
+	void shear_update(Level * level);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	void sleep_in_bed(GlobalTime * current_time);
 	void load_game_for_day(const int day);

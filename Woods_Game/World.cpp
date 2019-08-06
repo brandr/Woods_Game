@@ -74,24 +74,14 @@ const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 	Level * destination_level = this->get_npc_destination_level(npc);
 	PathNode * destination_node = this->get_npc_destination_node(npc);
 	TileDjikstraPath * tile_djikstra_path = NULL;
-	const std::pair<int, int> npc_t_pos(npc->get_x() / TILE_SIZE, npc->get_y() / TILE_SIZE);
 	if (destination_level != NULL && destination_node != NULL) {
 		npc->clear_primary_destinations();
 		double start_create_tile_path_time = al_get_time();
-
 		tile_djikstra_path = this->get_mapped_tile_djikstra_path(current_npc_level, npc);
-		//TODO: marking blocked tiles is probably the last thing we need to do before the async part of the method
 		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc);
-
-		//TODO: this call or something inside it should be async (this means we can't return right away saying whether we found a path
 		has_found_path 
 			= this->calculate_npc_pathing(npc, current_npc_level, tile_djikstra_path, destination_node->get_node_id(), destination_level->get_filename());	
 	}
-		
-	//if (!has_found_path) {
-		//TODO: might need to tell the NPC not to bother looking for that path again
-	//	npc->cancel_current_pathing();
-	//}
 	return has_found_path;
 }
 
@@ -103,28 +93,33 @@ const bool World::calculate_npc_pathing(
 	double start_time = al_get_time();
 	double accounted_time = 0.0;
 
-	bool enable_logging = true; //temp
-
-	if (enable_logging) {
-		std::cout << "--------------------------------------\n";
-		std::cout << "START calculating npc pathing\n\n";
-	}
+	bool enable_logging = false; //temp
 
 	bool has_found_path = false;
 
-	// TODO: probably want to pass these in so we don't need to look at the npc
-	const std::pair<int, int> npc_t_pos(npc->get_x() / TILE_SIZE, npc->get_y() / TILE_SIZE);
+	Rect * collide_rect = npc->get_rect_for_collision();
+	const std::pair<int, int> npc_t_pos(collide_rect->x / TILE_SIZE, collide_rect->y / TILE_SIZE);
 	const std::string current_npc_level_key = current_npc_level->get_filename();
-	std::vector<PathNode *> current_level_path_nodes = current_npc_level->get_path_nodes(); //TODO: could potentially get these as IDs to not deal with GameImages
+	std::vector<PathNode *> current_level_path_nodes = current_npc_level->get_path_nodes();
 	const std::string npc_key = npc->get_npc_key();
-	// TODO: should this be collide pos instead of npc's regular pos?
-	const std::pair<int, int> start_npc_pos((int)npc->get_x(), (int)npc->get_y());
+	const std::pair<int, int> start_npc_pos((int)collide_rect->x, collide_rect->y);
 
 	bool should_force = false;
 	bool should_unset_forced_destination = false;
 	std::vector<std::pair<std::string, std::pair<int, int>>> primary_destinations;
 
 	const std::pair<std::string, std::pair<int, int>> forced_dest = npc->get_forced_destination();
+
+	//TODO: store the node key and level key in data so we can use the cached path and not have to calculate on the fly.
+	std::string starting_node_key = "";
+
+	for (PathNode * n : current_level_path_nodes) {
+		if (n->get_x() / TILE_SIZE == start_npc_pos.first / TILE_SIZE
+			&& n->get_y() / TILE_SIZE == start_npc_pos.second / TILE_SIZE) {
+			starting_node_key = n->get_node_id();
+			break;
+		}
+	}
 
 	PathNodeDjikstraPath * node_djikstra_path = this->get_mapped_node_djikstra_path(npc_key);
 
@@ -145,6 +140,7 @@ const bool World::calculate_npc_pathing(
 	path_data->forced_dest = forced_dest;
 	path_data->tile_djikstra_path = tile_djikstra_path;
 	path_data->node_djikstra_path = node_djikstra_path;
+	path_data->starting_node_key = starting_node_key;
 	path_data->ready = false;
 
 	this->djikstra_path_data_map[npc_key] = path_data;
@@ -173,8 +169,6 @@ const bool World::calculate_npc_pathing(
 void World::finish_pathing(NPC * npc)
 {
 	DjikstraPathData * path_data = this->djikstra_path_data_map[npc->get_npc_key()];
-
-	//npc->set_is_processing(false);
 
 	std::pair<std::vector<std::pair<int, int>>, float> tile_path_to_primary = path_data->tile_path_to_primary; //TODO: this should come from thread data
 
@@ -205,7 +199,10 @@ void World::move_npc_to_level(NPC * npc, Level * current_level, Level * dest_lev
 {
 	//TODO: eventually want an actual walk animation off the level, probably before this method
 	npc->set_current_level_key(dest_level->get_filename());
-	npc->set_position(position.first, position.second);
+	Rect * collide_rect = npc->get_rect_for_collision();
+	const std::pair<int, int> offset(collide_rect->x - npc->get_x(), collide_rect->y - npc->get_y());
+	npc->set_position(position.first - offset.first, position.second - offset.second);
+	npc->cancel_current_pathing();
 	current_level->remove_being(npc);
 	dest_level->add_being(npc);
 }

@@ -340,6 +340,7 @@
     <ClInclude Include="PauseScreen.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PPCD.h" />
+    <ClInclude Include="Qualifier.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="resource1.h" />
     <ClInclude Include="ScreenManager.h" />
@@ -414,6 +415,7 @@
     <ClCompile Include="PauseScreen.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PPCD.cpp" />
+    <ClCompile Include="Qualifier.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SpriteSheetAnimation.cpp" />

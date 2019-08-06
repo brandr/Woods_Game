@@ -148,15 +148,16 @@ void Being::movement_update_top_down(Level * level)
 void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	//TEMP
+	Rect * collide_rect = this->get_rect_for_collision();
 	const bool should_draw_test_rect = true; //TEMP. probably want a launch arg or console commands or somehting
 	if (should_draw_test_rect && this->test_rect_bitmap == NULL) {
-		this->test_rect_bitmap = al_create_bitmap(this->get_width(), this->get_height());
+		this->test_rect_bitmap = al_create_bitmap(collide_rect->width, collide_rect->height);
 		al_set_target_bitmap(this->test_rect_bitmap);
 		al_clear_to_color(al_map_rgba(0, 0, 100, 100));
 		al_set_target_bitmap(al_get_backbuffer(display));
 
 	}
-	al_draw_bitmap(this->test_rect_bitmap, this->get_x() + x_offset, this->get_y() + y_offset, 0);
+	al_draw_bitmap(this->test_rect_bitmap, collide_rect->x + x_offset, collide_rect->y + y_offset, 0);
 
 	//TEMP
 	Entity::draw(display, x_offset, y_offset);
@@ -167,6 +168,13 @@ const bool Being::adjust_movement(Level * level, float xoff, float yoff, const b
 	bool blocked = false;
 	Rect check_rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
 	std::vector<Entity*> interactables = level->get_colliding_interactables(this, check_rect, false);
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	//TODO: probably want to include the blocks here (and in other places where we call level.get_colliding_interactables())
+	int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
 	if (!empty_at(check_rect, interactables)) {
 		float mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
 		if (snap) {

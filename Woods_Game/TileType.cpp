@@ -9,6 +9,7 @@ TileType::TileType()
 	Register("tile_sheet_key", &tile_sheet_key);
 	Register("speed_mod", &speed_mod);
 	Register("edge_priority", &edge_priority);
+	Register("npc_pathable", &npc_pathable);
 }
 
 TileType::TileType(std::string name, int row)
@@ -20,6 +21,7 @@ TileType::TileType(std::string name, int row)
 	Register("tile_sheet_key", &tile_sheet_key);
 	Register("speed_mod", &speed_mod);
 	Register("edge_priority", &edge_priority);
+	Register("npc_pathable", &npc_pathable);
 	this->tile_sheet_name = name;
 	this->tile_sheet_row = row;
 }
@@ -68,4 +70,9 @@ float TileType::get_speed_mod()
 int TileType::get_edge_priority()
 {
 	return edge_priority.value();
+}
+
+const bool TileType::is_npc_pathable()
+{
+	return this->npc_pathable.value();
 }

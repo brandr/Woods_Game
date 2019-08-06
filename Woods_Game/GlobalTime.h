@@ -49,6 +49,5 @@ public:
 	void set_day(const int day);
 	const int get_time();
 	void set_time(const int time);
-
 };
 #endif

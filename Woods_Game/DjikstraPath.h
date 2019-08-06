@@ -23,9 +23,10 @@ struct DjikstraNode {
 	float node_cost;
 	// neighbors with costs
 	std::vector<std::pair<DjikstraNode *, float>> neighbors;
+	std::map<std::string, std::pair<std::vector<std::pair<int, int>>, float>> neighbor_paths;
 	DjikstraNode();
 	~DjikstraNode();
-	void add_neigbor(DjikstraNode * neighbor, const float cost);
+	void add_neighbor(DjikstraNode * neighbor, const float cost, const std::vector<std::pair<int, int>> tile_path);
 	const float get_neighbor_cost(DjikstraNode * neighbor);
 };
 
@@ -47,7 +48,7 @@ private:
 	void initialize_nodes(Level * level, AIBeing * being);
 	void initialize_nodes(Level * level, AIBeing * being, const bool ignore_moving_obstacles);
 	DjikstraNode * get_tile_node(const int tx, const int ty);
-	const std::vector<std::pair<int, int>> open_adjacent_tiles(const std::pair<int, int> start_t_pos, const std::pair<int, int> dest_t_pos);
+	const std::vector<std::pair<int, int>> open_adjacent_tiles(const std::pair<int, int> start_t_pos, const std::pair<int, int> dest_t_pos, std::set<std::pair<int, int>> visited);
 	const std::string tile_node_map_key(const int tx, const int ty);
 	const float calculate_edge_cost(const std::pair<int, int> start_pos, const std::pair<int, int> dest_pos);
 	std::set<std::pair<int, int>> blocked_tiles;
@@ -66,7 +67,8 @@ public:
 		const std::pair<int, int> start_t_pos,
 		const std::pair<int, int> dest_t_pos,
 		std::map<std::string, std::map<std::string, float>>& distances,
-		const float dist_tally);
+		const float dist_tally,
+		std::set<std::pair<int, int>> visited);
 };
 
 class PathNodeDjikstraPath : DjikstraPath {
@@ -89,6 +91,9 @@ public :
 	~PathNodeDjikstraPath();
 	std::pair<std::vector<DjikstraNode*>, float> calculate_shortest_node_path(
 		 const std::string origin_node_id, const std::string origin_node_level_key, const std::string dest_node_id, const std::string dest_node_level_key);
+	const bool has_node(const std::string level_key, const std::string node_key);
+	const std::pair<std::vector<std::pair<int, int>>, float> get_shortest_tile_path(const std::string level_key, const std::string start_node_key, const std::string dest_node_key);
+		
 	// async functions
 	static void *func_calculate_npc_pathing(ALLEGRO_THREAD *thr, void *arg);
 };

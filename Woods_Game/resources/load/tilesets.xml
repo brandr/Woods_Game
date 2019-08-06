@@ -8,6 +8,7 @@
                 <Member Name="tile_sheet_index">0</Member>
                 <Member Name="speed_mod">0.72</Member>
                 <Member Name="edge_priority">10</Member>
+                <Member Name="npc_pathable">false</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">1</Member>
@@ -15,6 +16,7 @@
                 <Member Name="tile_sheet_index">1</Member>
                 <Member Name="speed_mod">0.72</Member>
                 <Member Name="edge_priority">5</Member>
+                <Member Name="npc_pathable">false</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">2</Member>
@@ -22,6 +24,7 @@
                 <Member Name="tile_sheet_index">2</Member>
                 <Member Name="speed_mod">1.0</Member>
                 <Member Name="edge_priority">1</Member>
+                <Member Name="npc_pathable">true</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">0</Member>
@@ -29,6 +32,7 @@
                 <Member Name="tile_sheet_index">3</Member>
                 <Member Name="speed_mod">0.40</Member>
                 <Member Name="edge_priority">15</Member>
+                <Member Name="npc_pathable">false</Member>
             </Class>
         </Collection>
         <Collection Name="block_types">
@@ -314,6 +318,7 @@
                 <Member Name="tile_sheet_index">0</Member>
                 <Member Name="speed_mod">1</Member>
                 <Member Name="edge_priority">1</Member>
+                <Member Name="npc_pathable">true</Member>
             </Class>
         </Collection>
         <Collection Name="block_types">
@@ -452,6 +457,7 @@
                 <Member Name="tile_sheet_index">0</Member>
                 <Member Name="speed_mod">1.0</Member>
                 <Member Name="edge_priority">0</Member>
+                <Member Name="npc_pathable">true</Member>
             </Class>
             <Class Type="TileType" Version="1">
                 <Member Name="tile_sheet_row">1</Member>
@@ -459,6 +465,7 @@
                 <Member Name="tile_sheet_index">1</Member>
                 <Member Name="speed_mod">1.0</Member>
                 <Member Name="edge_priority">0</Member>
+                <Member Name="npc_pathable">true</Member>
             </Class>
         </Collection>
         <Collection Name="block_types">

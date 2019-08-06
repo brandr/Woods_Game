@@ -26,6 +26,8 @@ void Level::generate_paths()
 		const int node_count = ps->path_nodes.size();
 		const int path_size = ps->path_size.value();
 		if (node_count > 1) {
+			//TODO: also make sure path width is used for the starts of trails
+			//	be consistent-- always +x or +y
 			std::vector<std::pair<int, int>> vector_coords;
 			for (int i = 0; i < node_count; i++) {
 				LevelGenPathNode * n = ps->path_nodes.getItem(i);
@@ -317,8 +319,12 @@ const std::vector<std::string> Level::collide_bucket_keys(Rect * collide_rect)
 	// if the rect intersects a bucket at all, it belongs in that bucket
 	std::vector<std::string> bucket_keys;
 	if (collide_rect->width > 0 && collide_rect->height > 0) {
-		const int bucket_x1 = collide_rect->x / COLLIDE_BUCKET_WIDTH, bucket_y1 = collide_rect->y / COLLIDE_BUCKET_HEIGHT;
-		const int bucket_x2 = (collide_rect->x + collide_rect->width) / COLLIDE_BUCKET_WIDTH, bucket_y2 = (collide_rect->y + collide_rect->height) / COLLIDE_BUCKET_HEIGHT;
+		const int level_width = STANDARD_LEVEL_GRID_WIDTH; 
+		const int level_height = STANDARD_LEVEL_GRID_HEIGHT;
+		const int collide_bucket_width = level_width/COLLIDE_BUCKET_LEVEL_COLS,
+			collide_bucket_height = level_height/COLLIDE_BUCKET_LEVEL_ROWS;
+		const int bucket_x1 = collide_rect->x / collide_bucket_width, bucket_y1 = collide_rect->y / collide_bucket_height;
+		const int bucket_x2 = (collide_rect->x + collide_rect->width) / collide_bucket_width, bucket_y2 = (collide_rect->y + collide_rect->height) / collide_bucket_height;
 		for (int y = bucket_y1; y < bucket_y2 + 1; y++) {
 			for (int x = bucket_x1; x < bucket_x2 + 1; x++) {
 				bucket_keys.push_back(std::to_string(x) + "," + std::to_string(y));
@@ -1320,6 +1326,35 @@ std::vector<Entity*> Level::get_moving_interactables(Entity * entity)
 	return interactables;
 }
 
+// TODO: make sure this reaches across buckets where it should
+std::vector<Entity*> Level::get_nearby_interactables(Entity * entity, Rect collide_rect, const bool ignore_moving_obstacles)
+{
+	std::vector<Entity*> interactables;
+	const std::vector<std::string> collide_keys = this->collide_bucket_keys(&collide_rect);
+	for (std::string collide_key : collide_keys) {
+		auto it = this->collide_buckets.find(collide_key);
+		if (it != this->collide_buckets.end()) {
+			const std::set<Entity*> bucket_entities = this->collide_buckets[collide_key];
+			for (Entity * e : bucket_entities) {
+				if (e != NULL && e != entity) {
+					interactables.push_back(e);
+				}
+			}
+		}
+	}
+	if (!ignore_moving_obstacles) {
+		if (entity->get_type() != PLAYER) {
+			interactables.push_back(this->get_player());
+		}
+		for (Being * b : this->beings) {
+			if (b && b != entity) {
+				interactables.push_back(b);
+			}
+		}
+	}
+	return interactables;
+}
+
 std::vector<Tile*> Level::get_nearby_tiles(Entity *entity)
 {
 	return this->get_tiles_in_range(entity, 2);
@@ -1749,7 +1784,6 @@ const bool Level::has_rect_collisions(Entity * entity, Rect collide_rect, const 
 	}
 
 	for (Entity *e : interactables) {
-		//TODO: call this or empty_at() less often
 		if (e != NULL && e != entity && e->is_solid() && e->intersects_area(collide_rect)) {
 			return true;
 		}

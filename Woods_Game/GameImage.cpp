@@ -326,7 +326,7 @@ float GameImage::get_height()
 
 bool GameImage::contains_point(int x, int y)
 {
-	return x >= this->rect.x && y >= this->rect.y && x < this->get_x() + this->rect.width && y < this->rect.y + this->rect.height;
+	return x >= this->rect.x && y >= this->rect.y && x < this->rect.x + this->rect.width && y < this->rect.y + this->rect.height;
 }
 
 const int GameImage::calculate_direction(GameImage * other)

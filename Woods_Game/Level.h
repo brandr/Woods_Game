@@ -23,8 +23,8 @@
 
 #define STANDARD_LEVEL_GRID_WIDTH 832;
 #define STANDARD_LEVEL_GRID_HEIGHT 640;
-#define COLLIDE_BUCKET_WIDTH 416 // half of level grid width
-#define COLLIDE_BUCKET_HEIGHT 320 //half of level grid height
+#define COLLIDE_BUCKET_LEVEL_COLS 16
+#define COLLIDE_BUCKET_LEVEL_ROWS 16
 
 class Level : public xmls::Serializable
 {
@@ -113,6 +113,7 @@ public:
 	std::vector<Entity*> get_interactables(Entity*, const bool ignore_moving_obstacles);
 	std::vector<Entity*> get_colliding_interactables(Entity* e, Rect collide_rect, const bool ignore_moving_obstacles);
 	std::vector<Entity*> get_moving_interactables(Entity* entity);
+	std::vector<Entity*> get_nearby_interactables(Entity* entity, Rect collide_rect,  const bool ignore_moving_obstacles);
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);

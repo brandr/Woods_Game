@@ -4,27 +4,26 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 7/29/2019
+Last updated 8/3/2019
 
 totals don't include ongoing stuff 
 
-Total: 99-150 days (~4-5 months, done by Mar 2020)
+Total: 99-148 days (~4-5 months, done by Mar 2020)
 
 1. Finish NPC pathing/AIState stuff
 	(4-8 days)
 2. NPC schedule
-	(4-8 days)
+	(3-6 days)
 3. Quest/NPC triggers
 	(5-10 days)
-4. NPC dialogue calculation
+4. NPC dialog calculation
 	(5-10 days)
 5. Cutscenes
 	(15-20 days)
 6. Loading screens/prorgress bars
-	(2-5 days)
+	(3-5 days)
 
 (clean up todos and try to think of what's missing here)	
-
 
 7. Animals/bugs
 	(10-15 days)
@@ -64,48 +63,38 @@ NPCs
 ---------------------------------------------------
 
 NPC pathing
-	- Add collide rect serialization to NPCs and use it to say where we will walk/test collisions rather than using get_x and get_y
-		# in other words, base collisions on where their "feet" will be
-		# make sure collide rect contais the mask since that's why we care about collisions
-		# I think in addition to get_x and get_y this may replace some uses of TILE_SIZE in collision checks
-		# some of the collision changes may be in Being/Entity/Gameimage
-	- fix bug where NPC always looks to the side after reaching a primary dest
-	- fix how NPCs path through genned woods
-		* see if this is fixed by other fixes
-		* seem to stop when they shouldn't
-	- Fix bug where NPCs sometmies "glide"
-		* see if this is fixed by other fixes
-		* probably happens because animation key isn't set to walk
+	- When a being blocks NPC's collide rect, make them stop and face that being (or do something besides path around)
+		* could also do this when a moving being blocks the place they're about to go
+		* could give different reactions depending on conditions like personality, type of other being, relationship wiht other being, etc
+			# for example, could push past if the npc is rude or doesn't like the other being
+	- NPCs should probably start on pathnodes for more efficient path calculation
+	- there is still slowdown
+		* Make sure Level.get_nearby_interactables() actually reaches across buckets where it should
+		* seems to have been made worse now that tile djikstra pathing is more thorough, so maybe make it more efficient
+		* try using breakpoints to see which methods are getting called the most often and/or enabling logging
+		* might be affected by checking nearby blocks too often-- refactor these into buckets
 	- when hitting a "next level" facing node, need to animate walking to next level
 		* might need to serialize walk to/from direction (or calculate somehow)
 		* set AIState to "leaving level" or something, set direction, and distance/time to walk (I feel like we shouldn't factor in tile speed)
 		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
 		* make sure next level traveling behaivor also handles going through doors into houses
 			# probably don't want an animation, just a door shutting/slamming sound
-	- fix bug where NPC gets confused if a being blocks its current rect
-		* probably need a separate set of behavior for this (stop and face person)
-	- probably want NPCs to be less "evasive" in terms of the check that makes them try to path around obstacles
-		* need to figure out how a typical case of the player talking to an NPC should work
-			# could have them stop and look at you when you get close rather than just avoiding (depending on personality)
-		* also need to treat people (the player and other NPCs, and maybe animals) differently from other interactables
-			# could have NPCs have different personality types/moods that determine their reaction to being blocked: go around, push past, stop, etc
+	- When generating worlds, test pathability so we don't get NPCs unable to navigate genned levels
+		* if the level isn't pathable, start over generating it
 	- Set a debug launch argument to control whether test rect bitmaps appear
 		* Manage the bitmaps through ImageLoader
 		* instead of launch argument, could add console commands
 
 AIState/NPC schedule
-	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
-		# this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
-		# note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- extend schedule logic to "go to place and do an animation" or 
 		 "go to place and wander around" rather than standing on specific tiles at specific times
 		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
-	- Extend schedule classification beyond default day schedule
+	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
+		# this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
+		# note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- IDEA: could serialize AIState rules somewhere ("personality types?")
 	- use schedule logic to determine NPC spawn locations
-		* might be able to do this by using existing pathing logic and just spawning NPCs directly onto PathNodes
-			# Gets complicated because we then have to answer the question "how long does it take to walk from X to Y"?
-			# Therefore we may just want serialized (in schedule) time ranges during which the NPC spawns at certain places
+		* not necessary if NPCs all sleep at least as late as the latest that the player wakes up, or if there are only a small number of possible wake-up times
 
 Add NPC quest triggers
 	- could make the first quest getting some item from the store with money from the player's mom
@@ -114,11 +103,12 @@ Add NPC quest triggers
 	- definitely want to think of several examples and notepad out before starting to implement these
 	- incorporate into schedule logic
 
-Make NPC dialog similar to stardew valley where NPCs will randomly choose something to say based on the conditions
-	- implement this as a set of "npc dialogs" tied to a set of "npc dialog conditions" attached to boolean methods through reflection
-	- for instance, have a character choose from a set of 3 options when it's raining, 2 other options when the player is holding a certain tool, etc
-	- allow these conditions to be "anded" together and give them ordinals so calculation is either
-		* might be able to do something with | and flags corresponding to the orders
+Make NPC dialog 
+	- similar to stardew valley where NPCs will randomly choose something to say based on the conditions
+	- implement this as a set of "npc dialogs" tied to a set of Conditions (already implemented for schedule)
+	- if necessary, attach some conditions to boolean methods through reflection
+	- for instance, have a character choose from a set of 3 options when it's raining, 
+		2 other options when the player is holding a certain tool, etc
 	- weight some options to be more likely than others using integer values
 	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
 		* should this random chance be weighted?

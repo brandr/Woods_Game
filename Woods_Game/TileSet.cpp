@@ -244,6 +244,14 @@ const int TileSet::get_tile_sheet_image_cols_by_index(const int index)
 	return 0;
 }
 
+const bool TileSet::is_tile_npc_pathable(const int index)
+{
+	if (index >= 0 && index < this->tile_types.size()) {
+		return this->tile_types.getItem(index)->is_npc_pathable();
+	}
+	return false;
+}
+
 const int TileSet::get_block_sheet_image_cols_by_index(const int index)
 {
 	if (index >= 0 && index < this->block_types.size()) {

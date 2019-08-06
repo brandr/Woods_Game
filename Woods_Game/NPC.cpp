@@ -24,6 +24,10 @@ NPC::NPC()
 	Register("animation_spritesheet_key", &animation_spritesheet_key);
 	Register("center_offset_x", &center_offset_x);
 	Register("center_offset_y", &center_offset_y);
+	Register("collide_x_offset", &collide_x_offset);
+	Register("collide_y_offset", &collide_y_offset);
+	Register("collide_width", &collide_width);
+	Register("collide_height", &collide_height);
 	Register("spritesheet_frame_width", &spritesheet_frame_width);
 	Register("spritesheet_frame_height", &spritesheet_frame_height);
 	Register("animation_data", &animation_data);

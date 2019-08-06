@@ -53,21 +53,21 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
+//TODO: refactor so we don't unnecessarily look at every entity group
 void Player::update(Level * level, GlobalTime * time, const int game_mode)
 {
 	const std::pair<int, int> level_dimensions = level->get_dimensions();
-	std::vector<Entity*> interactables = level->get_interactables(this);
-	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	//std::vector<Entity*> interactables = level->get_interactables(this);
+	//std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
 	//TEMP. can probably pass the level into the check instead
 	if (exit_level_check(level_dimensions))
 		return;
 	switch (game_mode) {
 	case SIDE_SCROLLING:
-		update_side_scrolling(interactables, level_dimensions);
+		//update_side_scrolling(interactables, level_dimensions);
 		break;
 	case TOP_DOWN:
-		//TODO: might want this to use level rather than interactables
-		update_top_down(interactables, nearby_tiles, level_dimensions);
+		update_top_down(level);
 		break;
 	case MAIN_GAME_DIALOG:
 		dialog_update();
@@ -77,7 +77,7 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 	Being::update(level, time, game_mode);
 	if (this->interacting) {
 		//TODO: might want this to use level rather than interactables
-		this->interact_update(interactables, nearby_tiles, level_dimensions);
+		this->interact_update(level);
 	}
 	clear_input();
 }
@@ -105,6 +105,54 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 		attempt_jump(interactables);
 	}
 	*/
+}
+
+void Player::update_top_down(Level * level)
+{
+	if (counters[BOUNCE]) return;
+	if (counters[SWING]) {
+		switch (current_action) {
+		case(ACTION_SHEAR):
+			shear_update(level);
+			break;
+		}
+		return;
+	}
+	current_action = ACTION_NONE;
+	reset_entity_flags();
+	//TODO: figure out how best to handle joystick and keyboard inputs that occur at the same time
+	xvel = 0, yvel = 0;
+	anim_state = ANIM_NEUTRAL;
+	//keyboard
+	if (check_move(MOVE_LEFT) && !check_move(MOVE_RIGHT)) {
+		xvel = -1 * get_walk_speed();
+		direction = DIR_LEFT, anim_state = ANIM_STATE_WALKING;
+	} else if (check_move(MOVE_RIGHT) && !check_move(MOVE_LEFT)) {
+		xvel = get_walk_speed();
+		direction = DIR_RIGHT, anim_state = ANIM_STATE_WALKING;
+	}
+	if (check_move(MOVE_DOWN) && !check_move(MOVE_UP)) {
+		yvel = get_walk_speed();
+		direction = DIR_DOWN, anim_state = ANIM_STATE_WALKING;
+	} else if (check_move(MOVE_UP) && !check_move(MOVE_DOWN)) {
+		yvel = -1 * get_walk_speed();
+		direction = DIR_UP, anim_state = ANIM_STATE_WALKING;
+	}
+	//joystick
+	if (abs(move_joystick_pos.first) <= JOYSTICK_DEADZONE && abs(move_joystick_pos.second) <= JOYSTICK_DEADZONE) {
+		return;
+	}
+	xvel = move_joystick_pos.first*get_walk_speed(), yvel = move_joystick_pos.second*get_walk_speed();
+	if (xvel >= 0) {
+		if (xvel >= std::abs(yvel)) direction = DIR_RIGHT;
+		else if (yvel > 0) direction = DIR_DOWN;
+		else direction = DIR_UP;
+	} else {
+		if (std::abs(xvel) >= std::abs(yvel)) direction = DIR_LEFT;
+		else if (yvel > 0) direction = DIR_DOWN;
+		else direction = DIR_UP;
+	}
+	anim_state = ANIM_STATE_WALKING;
 }
 
 void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
@@ -198,6 +246,49 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_LEFT);
 	if (input_map[INPUT_RIGHT])
 		queue_move(MOVE_RIGHT);
+}
+
+void Player::interact_update(Level * level)
+{
+	//TODO: only get nearby interactables, not all of them
+	//can't necessary just get those from the same bucket because we could be interacting across buckets
+	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	const int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+
+	float x_off = 0, y_off = 0;
+	switch (direction) {
+	case DIR_NEUTRAL:
+		x_off = 0, y_off = 14;
+		break;
+	case DIR_UP:
+		x_off = 0, y_off = -14;
+		break;
+	case DIR_DOWN:
+		x_off = 0, y_off = 14;
+		break;
+	case DIR_LEFT:
+		x_off = -8, y_off = 0;
+		break;
+	case DIR_RIGHT:
+		x_off = 8, y_off = 0;
+		break;
+	}
+
+	const int x1 = this->get_rect_center().first, y1 = this->get_rect_center().second;
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
+			Entity* e = interactables[i];
+			if (this->interact(e)) {
+				return;
+			}
+		}
+	}
 }
 
 void Player::interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
@@ -318,6 +409,58 @@ void Player::end_active_cutscene()
 const bool Player::interact(Entity * e)
 {
 	return e->interact_action(this);
+}
+
+void Player::shear_update(Level * level)
+{
+	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	//TODO: get nearby shearables from level 
+	//(might not be able to just be the ones in the same bucket, because what if we're shearing across buckets)
+	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
+	const int t_size = nearby_tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		Block *b = nearby_tiles[i]->get_block();
+		if (b) interactables.push_back(b);
+	}
+	const int size = interactables.size();
+
+	// TODO: define mask prefix ("player") more generally
+	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction); // additional_masks[std::pair<std::string, int>("slicing", direction)];
+	float x_off = 0, y_off = 0;
+	switch (direction) {
+	case DIR_NEUTRAL:
+		x_off = 16, y_off = 52;
+		break;
+	case DIR_UP:
+		x_off = 16, y_off = 8;
+		break;
+	case DIR_DOWN:
+		x_off = 16, y_off = 52;
+		break;
+	case DIR_LEFT:
+		x_off = -8, y_off = 16;
+		break;
+	case DIR_RIGHT:
+		x_off = 40, y_off = 16;
+		break;
+	}
+
+	for (int i = 0; i < size; i++) {
+		if (interactables[i]->get_mask() && Mask_Collide(shear_mask, interactables[i]->get_mask(),
+			get_x() + x_off - interactables[i]->get_x(),
+			get_y() + y_off - interactables[i]->get_y())) {
+			Entity* e = interactables[i];
+			if (e->has_entity_attribute(E_ATTR_SHEARABLE)
+				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
+				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
+				Item *shears = get_selected_item();
+				const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
+				e->take_durability_damage(shear_power);
+				return;
+			}
+		}
+	}
 }
 
 void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)

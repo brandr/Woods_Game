@@ -17,6 +17,7 @@ public:
 	std::string npc_key;
 	std::string dest_level_key;
 	std::string dest_node_id;
+	std::string starting_node_key;
 	std::pair<int, int> start_npc_pos;
 	std::pair<int, int> npc_t_pos;
 	TileDjikstraPath * tile_djikstra_path;
