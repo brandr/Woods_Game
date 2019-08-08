@@ -63,6 +63,7 @@ public:
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);
 	mask_t * get_mask(const std::string filename);
 	mask_t * get_mask(const std::string filename, const std::string rect_string);
+	const bool has_mask(const std::string filename, const std::string rect_string);
 	std::string rect_to_string(Rect r);
 };
 

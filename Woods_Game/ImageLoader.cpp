@@ -143,13 +143,17 @@ void ImageLoader::load_image(const std::string filename, const std::string rect_
 void ImageLoader::load_spritesheet(Animation anim)
 {
 	std::string filename = anim.get_filename();
-	load_image(filename);
+	if (get_image(filename) == NULL) {
+		load_image(filename);
+	}
 	std::pair<int, int> frame_count = anim.get_frame_count();
 	std::pair<int, int> frame_dim = anim.get_frame_dimensions();
 	for (int y = 0 ; y < frame_count.second; y++) {
 		for (int x = 0; x < frame_count.first; x++) {
 			Rect rect(x*frame_dim.first, y*frame_dim.second, frame_dim.first, frame_dim.second);
-  			load_image(filename, rect);
+			if (get_image(filename, rect) == NULL) {
+				load_image(filename, rect);
+			}
 		}
 	}
 }
@@ -386,5 +390,10 @@ mask_t * ImageLoader::get_mask(const std::string base_filename, const std::strin
 	} else {
 		return it->second;
 	}
+}
+
+const bool ImageLoader::has_mask(const std::string filename, const std::string rect_string)
+{
+	return this->mask_map.find(std::pair<std::string, std::string>(filename, rect_string)) != this->mask_map.end();
 }
 

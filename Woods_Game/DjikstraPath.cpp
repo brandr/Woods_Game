@@ -671,7 +671,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 	double start_time = al_get_time();
 	double accounted_time = 0.0;
 
-	bool enable_logging = false; //temp
+	bool enable_logging = true; //temp
 
 	if (enable_logging) {
 		std::cout << "--------------------------------------\n";

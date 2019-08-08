@@ -137,7 +137,6 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_content(filename, offset_rect, pixel_pos);
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
-	ImageLoader::get_instance().load_image(filename + this->block.image_filename_suffix(), *(this->block.get_image_subsection()));
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
@@ -145,6 +144,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_contact_actions(contact_action_data);	
 	this->block.set_load_day_actions(load_day_action_data);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);
+	//TODO: don't load any images here
 	this->block.load_entity_effects(tileset->get_tile_sheet_filename(), tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
 }

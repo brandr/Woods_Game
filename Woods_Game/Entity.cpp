@@ -349,6 +349,7 @@ bool Entity::has_entity_attribute(std::string attr_key)
 	}
 	return false;
 }
+
 int Entity::get_entity_sheet_col()
 {
 	return this->entity_sheet_row.value();
@@ -536,6 +537,49 @@ std::vector<EntityComponentData*> EntityData::get_components()
 		components.push_back(comp);
 	}
 	return components;
+}
+
+const bool EntityData::has_entity_attribute(const std::string attr_key)
+{
+	const int size = this->attributes.size();
+	for (int i = 0; i < size; i++) {
+		EntityAttribute *attr = this->attributes.getItem(i);
+		if (attr->attribute_key.value() == attr_key) {
+			return true;
+		}
+	}
+	return false;
+}
+
+int EntityData::get_entity_attribute(const std::string attr_key)
+{
+	const int size = this->attributes.size();
+	for (int i = 0; i < size; i++) {
+		EntityAttribute *attr = this->attributes.getItem(i);
+		if (attr->attribute_key.value() == attr_key) {
+			return attr->attribute_value.value();
+		}
+	}
+	return 0;
+}
+
+const std::vector<std::string> EntityData::image_filename_suffixes()
+{
+	std::vector<std::string> suffixes;
+	if (this->has_entity_attribute(Entity::E_ATTR_PLANT_GROWTH_MATURE_AGE)) {
+		const int mature = this->get_entity_attribute(Entity::E_ATTR_PLANT_GROWTH_MATURE_AGE);
+		if (mature <= 0) {
+			return suffixes;
+		} else {
+			const int num_stages = this->get_entity_attribute(Entity::E_ATTR_PLANT_GROWTH_NUM_STAGES);
+			int stage_index = 1;
+			for (int index = 0; index < mature; index += mature / num_stages) {
+				suffixes.push_back("_stage_" + std::to_string(stage_index));
+				stage_index++;
+			}
+		}
+	}
+	return suffixes;
 }
 
 EntityAttribute::EntityAttribute()

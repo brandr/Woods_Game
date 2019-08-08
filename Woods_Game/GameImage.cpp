@@ -211,7 +211,9 @@ void GameImage::refresh_mask()
 	if (subsection) {
 		rect_string = ImageLoader::get_instance().rect_to_string(*subsection);
 	}
-	ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, false);
+	if (!ImageLoader::get_instance().has_mask(this->mask_filename, rect_string)) {
+		ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, false);
+	}
 }
 
 mask_t * GameImage::get_mask()
@@ -352,10 +354,13 @@ bool GameImage::outside_level(std::pair<int, int> level_dimensions)
 	return rect.right() < 0 || rect.x > level_dimensions.first || rect.bottom() < 0 || rect.y > level_dimensions.second;
 }
 
+//TODO: probably want to refactor this because we should never be loading images after the game starts
 Animation * GameImage::load_animation_single_row(std::string filename, int row, std::pair<int, int> frame_dimensions)
 {
 	Animation *anim = new Animation();
-	ImageLoader::get_instance().load_image(filename);	//load full spritesheet
+	if (ImageLoader::get_instance().get_image(filename) == NULL) {
+		ImageLoader::get_instance().load_image(filename);	//load full spritesheet
+	}
 	ALLEGRO_BITMAP *full_spritesheet = ImageLoader::get_instance().get_image(filename);
 	std::pair<int, int> frame_count(al_get_bitmap_width(full_spritesheet)/frame_dimensions.first, 
 		al_get_bitmap_height(full_spritesheet) / frame_dimensions.second);

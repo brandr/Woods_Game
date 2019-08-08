@@ -377,6 +377,8 @@ void World::recalculate_npc_paths()
 				this->get_tile_djikstra_path(level, npc);
 			}
 		}
+		npc->cancel_current_pathing();
+		npc->clear_primary_destinations();
 	}
 }
 
@@ -529,6 +531,16 @@ void World::update_new_day(Player * player, const std::string current_level_key)
 	this->update_npcs_new_day();
 }
 
+void World::update_reload_day(Player * player, const std::string current_level_key)
+{
+	this->clear_all_beings();
+	//TODO: make sure we do this in a way where the player doesn't jump suddenly
+	// players position is updated in extract current level, so try passing the arg in there instead
+	Level * current_level = this->extract_current_level(player, current_level_key);
+	current_level->add_being(player);
+	this->update_npcs_new_day();
+}
+
 void World::update_npcs_new_day()
 {
 	const int npc_count = this->npcs.size();
@@ -542,6 +554,8 @@ void World::update_npcs_new_day()
 		if (level && level->spawner_for_key(spawner_key)) {
 			level->add_npc_at_spawner(npc, spawner_key);
 		}
+		npc->clear_primary_destinations();
+		npc->cancel_current_pathing();
 	}
 	//TODO: other NPC updates that should happen at the beginning of the day
 }

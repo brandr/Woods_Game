@@ -94,8 +94,10 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
 	block->duration = 1;
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	block->effect_key = EFFECT_DISPLAY_BLACK;
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block)); // do this here if we're updating async
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	//this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block)); // do this here if we're not updating async
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
@@ -108,15 +110,13 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_LOAD_GAME;
 	block->duration = 1;
+	block->effect_key = EFFECT_DISPLAY_BLACK;
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	this->add_global_time_update(day, time);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
-	
-	//this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
-	//this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 }
 
 

@@ -514,6 +514,7 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
 	ImageLoader::get_instance().load_image("ui/time_date_backdrop");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
+	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
 	//TODO: other UI components like stamina
 }
 

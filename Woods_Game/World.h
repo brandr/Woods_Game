@@ -51,7 +51,6 @@ private:
 	Level * find_level_with_spawn_key(const std::string spawn_key);
 	PathNode * find_path_node_with_key(const std::string node_key);
 	const std::string get_npc_destination_node_key(NPC * npc);
-	void clear_all_beings();
 public:	
 	Dungeon* current_dungeon;
 	World();
@@ -69,6 +68,7 @@ public:
 	void npc_update(GlobalTime * time, const int game_mode);
 	// updates per new day
 	void update_new_day(Player * player, const std::string current_level_key);
+	void update_reload_day(Player * player, const std::string current_level_key);
 	void update_npcs_new_day();
 	void add_dungeon(Dungeon*);
 	Dungeon* get_current_dungeon();
@@ -79,7 +79,7 @@ public:
 	Level * find_level_with_path_node_key(const std::string node_key);
 	Level * find_any_level_with_node();
 	PathNode * get_npc_destination_node(NPC * npc);
-	
+	void clear_all_beings();
 	Dungeon* get_dungeon(std::string dungeon_name);
 	std::vector<std::shared_ptr<Dungeon>> get_dungeons();
 	std::string get_player_key();

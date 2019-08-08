@@ -4,7 +4,7 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 8/3/2019
+Last updated 8/7/2019
 
 totals don't include ongoing stuff 
 
@@ -65,10 +65,11 @@ NPCs
 NPC pathing
 	- When a being blocks NPC's collide rect, make them stop and face that being (or do something besides path around)
 		* could also do this when a moving being blocks the place they're about to go
-		* could give different reactions depending on conditions like personality, type of other being, relationship wiht other being, etc
+		* could give different reactions depending on conditions like personality, type of other being, relationship with other being, etc
 			# for example, could push past if the npc is rude or doesn't like the other being
+		* might have to rework NPC destination update function somewhat because parts may now be redundant given world-based pathing
 	- NPCs should probably start on pathnodes for more efficient path calculation
-	- there is still slowdown
+	- there is still slowdown (I think, maybe not)
 		* Make sure Level.get_nearby_interactables() actually reaches across buckets where it should
 		* seems to have been made worse now that tile djikstra pathing is more thorough, so maybe make it more efficient
 		* try using breakpoints to see which methods are getting called the most often and/or enabling logging
@@ -79,6 +80,9 @@ NPC pathing
 		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
 		* make sure next level traveling behaivor also handles going through doors into houses
 			# probably don't want an animation, just a door shutting/slamming sound
+	- Make it so some NPCs obey the "NPC pathable" rules and others don't
+		* See Alex (in notes) for an example of a character who would ignore these rules
+		* could also make some tiles "hard NPC unpathable" (no NPC can path) and "soft NPC unpathable" (only rule-following NPCs stay off)
 	- When generating worlds, test pathability so we don't get NPCs unable to navigate genned levels
 		* if the level isn't pathable, start over generating it
 	- Set a debug launch argument to control whether test rect bitmaps appear
@@ -126,8 +130,6 @@ Memory management/error handling
 Fix performance issues
 	* look into the font for the FPS counter since it's created right at the beginning
 		# also font for title screen? (might need to destroy)
-	* may want to try shrinking collision buckets where relevant
-	* make sure to update other async methods besides "start new game" to match
 
 When debugging performance, check for al_create_bitmap and al_load_font references to make sure we aren't using memory bitmaps after startup
 
@@ -177,6 +179,8 @@ Procedural generation
 IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally" and we start with some baby plants
 
 IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
+
+Check NPC pathing when generating and in new day update
 
 ---------------------------------------------------
 Bug fixes
@@ -312,6 +316,9 @@ Contact with thorns should cost stamina (look for a "damage" attribute that I al
 ---------------------------------------------------
 Menus
 ---------------------------------------------------
+
+Fix the way we load game from title screen-- need to select a specific day (and should probably display the current day in menu)
+	* save current day in global xml that exists outside the day folders?
 
 Need to make a "restore defaults" (or something similar) button for video configurations
 

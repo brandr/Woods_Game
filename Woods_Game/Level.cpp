@@ -314,6 +314,18 @@ void Level::update_collide_buckets(Entity * e)
 	}
 }
 
+void Level::reset_collide_buckets()
+{
+	this->collide_buckets.clear();
+	const int size = this->entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		EntityGroup * eg = this->entity_groups.getItem(i);
+		if (eg != NULL) {
+			this->update_collide_buckets(eg);
+		}
+	}
+}
+
 const std::vector<std::string> Level::collide_bucket_keys(Rect * collide_rect)
 {
 	// if the rect intersects a bucket at all, it belongs in that bucket
@@ -699,7 +711,6 @@ void Level::reload_tiles(Level &copy_level)
 					const std::pair<int, int> ss_pos(copy_block->get_entity_sheet_col(), copy_block->get_entity_sheet_row());
 					const std::pair<int, int> pos(t->get_tile_pos_x(), t->get_tile_pos_y());
 					t->replace_block(this->tileset, block_index, ss_pos, pos);
-					//const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 					//refresh_mask();
 				}
 			} else if (copy_block == NULL) {
@@ -716,6 +727,7 @@ void Level::update_new_day(Player * player)
 {
 	this->update_tiles_new_day(player);
 	this->update_npcs_new_day();
+	this->reset_collide_buckets();
 	//TODO: what other object types need to be updated?
 }
 
@@ -725,7 +737,6 @@ void Level::update_tiles_new_day(Player * player)
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			Tile *t = this->get_tile(x, y);
-			std::pair<int, int> position(t->get_tile_pos_x()*TILE_SIZE, t->get_tile_pos_y()*TILE_SIZE);
 			Block *b = t->get_block();
 			if (b == NULL || b->is_empty()) {
 				continue;
@@ -734,7 +745,7 @@ void Level::update_tiles_new_day(Player * player)
 				if (b->needs_plant_day_update()) {
 					this->plant_day_update(b, x, y);
 				}
-				b->refresh_mask();
+				//b->refresh_mask();
 			}
 		}
 	}
@@ -765,12 +776,6 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 				current_age++;
 				// increase age by 1 day
 				plant->set_entity_attribute(GameImage::E_ATTR_PLANT_GROWTH_CURRENT_AGE, current_age); 
-				if (!started_mature) {
-					// make sure we update the sprite as necessary after aging
-					const std::string filename = tileset->get_full_block_sheet_filename(block_index);
-					ImageLoader::get_instance().load_image(
-						filename + plant->image_filename_suffix(), *(plant->get_image_subsection()));
-				}
 				if (started_mature && spread_rate > 0 && spread_range > 0) {
 					std::vector<int> open_tile_indeces;
 					int open_tiles = 0;
@@ -819,7 +824,6 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 							b->set_entity_attribute(GameImage::E_ATTR_CURRENT_DURABILITY, b->get_entity_attribute(GameImage::E_ATTR_DURABILITY));
 							const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 							b->set_entity_attribute(GameImage::E_ATTR_PLANT_GROWTH_CURRENT_AGE, 0);
-							ImageLoader::get_instance().load_image(filename + b->image_filename_suffix(), *(b->get_image_subsection()));
 							b->refresh_mask();
 							open_tile_indeces.erase(std::remove(open_tile_indeces.begin(), open_tile_indeces.end(), open_tile_i), open_tile_indeces.end());
 						}

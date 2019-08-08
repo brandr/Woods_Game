@@ -52,6 +52,7 @@ public:
 	virtual const std::pair<std::string, std::pair<int, int>> get_forced_destination();
 	virtual void set_forced_destination(const std::pair<std::string, std::pair<int, int>> value);
 	virtual const bool pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles);
+	virtual const bool pathing_blocked_by_moving_at(const int x, const int y, Level * level);
 	virtual const bool pathing_blocked_at(const int x, const int y, std::vector<Entity*> interactables);
 	virtual void set_is_processing(const bool value);
 	virtual const bool is_locked();

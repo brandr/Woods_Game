@@ -27,7 +27,7 @@ DialogPage * Dialog::current_page()
 
 Dialog::Dialog()
 {
-	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
+	//ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
 }
 

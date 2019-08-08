@@ -72,6 +72,8 @@ void GameImageManager::start_new_game(const std::string world_key)
 void GameImageManager::full_load_game_from_save(const std::string save_file)
 {
 	FileManager filemanager;
+	//TODO: this is the wrong filename. we need the current day
+	//maybe keep current day
 	const std::string filename = "resources/load/saves/" + save_file + "/worlds";
 	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", save_file);
 	this->world.load_dungeons();
@@ -79,6 +81,10 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	const std::string player_key = this->world.get_player_key();
 	load_player_from_xml("resources/load/player", player_key);
 	this->current_global_time = new GlobalTime(this->world.get_current_day(), START_TIME_HOUR*TIME_RATIO); //TODO: calculate start time as necessary
+	this->world.recalculate_npc_paths();
+	this->thread_data.world = &(this->world);
+	this->thread_data.player = this->player;
+	this->thread_data.ready = true;
 }
 
 void GameImageManager::load_game_from_save(const int day, const int time)
@@ -93,7 +99,7 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->current_global_time = new GlobalTime(day, time);
 	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/dungeons";
 	this->world.reload_dungeons(dungeons_path);
-	//this->world.load_npcs(); //TODO: need to reload NPCS?
+	this->world.recalculate_npc_paths();
 	this->save_game();
 	
 }
@@ -130,6 +136,7 @@ void * GameImageManager::load_func_advance_day(ALLEGRO_THREAD * thr, void * arg)
 	LoadingData *data = (LoadingData *)arg;
 	al_lock_mutex(data->mutex);
 	data->ready = false;
+	//al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
 	data->world->update_new_day(data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
@@ -160,11 +167,9 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 
 	const std::string world_key = data->world->get_world_key();
 	const std::string filename = "resources/load/saves/" + world_key + "/worlds";
-	//const int x = data->player->get_x(), y = data->player->get_y();
 	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(data->global_time->get_day()) + "/dungeons";
 	data->world->reload_dungeons(dungeons_path);
-	//TODO: make sure NPCs show up in the correct places after reolading
-	data->world->load_npcs(); //TODO: need to reload NPCS? (this could be where we reload paths)
+	data->world->update_reload_day(data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
 	al_broadcast_cond(data->cond);
@@ -494,6 +499,9 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 			if (this->thread_data.ready) {
 				al_lock_mutex(this->thread_data.mutex);
 				cutscene->advance_block();
+				//al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
+				//al_convert_memory_bitmaps();
+				//ImageLoader::get_instance().convert_bitmaps_to_video();
 				al_unlock_mutex(this->thread_data.mutex);
 			}
 		} else if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
@@ -503,36 +511,40 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 				cutscene->advance_block();
 			}
 		} else if (action_key == ACTION_SAVE_GAME) {
+			if (this->loading_thread != NULL) {
+				al_destroy_thread(this->loading_thread);
+			}
 			al_lock_mutex(this->thread_data.mutex);
 			this->thread_data.global_time = this->current_global_time;
 			al_unlock_mutex(this->thread_data.mutex);
 			this->loading_thread = al_create_thread(load_func_save_game, &(this->thread_data));
 			al_start_thread(this->loading_thread);
-			al_rest(0.001); // give time to lock the mutex
+			//al_rest(0.001); // give time to lock the mutex
 			cutscene->advance_block();
 		} else if (action_key == ACTION_LOAD_GAME) {
 			if (this->loading_thread != NULL) {
 				al_destroy_thread(this->loading_thread);
 			}
 			GlobalTime * updated_time = cutscene->get_active_global_time();
-			//if (this->current_global_time != NULL) {
-			//	delete this->current_global_time;
-			//}
-			//this->current_global_time = new GlobalTime(updated_time->get_day(), updated_time->get_time());
 			this->thread_data.current_level_key = this->current_level->get_filename();
-			//this->thread_data.global_time = this->current_global_time;
 			this->loading_thread = al_create_thread(load_func_load_from_save, &(this->thread_data));
 			al_start_thread(this->loading_thread);
-			al_rest(0.01); // give time to lock the mutex
+			//al_rest(0.01); // give time to lock the mutex
 			cutscene->advance_block();
 		} else if (action_key == ACTION_UPDATE_NEW_DAY) {
+			//TODO: doing this asnyc is ideal, but if we do that we need to fix the slowdown
 			if (this->loading_thread != NULL) {
 				al_destroy_thread(this->loading_thread);
 			}
 			this->thread_data.current_level_key = this->current_level->get_filename();
 			this->loading_thread = al_create_thread(load_func_advance_day, &(this->thread_data));
 			al_start_thread(this->loading_thread);
-			al_rest(0.001); // give time to lock the mutex
+			//al_rest(0.001); // give time to lock the mutex
+			
+			//temp (non-async)
+			//this->world.update_new_day(this->player, this->current_level->get_filename());
+			//this->world.recalculate_npc_paths();
+			//temp
 			cutscene->advance_block();
 		}
 	}

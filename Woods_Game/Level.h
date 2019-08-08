@@ -54,6 +54,7 @@ private:
 	void generate_entity_groups();
 	void generate_blocks();
 	void update_collide_buckets(Entity * e);
+	void reset_collide_buckets();
 	const std::vector<std::string> collide_bucket_keys(Rect * collide_rect);
 	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, 
 		const std::pair<int, int> pos2, const std::vector<std::pair<int, int>> visited, const int path_size);

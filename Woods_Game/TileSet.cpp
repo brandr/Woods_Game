@@ -81,6 +81,10 @@ void TileSet::load_sheet_images()
 		EntityData *block = this->block_types.getItem(i);
 		std::string filename = sheet_name + "/blocks/" + block->get_entity_data_key();
 		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
+		const std::vector<std::string> suffixes = block->image_filename_suffixes();
+		for (std::string suffix : suffixes) {
+			TileSet::load_sheet_images(filename + suffix, TILE_SIZE, TILE_SIZE);
+		}
 	}
 	
 	const int size = this->entity_group_types.size();

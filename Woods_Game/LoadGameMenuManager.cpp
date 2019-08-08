@@ -36,18 +36,6 @@ void LoadGameMenuManager::load_xml_content(const std::string id)
 			index++;
 		}
 	}
-	//TODO: save files
-	/*
-	FileManager file_manager = this->file_manager;
-	const int size = this->menu_items.size();
-	for (int i = 0; i < size; i++) {
-		MenuItem *menu_item = this->menu_items.getItem(i);
-		std::string action_key = menu_item->get_controls_action_key();
-		if (action_key != "") {
-			//TODO: how to load menu item?
-		}
-	}
-	*/
 }
 
 void LoadGameMenuManager::draw(ALLEGRO_DISPLAY * display, float x_off, float y_off, float width, float height)

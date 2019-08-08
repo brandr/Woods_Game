@@ -81,6 +81,9 @@ struct EntityData : public xmls::Serializable {
 	const std::pair<int, int> get_collide_dimensions();
 	std::pair<int, int> get_center_offset();
 	std::vector<EntityComponentData*> get_components();
+	const std::vector<std::string> image_filename_suffixes();
+	const bool has_entity_attribute(const std::string attr_key);
+	int get_entity_attribute(const std::string attribute);
 };
 
 struct EntityGroupData : public EntityData {
@@ -111,7 +114,6 @@ protected:
 	xmls::xInt entity_sheet_row;
 	xmls::xInt entity_starting_pos_x;
 	xmls::xInt entity_starting_pos_y;
-	//Rect collide_rect();
 	const int get_collide_x_offset();
 	const int get_collide_y_offset();
 	const int get_collide_width();
