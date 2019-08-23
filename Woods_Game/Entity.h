@@ -98,6 +98,7 @@ struct EntityGroupData : public EntityData {
 };
 
 class Player;
+class Level;
 class Entity :
 	public GameImage
 {
@@ -166,5 +167,6 @@ public:
 	virtual int get_entity_sheet_row();
 	virtual void take_durability_damage(const int damage);
 	static std::vector<std::string> get_entity_effect_names();
+	virtual void push_back(Level * level, const float xvel, const float yvel);
 };
 #endif

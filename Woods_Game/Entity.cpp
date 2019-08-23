@@ -1,5 +1,6 @@
 #include "Entity.h"
 #include "Player.h"
+#include "Level.h"
 
 
 const std::string Entity::image_filename_suffix()
@@ -379,6 +380,11 @@ std::vector<std::string> Entity::get_entity_effect_names()
 {
 	std::vector<std::string> names{ "break", "hit" };
 	return names;
+}
+
+void Entity::push_back(Level * level, const float xvel, const float yvel)
+{
+	//override in subclasse	
 }
 
 // EntityData

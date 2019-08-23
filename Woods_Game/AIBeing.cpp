@@ -33,13 +33,15 @@ void AIBeing::request_pathing_update(Level * level, GlobalTime * time)
 
 void AIBeing::destination_update(Level * level, GlobalTime * time)
 {
+	Rect * collide_rect = this->get_rect_for_collision();
 	const bool primary = this->secondary_destinations.empty();
 	std::vector<std::pair<std::string, std::pair<int, int>>> destinations
 		= primary ? this->primary_destinations : this->secondary_destinations;
-	if (!destinations.empty()) {
+	if (this->is_facing_other()) {
+		return;
+	} else if (!destinations.empty()) {
 		const std::pair<std::string, std::pair<int, int>> next_dest = destinations[0];
 		const std::pair<int, int> next_pos = next_dest.second;
-		Rect * collide_rect = this->get_rect_for_collision();
 		const float x_dist = (float) (next_pos.first) - collide_rect->x,
 			y_dist = (float) (next_pos.second) - collide_rect->y;
 		// when we reach our current destination, remove it
@@ -49,6 +51,7 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 				const std::string dest_key = next_dest.first;
 				this->mark_destination_reached(dest_key);
 				this->primary_destinations.erase(this->primary_destinations.begin());
+				this->last_primary_destination = next_dest;
 				// if our path is taking us to another level, set a flag here saying we need to move the npc to that level
 				PathNode * dest_node = level->find_path_node_with_key(dest_key);
 				if (dest_node == NULL) {
@@ -84,8 +87,9 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 			const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
 				* std::min(std::abs(yoff_t) * TILE_SIZE, (int)std::abs(y_dist)) : 0;
 			bool failed = false;
-			const bool blocked = this->pathing_blocked_by_moving_at(collide_rect->x + xoff, collide_rect->y + yoff, level);
-			if (!blocked) {
+			Entity * blocking_entity = this->blocking_entity_at(collide_rect->x + xoff, collide_rect->y + yoff, level);
+			if (blocking_entity == NULL || this->should_push_others) {
+				//if we do path around, work backwards from the known path until the first blocked tile, then treat that as an intermediary destination
 				if (!primary && this->secondary_destinations.size() > 1) {
 					const std::pair<std::string, std::pair<int, int>> first_dest = this->secondary_destinations[0];
 					const std::pair<std::string, std::pair<int, int>> second_dest = this->secondary_destinations[1];
@@ -98,15 +102,12 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 					}
 				}
 			} else {
-
-				//TODO: different logic for going around the being blocking us, also don't necessarily go around (could just stop and face them)
-
-				// if we have pathing destinations, reset them and find a new path
 				this->secondary_destinations.clear();
 				if (!primary_destinations.empty()) {
 					const std::pair<std::string, std::pair<int, int>> primary_dest = this->primary_destinations[0];
 					const std::pair<int, int> primary_pos = primary_dest.second;
 					std::pair<int, int> pathing_dest(primary_pos.first / TILE_SIZE, primary_pos.second / TILE_SIZE);
+					std::string forced_dest_key = primary_dest.first;
 					// the primary destination is blocked, so we can't path directly to it
 					if (this->pathing_blocked_by_moving_at(primary_pos.first, primary_pos.second, level)) {
 						const float x_dist_p
@@ -116,37 +117,74 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 						if (std::abs(x_dist_p) < TILE_SIZE * 2 && std::abs(y_dist_p) < TILE_SIZE * 2) {
 							failed = true;
 						} else {
-							//TODO: Might need to refactor this to be part of world.cpp pathing logic
-							
 							const std::pair<int, int> closest_pos
 								= this->find_closest_open_tile_pos(level, primary_pos);
-							if (closest_pos.first >= 0 && closest_pos.second >= 0) {
-								pathing_dest = closest_pos;
-							} else {
+							// there is no open space near the destination, so we can't go there
+							if (closest_pos.first < 0 || closest_pos.second < 0) {
 								failed = true;
 							}
 						}
 					}
 					if (!failed) {
 						this->xvel = 0, this->yvel = 0;
-						this->ai_state.set_is_idle();
-						this->forced_destination = primary_dest;
+						this->anim_state = ANIM_STATE_NEUTRAL;
 						this->clear_primary_destinations();
+						this->forced_destination = std::pair<std::string, std::pair<int, int>>(
+							forced_dest_key, std::pair<int, int>(pathing_dest.first * TILE_SIZE, pathing_dest.second * TILE_SIZE));
+						this->should_path_around_moving = true;
+						const bool should_face_other = true; //TEMP. determine what to do via AIState, type of being, npc personality, relationship w/ being, etc
+						if (should_face_other) {
+							this->set_is_facing_other(blocking_entity);
+						} else {
+							this->ai_state.set_is_idle();
+						}
 					}
 					if (failed) {
-						if (primary) {
-							// TODO: instead of just giving up completely, 
-							//     set a timer, then recalculate in case an obstacle was moved out of the way
-							this->clear_primary_destinations();
-						}
-						return;
+						this->failed_pathing_tally++;
+						this->clear_primary_destinations();
+						this->cancel_current_pathing(AI_PATH_BLOCKED_WAIT_TIME);
+					} else {
+						this->failed_pathing_tally = 0;
 					}
 				}
 			}
 		}
 	}
 }
-	void AIBeing::walk_update()
+
+void AIBeing::face_other_update(Level * level, GlobalTime * time)
+{
+	if (!this->is_facing_other()) {
+		if (this->should_push_others) {
+			return;
+		}
+		Rect * collide_rect = this->get_rect_for_collision();
+		if (this->pathing_blocked_by_moving_at(collide_rect->x, collide_rect->y, level)) {
+			this->failed_pathing_tally++;
+			Entity * blocking_entity = this->blocking_entity_at(collide_rect->x, collide_rect->y, level);
+			this->set_is_facing_other(blocking_entity);
+			this->xvel = 0, this->yvel = 0;
+			this->anim_state = ANIM_STATE_NEUTRAL;
+			if (!this->primary_destinations.empty()) {
+				this->forced_destination = this->primary_destinations[0];
+			}
+			this->clear_primary_destinations();
+			this->secondary_destinations.clear();
+		}
+		return;
+	} else {
+		const int tile_dist = std::abs(this->facing_entity->get_x() - this->get_x()) / TILE_SIZE
+			+ std::abs(this->facing_entity->get_y() - this->get_y()) / TILE_SIZE;
+		if (tile_dist > AI_FACE_OTHER_MAX_TILE_DIST) {
+			this->ai_state.set_is_idle();
+			return;
+		}
+		this->direction = this->calculate_direction(this->facing_entity);
+		//TODO: don't let the facing entity block us forever-- need to escape somehow
+	}
+}
+
+void AIBeing::walk_update()
 	{
 		if (this->ai_state.is_requesting_path() || this->ai_state.is_idle() || 
 			(this->primary_destinations.empty() && this->secondary_destinations.empty())) {
@@ -195,6 +233,15 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 		}
 	}
 
+void AIBeing::failed_pathing_update()
+{
+	if (this->failed_pathing_tally > 2) {
+		this->should_push_others = true;
+		this->failed_pathing_tally = 0;
+	}
+	// TODO: need to be able to set it back to false at some point, maybe after a timer
+}
+
 	const std::pair<int, int> AIBeing::find_closest_open_tile_pos(Level * level, const std::pair<int, int> destination)
 	{
 		for (int range = 1; range < 3; range++) {
@@ -218,7 +265,7 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 					0, std::min(level_dimensions.first - TILE_SIZE, destination.first + tx * TILE_SIZE));
 				const int cy = std::max(
 					0, std::min(level_dimensions.second - TILE_SIZE, destination.second + ty * TILE_SIZE));
-				if (!this->pathing_blocked_at(cx, cy, level, false)) {
+				if (!this->pathing_blocked_at(cx, cy, level, this->should_push_others)) {
 					return std::pair<int, int>(cx / TILE_SIZE, cy / TILE_SIZE);
 				}
 			}
@@ -271,10 +318,16 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 		this->ai_state.set_current_destination_node_key(dest_node_key);
 	}
 
-	void AIBeing::cancel_current_pathing()
+	void AIBeing::cancel_current_pathing(const int wait_time)
 	{
 		//TEMP -- might need more logic based on the context under which we're stopping
-		this->ai_state.set_is_waiting(AI_PATH_BLOCKED_WAIT_TIME);
+		this->xvel = 0, this->yvel = 0;
+		this->anim_state = ANIM_STATE_NEUTRAL;
+		if (wait_time > 0) {
+			this->ai_state.set_is_waiting(wait_time);
+		} else {
+			this->ai_state.set_is_idle();
+		}
 		this->ai_state.set_current_destination_node_key("");
 	}
 
@@ -304,6 +357,17 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 		this->set_ai_state(AI_STATE_STARTING_PATH);
 	}
 
+	void AIBeing::set_is_facing_other(Entity * other)
+	{
+		this->ai_state.set_is_facing_other(AI_FACE_OTHER_WAIT_TIME);
+		this->facing_entity = other;
+	}
+
+	const bool AIBeing::is_facing_other()
+	{
+		return this->ai_state.is_facing_other();
+	}
+
 	const bool AIBeing::is_requesting_next_level()
 	{
 		return this->ai_state.is_requesting_next_level();
@@ -319,6 +383,16 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 	{
 		return this->ai_state.is_requesting_next_level()
 			? this->ai_state.get_requested_next_level_node_key() : "";
+	}
+
+	void AIBeing::reset_failed_pathing_tally()
+	{
+		this->failed_pathing_tally = 0;
+	}
+
+	void AIBeing::increment_failed_pathing_tally()
+	{
+		this->failed_pathing_tally++;
 	}
 
 	AIBeing::AIBeing()
@@ -341,7 +415,9 @@ void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
 	this->ai_timer_update();
 	this->request_pathing_update(level, time);
 	this->destination_update(level, time);
+	this->face_other_update(level, time);
 	this->walk_update();
+	this->failed_pathing_update();
 	Being::update(level, time, game_mode);
 }
 
@@ -452,6 +528,26 @@ void AIBeing::set_forced_destination(std::pair<std::string, std::pair<int, int>>
 	this->forced_destination = value;
 }
 
+const std::pair<std::string, std::pair<int, int>> AIBeing::get_last_primary_destination()
+{
+	return this->last_primary_destination;
+}
+
+void AIBeing::set_last_primary_destination(const std::pair<std::string, std::pair<int, int>> value)
+{
+	this->last_primary_destination = value;
+}
+
+const bool AIBeing::get_should_path_around_moving()
+{
+	return this->should_path_around_moving && !this->should_push_others;
+}
+
+void AIBeing::set_should_path_around_moving(const bool value)
+{
+	this->should_path_around_moving = value;
+}
+
 //TODO: depending on the context, should be looking at moving obstacles only, because we should already have chosen paths that account for blocked tiles
 const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles)
 {
@@ -468,6 +564,9 @@ const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, 
 
 const bool AIBeing::pathing_blocked_by_moving_at(const int x, const int y, Level * level)
 {
+	if (this->should_push_others) {
+		return false;
+	}
 	Rect * collide_rect = this->get_rect_for_collision();
 	Rect check_rect(x, y,
 		collide_rect->width, collide_rect->height);
@@ -478,4 +577,18 @@ const bool AIBeing::pathing_blocked_by_moving_at(const int x, const int y, Level
 		}
 	}
 	return false;
+}
+
+Entity * AIBeing::blocking_entity_at(const int x, const int y, Level * level)
+{
+	Rect * collide_rect = this->get_rect_for_collision();
+	Rect check_rect(x, y,
+		collide_rect->width, collide_rect->height);
+	std::vector<Entity *> moving = level->get_moving_interactables(this);
+	for (Entity *e : moving) {
+		if (e != NULL && e != this && e->is_solid() && e->intersects_area(check_rect)) {
+			return e;
+		}
+	}
+	return NULL;
 }

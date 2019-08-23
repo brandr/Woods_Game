@@ -4,7 +4,7 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 8/7/2019
+Last updated 8/18/2019
 
 totals don't include ongoing stuff 
 
@@ -12,15 +12,15 @@ Total: 99-148 days (~4-5 months, done by Mar 2020)
 
 1. Finish NPC pathing/AIState stuff
 	(4-8 days)
-2. NPC schedule
+2. Quest/NPC triggers
+	(5-10 days)
+3. NPC dialog calculation
+	(5-10 days)
+4. NPC schedule
 	(3-6 days)
-3. Quest/NPC triggers
-	(5-10 days)
-4. NPC dialog calculation
-	(5-10 days)
 5. Cutscenes
 	(15-20 days)
-6. Loading screens/prorgress bars
+6. Loading screens/progress bars
 	(3-5 days)
 
 (clean up todos and try to think of what's missing here)	
@@ -62,18 +62,22 @@ Ongoing tasks:
 NPCs
 ---------------------------------------------------
 
-NPC pathing
-	- When a being blocks NPC's collide rect, make them stop and face that being (or do something besides path around)
-		* could also do this when a moving being blocks the place they're about to go
-		* could give different reactions depending on conditions like personality, type of other being, relationship with other being, etc
-			# for example, could push past if the npc is rude or doesn't like the other being
-		* might have to rework NPC destination update function somewhat because parts may now be redundant given world-based pathing
-	- NPCs should probably start on pathnodes for more efficient path calculation
-	- there is still slowdown (I think, maybe not)
-		* Make sure Level.get_nearby_interactables() actually reaches across buckets where it should
-		* seems to have been made worse now that tile djikstra pathing is more thorough, so maybe make it more efficient
-		* try using breakpoints to see which methods are getting called the most often and/or enabling logging
-		* might be affected by checking nearby blocks too often-- refactor these into buckets
+NPC pathing (primary issues)
+	- npc pushing
+		* should stop pushing after a while
+			# timer?
+			# could make it so we only stop pushing if we need to (i.e., check collide rect and planned collide rect for moving obstacle collisions)
+	- Test NPCs walking directly towards each other
+		* do they push each other?
+	- there is still slowdown (in some cases)
+		* need repro steps because it doesn't happen every time
+		* see comments in tile pathing method
+		* probably need some kind of guarantee that we don't re-check pathing too often
+		* NPCs should probably start on pathnodes for more efficient path calculation
+		* might be affected by checking nearby blocks too often-- could refactor these into buckets
+
+NPC pathing (secondary issues)
+	
 	- when hitting a "next level" facing node, need to animate walking to next level
 		* might need to serialize walk to/from direction (or calculate somehow)
 		* set AIState to "leaving level" or something, set direction, and distance/time to walk (I feel like we shouldn't factor in tile speed)
@@ -83,8 +87,7 @@ NPC pathing
 	- Make it so some NPCs obey the "NPC pathable" rules and others don't
 		* See Alex (in notes) for an example of a character who would ignore these rules
 		* could also make some tiles "hard NPC unpathable" (no NPC can path) and "soft NPC unpathable" (only rule-following NPCs stay off)
-	- When generating worlds, test pathability so we don't get NPCs unable to navigate genned levels
-		* if the level isn't pathable, start over generating it
+		* May want to allow all NPCs to go through npc-unpathable tiles (only soft unpathable?) when pathing around beings
 	- Set a debug launch argument to control whether test rect bitmaps appear
 		* Manage the bitmaps through ImageLoader
 		* instead of launch argument, could add console commands
@@ -101,6 +104,7 @@ AIState/NPC schedule
 		* not necessary if NPCs all sleep at least as late as the latest that the player wakes up, or if there are only a small number of possible wake-up times
 
 Add NPC quest triggers
+	- these give conditions which feed schedule blocks
 	- could make the first quest getting some item from the store with money from the player's mom
 		* can also just choose to keep the money
 	- these quest triggers need to tie into time travel (think of majora's mask)

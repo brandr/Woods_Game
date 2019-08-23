@@ -169,49 +169,76 @@ const bool Being::adjust_movement(Level * level, float xoff, float yoff, const b
 	Rect check_rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
 	std::vector<Entity*> interactables = level->get_colliding_interactables(this, check_rect, false);
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	//TODO: probably want to include the blocks here (and in other places where we call level.get_colliding_interactables())
 	int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i]->get_block();
-		if (b) interactables.push_back(b);
+		if (b) { 
+			interactables.push_back(b); 
+		}
 	}
+	// get pushed back by blocks and beings. if we can push others, do so to beings
+	if (this->should_push_others) {
+		std::vector<Entity*> moving_interactables = level->get_moving_interactables(this);
+		this->adjust_movement(level, interactables, xoff, yoff, snap, true);
+	}
+	return this->adjust_movement(level, interactables, xoff, yoff, snap, false);
+}
+
+const bool Being::adjust_movement(Level * level, std::vector<Entity*> interactables, float xoff, float yoff, const bool snap, const bool push_others)
+{
+	bool blocked = false;
+	float adj_xvel = this->xvel, adj_yvel = this->yvel; // TODO: I think might need to be different if we push others
+	Rect check_rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
 	if (!empty_at(check_rect, interactables)) {
-		float mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
-		if (snap) {
-			while (!precise_empty_at(interactables, xoff, yoff) && mag > 1.0f) {
-				float temp_mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
-				xoff = (this->xvel / temp_mag)*mag, yoff = (this->yvel / temp_mag)*mag;
-				mag -= 1.0f;
-			}
-		}
-		if (mag <= 1.0f || !snap) {
-			float angle = M_PI / 12.0f;
-			float xoff1 = xoff, yoff1 = yoff, xoff2 = xoff, yoff2 = yoff;
-			while (!precise_empty_at(interactables, xoff1, yoff1)
-				&& !precise_empty_at(interactables, xoff2, yoff2)
-				&& angle < 5.0*M_PI / 12.0f) {
-				xoff1 = xvel * std::cos(angle) - yvel * std::sin(angle), yoff1 = xvel * std::sin(angle) + yvel * std::cos(angle);
-				xoff2 = xvel * std::cos(-1.0f*angle) - yvel * std::sin(-1.0f*angle), yoff2 = xvel * std::sin(-1.0f*angle) + yvel * std::cos(-1.0f*angle);
-				float mag1 = std::pow(std::pow(xoff1, 2.0) + std::pow(yoff1, 2), 0.5), mag2 = std::pow(std::pow(xoff2, 2.0) + std::pow(yoff2, 2), 0.5);
-				if (precise_empty_at(interactables, xoff1, yoff1)) {
-					xvel = xoff1, yvel = yoff1;
-					break;
+		if (push_others) {
+			for (Entity * e : interactables) {
+				if (e && e != this && e->is_solid() && e->intersects_area(check_rect)
+					&& e->get_mask()
+					&& Mask_Collide(this->get_mask(), e->get_mask(),
+					(get_x() + this->xvel) - e->get_x(),
+						(get_y() + this->yvel) - e->get_y())) {
+					e->push_back(level, this->xvel, this->yvel);
 				}
-				else if (precise_empty_at(interactables, xoff2, yoff2)) {
-					xvel = xoff2, yvel = yoff2;
-					break;
+			}
+		} else {
+			float mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
+			if (snap) {
+				while (!precise_empty_at(interactables, xoff, yoff) && mag > 1.0f) {
+					float temp_mag = std::pow(std::pow(xoff, 2.0) + std::pow(yoff, 2), 0.5);
+					xoff = (adj_xvel / temp_mag)*mag, yoff = (adj_yvel / temp_mag)*mag;
+					mag -= 1.0f;
 				}
-				angle += M_PI / 12.0f;
 			}
-			if (!precise_empty_at(interactables, xvel, yvel)) {
-				this->xvel = 0, this->yvel = 0;
-				blocked = true;
+			if (mag <= 1.0f || !snap) {
+				float angle = M_PI / 12.0f;
+				float xoff1 = xoff, yoff1 = yoff, xoff2 = xoff, yoff2 = yoff;
+				while (!precise_empty_at(interactables, xoff1, yoff1)
+					&& !precise_empty_at(interactables, xoff2, yoff2)
+					&& angle < 5.0*M_PI / 12.0f) {
+					xoff1 = adj_xvel * std::cos(angle) - adj_yvel * std::sin(angle), yoff1 = adj_xvel * std::sin(angle) + adj_yvel * std::cos(angle);
+					xoff2 = adj_xvel * std::cos(-1.0f*angle) - adj_yvel * std::sin(-1.0f*angle), yoff2 = adj_xvel * std::sin(-1.0f*angle) + adj_yvel * std::cos(-1.0f*angle);
+					float mag1 = std::pow(std::pow(xoff1, 2.0) + std::pow(yoff1, 2), 0.5), mag2 = std::pow(std::pow(xoff2, 2.0) + std::pow(yoff2, 2), 0.5);
+					if (precise_empty_at(interactables, xoff1, yoff1)) {
+						adj_xvel = xoff1, adj_yvel = yoff1;
+						break;
+					}
+					else if (precise_empty_at(interactables, xoff2, yoff2)) {
+						adj_xvel = xoff2, adj_yvel = yoff2;
+						break;
+					}
+					angle += M_PI / 12.0f;
+				}
+				if (!precise_empty_at(interactables, adj_xvel, adj_yvel)) {
+					adj_xvel = 0, adj_yvel = 0;
+					blocked = true;
+				}
+			} else {
+				adj_xvel = xoff, adj_yvel = yoff;
 			}
-		}
-		else {
-			this->xvel = xoff, this->yvel = yoff;
+			this->xvel = adj_xvel, this->yvel = adj_yvel;
 		}
 	}
+	
 	return blocked;
 }
 
@@ -282,6 +309,17 @@ const bool Being::empty_at(Rect collide_rect, Level * level)
 const bool Being::empty_at(Rect collide_rect, Level * level, const bool ignore_moving_obstacles)
 {
 	return !level->has_rect_collisions(this, collide_rect, ignore_moving_obstacles);
+}
+
+const bool Being::get_should_push_others()
+{
+	return this->should_push_others;
+}
+
+void Being::push_back(Level* level, const float adj_xvel, const float adj_yvel)
+{
+	//this->adjust_movement(level, xvel, yvel, false);
+	this->rect.x += adj_xvel, this->rect.y += adj_yvel;
 }
 
 //TODO: make this more efficient and/or call it less often

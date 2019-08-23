@@ -50,7 +50,6 @@ private:
 	DjikstraNode * get_tile_node(const int tx, const int ty);
 	const std::vector<std::pair<int, int>> open_adjacent_tiles(const std::pair<int, int> start_t_pos, const std::pair<int, int> dest_t_pos, std::set<std::pair<int, int>> visited);
 	const std::string tile_node_map_key(const int tx, const int ty);
-	const float calculate_edge_cost(const std::pair<int, int> start_pos, const std::pair<int, int> dest_pos);
 	std::set<std::pair<int, int>> blocked_tiles;
 protected:
 	virtual void calculate_shortest_path();
@@ -59,7 +58,9 @@ public:
 	TileDjikstraPath(Level * level, AIBeing * being);
 	TileDjikstraPath(Level * level, AIBeing * being, const bool ignore_moving_obstacles);
 	~TileDjikstraPath();
-	void mark_blocked_tiles(Level * level, AIBeing * being);
+	void mark_blocked_tiles(Level * level, AIBeing * being, const bool ignore_moving_obstacles);
+	const float calculate_edge_cost(const std::pair<int, int> start_pos, const std::pair<int, int> dest_pos);
+	const bool tile_is_blocked(const int tx, const int ty);
 	const std::pair<std::vector<std::pair<int, int>>, float> calculate_shortest_tile_path(
 		const std::pair<int, int> origin_t_pos, const std::pair<int, int> dest_t_pos);
 	const std::pair<std::vector<std::pair<int, int>>, float> calculate_shortest_tile_path(

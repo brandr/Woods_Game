@@ -1608,7 +1608,7 @@ void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
 		npc->set_starting_pos(spawner->get_x(), spawner->get_y());
 		npc->load_content_from_attributes();
 		npc->set_current_level_key(this->get_filename());
-		npc->cancel_current_pathing();
+		npc->cancel_current_pathing(0);
 		this->add_being(npc);
 	}
 }

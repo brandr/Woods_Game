@@ -53,13 +53,9 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-//TODO: refactor so we don't unnecessarily look at every entity group
 void Player::update(Level * level, GlobalTime * time, const int game_mode)
 {
 	const std::pair<int, int> level_dimensions = level->get_dimensions();
-	//std::vector<Entity*> interactables = level->get_interactables(this);
-	//std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	//TEMP. can probably pass the level into the check instead
 	if (exit_level_check(level_dimensions))
 		return;
 	switch (game_mode) {
@@ -76,7 +72,6 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 
 	Being::update(level, time, game_mode);
 	if (this->interacting) {
-		//TODO: might want this to use level rather than interactables
 		this->interact_update(level);
 	}
 	clear_input();

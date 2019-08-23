@@ -19,9 +19,12 @@ void AIState::timer_update()
 		const int time = it.second;
 		if (time > 0) {
 			this->ai_timer_map[it.first] = time - 1;
-		}
-		if (this->is_waiting() && time <= 0) {
-			this->set_is_idle();
+		} else {
+			if (it.first == AI_TIMER_WAIT && this->is_waiting()) {
+				this->set_is_idle();
+			} else if (it.first == AI_TIMER_FACE_OTHER && this->is_facing_other()) {
+				this->set_is_idle();
+			}
 		}
 	}
 }
@@ -113,4 +116,15 @@ const std::string AIState::get_current_destination_node_key()
 void AIState::set_current_destination_node_key(const std::string key)
 {
 	this->current_destination_node_key = key;
+}
+
+void AIState::set_is_facing_other(const int wait_time)
+{
+	this->state_key = AI_STATE_FACING_OTHER;
+	this->ai_timer_map[AI_TIMER_FACE_OTHER] = wait_time;
+}
+
+const bool AIState::is_facing_other()
+{
+	return this->state_key == AI_STATE_FACING_OTHER;
 }

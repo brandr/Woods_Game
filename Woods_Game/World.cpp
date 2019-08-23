@@ -78,7 +78,7 @@ const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 		npc->clear_primary_destinations();
 		double start_create_tile_path_time = al_get_time();
 		tile_djikstra_path = this->get_mapped_tile_djikstra_path(current_npc_level, npc);
-		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc);
+		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc, npc->get_should_push_others());
 		has_found_path 
 			= this->calculate_npc_pathing(npc, current_npc_level, tile_djikstra_path, destination_node->get_node_id(), destination_level->get_filename());	
 	}
@@ -109,6 +109,11 @@ const bool World::calculate_npc_pathing(
 	std::vector<std::pair<std::string, std::pair<int, int>>> primary_destinations;
 
 	const std::pair<std::string, std::pair<int, int>> forced_dest = npc->get_forced_destination();
+	const bool path_around_moving = npc->get_should_path_around_moving();
+	npc->set_should_path_around_moving(false);
+
+	const std::pair<std::string, std::pair<int, int>> last_primary_dest = npc->get_last_primary_destination();
+	npc->set_last_primary_destination(std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>()));
 
 	//TODO: store the node key and level key in data so we can use the cached path and not have to calculate on the fly.
 	std::string starting_node_key = "";
@@ -138,6 +143,8 @@ const bool World::calculate_npc_pathing(
 	path_data->npc_t_pos = npc_t_pos;			//TODO: this might be redundant given npc_t_pos, also it should probably be collide pos
 	path_data->current_level_path_nodes = current_level_path_nodes;
 	path_data->forced_dest = forced_dest;
+	path_data->last_primary_dest = last_primary_dest;
+	path_data->should_path_around_moving = path_around_moving;
 	path_data->tile_djikstra_path = tile_djikstra_path;
 	path_data->node_djikstra_path = node_djikstra_path;
 	path_data->starting_node_key = starting_node_key;
@@ -168,6 +175,8 @@ const bool World::calculate_npc_pathing(
 
 void World::finish_pathing(NPC * npc)
 {
+	npc->set_is_processing(false);
+
 	DjikstraPathData * path_data = this->djikstra_path_data_map[npc->get_npc_key()];
 
 	std::pair<std::vector<std::pair<int, int>>, float> tile_path_to_primary = path_data->tile_path_to_primary; //TODO: this should come from thread data
@@ -190,8 +199,10 @@ void World::finish_pathing(NPC * npc)
 		}
 		npc->set_secondary_destinations(secondary_dests);
 		npc->set_is_starting_path();
+		//npc->reset_failed_pathing_tally();
 	} else {
-		npc->cancel_current_pathing();
+		npc->cancel_current_pathing(AI_PATH_BLOCKED_WAIT_TIME);
+		npc->increment_failed_pathing_tally();
 	}
 }
 
@@ -202,7 +213,7 @@ void World::move_npc_to_level(NPC * npc, Level * current_level, Level * dest_lev
 	Rect * collide_rect = npc->get_rect_for_collision();
 	const std::pair<int, int> offset(collide_rect->x - npc->get_x(), collide_rect->y - npc->get_y());
 	npc->set_position(position.first - offset.first, position.second - offset.second);
-	npc->cancel_current_pathing();
+	npc->cancel_current_pathing(0);
 	current_level->remove_being(npc);
 	dest_level->add_being(npc);
 }
@@ -377,7 +388,7 @@ void World::recalculate_npc_paths()
 				this->get_tile_djikstra_path(level, npc);
 			}
 		}
-		npc->cancel_current_pathing();
+		npc->cancel_current_pathing(0);
 		npc->clear_primary_destinations();
 	}
 }
@@ -503,11 +514,9 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 						// TODO: error handling
 						const std::pair<int, int> next_level_node_pos(next_level_node->get_x(), next_level_node->get_y());
 						this->move_npc_to_level(npc, current_npc_level, npc_next_level, next_level_node_pos);
-						npc->set_is_processing(false);
+						//npc->set_is_processing(false);
 					}
-				}
-				else if (npc->needs_pathing_calculation()) {
-					npc->set_is_processing(true);
+				} else if (npc->needs_pathing_calculation()) {
 					this->calculate_npc_pathing(npc, current_npc_level);
 				}
 			}
@@ -555,7 +564,7 @@ void World::update_npcs_new_day()
 			level->add_npc_at_spawner(npc, spawner_key);
 		}
 		npc->clear_primary_destinations();
-		npc->cancel_current_pathing();
+		npc->cancel_current_pathing(0);
 	}
 	//TODO: other NPC updates that should happen at the beginning of the day
 }

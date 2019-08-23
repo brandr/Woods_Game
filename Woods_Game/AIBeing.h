@@ -10,20 +10,29 @@ class Level;
 class AIBeing : public Being
 {
 protected:
-	//TODO: these bitmaps might be causing problems w/ performance, refactor and/or don't show
+	//TODO: better checks to determine whether we display these bitmaps, also should store them in imageloader
 	ALLEGRO_BITMAP * check_rect_bitmap; //TEMP
 	ALLEGRO_BITMAP * path_bitmap; //TEMP
 
 	AIState ai_state;
 
+	Entity * facing_entity;
+
+	std::pair<std::string, std::pair<int, int>> last_primary_destination = std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1));
 	std::vector<std::pair<std::string, std::pair<int, int>>> primary_destinations;		// places the being actually wants to go and will resume trying to reach after an interruption
 	std::vector<std::pair<std::string, std::pair<int, int>>> secondary_destinations;	// places the being paths to, such as when going around obstacles
 	std::pair<std::string, std::pair<int, int>> forced_destination = std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1));
+	bool should_path_around_moving = false;
+
+	int failed_pathing_tally = 0;
 	void ai_timer_update();
 	void request_pathing_update(Level * level, GlobalTime * time);
 	void destination_update(
 		Level * level, GlobalTime * time);
+	void face_other_update(
+		Level * level, GlobalTime * time);
 	void walk_update();
+	void failed_pathing_update();
 	const std::pair<int, int> find_closest_open_tile_pos(
 		Level * level,
 		const std::pair<int, int> destination);
@@ -51,18 +60,27 @@ public:
 	virtual void set_secondary_destinations(const std::vector<std::pair<std::string, std::pair<int, int>>> destinations);
 	virtual const std::pair<std::string, std::pair<int, int>> get_forced_destination();
 	virtual void set_forced_destination(const std::pair<std::string, std::pair<int, int>> value);
+	virtual const std::pair<std::string, std::pair<int, int>> get_last_primary_destination();
+	virtual void set_last_primary_destination(const std::pair<std::string, std::pair<int, int>> value);
+	virtual const bool get_should_path_around_moving();
+	virtual void set_should_path_around_moving(const bool value);
 	virtual const bool pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles);
 	virtual const bool pathing_blocked_by_moving_at(const int x, const int y, Level * level);
+	virtual Entity * blocking_entity_at(const int x, const int y, Level * level);
 	virtual const bool pathing_blocked_at(const int x, const int y, std::vector<Entity*> interactables);
 	virtual void set_is_processing(const bool value);
 	virtual const bool is_locked();
 	virtual const bool needs_pathing_calculation();
 	virtual void set_needs_pathing_calculation(const std::string dest_node_key);
-	virtual void cancel_current_pathing();
+	virtual void cancel_current_pathing(const int wait_time);
 	virtual void set_is_starting_path();
+	virtual void set_is_facing_other(Entity * other);
+	virtual const bool is_facing_other();
 	virtual const bool is_requesting_next_level();
 	virtual const std::string get_requested_next_level_key();
 	virtual const std::string get_requested_next_level_node_key();
+	virtual void reset_failed_pathing_tally();
+	virtual void increment_failed_pathing_tally();
 };
 
 #endif

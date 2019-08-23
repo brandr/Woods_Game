@@ -26,6 +26,8 @@ public:
 	std::pair<std::vector<std::pair<int, int>>, float> tile_path_to_primary;
 	std::vector<PathNode *> current_level_path_nodes;
 	std::pair<std::string, std::pair<int, int>> forced_dest;
+	std::pair<std::string, std::pair<int, int>> last_primary_dest;
+	bool should_path_around_moving = false;
 	bool has_found_path = false;
 	bool should_force = false;
 	bool should_unset_forced_destination = false;

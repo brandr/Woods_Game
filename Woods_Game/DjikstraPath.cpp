@@ -24,7 +24,7 @@ DjikstraPath::~DjikstraPath()
 
 void TileDjikstraPath::initialize_nodes(Level * level, AIBeing * being)
 {
-	this->initialize_nodes(level, being, false);
+	this->initialize_nodes(level, being, true);
 }
 
 void TileDjikstraPath::initialize_nodes(Level * level, AIBeing * being, const bool ignore_moving_obstacles)
@@ -183,7 +183,7 @@ const float TileDjikstraPath::calculate_edge_cost(const std::pair<int, int> star
 	// this method assumes the tiles are adjacent.
 	DjikstraNode * start_node = this->get_tile_node(start_pos.first, start_pos.second);
 	DjikstraNode * dest_node = this->get_tile_node(dest_pos.first, dest_pos.second);
-	return (start_node->node_cost + dest_node->node_cost) / 2.0;
+	return start_node != NULL && dest_node != NULL ? (start_node->node_cost + dest_node->node_cost) / 2.0 : 1.0;
 }
 
 void TileDjikstraPath::calculate_shortest_path()
@@ -212,11 +212,16 @@ TileDjikstraPath::~TileDjikstraPath()
 	this->node_map.clear();
 }
 
-void TileDjikstraPath::mark_blocked_tiles(Level * level, AIBeing * being)
+void TileDjikstraPath::mark_blocked_tiles(Level * level, AIBeing * being, const bool ignore_moving_obstacles)
 {
 	// mark tiles blocked by moving obstacles since we only cache stationary obstacles
 	this->blocked_tiles.clear();
+	if (ignore_moving_obstacles) {
+		return;
+	}
 	std::vector<Entity*> moving_entities = level->get_moving_interactables(being);
+	Rect * being_rect = being->get_rect_for_collision();
+	const int otx = being_rect->x / TILE_SIZE, oty = being_rect->y / TILE_SIZE;
 	for (Entity * e : moving_entities) {
 		if (e != NULL && e != being && e->is_solid()) {
 			Rect * collide_rect = e->get_rect_for_collision();
@@ -233,6 +238,29 @@ void TileDjikstraPath::mark_blocked_tiles(Level * level, AIBeing * being)
 			}
 		}
 	}
+
+	//TODO: may want an option to do more precise checks
+
+	// if there is something blocking the being's current square, don't try to path
+	const bool block_all = being->pathing_blocked_by_moving_at(being_rect->x, being_rect->y, level);
+
+	if (block_all || being->pathing_blocked_by_moving_at(being_rect->x, being_rect->y - TILE_SIZE, level)) {
+		this->blocked_tiles.insert(std::pair<int, int>(otx, oty - 1 ));
+	}
+	if (block_all || being->pathing_blocked_by_moving_at(being_rect->x, being_rect->y + TILE_SIZE, level)) {
+		this->blocked_tiles.insert(std::pair<int, int>(otx, oty + 1));
+	}
+	if (block_all || being->pathing_blocked_by_moving_at(being_rect->x - TILE_SIZE, being_rect->y, level)) {
+		this->blocked_tiles.insert(std::pair<int, int>(otx - 1, oty));
+	}
+	if (block_all || being->pathing_blocked_by_moving_at(being_rect->x + TILE_SIZE, being_rect->y, level)) {
+		this->blocked_tiles.insert(std::pair<int, int>(otx + 1, oty));
+	}
+}
+
+const bool TileDjikstraPath::tile_is_blocked(const int tx, const int ty)
+{
+	return this->blocked_tiles.find(std::pair<int, int>(tx, ty)) != this->blocked_tiles.end();
 }
 
 const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calculate_shortest_tile_path(
@@ -306,6 +334,7 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 			const float adj_dest_cost = this->calculate_edge_cost(adj_t, dest_t_pos);
 			distances[adj_t_key][dest_t_pos_key] = 0;
 			distances[start_t_pos_key][dest_t_pos_key] = adj_dest_cost;
+			//distances[origin_t_pos_key][dest_t_pos_key] = dist_tally + adj_dest_cost;
 			shortest_path.push_back(std::pair<int, int>(dest_t_pos.first, dest_t_pos.second));
 			// the destination is adjacent, so just go there
 			return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, adj_dest_cost);
@@ -327,7 +356,7 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 
 		// this path is already too long, so just return here
 		if (has_full_shortest) {
-			return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1);
+			continue;
 		}
 
 		bool found_new_shortest = it_origin_adj == origin_dists.end();
@@ -353,11 +382,14 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 				distances[adj_t_key][dest_t_pos_key] = adj_dist;
 				const float new_shortest_full = dist_tally + adj_dist;
 				auto it_origin_dest = distances[origin_t_pos_key].find(dest_t_pos_key);
-				bool found_new_shortest_full = shortest_dist < 0 || it_origin_dest == distances[origin_t_pos_key].end();
+				bool found_new_shortest_full = it_origin_dest == distances[origin_t_pos_key].end();
+				// shortest_dist < 0 || it_origin_dest == distances[origin_t_pos_key].end();
+				//TODO: doing new_shortest_full <= old_shortest_full might be causing slowdown, but changing it to <
+				//		means we never path because the shortest dist that we actually mean to calculate gets stored in distances
 				if (!found_new_shortest_full) {
 					const float old_shortest_full = it_origin_dest->second;
 					found_new_shortest_full = new_shortest_full > 0 && (old_shortest_full < 0
-						|| (adj_dist >= 0 && new_shortest_full < old_shortest_full));
+						|| (adj_dist >= 0 && new_shortest_full <= old_shortest_full));
 				}
 				// if we have a possible path shorter than those starting from the other adjacent tiles, that's our new shortest path
 				if (found_new_shortest_full) {
@@ -680,25 +712,19 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 
 	DjikstraPathData *data = (DjikstraPathData *)arg;
 	const std::pair<std::string, std::pair<int, int>> forced_dest = data->forced_dest;
+	const bool path_around_moving = data->should_path_around_moving;
+	// TODO: work backwards from first primary tile pos to last open tile if path_around_moving is true
 	const std::pair<int, int> forced_pos = forced_dest.second;
 	TileDjikstraPath * tile_djikstra_path = data->tile_djikstra_path;
 	PathNodeDjikstraPath * node_djikstra_path = data->node_djikstra_path;
 
-	//TODO: refactor parts where we call calculate_shortest_tile_path(), preferring instead to refer to cached tile paths and get back "on track" as necessary
-	//			could also replace instances of this method with a different one that takes into account temporarily blocked tiles and tries to go around them
-
 	if (forced_pos.first >= 0 && forced_pos.second >= 0) {
-		//TODO: refactor "forcing" behavior so it works smoothly without making us recalculate tile paths on the fly
-		//const std::pair<std::vector<std::pair<int, int>>, float> shortest_path_to_force
-		//	= tile_djikstra_path->calculate_shortest_tile_path(data->npc_t_pos, std::pair<int, int>(forced_pos.first / TILE_SIZE, forced_pos.second / TILE_SIZE));
-		//if (shortest_path_to_force.second >= 0) {
-			data->should_force = true;
-			data->has_found_path = true;
-			data->should_unset_forced_destination = true;
-			data->primary_destinations.push_back(forced_dest);
-		//}
+		data->should_force = true;
+		data->has_found_path = true;
+		data->should_unset_forced_destination = true;
+		data->primary_destinations.push_back(forced_dest);
 	} 
-	if (data->starting_node_key != ""
+	if (!path_around_moving && data->starting_node_key != ""
 		&& data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)) {
 		std::pair<std::vector<DjikstraNode*>, float> shortest_path_from_start
 			= node_djikstra_path->calculate_shortest_node_path(
@@ -718,6 +744,8 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 				data->has_found_path = true;
 			}
 		}
+		//TODO: the entire point of this else block is to select a next primary destintation to path to.
+		// should refactor it since there should be a much easier way to do this.
 	} else if (!data->should_force) {
 		// we have a tile path that lets us see nodes on the level, so see which node we should walk to.
 		// find the two that are closest to the npc, and from those, path to the one that is the closest to the destination.
@@ -732,20 +760,47 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 
 		for (int i = 0; i < level_node_count; i++) {
 			al_lock_mutex(data->mutex);
-			const std::pair<int, int> current_level_node_pos
-				(data->current_level_path_nodes[i]->get_x() / TILE_SIZE, data->current_level_path_nodes[i]->get_y() / TILE_SIZE);
+			const std::pair<int, int> current_level_node_t_pos
+			(data->current_level_path_nodes[i]->get_x() / TILE_SIZE, data->current_level_path_nodes[i]->get_y() / TILE_SIZE);
 			al_unlock_mutex(data->mutex);
 
+			if (path_around_moving && data->tile_djikstra_path->tile_is_blocked(current_level_node_t_pos.first, current_level_node_t_pos.second)) {
+				continue;
+			}
+
 			double start_get_tile_path_time = al_get_time();
+			float current_level_node_shortest_dist;
 			std::pair<std::vector<std::pair<int, int>>, float> current_level_node_shortest_path;
-			
-			current_level_node_shortest_path
-				= tile_djikstra_path->calculate_shortest_tile_path(data->npc_t_pos, current_level_node_pos);
+
+			std::string start_node_key = data->starting_node_key;
+			if (data->starting_node_key == "" || !data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)) {
+				start_node_key = data->last_primary_dest.first;
+			}
+			if (start_node_key != "" && data->node_djikstra_path->has_node(data->current_level_key, start_node_key)) {
+				// the NPC is starting on a known PathNode, so we can use the full stored path
+				// we won't actually step on these tiles, so we don't care about pathing around moving, just a distance estimate
+				current_level_node_shortest_path
+					= data->node_djikstra_path->get_shortest_tile_path(data->current_level_key, data->starting_node_key, data->current_level_path_nodes[i]->get_node_id());
+				current_level_node_shortest_dist = current_level_node_shortest_path.second;
+			} else {
+				// this is a rough estimate
+				current_level_node_shortest_dist = std::abs(data->current_level_path_nodes[i]->get_x() / TILE_SIZE - data->npc_t_pos.first)
+					+ std::abs(data->current_level_path_nodes[i]->get_y() / TILE_SIZE - data->npc_t_pos.second);
+				//current_level_node_shortest_path
+				//	= tile_djikstra_path->calculate_shortest_tile_path(data->npc_t_pos, current_level_node_t_pos);
+			}
 
 			if (enable_logging) {
 				double end_get_tile_path_time = al_get_time();
 				double delta_t2 = end_get_tile_path_time - start_get_tile_path_time;
 				std::cout << "Time to calculate shortest tile path: " << std::to_string(delta_t2) << " seconds\n\n";
+				std::cout << "~~~~~~~~~~ \n"; 
+				std::cout << "Shortest tile path: \n";
+				for (std::pair<int, int> log_tile_pos : current_level_node_shortest_path.first) {
+					std::cout << "(" << log_tile_pos.first << ", " << log_tile_pos.second << ") ";
+				}
+				std::cout << "\n";
+				std::cout << "~~~~~~~~~~ \n";
 				accounted_time += delta_t2;
 			}
 
@@ -776,8 +831,6 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 				}
 			}
 		}
-		
-		//TODO: do i need to lock mutex for other references to closest node?
 
 		if (shortest_current_level_node_dist < 0 || closest_node == NULL) {
 
@@ -819,9 +872,10 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 				&& !node_list_from_second_closest.empty();
 
 			std::vector<DjikstraNode*> path_to_execute;
+			//TODO: choosing the path to execute might work better if we look at the cached node path and work backwards from the destination, similar to tile pathing
 			// we can just go straight to the destination node
 			if (closest_node->get_node_id() == data->dest_node_id) {
-
+				path_to_execute = node_list_from_closest; //temp. was this removed for a reason?
 			} else if (!can_path_from_closest && !can_path_from_second_closest) {
 				path_to_execute = node_list_from_closest;
 			} else if (can_path_from_closest && !can_path_from_second_closest) {
@@ -829,11 +883,55 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 			} else if (!can_path_from_closest && can_path_from_second_closest) {
 				path_to_execute = node_list_from_second_closest;
 			} else {
-				path_to_execute = shortest_from_closest_cost <= shortest_from_second_closest_cost
-					? node_list_from_closest : node_list_from_second_closest;
+				std::vector<DjikstraNode*> unblocked_first_path;
+				const int closest_node_list_count = node_list_from_closest.size();
+				// first, look for a blocked primary node and go to the next node after it
+				for (int cli = closest_node_list_count - 1; cli >= 0; cli--) {
+					DjikstraNode * cli_node = node_list_from_closest[cli];
+					if (path_around_moving && data->tile_djikstra_path
+						->tile_is_blocked(
+							cli_node->position.first / TILE_SIZE, cli_node->position.second / TILE_SIZE)) {
+						break;
+					}
+					unblocked_first_path.insert(unblocked_first_path.begin(), cli_node);
+				}
+
+				std::vector<DjikstraNode*> unblocked_second_path;
+				const int second_closest_node_list_count = node_list_from_second_closest.size();
+				// first, look for a blocked primary node and go to the next node after it
+				for (int cli = second_closest_node_list_count - 1; cli >= 0; cli--) {
+					DjikstraNode * cli_node = node_list_from_second_closest[cli];
+					if (path_around_moving && data->tile_djikstra_path
+						->tile_is_blocked(
+							cli_node->position.first / TILE_SIZE, cli_node->position.second / TILE_SIZE)) {
+						break;
+					}
+					unblocked_second_path.insert(unblocked_second_path.begin(), cli_node);
+				}
+
+				bool found_shared_node = false;
+				for (DjikstraNode * close_1 : unblocked_first_path) {
+					if (found_shared_node) {
+						break;
+					}
+					for (DjikstraNode * close_2 : unblocked_second_path) {
+						if (close_1->node_key == close_2->node_key) {
+							found_shared_node = true;
+							path_to_execute.push_back(close_1);
+							break;
+						}
+					}
+				}
+				if (!found_shared_node) {
+					if (shortest_from_closest_cost <= shortest_from_second_closest_cost) {
+						path_to_execute = node_list_from_closest;
+					} else {
+						path_to_execute = node_list_from_second_closest;
+					}
+				}
 			}
 			if (path_to_execute.empty()) {
-
+				data->has_found_path = false;
 			} else {
 				// path to every node on the path that is on the current level.
 				// we do not path to the next level because we can just recalculate after reaching it.
@@ -855,28 +953,100 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 			}
 		}
 	}
+
+	if (data->has_found_path) {
+		// this dest will be in pixel pos, not tile pos
+		const std::string first_dest_key = data->primary_destinations[0].first;
+		const std::pair<int, int> first_primary = data->primary_destinations[0].second;
+		std::pair<std::string, std::pair<int, int>> last_primary_dest = data->last_primary_dest;
+		std::pair<std::vector<std::pair<int, int>>, float> primary_tile_path;
+		std::pair<std::vector<std::pair<int, int>>, float> stored_tile_path;
+		
+
+		bool use_full_stored_path = false;
+		bool recalculate_from_scratch = true;
+		bool has_failed = false;
+
+		std::string start_node_key = "";
+		if (data->starting_node_key != "" && data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)) {
+			// the NPC is starting on a known PathNode, so we might be able to use the full stored path
+			start_node_key = data->starting_node_key;
+			use_full_stored_path = !path_around_moving;
+			stored_tile_path
+				= data->node_djikstra_path->get_shortest_tile_path(data->current_level_key, start_node_key, first_dest_key);
+			recalculate_from_scratch = false;
+		} else {
+			// the NPC is not standing on a known PathNode
+			start_node_key = data->last_primary_dest.first;
+			if (start_node_key != "" && data->node_djikstra_path->has_node(data->current_level_key, start_node_key)) {
+				stored_tile_path
+					= data->node_djikstra_path->get_shortest_tile_path(data->current_level_key, start_node_key, first_dest_key);
+				recalculate_from_scratch = false;
+			}
+		}
+		
+		if (use_full_stored_path) {
+			primary_tile_path = stored_tile_path;
+		} else {
+			std::pair<int, int> final_tile_path_dest;
+			if (recalculate_from_scratch) {
+				final_tile_path_dest = std::pair<int, int>(first_primary.first / TILE_SIZE, first_primary.second / TILE_SIZE);
+				primary_tile_path = tile_djikstra_path->calculate_shortest_tile_path
+					(data->npc_t_pos, final_tile_path_dest);
+				has_failed = primary_tile_path.second < 0;
+			} else {
+				std::vector<std::pair<int, int>> known_primary_tiles;
+				float known_primary_dist = 0.0;
+				int shortest_dist_to_known = -1;
+				std::pair<int, int> closest_known(-1, -1);
+				int closest_index = -1;
+
+				const int size = stored_tile_path.first.size();
+				for (int ti = size - 1; ti >= 0; ti--) {
+					const std::pair<int, int> ti_pos = stored_tile_path.first[ti];
+					if (path_around_moving && data->tile_djikstra_path->tile_is_blocked(ti_pos.first, ti_pos.second)) {
+						break;
+					}
+					// if we're not trying to path around something that's moving, just keep pushing back tiles 
+					//		until we get to the shortest distance
+					const int dist_to_known = std::abs(ti_pos.first - data->npc_t_pos.first) 
+						+ std::abs(ti_pos.second - data->npc_t_pos.second);
+					if (shortest_dist_to_known < 0 || dist_to_known < shortest_dist_to_known) {
+						shortest_dist_to_known = dist_to_known;
+						closest_known = ti_pos;
+						closest_index = ti;
+					}
+					known_primary_tiles.insert(known_primary_tiles.begin(), ti_pos);
+				}
+				if (!has_failed) {
+					primary_tile_path = tile_djikstra_path->calculate_shortest_tile_path
+						(data->npc_t_pos, closest_known);
+					const int known_p_size = known_primary_tiles.size();
+					const int starting_index = known_p_size - (stored_tile_path.first.size() - closest_index);
+					for (int tki = closest_index; tki < known_p_size; tki++) {
+						primary_tile_path.first.push_back(known_primary_tiles[tki]);
+						// we don't have a distance for this partial path, so just add the edge cost so we get the right total
+						if (tki > 0) {
+							known_primary_dist 
+								+= data->tile_djikstra_path->calculate_edge_cost(known_primary_tiles[tki] , known_primary_tiles[tki - 1]);
+						}
+					}
+					primary_tile_path.second += known_primary_dist;
+				}
+			}
+		}
+		data->has_found_path = !has_failed;
+		if (data->has_found_path) {
+			data->tile_path_to_primary = primary_tile_path;
+		}
+	}
+
 	if (enable_logging) {
 		double end_time = al_get_time();
 		double delta = end_time - start_time;
 		std::cout << "FINISH calculating npc pathing. Time to calculate: " + std::to_string(delta) + "\n";
 		std::cout << "Unaccounted time: " << std::to_string(delta - accounted_time) << "(" << std::to_string(100.0 * (accounted_time / delta)) << "% accounted for)\n";
 		std::cout << "--------------------------------------\n";
-	}
-
-	if (data->has_found_path) {
-		// this dest will be in pixel pos, not tile pos
-		const std::string first_dest_key = data->primary_destinations[0].first;
-		const std::pair<int, int> first_primary = data->primary_destinations[0].second;
-		std::pair<std::vector<std::pair<int, int>>, float> primary_tile_path;
-		//TODO: may want to refactor this if/else to a more general method
-		if (data->starting_node_key != ""
-			&& data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)) {
-			primary_tile_path = data->node_djikstra_path->get_shortest_tile_path(data->current_level_key, data->starting_node_key, first_dest_key);
-		} else {
-			primary_tile_path = tile_djikstra_path->calculate_shortest_tile_path
-			(data->npc_t_pos, std::pair<int, int>(first_primary.first / TILE_SIZE, first_primary.second / TILE_SIZE));
-		}
-		data->tile_path_to_primary = primary_tile_path;
 	}
 
 	al_lock_mutex(data->mutex);

@@ -1,18 +1,21 @@
 #ifndef AISTATE_H
 #define AISTATE_H
 
-#define AI_PATH_BLOCKED_WAIT_TIME 200 // wait frames if path is blocked
+#define AI_PATH_BLOCKED_WAIT_TIME 140 // wait frames if path is blocked
+#define AI_FACE_OTHER_WAIT_TIME 200   // wait frames if we're facing some other being
+
+#define AI_FACE_OTHER_MAX_TILE_DIST 4
 
 #include <string>
 #include <map>
 
 enum AI_STATE_KEYS { 
 	AI_STATE_IDLE, AI_STATE_LOCKED, AI_STATE_WAITING, 
-	AI_STATE_WALKING, AI_STATE_REQUESTING_PATH, AI_STATE_STARTING_PATH, AI_STATE_REQUESTING_NEXT_LEVEL
+	AI_STATE_WALKING, AI_STATE_REQUESTING_PATH, AI_STATE_STARTING_PATH, AI_STATE_REQUESTING_NEXT_LEVEL, AI_STATE_FACING_OTHER
 };
 
 enum AI_TIMER_KEYS {
-	AI_TIMER_WAIT
+	AI_TIMER_WAIT, AI_TIMER_FACE_OTHER
 };
 
 class AIState {
@@ -44,6 +47,8 @@ public:
 	const bool is_requesting_next_level();
 	const std::string get_current_destination_node_key();
 	void set_current_destination_node_key(const std::string key);
+	void set_is_facing_other(const int wait_time);
+	const bool is_facing_other();
 };
 
 #endif
