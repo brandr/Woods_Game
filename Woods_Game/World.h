@@ -47,7 +47,8 @@ private:
 	const bool calculate_npc_pathing(NPC * npc, Level * current_npc_level);
 	const bool calculate_npc_pathing(NPC * npc, Level * current_npc_level, TileDjikstraPath * tile_djikstra_path, const std::string dest_node_id, const std::string dest_level_key);
 	void finish_pathing(NPC * npc);
-	void move_npc_to_level(NPC * npc, Level * current_level, Level * dest_level, const std::pair<int, int> position);
+	void move_npc_to_level(NPC * npc, Level * current_level, Level * dest_level, const std::pair<int, int> position, const std::pair<int, int> offset,
+		const bool animate_walking);
 	Level * find_level_with_spawn_key(const std::string spawn_key);
 	PathNode * find_path_node_with_key(const std::string node_key);
 	const std::string get_npc_destination_node_key(NPC * npc);

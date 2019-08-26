@@ -48,7 +48,9 @@ Total: 99-148 days (~4-5 months, done by Mar 2020)
 	(5-10 days)
 16. Audio
 	(10-15 days)
-17. Content!
+17. Level Editor improvements
+	(???)
+18. Content!
 	(???)
 
 Ongoing tasks:
@@ -62,39 +64,20 @@ Ongoing tasks:
 NPCs
 ---------------------------------------------------
 
-NPC pathing (primary issues)
-	- npc pushing
-		* should stop pushing after a while
-			# timer?
-			# could make it so we only stop pushing if we need to (i.e., check collide rect and planned collide rect for moving obstacle collisions)
+NPC pathing
+	- there is still slowdown (in some cases)
+		* check comments in tile pathing
+		* need repro steps because it doesn't happen every time
+		* might be affected by checking nearby blocks too often-- could refactor these into buckets
 	- Test NPCs walking directly towards each other
 		* do they push each other?
-	- there is still slowdown (in some cases)
-		* need repro steps because it doesn't happen every time
-		* see comments in tile pathing method
-		* probably need some kind of guarantee that we don't re-check pathing too often
-		* NPCs should probably start on pathnodes for more efficient path calculation
-		* might be affected by checking nearby blocks too often-- could refactor these into buckets
-
-NPC pathing (secondary issues)
-	
-	- when hitting a "next level" facing node, need to animate walking to next level
-		* might need to serialize walk to/from direction (or calculate somehow)
-		* set AIState to "leaving level" or something, set direction, and distance/time to walk (I feel like we shouldn't factor in tile speed)
-		* test following the NPC off the edge of the screen, both in this game and stardew valley for comparison
-		* make sure next level traveling behaivor also handles going through doors into houses
-			# probably don't want an animation, just a door shutting/slamming sound
-	- Make it so some NPCs obey the "NPC pathable" rules and others don't
-		* See Alex (in notes) for an example of a character who would ignore these rules
-		* could also make some tiles "hard NPC unpathable" (no NPC can path) and "soft NPC unpathable" (only rule-following NPCs stay off)
-		* May want to allow all NPCs to go through npc-unpathable tiles (only soft unpathable?) when pathing around beings
 	- Set a debug launch argument to control whether test rect bitmaps appear
 		* Manage the bitmaps through ImageLoader
 		* instead of launch argument, could add console commands
 
 AIState/NPC schedule
 	- extend schedule logic to "go to place and do an animation" or 
-		 "go to place and wander around" rather than standing on specific tiles at specific times
+		 "go to place and wander around" in addition to standing on specific tiles at specific times
 		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
 	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
 		# this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
@@ -102,6 +85,7 @@ AIState/NPC schedule
 	- IDEA: could serialize AIState rules somewhere ("personality types?")
 	- use schedule logic to determine NPC spawn locations
 		* not necessary if NPCs all sleep at least as late as the latest that the player wakes up, or if there are only a small number of possible wake-up times
+		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
 
 Add NPC quest triggers
 	- these give conditions which feed schedule blocks
@@ -167,14 +151,16 @@ If the tree bitmaps are ever a problem, could refactor image storage so we break
 Level editor
 ---------------------------------------------------
 
+Fix bug where XML attributes can get saved twice after editing via ctrl-click
+
+Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
+
 What to use tileset tab for?
 	* ideally could add new object types, edit global values, etc
 
 Tiled Images
 	* no room to put it on tileset tab-- need to reorganize it
 		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
-
-Fix bug where XML attributes can get saved twice after editing via ctrl-click
 
 ---------------------------------------------------
 Procedural generation

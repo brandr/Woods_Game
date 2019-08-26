@@ -32,7 +32,10 @@ protected:
 	void face_other_update(
 		Level * level, GlobalTime * time);
 	void walk_update();
+	void update_animation_dir();
 	void failed_pathing_update();
+	void push_others_update(Level * level);
+	void walk_to_next_level_update(Level * level);
 	const std::pair<int, int> find_closest_open_tile_pos(
 		Level * level,
 		const std::pair<int, int> destination);
@@ -66,6 +69,7 @@ public:
 	virtual void set_should_path_around_moving(const bool value);
 	virtual const bool pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles);
 	virtual const bool pathing_blocked_by_moving_at(const int x, const int y, Level * level);
+	virtual const bool pathing_blocked_by_moving_at(const int x, const int y, Level * level, const bool ignore_should_push_others);
 	virtual Entity * blocking_entity_at(const int x, const int y, Level * level);
 	virtual const bool pathing_blocked_at(const int x, const int y, std::vector<Entity*> interactables);
 	virtual void set_is_processing(const bool value);
@@ -81,6 +85,8 @@ public:
 	virtual const std::string get_requested_next_level_node_key();
 	virtual void reset_failed_pathing_tally();
 	virtual void increment_failed_pathing_tally();
+	virtual void set_is_walking_from_level(const int x_dir, const int y_dir);
+	virtual const bool get_obeys_tile_rules();
 };
 
 #endif

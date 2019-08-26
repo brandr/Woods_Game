@@ -42,6 +42,7 @@ public:
 	const bool precise_empty_at(std::vector<Entity*>, const int, const int);
 	const bool empty_at(Rect collide_rect, Level * level, const bool ignore_moving_obstacles);
 	virtual const bool get_should_push_others();
+	virtual const bool set_should_push_others(const bool value);
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 };
 

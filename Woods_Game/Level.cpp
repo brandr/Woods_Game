@@ -1673,7 +1673,7 @@ void Level::set_tile(Tile * tile, std::pair<int, int> pos)
 Tile * Level::get_tile(const int x, const int y)
 {
 	if (y < 0 
-		|| y > this->tile_rows.size()) {
+		|| y >= this->tile_rows.size()) {
 		return NULL;
 	}
 	TileGroup *tile_row = this->tile_rows.getItem(y);

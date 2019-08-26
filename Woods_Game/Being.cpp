@@ -316,6 +316,11 @@ const bool Being::get_should_push_others()
 	return this->should_push_others;
 }
 
+const bool Being::set_should_push_others(const bool value)
+{
+	return this->should_push_others = value;
+}
+
 void Being::push_back(Level* level, const float adj_xvel, const float adj_yvel)
 {
 	//this->adjust_movement(level, xvel, yvel, false);

@@ -64,7 +64,11 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 						NextLevelNode * next_level_node = next_level_nodes[0];
 						const std::string next_level_key = next_level_node->level_id.value();
 						const std::string next_level_node_key = next_level_node->node_id.value();
-						this->ai_state.set_is_requesting_next_level(next_level_key, next_level_node_key);
+						if (next_level_node->animate_walking.value()) {
+							this->ai_state.set_is_walking_to_next_level(next_level_key, next_level_node_key, next_level_node->x_dir.value(), next_level_node->y_dir.value());
+						} else {
+							this->ai_state.set_is_requesting_next_level(next_level_key, next_level_node_key);
+						}
 					} else {
 						// if we just reached a primary dest on the same level, set idle so we can request pathing
 						this->set_ai_state(AI_STATE_IDLE);
@@ -154,14 +158,18 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 
 void AIBeing::face_other_update(Level * level, GlobalTime * time)
 {
+	if (this->ai_state.is_walking_to_next_level()
+		|| this->ai_state.is_walking_from_level()) {
+		return;
+	}
 	if (!this->is_facing_other()) {
 		if (this->should_push_others) {
 			return;
 		}
 		Rect * collide_rect = this->get_rect_for_collision();
-		if (this->pathing_blocked_by_moving_at(collide_rect->x, collide_rect->y, level)) {
+		Entity * blocking_entity = this->blocking_entity_at(collide_rect->x, collide_rect->y, level);
+		if (blocking_entity != NULL) {
 			this->failed_pathing_tally++;
-			Entity * blocking_entity = this->blocking_entity_at(collide_rect->x, collide_rect->y, level);
 			this->set_is_facing_other(blocking_entity);
 			this->xvel = 0, this->yvel = 0;
 			this->anim_state = ANIM_STATE_NEUTRAL;
@@ -186,7 +194,11 @@ void AIBeing::face_other_update(Level * level, GlobalTime * time)
 
 void AIBeing::walk_update()
 	{
-		if (this->ai_state.is_requesting_path() || this->ai_state.is_idle() || 
+	if (this->ai_state.is_walking_to_next_level()
+		|| this->ai_state.is_walking_from_level()) {
+		this->update_animation_dir();
+		return;
+	} else if (this->ai_state.is_requesting_path() || this->ai_state.is_idle() || 
 			(this->primary_destinations.empty() && this->secondary_destinations.empty())) {
 			this->xvel = 0, this->yvel = 0;
 			// TODO: if we need the fact that we reached a destination as context, this may be incorrect
@@ -218,28 +230,110 @@ void AIBeing::walk_update()
 			this->yvel = (this->yvel / std::abs(this->yvel)) * std::abs(y_dist);
 		}
 
-		if (this->xvel > 0) {
-			if (this->xvel >= std::abs(this->yvel)) direction = DIR_RIGHT;
-			else if (this->yvel > 0) direction = DIR_DOWN;
-			else direction = DIR_UP;
-		} else {
-			if (std::abs(this->xvel) > 0 && std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
-			else if (this->yvel > 0) direction = DIR_DOWN;
-			else if (this->yvel < 0) direction = DIR_UP;
-		}
+		this->update_animation_dir();
 		if (std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) {
 			this->ai_state.set_is_walking();
-			anim_state = ANIM_STATE_WALKING;
 		}
 	}
+
+void AIBeing::update_animation_dir()
+{
+	if (this->xvel > 0) {
+		if (this->xvel >= std::abs(this->yvel)) direction = DIR_RIGHT;
+		else if (this->yvel > 0) direction = DIR_DOWN;
+		else direction = DIR_UP;
+	}
+	else {
+		if (std::abs(this->xvel) > 0 && std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
+		else if (this->yvel > 0) direction = DIR_DOWN;
+		else if (this->yvel < 0) direction = DIR_UP;
+	}
+	if (std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) {
+		anim_state = ANIM_STATE_WALKING;
+	}
+}
 
 void AIBeing::failed_pathing_update()
 {
 	if (this->failed_pathing_tally > 2) {
 		this->should_push_others = true;
+		this->ai_state.set_timer(AI_TIMER_PUSH_OTHERS, AI_PUSH_OTHERS_TIME);
 		this->failed_pathing_tally = 0;
 	}
-	// TODO: need to be able to set it back to false at some point, maybe after a timer
+}
+
+void AIBeing::push_others_update(Level * level)
+{
+	if (this->ai_state.should_stop_pushing_others()) {
+		bool should_keep_pushing = false;
+		Rect * collide_rect = this->get_rect_for_collision();
+		should_keep_pushing = this->pathing_blocked_by_moving_at(collide_rect->x, collide_rect->y, level, true);
+		if (!should_keep_pushing) {
+			const bool primary = this->secondary_destinations.empty();
+			std::vector<std::pair<std::string, std::pair<int, int>>> destinations
+				= primary ? this->primary_destinations : this->secondary_destinations;
+			if (!destinations.empty()) {
+				const std::pair<std::string, std::pair<int, int>> next_dest = destinations[0];
+				const std::pair<int, int> next_pos = next_dest.second;
+				const float x_dist = (float)(next_pos.first) - collide_rect->x,
+					y_dist = (float)(next_pos.second) - collide_rect->y;
+				int start_x = collide_rect->x / TILE_SIZE, start_y = collide_rect->y / TILE_SIZE;
+				const std::pair<int, int> start_pos = std::pair<int, int>(start_x, start_y);
+				// cap xoff and yoff based on how far we're actually going to travel
+				const int xoff_t = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel)) : 0;
+				const int yoff_t = std::abs(this->xvel) == 0 && std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel)) : 0;
+				const int xoff = std::abs(this->xvel) > 0 ? (this->xvel / std::abs(this->xvel))
+					* std::min(std::abs(xoff_t) * TILE_SIZE, (int)std::abs(x_dist)) : 0;
+				const int yoff = std::abs(this->yvel) > 0 ? (this->yvel / std::abs(this->yvel))
+					* std::min(std::abs(yoff_t) * TILE_SIZE, (int)std::abs(y_dist)) : 0;
+				if (this->pathing_blocked_by_moving_at(collide_rect->x + xoff, collide_rect->y + yoff, level, true)) {
+					should_keep_pushing = true;
+				}
+			}
+		}
+		this->ai_state.set_flag(AI_FLAG_STOP_PUSHING_OTHERS, 0);
+		if (should_keep_pushing) {
+			this->should_push_others = true;
+			this->ai_state.set_timer(AI_TIMER_PUSH_OTHERS, AI_PUSH_OTHERS_TIME);
+		} else {
+			this->should_push_others = false;
+		}
+	}
+}
+
+void AIBeing::walk_to_next_level_update(Level * level)
+{
+	if (this->ai_state.is_walking_to_next_level()
+		|| this->ai_state.is_walking_from_level()) {
+		const int x_dir = this->ai_state.get_next_level_x_dir(), y_dir = this->ai_state.get_next_level_y_dir();
+		const float b_speed = this->base_walk_speed.value();
+		if (x_dir != 0) {
+			this->xvel = b_speed * (float)x_dir, this->yvel = 0;
+		} else {
+			this->xvel = 0, this->yvel = b_speed * (float)y_dir;
+		}
+		if (this->ai_state.is_walking_to_next_level()) {
+			// are we off the edge of the level?
+			if (this->get_x() + this->get_width() < 0
+				|| this->get_x() > level->get_width()
+				|| this->get_y() + this->get_height() < 0
+				|| this->get_y() > level->get_height()) {
+				this->ai_state.set_is_requesting_next_level();
+			}
+		} else if (this->ai_state.is_walking_from_level()) {
+			// are we completely on the level?
+			if (this->get_x() >= 0
+				&& this->get_x() - this->get_width() < level->get_width()
+				&& this->get_y() >= 0
+				&& this->get_y() - this->get_height() < level->get_height()) {
+				this->clear_primary_destinations();
+				this->secondary_destinations.clear();
+				this->cancel_current_pathing(0);
+				this->set_should_push_others(false);
+			}
+		}
+		
+	}
 }
 
 	const std::pair<int, int> AIBeing::find_closest_open_tile_pos(Level * level, const std::pair<int, int> destination)
@@ -395,6 +489,17 @@ void AIBeing::failed_pathing_update()
 		this->failed_pathing_tally++;
 	}
 
+	void AIBeing::set_is_walking_from_level(const int x_dir, const int y_dir)
+	{
+		this->clear_primary_destinations();
+		this->ai_state.set_is_walking_from_level(x_dir, y_dir);
+	}
+
+	const bool AIBeing::get_obeys_tile_rules()
+	{
+		return true;
+	}
+
 	AIBeing::AIBeing()
 {
 	direction = DIR_NEUTRAL;
@@ -418,6 +523,8 @@ void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
 	this->face_other_update(level, time);
 	this->walk_update();
 	this->failed_pathing_update();
+	this->push_others_update(level);
+	this->walk_to_next_level_update(level);
 	Being::update(level, time, game_mode);
 }
 
@@ -551,9 +658,13 @@ void AIBeing::set_should_path_around_moving(const bool value)
 //TODO: depending on the context, should be looking at moving obstacles only, because we should already have chosen paths that account for blocked tiles
 const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles)
 {
-	Tile * t = level->get_tile(x / TILE_SIZE, y / TILE_SIZE);
+	const int tx = x / TILE_SIZE, ty = y / TILE_SIZE;
+	Tile * t = level->get_tile(tx, ty);
+	if (t == NULL) {
+		return true;
+	}
 	TileSet * tileset = level->get_tileset();
-	if (!tileset->is_tile_npc_pathable(t->get_tile_type_index())) {
+	if (!tileset->is_tile_npc_pathable(t->get_tile_type_index(), this->get_obeys_tile_rules())) {
 		return true;
 	}
 	Rect * collide_rect = this->get_rect_for_collision();
@@ -564,7 +675,12 @@ const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, 
 
 const bool AIBeing::pathing_blocked_by_moving_at(const int x, const int y, Level * level)
 {
-	if (this->should_push_others) {
+	return this->pathing_blocked_at(x, y, level, false);
+}
+
+const bool AIBeing::pathing_blocked_by_moving_at(const int x, const int y, Level * level, const bool ignore_should_push_others)
+{
+	if (!ignore_should_push_others && this->should_push_others) {
 		return false;
 	}
 	Rect * collide_rect = this->get_rect_for_collision();

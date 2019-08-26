@@ -206,16 +206,23 @@ void World::finish_pathing(NPC * npc)
 	}
 }
 
-void World::move_npc_to_level(NPC * npc, Level * current_level, Level * dest_level, const std::pair<int, int> position)
+void World::move_npc_to_level(NPC * npc, Level * current_level, Level * dest_level, const std::pair<int, int> position,
+	const std::pair<int, int> arrive_offset, const bool animate_walking)
 {
-	//TODO: eventually want an actual walk animation off the level, probably before this method
 	npc->set_current_level_key(dest_level->get_filename());
 	Rect * collide_rect = npc->get_rect_for_collision();
 	const std::pair<int, int> offset(collide_rect->x - npc->get_x(), collide_rect->y - npc->get_y());
-	npc->set_position(position.first - offset.first, position.second - offset.second);
+	npc->set_position(position.first - offset.first + arrive_offset.first, position.second - offset.second + arrive_offset.second);
 	npc->cancel_current_pathing(0);
 	current_level->remove_being(npc);
 	dest_level->add_being(npc);
+	if (animate_walking) {
+		const int x_dir = std::abs(arrive_offset.first) > 0 ? std::abs(arrive_offset.first) / arrive_offset.first : 0;
+		const int y_dir = std::abs(arrive_offset.second) > 0 ? std::abs(arrive_offset.second) / arrive_offset.second : 0;
+		// negate because (for example) if we are coming from the left, we need to walk to the right
+		npc->set_is_walking_from_level(x_dir * -1, y_dir * -1);
+		npc->set_should_push_others(true);
+	}
 }
 
 Level * World::find_level_with_spawn_key(const std::string spawn_key)
@@ -503,7 +510,6 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 				// transport the npc to the next level if appropriate
 				if (npc->is_requesting_next_level()) {
 					const std::string next_level_key = npc->get_requested_next_level_key();
-
 					Level * npc_next_level = this->get_level_with_key(next_level_key);
 					if (npc_next_level == NULL) {
 						//TODO: error handling
@@ -511,10 +517,11 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 						// move the npc to the next level
 						const std::string next_level_node_key = npc->get_requested_next_level_node_key();
 						PathNode * next_level_node = npc_next_level->find_path_node_with_key(next_level_node_key);
-						// TODO: error handling
 						const std::pair<int, int> next_level_node_pos(next_level_node->get_x(), next_level_node->get_y());
-						this->move_npc_to_level(npc, current_npc_level, npc_next_level, next_level_node_pos);
-						//npc->set_is_processing(false);
+						const std::pair<int, int> arrival_offset = next_level_node->get_arrival_offset();
+						this->move_npc_to_level(npc, current_npc_level, npc_next_level, 
+							std::pair<int, int>(next_level_node_pos.first, next_level_node_pos.second), arrival_offset, 
+							next_level_node->should_animate_walking());
 					}
 				} else if (npc->needs_pathing_calculation()) {
 					this->calculate_npc_pathing(npc, current_npc_level);

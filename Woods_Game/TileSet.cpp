@@ -12,7 +12,6 @@ TileSet::TileSet()
 	Register("path_node_types", &path_node_types);
 }
 
-
 TileSet::~TileSet()
 {
 }
@@ -248,10 +247,10 @@ const int TileSet::get_tile_sheet_image_cols_by_index(const int index)
 	return 0;
 }
 
-const bool TileSet::is_tile_npc_pathable(const int index)
+const bool TileSet::is_tile_npc_pathable(const int index, const bool obeys_rules)
 {
 	if (index >= 0 && index < this->tile_types.size()) {
-		return this->tile_types.getItem(index)->is_npc_pathable();
+		return this->tile_types.getItem(index)->is_npc_pathable(obeys_rules);
 	}
 	return false;
 }

@@ -23,6 +23,7 @@ private:
 	xmls::xString start_spawn_key;
 	xmls::xString default_spawn_key;
 	xmls::xString default_dialog_text;
+	xmls::xBool obeys_tile_rules;
 
 	std::string current_level_key = "";
 	std::string current_position_node_key = "";
@@ -39,6 +40,7 @@ public:
 	const std::string get_current_spawn_level_key();
 	const std::string get_start_spawn_key();
 	const std::string get_current_spawn_key();
+	virtual const bool get_obeys_tile_rules();
 	Dialog * choose_dialog(Player * player);
 	virtual const bool interact_action(Player * player);
 	const std::string get_default_dialog_text();

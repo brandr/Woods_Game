@@ -72,7 +72,8 @@ int TileType::get_edge_priority()
 	return edge_priority.value();
 }
 
-const bool TileType::is_npc_pathable()
+const bool TileType::is_npc_pathable(const bool obeys_rules)
 {
-	return this->npc_pathable.value();
+	const int pathable_value = this->npc_pathable.value();
+	return obeys_rules ? pathable_value == NPC_PATHABLE : pathable_value > NPC_UNPATHABLE_HARD;
 }

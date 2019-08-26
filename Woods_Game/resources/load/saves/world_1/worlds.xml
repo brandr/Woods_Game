@@ -28,6 +28,7 @@
                 <Member Name="base_walk_speed">1.0</Member>
                 <Member Name="start_spawn_key">stranger_spawner_1</Member>
                 <Member Name="default_spawn_key">stranger_spawner_house</Member>
+                <Member Name="obeys_tile_rules">false</Member>
                 <Member Name="default_dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
                 <Class Name="schedule" Type="NPCSchedule" Version="1">
                     <Class Name="default_day_schedule" Type="DaySchedule" Version="1">
@@ -97,6 +98,7 @@
                 <Member Name="base_walk_speed">1.0</Member>
                 <Member Name="start_spawn_key">stranger_spawner_2</Member>
                 <Member Name="default_spawn_key">stranger_spawner_2</Member>
+                <Member Name="obeys_tile_rules">true</Member>
                 <Member Name="default_dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
                 <Class Name="schedule" Type="NPCSchedule" Version="1">
                     <Class Name="default_day_schedule" Type="DaySchedule" Version="1">

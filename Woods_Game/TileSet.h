@@ -48,7 +48,7 @@ public:
 	float get_tile_speed_mod(const int row);
 	int get_edge_priority(const int row);
 	const int get_tile_sheet_image_cols_by_index(const int index);
-	const bool is_tile_npc_pathable(const int index);
+	const bool is_tile_npc_pathable(const int index, const bool obeys_rules);
 	std::vector<std::string> all_tile_keys();
 	// block types
 	ALLEGRO_BITMAP * get_default_block_bitmap(const int index);

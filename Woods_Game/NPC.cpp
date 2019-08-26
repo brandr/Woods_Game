@@ -35,6 +35,7 @@ NPC::NPC()
 	Register("base_walk_speed", &base_walk_speed);
 	Register("start_spawn_key", &start_spawn_key);
 	Register("default_spawn_key", &default_spawn_key);
+	Register("obeys_tile_rules", &obeys_tile_rules);
 	Register("default_dialog_text", &default_dialog_text);
 }
 
@@ -77,6 +78,11 @@ const std::string NPC::get_current_spawn_key()
 {
 	//TODO: logic to tell us which spawenr we should use if not default (like schedule and quest triggers)
 	return this->default_spawn_key.value();
+}
+
+const bool NPC::get_obeys_tile_rules()
+{
+	return this->obeys_tile_rules.value();
 }
 
 Dialog * NPC::choose_dialog(Player * player)

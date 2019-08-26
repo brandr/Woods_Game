@@ -57,6 +57,30 @@ std::vector<NextLevelNode*> PathNode::get_next_level_nodes()
 	return nodes;
 }
 
+const bool PathNode::should_animate_walking()
+{
+	const int size = this->next_level_nodes.size();
+	for (int i = 0; i < size; i++) {
+		NextLevelNode * next_node = this->next_level_nodes.getItem(i);
+		if (next_node->animate_walking.value()) {
+			return true;
+		}
+	}
+	return false;
+}
+
+const std::pair<int, int> PathNode::get_arrival_offset()
+{
+	const int size = this->next_level_nodes.size();
+	for (int i = 0; i < size; i++) {
+		NextLevelNode * next_node = this->next_level_nodes.getItem(i);
+		if (next_node->animate_walking.value()) {
+			return std::pair<int, int>(next_node->x_dir.value() * TILE_SIZE, next_node->y_dir.value() * TILE_SIZE);
+		}
+	}
+	return std::pair<int, int>(0, 0);
+}
+
 NeighborNode::NeighborNode()
 {
 	setClassName("NeighborNode");
@@ -68,4 +92,7 @@ NextLevelNode::NextLevelNode()
 	setClassName("NextLevelNode");
 	this->Register("LevelID", &level_id);
 	this->Register("NodeID", &node_id);
+	this->Register("AnimateWalking", &animate_walking);
+	this->Register("XDir", &x_dir);
+	this->Register("YDir", &y_dir);
 }

@@ -29,7 +29,7 @@ void TileGroup::add_tile(Tile * t)
 
 Tile * TileGroup::get_tile(int index)
 {
-	return this->tiles.getItem(index);
+	return index >= 0 && index < this->tiles.size() ? this->tiles.getItem(index) : NULL;
 }
 
 void TileGroup::set_tile(TileSet * tileset, Tile * t, int index)
