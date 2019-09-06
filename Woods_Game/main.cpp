@@ -13,6 +13,8 @@
 #include<allegro5/allegro_native_dialog.h>
 #include<allegro5/allegro_primitives.h>
 #include "ScreenManager.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 #include "allegro5/allegro_font.h"           // for al_init_font_addon
 #include "allegro5/allegro_ttf.h"           
 #include "allegro5/allegro_image.h"
@@ -35,7 +37,6 @@
 #include "TitleScreen.h"                     // for TitleScreen
 #include "LevelEditorScreen.h"
 #include "utility"                           // for pair
-//#include "vcruntime_new.h"                   // for operator new
 #include "vector"                            // for vector
 #include "xstring"                           // for string, operator==, basic_string
 #include <memory>                            // for allocator
@@ -180,6 +181,7 @@ int initialize_allegro_libraries() {
 	al_init_ttf_addon();
 	al_init_primitives_addon();
 	al_init_image_addon();
+	al_init_acodec_addon();
 	al_install_keyboard();
 	al_install_joystick();
 	al_install_mouse();

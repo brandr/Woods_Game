@@ -1,6 +1,0 @@
-Load=[image][position]
-[temp_platform][0,512]
-[temp_platform][64,512]
-[temp_platform][128,512]
-[temp_platform][192,512]
-[temp_platform][256,512]

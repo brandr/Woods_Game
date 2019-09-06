@@ -111,6 +111,7 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	block->action_key = ACTION_LOAD_GAME;
 	block->duration = 1;
 	block->effect_key = EFFECT_DISPLAY_BLACK;
+	block->global_time = new GlobalTime(day, time);
 	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	this->add_global_time_update(day, time);

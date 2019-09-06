@@ -1,16 +1,17 @@
 #include "Level.h"
 #include "NPC.h"
 #include "Player.h"
+#include "World.h"
 
 void NPC::clear_primary_destinations()
 {
 	AIBeing::clear_primary_destinations();
 }
 
-const std::string NPC::calculate_destination_node_key(GlobalTime * time)
+const std::string NPC::calculate_destination_node_key(World * world, GlobalTime * time)
 {
 	//TEMP. should probably have more AIState filtering before we get here.
-	const std::string scheduled_node_key = this->schedule.scheduled_node_key(time);
+	const std::string scheduled_node_key = this->schedule.scheduled_node_key(world, time);
 	return scheduled_node_key;
 }
 
@@ -36,6 +37,7 @@ NPC::NPC()
 	Register("start_spawn_key", &start_spawn_key);
 	Register("default_spawn_key", &default_spawn_key);
 	Register("obeys_tile_rules", &obeys_tile_rules);
+	Register("dialog_tree", &dialog_tree);
 	Register("default_dialog_text", &default_dialog_text);
 }
 
@@ -43,9 +45,9 @@ NPC::~NPC()
 {
 }
 
-void NPC::update(Level * level, GlobalTime * time, const int game_mode)
+void NPC::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	AIBeing::update(level, time, game_mode);
+	AIBeing::update(world, level, time, game_mode);
 }
 
 void NPC::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -85,31 +87,31 @@ const bool NPC::get_obeys_tile_rules()
 	return this->obeys_tile_rules.value();
 }
 
-Dialog * NPC::choose_dialog(Player * player)
+Dialog * NPC::choose_dialog(World * world, GlobalTime * time, Player * player)
 {
-	//TODO: don't immediately choose default dialog text, check for other things
-	//TODO: use schedule, quest triggers, etc
-	const std::string default_text = this->get_default_dialog_text();
-	if (!default_text.empty()) {
-		Dialog * dialog = new Dialog();
-		dialog->parse_text(default_text);
-		return dialog;
-		//TODO: avoid memory leaks when opening/closing dialogs
+	Dialog * dialog = this->dialog_tree.choose_dialog(world, time);
+	if (dialog == NULL) {
+		const std::string default_text = this->get_default_dialog_text();
+		if (!default_text.empty()) {
+			dialog = new Dialog();
+			dialog->parse_text(default_text);
+			//TODO: avoid memory leaks when opening/closing dialogs
+		}
 	}
-	return NULL;
+	return dialog;
 }
 
-const bool NPC::interact_action(Player * player)
+const bool NPC::interact_action(World * world, GlobalTime * time, Player * player)
 {
-	//TODO: update relationship with player
 	//TODO: take into account time of day, previous interactions, weather, etc.
-	Dialog * dialog = this->choose_dialog(player);
+	Dialog * dialog = this->choose_dialog(world, time, player);
 	if (dialog) {
 		// turn to face the player
 		this->direction = this->calculate_direction(player);
 		GameImage::update();
-		// TODO: probably need to make them hold still for a second after talking
 		player->set_open_dialog(dialog);
+		player->set_has_met_npc(this->get_npc_key());
+		//TODO: update relationship with player
 		return true;
 	}
 	return false;

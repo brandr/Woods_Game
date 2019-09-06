@@ -3,29 +3,30 @@
 
 // abstract serializable class for running boolean checks on serialized entities like NPCs
 
-//TODO: and/or qualifiers
-	// should serialize regular qualifiers in collections, 
-	// but how to specify type while serializing them? (might just have to test)
-
 #include "GlobalTime.h"
+#include "TriggerStatus.h"
 #include "XMLSerialization.h"
 
 enum COMPARATORS {
-	COMPARATOR_EQUALS,
-	COMPARATOR_NOT_EQUALS,
-	COMPARATOR_LESS_THAN,
-	COMPARATOR_LESS_THAN_EQUAL,
-	COMPARATOR_GREATER_THAN,
-	COMPARATOR_GREATER_THAN_EQUAL
+	COMPARATOR_EQUALS = 0,
+	COMPARATOR_NOT_EQUALS = 1,
+	COMPARATOR_LESS_THAN = 2,
+	COMPARATOR_LESS_THAN_EQUAL = 3,
+	COMPARATOR_GREATER_THAN = 4,
+	COMPARATOR_GREATER_THAN_EQUAL = 5
 };
 
+// if you add new evaluators, make sure to put them at the end of the list
 enum EVALUATORS {
-	EVALUATOR_KEY_VALUE,
-	EVALUATOR_AND,
-	EVALUATOR_OR,
-	EVALUATOR_TIME
+	EVALUATOR_KEY_VALUE = 0,
+	EVALUATOR_AND = 1,
+	EVALUATOR_OR = 2,
+	EVALUATOR_TIME = 3,
+	EVALUATOR_TRIGGER = 4,
+	EVALUATOR_DAY_OF_WEEK = 5
 };
 
+class World;
 class Qualifier : public xmls::Serializable
 {
 protected:
@@ -36,14 +37,18 @@ protected:
 	xmls::xInt day;
 	xmls::xInt hour;
 	xmls::xInt minute;
+	xmls::xInt day_of_week;
+	TriggerStatus trigger_status;
 	GlobalTime * other_time;
-	virtual const bool and_evaluate();
-	virtual const bool or_evaluate();
+	virtual const bool and_evaluate(World * world);
+	virtual const bool or_evaluate(World * world);
 	virtual const bool time_evaluate();
+	virtual const bool trigger_evaluate(World * world);
+	virtual const bool day_of_week_evaluate();
 public:
 	Qualifier();
 	~Qualifier();
-	virtual const bool evaluate();
+	virtual const bool evaluate(World * world);
 	virtual const bool evaluate(const int a, const int b);
 	virtual void set_other_time(GlobalTime * value);
 };

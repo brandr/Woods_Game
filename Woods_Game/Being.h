@@ -7,6 +7,7 @@
 #include "utility"   // for pair
 
 class Level;
+class World;
 class Being: public Entity
 {
 protected:
@@ -35,7 +36,7 @@ protected:
 public:
 	Being();
 	~Being();
-	virtual void update(Level * level, GlobalTime * time, const int game_mode);
+	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
 	void set_xvel(int);
 	void set_yvel(int);

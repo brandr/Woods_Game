@@ -7,6 +7,7 @@
 #include <math.h>
 
 class Level;
+class World;
 class AIBeing : public Being
 {
 protected:
@@ -26,7 +27,7 @@ protected:
 
 	int failed_pathing_tally = 0;
 	void ai_timer_update();
-	void request_pathing_update(Level * level, GlobalTime * time);
+	void request_pathing_update(World * world, Level * level, GlobalTime * time);
 	void destination_update(
 		Level * level, GlobalTime * time);
 	void face_other_update(
@@ -46,11 +47,11 @@ protected:
 	const std::pair<std::string, std::pair<int, int>> get_next_destination();
 	virtual void mark_destination_reached(const std::string dest_key);
 	virtual void set_ai_state(const int state_key);
-	virtual const std::string calculate_destination_node_key(GlobalTime * time);
+	virtual const std::string calculate_destination_node_key(World * world, GlobalTime * time);
 public:
 	AIBeing();
 	~AIBeing();
-	virtual void update(Level * level, GlobalTime * time, const int game_mode);
+	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void draw_adjacent_rect(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void draw_destinations(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);

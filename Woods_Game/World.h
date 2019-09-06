@@ -9,6 +9,7 @@
 #include "GlobalTime.h"
 #include "NPC.h"
 #include "PathNode.h"
+#include "WorldState.h"
 #include "XMLSerialization.h"
 #include "FileManager.h"
 #include <future>
@@ -31,6 +32,8 @@ private:
 	xmls::xInt current_level_grid_y;
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
+
+	WorldState world_state; //not serialzed in world because it's day-specific
 
 	std::map<std::string, PathNodeDjikstraPath *> node_djikstra_path_map;
 	std::map<std::string, TileDjikstraPath *> tile_djikstra_path_map;
@@ -58,6 +61,7 @@ public:
 	~World();
 	void load_dungeons();
 	void reload_dungeons(const std::string dungeons_path);
+	void reload_world_state(const std::string world_state_path);
 	void load_npcs();
 	void recalculate_npc_paths();
 	void load_player();
@@ -72,6 +76,9 @@ public:
 	void update_reload_day(Player * player, const std::string current_level_key);
 	void update_npcs_new_day();
 	void add_dungeon(Dungeon*);
+	Player * get_player();
+	NPC * get_npc(const std::string npc_key);
+	void set_has_met_npc(const std::string npc_key);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
 	Level * extract_current_level(Player * player, const std::string previous_level_key);
@@ -87,6 +94,8 @@ public:
 	const std::string get_world_key();
 	const int get_current_day();
 	void set_current_day(const int day);
+	WorldState * get_world_state();
+	TriggerStatus * matching_trigger_status(TriggerStatus * status);
 };
 
 #endif

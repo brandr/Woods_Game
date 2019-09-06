@@ -3,11 +3,11 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
+#include "Being.h"
 #include "Cutscene.h"
 #include "Dialog.h"
 #include "GlobalTime.h"
-#include "Inventory.h"
-#include "Player.h"                // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
+#include "Inventory.h"             // for PLAYER_DIRECTIONS::DIR_DOWN, PLAYER_DIRECTIONS::DIR_LEFT, PLAYER_DIRECTIONS::DIR_NEUTRAL, PLAYER_DIRECTIONS::DIR_RIGHT, PLAYER_DIRECTIONS::DIR_UP
 #include "allegro5/bitmap_draw.h"  // for al_draw_bitmap
 #include "FileManager.h"           // for FileManager
 #include "ImageLoader.h"
@@ -15,7 +15,6 @@
 #include "stdlib.h"                // for atoi
 #include "vcruntime_new.h"         // for operator delete, operator new
 #include "TileSet.h"
-#include "World.h"
 #include "xtree"                   // for _Tree_iterator, _Tree<>::iterator, _Tree_const_iterator
 #include "XMLSerialization.h"
 #include <map>
@@ -36,6 +35,7 @@ private:
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
+	std::map<std::string, std::string> pending_trigger_updates;
 	std::string destination_level_key_override = "";
 	std::pair<int, int> destination_level_pos_override = std::pair<int,int>(-1,-1);
 	bool interacting = false;
@@ -52,15 +52,15 @@ public:
 	virtual int get_type();
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
-	virtual void update(Level * level, GlobalTime *time, const int game_mode);
+	virtual void update(World * world, Level * level, GlobalTime *time, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
 	void update_top_down(Level * level);
 	void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
-	void interact_update(Level * level);
-	void interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	void interact_update(World * world, Level * level, GlobalTime * time);
+	//void interact_update(World * world, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	//time
 	const int wake_up_time();
 	//dialog
@@ -75,7 +75,7 @@ public:
 	void cutscene_update();
 	void end_active_cutscene();
 	//interact
-	const bool interact(Entity* e);
+	const bool interact(World * world, GlobalTime * time, Entity* e);
 	void shear_update(Level * level);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	void sleep_in_bed(GlobalTime * current_time);
@@ -112,6 +112,9 @@ public:
 	const bool has_active_cutscene();
 	Cutscene * get_active_cutscene();
 	const std::string get_spawn_key();
+	const std::map<std::string, std::string> get_pending_trigger_updates();
+	void clear_pending_triggers();
+	void set_has_met_npc(const std::string npc_key);
 };
 
 #endif

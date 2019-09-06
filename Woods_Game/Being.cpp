@@ -3,6 +3,7 @@
 #define NOMINMAX
 #include "Being.h"
 #include "Level.h"
+#include "World.h"
 #include<iostream>
 #include<algorithm>
 
@@ -16,7 +17,7 @@ Being::~Being()
 {
 }
 
-void Being::update(Level * level, GlobalTime * time, const int game_mode)
+void Being::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
 	collision_update(level, game_mode);
 	movement_update(level, game_mode);
@@ -192,7 +193,9 @@ const bool Being::adjust_movement(Level * level, std::vector<Entity*> interactab
 	if (!empty_at(check_rect, interactables)) {
 		if (push_others) {
 			for (Entity * e : interactables) {
-				if (e && e != this && e->is_solid() && e->intersects_area(check_rect)
+				if (e && e != this && e->is_solid() 
+					&& !e->get_should_push_others()
+					&& e->intersects_area(check_rect)
 					&& e->get_mask()
 					&& Mask_Collide(this->get_mask(), e->get_mask(),
 					(get_x() + this->xvel) - e->get_x(),
@@ -323,12 +326,10 @@ const bool Being::set_should_push_others(const bool value)
 
 void Being::push_back(Level* level, const float adj_xvel, const float adj_yvel)
 {
-	//this->adjust_movement(level, xvel, yvel, false);
 	this->rect.x += adj_xvel, this->rect.y += adj_yvel;
+	this->collide_rect.x += adj_xvel, this->collide_rect.y += adj_yvel;
 }
 
-//TODO: make this more efficient and/or call it less often
-//particularly needs to be more efficient for entitygroups
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
 		if (e && e != this && e->is_solid() && e->intersects_area(r)) {
@@ -345,6 +346,7 @@ const bool Being::precise_empty_at(std::vector<Entity*> interactables, const int
 	for (int i = 0; i < size; i++) {
 		if (interactables[i]
 			&& interactables[i]->is_solid()
+			&& !(this->get_should_push_others() && interactables[i]->get_should_push_others())
 			&& interactables[i]->get_mask()
 			&& Mask_Collide(this->get_mask(), interactables[i]->get_mask(),
 			(get_x() + xoff) - interactables[i]->get_x(),

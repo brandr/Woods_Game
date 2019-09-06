@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "Level.h"
+#include "TriggerStatus.h"
 #include <iostream>
 #include <algorithm>
 
@@ -53,14 +54,13 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
-void Player::update(Level * level, GlobalTime * time, const int game_mode)
+void Player::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
 	const std::pair<int, int> level_dimensions = level->get_dimensions();
 	if (exit_level_check(level_dimensions))
 		return;
 	switch (game_mode) {
 	case SIDE_SCROLLING:
-		//update_side_scrolling(interactables, level_dimensions);
 		break;
 	case TOP_DOWN:
 		update_top_down(level);
@@ -70,9 +70,9 @@ void Player::update(Level * level, GlobalTime * time, const int game_mode)
 		break;
 	}
 
-	Being::update(level, time, game_mode);
+	Being::update(world, level, time, game_mode);
 	if (this->interacting) {
-		this->interact_update(level);
+		this->interact_update(world, level, time);
 	}
 	clear_input();
 }
@@ -243,7 +243,7 @@ void Player::update_input_top_down(std::map<int, bool> input_map, std::map<int, 
 		queue_move(MOVE_RIGHT);
 }
 
-void Player::interact_update(Level * level)
+void Player::interact_update(World * world, Level * level, GlobalTime * time)
 {
 	//TODO: only get nearby interactables, not all of them
 	//can't necessary just get those from the same bucket because we could be interacting across buckets
@@ -279,14 +279,15 @@ void Player::interact_update(Level * level)
 	for (int i = 0; i < size; i++) {
 		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
 			Entity* e = interactables[i];
-			if (this->interact(e)) {
+			if (this->interact(world, time, e)) {
 				return;
 			}
 		}
 	}
 }
 
-void Player::interact_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
+/*
+void Player::interact_update(World * world, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	const int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
@@ -318,12 +319,13 @@ void Player::interact_update(std::vector<Entity*> interactables, std::vector<Til
 	for (int i = 0; i < size; i++) {
 		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
 			Entity* e = interactables[i];
-			if (this->interact(e)) {
+			if (this->interact(world, time, e)) {
 				return;
 			}
 		}
 	}
 }
+*/
 
 const int Player::wake_up_time()
 {
@@ -401,9 +403,9 @@ void Player::end_active_cutscene()
 	}
 }
 
-const bool Player::interact(Entity * e)
+const bool Player::interact(World * world, GlobalTime * time, Entity * e)
 {
-	return e->interact_action(this);
+	return e->interact_action(world, time, this);
 }
 
 void Player::shear_update(Level * level)
@@ -721,6 +723,21 @@ Cutscene * Player::get_active_cutscene()
 const std::string Player::get_spawn_key()
 {
 	return this->spawn_key.value();
+}
+
+const std::map<std::string, std::string> Player::get_pending_trigger_updates()
+{
+	return this->pending_trigger_updates;
+}
+
+void Player::clear_pending_triggers()
+{
+	this->pending_trigger_updates.clear();
+}
+
+void Player::set_has_met_npc(const std::string npc_key)
+{
+	this->pending_trigger_updates[SET_HAS_MET_NPC] = npc_key;
 }
 
 //TODO: need to check for no next level in the given direction

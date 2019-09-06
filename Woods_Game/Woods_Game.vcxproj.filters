@@ -173,6 +173,15 @@
     <Filter Include="Qualifiers\Source Files">
       <UniqueIdentifier>{92d8f63b-4b79-4233-a7fc-047cfd39e94c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Quests">
+      <UniqueIdentifier>{0195131e-332e-462b-b447-9da7ad1ea173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quests\Header Files">
+      <UniqueIdentifier>{c6559296-e51d-4797-a215-ec1275d14906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quests\Source Files">
+      <UniqueIdentifier>{e1f2ed2c-68fe-4ab6-bf7a-57f15cb0d11a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -395,6 +404,15 @@
     <ClInclude Include="Qualifier.h">
       <Filter>Qualifiers\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="WorldState.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TriggerStatus.h">
+      <Filter>Quests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DialogTree.h">
+      <Filter>Dialogs\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -609,6 +627,15 @@
     </ClCompile>
     <ClCompile Include="Qualifier.cpp">
       <Filter>Qualifiers\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldState.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TriggerStatus.cpp">
+      <Filter>Quests\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogTree.cpp">
+      <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

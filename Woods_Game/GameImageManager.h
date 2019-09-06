@@ -61,8 +61,11 @@ private:
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
 	GlobalTime * current_global_time = NULL;
-	//ALLEGRO_BITMAP * light_filter = NULL;
+	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
+	const bool player_update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void pending_trigger_update();
+	NPC * get_npc(const std::string npc_key);
 
 	ALLEGRO_THREAD * loading_thread;
 	LoadingData thread_data;
@@ -81,7 +84,6 @@ public:
 	void full_load_game_from_save(const std::string filepath);
 	void load_game_from_save(const int day, const int time);
 	void save_game();
-	static void save_game(World * world, GlobalTime * global_time);
 	void set_game_mode(int game_mode);
 	int get_game_mode();
 	Player* get_player();

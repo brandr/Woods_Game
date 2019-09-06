@@ -40,6 +40,7 @@ public:
 	const int get_last_day_of_month_index(const int mon);
 	const int get_current_month_index();
 	const int get_current_day_index();
+	const int get_current_day_of_week_index();
 	const int get_day_index(const int mon, const int day);
 	const int get_num_days();
 	const int get_num_days_in_month(const int index);

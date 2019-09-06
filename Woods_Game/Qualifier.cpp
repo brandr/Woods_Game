@@ -1,4 +1,5 @@
 #include "Qualifier.h"
+#include "World.h"
 
 Qualifier::Qualifier()
 {
@@ -10,25 +11,30 @@ Qualifier::Qualifier()
 	Register("day", &day);
 	Register("hour", &hour);
 	Register("minute", &minute);
+	Register("day_of_week", &day_of_week);
+	Register("trigger_status", &trigger_status);
 }
 
 Qualifier::~Qualifier()
 {
 }
 
-// override in subclasses
-const bool Qualifier::evaluate()
+const bool Qualifier::evaluate(World * world)
 {
 	switch (this->evaluator.value()) {
 	case EVALUATOR_KEY_VALUE:
 		// we're not passing in a pair of values, so this always returns false
 		return false;
 	case EVALUATOR_AND:
-		return this->and_evaluate();
+		return this->and_evaluate(world);
 	case EVALUATOR_OR:
-		return this->or_evaluate();
+		return this->or_evaluate(world);
 	case EVALUATOR_TIME:
 		return this->time_evaluate();
+	case EVALUATOR_TRIGGER:
+		return this->trigger_evaluate(world);
+	case EVALUATOR_DAY_OF_WEEK:
+		return this->day_of_week_evaluate();
 	default:
 		return false;
 	}
@@ -56,13 +62,13 @@ const bool Qualifier::evaluate(const int a, const int b)
 	}
 }
 
-const bool Qualifier::and_evaluate()
+const bool Qualifier::and_evaluate(World * world)
 {
 	const int size = this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		Qualifier * q = this->qualifiers.getItem(i);
 		q->set_other_time(this->other_time);
-		const bool value = q->evaluate();
+		const bool value = q->evaluate(world);
 		if (!value) {
 			return false;
 		}
@@ -70,13 +76,13 @@ const bool Qualifier::and_evaluate()
 	return true;
 }
 
-const bool Qualifier::or_evaluate()
+const bool Qualifier::or_evaluate(World * world)
 {
 	const int size = this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		Qualifier * q = this->qualifiers.getItem(i);
 		q->set_other_time(this->other_time);
-		const bool value = q->evaluate();
+		const bool value = q->evaluate(world);
 		if (value) {
 			return true;
 		}
@@ -117,6 +123,29 @@ const bool Qualifier::time_evaluate()
 		return Qualifier::evaluate(other_minute, minute_val);
 	}
 	return true;
+}
+
+const bool Qualifier::trigger_evaluate(World * world)
+{
+	const int trigger_state_1 = this->trigger_status.get_trigger_state();
+	TriggerStatus * matching_status = world->matching_trigger_status(&(this->trigger_status));
+	if (matching_status != NULL) {
+		const int trigger_state_2 = matching_status->get_trigger_state();
+		return this->evaluate(trigger_state_1, trigger_state_2);
+	} else {
+		return this->comparator.value() == COMPARATOR_NOT_EQUALS;
+	}
+}
+
+// should only use equal and not equal because it's ambiguous what a greater day of week actually means
+const bool Qualifier::day_of_week_evaluate()
+{
+	if (this->other_time == NULL) {
+		return false;
+	}
+	const int day_of_week_val = this->day_of_week.value();
+	const int other_val = this->other_time->get_current_day_of_week_index();
+	return this->evaluate(other_val, day_of_week_val);
 }
 
 void Qualifier::set_other_time(GlobalTime * value)

@@ -4,27 +4,27 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 8/18/2019
+Last updated 9/2/2019
 
 totals don't include ongoing stuff 
 
-Total: 99-148 days (~4-5 months, done by Mar 2020)
+Total: 92-135 days (~3-5 months, done by Mar 2020)
 
-1. Finish NPC pathing/AIState stuff
-	(4-8 days)
-2. Quest/NPC triggers
+1. NPC triggers/dialog calculation
 	(5-10 days)
-3. NPC dialog calculation
+2. NPC schedule
 	(5-10 days)
-4. NPC schedule
-	(3-6 days)
-5. Cutscenes
+3. Cutscenes
 	(15-20 days)
-6. Loading screens/progress bars
+4. Loading screens/progress bars
 	(3-5 days)
 
 (clean up todos and try to think of what's missing here)	
 
+5. Audio
+	(10-15 days)
+6. Map
+	(5-10 days)
 7. Animals/bugs
 	(10-15 days)
 8. Animation/image code stuff
@@ -35,22 +35,21 @@ Total: 99-148 days (~4-5 months, done by Mar 2020)
 	(5-10 days)
 11. Encyclopedia
 	(10-15 days)
-12. Map
+
+(clean up todos and try to think of what's missing here)	
+
+12. Figure out how to force end of day (otherwise saving gets weird after midnight)
+	(2-5 days)
+13. Wake-up time (alarm clock?)
+	(2-5 days)
+14. Stamina/resource management
 	(5-10 days)
 
 (clean up todos and try to think of what's missing here)	
 
-13. Figure out how to force end of day (otherwise saving gets weird after midnight)
-	(2-5 days)
-14. Wake-up time (alarm clock?)
-	(2-5 days)
-15. Stamina/resource management
-	(5-10 days)
-16. Audio
-	(10-15 days)
-17. Level Editor improvements
+15. Level Editor improvements
 	(???)
-18. Content!
+16. Content!
 	(???)
 
 Ongoing tasks:
@@ -64,56 +63,51 @@ Ongoing tasks:
 NPCs
 ---------------------------------------------------
 
-NPC pathing
-	- there is still slowdown (in some cases)
-		* check comments in tile pathing
-		* need repro steps because it doesn't happen every time
-		* might be affected by checking nearby blocks too often-- could refactor these into buckets
-	- Test NPCs walking directly towards each other
-		* do they push each other?
-	- Set a debug launch argument to control whether test rect bitmaps appear
-		* Manage the bitmaps through ImageLoader
-		* instead of launch argument, could add console commands
+Make NPC dialog 
+	- branching dialog with choices
+		* currently have [o] tags bound to interact actions, but it might be better to do it in a way where we don't need a separate keyed interact action for every dialog node
+	- what to do if there are multiple valid dialog options?
+		* random w/ weight?
+		* priority?
+	- "follow up" dialog if you talk to the same NPC multiple times in a row
+		* should you be unable to talk to the NPC too many times a day like in stardew?
+			# stardew probably only does this because of friendship mechanics, so different mechanics would change the consideration
 
 AIState/NPC schedule
 	- extend schedule logic to "go to place and do an animation" or 
 		 "go to place and wander around" in addition to standing on specific tiles at specific times
 		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
 	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
-		# this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
-		# note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
+		* this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
+		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- IDEA: could serialize AIState rules somewhere ("personality types?")
 	- use schedule logic to determine NPC spawn locations
 		* not necessary if NPCs all sleep at least as late as the latest that the player wakes up, or if there are only a small number of possible wake-up times
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
 
-Add NPC quest triggers
-	- these give conditions which feed schedule blocks
-	- could make the first quest getting some item from the store with money from the player's mom
-		* can also just choose to keep the money
-	- these quest triggers need to tie into time travel (think of majora's mask)
-	- definitely want to think of several examples and notepad out before starting to implement these
-	- incorporate into schedule logic
-
-Make NPC dialog 
-	- similar to stardew valley where NPCs will randomly choose something to say based on the conditions
-	- implement this as a set of "npc dialogs" tied to a set of Conditions (already implemented for schedule)
-	- if necessary, attach some conditions to boolean methods through reflection
-	- for instance, have a character choose from a set of 3 options when it's raining, 
-		2 other options when the player is holding a certain tool, etc
-	- weight some options to be more likely than others using integer values
-	- when the player talks to an npc, determine all dialog options that are appropriate and randomly choose one
-		* should this random chance be weighted?
-	- one condition might be "does the player have this item"
-
 Experiment with some basic cutscenes
 	- could have one with Renaldo preaching about the neighorhood watch as a test
+	- use this to figure out larger cutscene structure (notepad, figure out schema and implement)
+	- probably want branching dialog, trigger checks partway through cutscenes to calculate dialog, etc.
 
 Dialog portrait image
+
+NPC pathing
+	- there is still slowdown (in some cases)
+		* check comments in tile pathing
+		* might be affected by checking nearby blocks too often-- could refactor these into buckets
+	- Set a debug launch argument to control whether test rect bitmaps appear
+		* Manage the bitmaps through ImageLoader
+		* instead of launch argument, could add console commands (this applies to FPS display too)
+
+Document how to format serialized things like dialog trees so I don't forget
+	- take this into account when improving level editor
 
 ---------------------------------------------------
 Memory management/error handling
 ---------------------------------------------------
+
+Test large world with lots of NPCs so I know ahead of time if I need to fix performance issues
 
 Fix performance issues
 	* look into the font for the FPS counter since it's created right at the beginning
@@ -126,14 +120,12 @@ Asynchronous loading screen
 	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
 	* add a progress bar (remember to use mutex)
 		# how to quantity loading progress? (could split into levels)
-	* If necessary, could make it so we asynchronously load only adjacent levels to the current one
-		# need to be careful to ensure the player can't walk to the edge before we finish loading
-		# in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
-		# would probably want to figure out how I'm actually going to use dungeons
+
+If necessary, could make it so we asynchronously load only adjacent levels to the current one
+	* need to be careful to ensure the player can't walk to the edge before we finish loading
+	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
 
 Use the heap profiler whenever debugging memory usage because it's extremely helpful
-
-Watch out for a leak in NPC.choose_dialog()
 
 Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
 	* remember to re-save levels in the editor after making this change or any others like it
@@ -161,6 +153,24 @@ What to use tileset tab for?
 Tiled Images
 	* no room to put it on tileset tab-- need to reorganize it
 		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
+
+---------------------------------------------------
+Audio
+---------------------------------------------------
+
+Tutorial: https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Addons/Audio
+	* already initalizing the audio codec, just need to experiment with samples
+
+Might want a global singleton audo manager similar to the ImageLoader
+
+Probably store all audio in a special load folder (figure out directory structure ahead of time)
+
+Find a good composing program
+
+Add music
+	* The Eye of Pan has a special theme that is hidden inside other tracks
+
+Dialog sounds (like in animal crossing)
 
 ---------------------------------------------------
 Procedural generation
@@ -228,7 +238,7 @@ Buildings
 	* make roofs
 
 Figure out how to scale object/ui sizes with resolution
-	* might not be feasible
+	* might not be worth the effort
 
 Make custom mouse cursor
 	* at this point probably go through UI/controls and add mouse controls where appropriate
@@ -257,6 +267,8 @@ Could be like metroid and have borders around levels but not the 1x1 squares tha
 
 Could generate these images on level gen by getting full-sized images in the same way we draw the level for the editor, then scaling them down to a few pixels
 	* definitely want to delete these images afterwards because they'll take up a lot of space otherwise
+
+Might want to make level grid cells perfectly square
 
 ---------------------------------------------------
 Inventory/items
@@ -331,10 +343,9 @@ Make an "encyclopedia"-like feature that allows the player to keep track of anim
 	* might even use real information about some of these things (like latin name)
 
 ---------------------------------------------------
-Audio
+Long term
 ---------------------------------------------------
 
-Add music
-	* The Eye of Pan has a special theme that is hidden inside other tracks
+Hire a sprite artist
 
-Dialog sounds (like in animal crossing)
+Look up how to get on steam ahead of time

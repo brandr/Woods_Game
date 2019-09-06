@@ -362,6 +362,12 @@ void World::reload_dungeons(const std::string dungeons_path)
 	}
 }
 
+void World::reload_world_state(const std::string world_state_path)
+{
+	FileManager filemanager;
+	filemanager.load_xml_content(&(this->world_state), world_state_path, "SerializableClass", "WorldKey", this->get_world_key());
+}
+
 void World::load_npcs()
 {
 	const int npc_count = this->npcs.size();
@@ -402,6 +408,7 @@ void World::recalculate_npc_paths()
 
 void World::load_player()
 {
+
 }
 
 void World::generate_levels()
@@ -440,26 +447,26 @@ void World::save_game(World * world, GlobalTime * global_time)
 	const std::string save_file_name = world->get_world_key();
 	const std::string day_str = "day_" + std::to_string(global_time->get_day());
 	world->set_current_day(global_time->get_day());
-	std::string save_file_dir = "resources/load/saves/" + save_file_name;
-	if (!boost::filesystem::is_directory(save_file_dir)) {
-		boost::filesystem::create_directory(save_file_dir);
+	std::string day_save_file_dir = "resources/load/saves/" + save_file_name;
+	if (!boost::filesystem::is_directory(day_save_file_dir)) {
+		boost::filesystem::create_directory(day_save_file_dir);
 	}
-	save_file_dir += "/" + day_str;
-	if (!boost::filesystem::is_directory(save_file_dir)) {
-		boost::filesystem::create_directory(save_file_dir);
+	day_save_file_dir += "/" + day_str;
+	if (!boost::filesystem::is_directory(day_save_file_dir)) {
+		boost::filesystem::create_directory(day_save_file_dir);
 	}
 	FileManager filemanager;
-	const std::string world_file_path = "resources/load/saves/" + save_file_name + "/worlds";
+	const std::string world_file_path = "resources/load/saves/" + save_file_name + "/world";
 	std::map<std::string, std::string> attributes;
 	attributes["Type"] = "World";
 	attributes["Version"] = "1";
 	attributes["WorldKey"] = save_file_name;
+	// TODO: this saves anything that should be global. need to draw distinctions between this and per-day saves
 	file_manager.create_xml_file(world_file_path);
 	file_manager.save_xml_content(world_file_path, "SerializableClass", attributes);
 	const std::string world_xml = world->toXML();
-	//TODO: when to update NPCs? (I think these get serialized in world)
 	file_manager.replace_xml_content(world_file_path, "SerializableClass", "WorldKey", save_file_name, world_xml);
-	const std::string dungeon_dir = save_file_dir + "/dungeons";
+	const std::string dungeon_dir = day_save_file_dir + "/dungeons";
 	if (!boost::filesystem::is_directory(dungeon_dir)) {
 		boost::filesystem::create_directory(dungeon_dir);
 	}
@@ -477,8 +484,17 @@ void World::save_game(World * world, GlobalTime * global_time)
 			file_manager.replace_xml_content(dungeon_path, "SerializableClass", "LevelKey", level->get_filename(), level_xml);
 		}
 	}
-	const std::string save_file_path = save_file_dir + "/" + day_str;
-	file_manager.create_xml_file(save_file_path);
+	const std::string world_state_xml = world->get_world_state()->toXML();
+	const std::string day_save_file_path = day_save_file_dir + "/" + "world_state";
+	//TODO: where to get the initial worldstate from?
+	//TODO: load worldstate into world upon loading level since it is no longer registered as an attribute
+	std::map<std::string, std::string> ws_attributes;
+	ws_attributes["Type"] = "WorldState";
+	ws_attributes["Version"] = "1";
+	ws_attributes["WorldKey"] = save_file_name;
+	file_manager.create_xml_file(day_save_file_path);
+	file_manager.save_xml_content(day_save_file_path, "SerializableClass", ws_attributes);
+	file_manager.replace_xml_content(day_save_file_path, "SerializableClass", "WorldKey", save_file_name, world_state_xml);
 }
 
 // updates all NPCs, even if they aren't on the current level
@@ -506,7 +522,7 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 			Level * current_npc_level = this->get_level_with_key(current_level_key);
 			if (current_npc_level != NULL) {
 				// the level itself will not call update method for NPCs, so call it here
-				npc->update(current_npc_level, time, game_mode);
+				npc->update(this, current_npc_level, time, game_mode);
 				// transport the npc to the next level if appropriate
 				if (npc->is_requesting_next_level()) {
 					const std::string next_level_key = npc->get_requested_next_level_key();
@@ -582,6 +598,28 @@ void World::add_dungeon(Dungeon *dungeon)
 	dungeons.push_back(std::move(std::shared_ptr<Dungeon>(dungeon)));
 }
 
+Player * World::get_player()
+{
+	return this->world_state.get_player();
+}
+
+NPC * World::get_npc(const std::string npc_key)
+{
+	const int size = this->npcs.size();
+	for (int i = 0; i < size; i++) {
+		NPC * npc = this->npcs.getItem(i);
+		if (npc != NULL && npc_key == npc->get_npc_key()) {
+			return npc;
+		}
+	}
+	return NULL;
+}
+
+void World::set_has_met_npc(const std::string npc_key)
+{
+	this->world_state.set_has_met_npc(npc_key);
+}
+
 Dungeon* World::get_current_dungeon()
 {
 	return this->get_dungeon(this->current_dungeon_key.value());
@@ -651,4 +689,14 @@ const int World::get_current_day()
 void World::set_current_day(const int day)
 {
 	this->current_day = day;
+}
+
+WorldState * World::get_world_state()
+{
+	return &world_state;
+}
+
+TriggerStatus * World::matching_trigger_status(TriggerStatus * status)
+{
+	return this->world_state.matching_trigger_status(status);
 }

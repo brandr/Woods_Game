@@ -1,5 +1,6 @@
 #include "AIBeing.h"
 #include "Level.h"
+#include "World.h"
 
 void AIBeing::ai_timer_update()
 {
@@ -7,12 +8,12 @@ void AIBeing::ai_timer_update()
 }
 
 // TODO: consider moving this around/reorganizing into a more general order of operations for state flow
-void AIBeing::request_pathing_update(Level * level, GlobalTime * time)
+void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * time)
 {
 	if (this->ai_state.is_idle()) {
 		std::string node_key = this->ai_state.get_current_destination_node_key();
 		if (node_key == "") {;
-			node_key = this->calculate_destination_node_key(time);
+			node_key = this->calculate_destination_node_key(world, time);
 			this->ai_state.set_current_destination_node_key(node_key);
 		}
 		if (node_key != "") {
@@ -441,7 +442,7 @@ void AIBeing::walk_to_next_level_update(Level * level)
 	}
 
 	// abstract AIBeings do not use node pathing. Override this in subclasses.
-	const std::string AIBeing::calculate_destination_node_key(GlobalTime * time)
+	const std::string AIBeing::calculate_destination_node_key(World * world, GlobalTime * time)
 	{
 		return "";
 	}
@@ -512,20 +513,20 @@ AIBeing::~AIBeing()
 {
 }
 
-void AIBeing::update(Level * level, GlobalTime * time, const int game_mode)
+void AIBeing::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
 	// idea: "wandering" state when being has nothing else to do (how to determine allowed wander area?)
 	// put destination calculations before walk update so we don't start walking in the wrong direction
 	
 	this->ai_timer_update();
-	this->request_pathing_update(level, time);
+	this->request_pathing_update(world, level, time);
 	this->destination_update(level, time);
 	this->face_other_update(level, time);
 	this->walk_update();
 	this->failed_pathing_update();
 	this->push_others_update(level);
 	this->walk_to_next_level_update(level);
-	Being::update(level, time, game_mode);
+	Being::update(world, level, time, game_mode);
 }
 
 void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
@@ -545,6 +546,9 @@ void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_
 	Rect * collide_rect = this->get_rect_for_collision();
 	const std::pair<std::string, std::pair<int, int>> next_dest = this->get_next_destination();
 	const std::pair<int, int> next_pos = next_dest.second;
+	if (next_pos.first < 0 || next_pos.second < 0) {
+		return;
+	}
 	const float x_dist = next_pos.first - collide_rect->x,
 		y_dist = next_pos.second - collide_rect->y;
 

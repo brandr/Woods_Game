@@ -1,7 +1,8 @@
 #include "Entity.h"
+#include "GlobalTime.h"
 #include "Player.h"
 #include "Level.h"
-
+#include "World.h"
 
 const std::string Entity::image_filename_suffix()
 {
@@ -185,7 +186,7 @@ const bool Entity::contact_action(Player * player)
 	return interacted;
 }
 
-const bool Entity::interact_action(Player * player)
+const bool Entity::interact_action(World * world, GlobalTime * time, Player * player)
 {
 	const InteractActionManager &manager = InteractActionManager::get_instance();
 	const int size = this->interact_actions.size();
@@ -380,6 +381,11 @@ std::vector<std::string> Entity::get_entity_effect_names()
 {
 	std::vector<std::string> names{ "break", "hit" };
 	return names;
+}
+
+const bool Entity::get_should_push_others()
+{
+	return false;
 }
 
 void Entity::push_back(Level * level, const float xvel, const float yvel)

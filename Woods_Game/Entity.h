@@ -97,8 +97,10 @@ struct EntityGroupData : public EntityData {
 	std::pair<int, int> get_entity_group_image_dimensions();
 };
 
+class GlobalTime;
 class Player;
 class Level;
+class World;
 class Entity :
 	public GameImage
 {
@@ -144,7 +146,7 @@ public:
 	virtual const int get_plant_growth_spread_range();
 	virtual const bool update_new_day(Player * player);
 	virtual const bool contact_action(Player * player);
-	virtual const bool interact_action(Player * player);
+	virtual const bool interact_action(World * world, GlobalTime * time, Player * player);
 	virtual void entity_break();
 	virtual void set_entity_data_index(int index);
 	virtual void set_entity_sheet_offset(int col, int row);
@@ -167,6 +169,7 @@ public:
 	virtual int get_entity_sheet_row();
 	virtual void take_durability_damage(const int damage);
 	static std::vector<std::string> get_entity_effect_names();
+	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 };
 #endif

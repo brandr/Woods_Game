@@ -1,5 +1,6 @@
 #include "Level.h"
 #include "GameImageManager.h"
+#include "World.h"
 
 struct game_image_center_comparison
 {
@@ -1115,10 +1116,10 @@ void Level::unload_content()
 	}
 	this->tile_rows.Clear();
 	this->entity_groups.Clear();
-	beings.clear();
+	beings.clear(); //TODO: why do we sometimes get an exception around here when closing the window?
 }
 
-void Level::update(GlobalTime * time, const int game_mode)
+void Level::update(World * world, GlobalTime * time, const int game_mode)
 {
 	std::pair<int, int> dimensions = get_dimensions();
 	const int b_size = beings.size();
@@ -1128,7 +1129,7 @@ void Level::update(GlobalTime * time, const int game_mode)
 			
 			if (beings[i]->get_type() == PLAYER) {
 				std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
-				beings[i]->update(this, time, game_mode);
+				beings[i]->update(world, this, time, game_mode);
 			}
 		} else {
 			// TODO: better error handling

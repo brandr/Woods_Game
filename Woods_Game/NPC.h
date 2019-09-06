@@ -4,6 +4,7 @@
 
 #include "AIBeing.h"
 #include "Dialog.h"
+#include "DialogTree.h"
 #include "DjikstraPath.h"
 #include "GlobalTime.h"
 #include "NPCSchedule.h"
@@ -13,6 +14,7 @@
 
 class Level;
 class Player;
+class World;
 class NPC : public AIBeing, public xmls::Serializable
 {
 private:
@@ -22,6 +24,7 @@ private:
 	xmls::xString default_spawn_level_key;
 	xmls::xString start_spawn_key;
 	xmls::xString default_spawn_key;
+	DialogTree dialog_tree;
 	xmls::xString default_dialog_text;
 	xmls::xBool obeys_tile_rules;
 
@@ -29,11 +32,11 @@ private:
 	std::string current_position_node_key = "";
 	bool is_processing = false; //TEMP. replace with AI state for AIBeing
 protected:
-	virtual const std::string calculate_destination_node_key(GlobalTime * time);
+	virtual const std::string calculate_destination_node_key(World * world, GlobalTime * time);
 public:
 	NPC();
 	~NPC();
-	virtual void update(Level * level, GlobalTime * time, const int game_mode);
+	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	const std::string get_npc_key();
 	const std::string get_start_level_key();
@@ -41,8 +44,8 @@ public:
 	const std::string get_start_spawn_key();
 	const std::string get_current_spawn_key();
 	virtual const bool get_obeys_tile_rules();
-	Dialog * choose_dialog(Player * player);
-	virtual const bool interact_action(Player * player);
+	Dialog * choose_dialog(World * world, GlobalTime * time, Player * player);
+	virtual const bool interact_action(World * world, GlobalTime * time, Player * player);
 	const std::string get_default_dialog_text();
 	void set_current_level_key(const std::string level_key);
 	const std::string get_current_level_key();

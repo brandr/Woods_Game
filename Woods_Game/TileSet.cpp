@@ -223,7 +223,8 @@ void TileSet::set_edge_priority(const int row, int priority)
 
 float TileSet::get_tile_speed_mod(const int row)
 {
-	if (row < 0 || row > this->tile_types.size()) {
+	const int size = this->tile_types.size();
+	if (row < 0 || row > size) {
 		return 1.0f;
 	}
 	return this->tile_types.getItem(row)->get_speed_mod();
@@ -231,7 +232,8 @@ float TileSet::get_tile_speed_mod(const int row)
 
 int TileSet::get_edge_priority(const int row)
 {
-	if (row < 0 || row > this->tile_types.size()) {
+	const int size = this->tile_types.size();
+	if (row < 0 || row > size) {
 		return 0;
 	}
 	return this->tile_types.getItem(row)->get_edge_priority();
@@ -239,7 +241,8 @@ int TileSet::get_edge_priority(const int row)
 
 const int TileSet::get_tile_sheet_image_cols_by_index(const int index)
 {
-	if (index >= 0 && index < this->tile_types.size()) {
+	const int size = this->tile_types.size();
+	if (index >= 0 && index < size) {
 		const std::string filename = this->get_full_tile_sheet_filename(index);
 		ALLEGRO_BITMAP * bitmap = ImageLoader::get_instance().get_image(filename);
 		return al_get_bitmap_width(bitmap) / TILE_SIZE;
@@ -249,7 +252,8 @@ const int TileSet::get_tile_sheet_image_cols_by_index(const int index)
 
 const bool TileSet::is_tile_npc_pathable(const int index, const bool obeys_rules)
 {
-	if (index >= 0 && index < this->tile_types.size()) {
+	const int size = this->tile_types.size();
+	if (index >= 0 && index < size) {
 		return this->tile_types.getItem(index)->is_npc_pathable(obeys_rules);
 	}
 	return false;
@@ -257,7 +261,8 @@ const bool TileSet::is_tile_npc_pathable(const int index, const bool obeys_rules
 
 const int TileSet::get_block_sheet_image_cols_by_index(const int index)
 {
-	if (index >= 0 && index < this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (index >= 0 && index < size) {
 		const std::string filename = this->get_full_block_sheet_filename(index);
 		ALLEGRO_BITMAP * bitmap = ImageLoader::get_instance().get_image(filename);
 		return al_get_bitmap_width(bitmap) / TILE_SIZE;
@@ -267,7 +272,8 @@ const int TileSet::get_block_sheet_image_cols_by_index(const int index)
 
 const int TileSet::get_entity_group_sheet_image_cols_by_index(const int index)
 {
-	if (index >= 0 && index < this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (index >= 0 && index < size) {
 		std::vector<EntityComponentData*> comp_data = this->get_entity_group_components(index);
 		if (comp_data.size() > 0) {
 			EntityComponentData * comp = comp_data[0];
@@ -311,7 +317,8 @@ ALLEGRO_BITMAP * TileSet::get_block_bitmap_for_col(const int index, const int co
 const std::vector<std::pair<std::string, std::string>> TileSet::get_block_interact_action_data(const int index)
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	if (index < 0 || index > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
 		return data;
 	}
 	return this->block_types.getItem(index)->get_block_interact_action_data();
@@ -320,7 +327,8 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_intera
 const std::vector<std::pair<std::string, std::string>> TileSet::get_block_contact_action_data(const int index)
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	if (index < 0 || index > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
 		return data;
 	}
 	return this->block_types.getItem(index)->get_block_contact_action_data();
@@ -329,7 +337,8 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_contac
 const std::vector<std::pair<std::string, std::string>> TileSet::get_block_load_day_action_data(const int index)
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	if (index < 0 || index > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
 		return data;
 	}
 	return this->block_types.getItem(index)->get_block_load_day_action_data();
@@ -338,7 +347,8 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_load_d
 const std::vector<EntitySpawnTileRule *> TileSet::get_block_spawn_tile_rules(const int index)
 {
 	std::vector<EntitySpawnTileRule *> data;
-	if (index < 0 || index > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
 		return data;
 	}
 	return this->block_types.getItem(index)->get_block_spawn_tile_rules();
@@ -373,7 +383,8 @@ std::string TileSet::get_block_key(const int index)
 
 bool TileSet::get_block_solid(const int row)
 {
-	if (row < 0 || row > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (row < 0 || row > size) {
 		return false;
 	}
 	return this->block_types.getItem(row)->solid.value();
@@ -381,7 +392,8 @@ bool TileSet::get_block_solid(const int row)
 
 bool TileSet::get_block_visible(const int row)
 {
-	if (row < 0 || row > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (row < 0 || row > size) {
 		return false;
 	}
 	return this->block_types.getItem(row)->visible.value();
@@ -389,7 +401,8 @@ bool TileSet::get_block_visible(const int row)
 
 std::map<std::string, int> TileSet::get_block_attributes(const int row)
 {
-	if (row < 0 || row > this->block_types.size()) {
+	const int size = this->block_types.size();
+	if (row < 0 || row > size) {
 		return std::map<std::string, int>();
 	}
 	return this->block_types.getItem(row)->attribute_map();
@@ -494,7 +507,8 @@ std::pair<int, int> TileSet::get_entity_group_image_dimensions_by_index(int inde
 
 std::pair<int, int> TileSet::get_entity_group_root_offset(const int row)
 {
-	if (row < 0 || row > this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (row < 0 || row > size) {
 		return std::pair<int, int>(0,0);
 	}
 	return this->entity_group_types.getItem(row)->get_root_offset();
@@ -502,7 +516,8 @@ std::pair<int, int> TileSet::get_entity_group_root_offset(const int row)
 
 const std::pair<int, int> TileSet::get_entity_group_collide_offset(const int row)
 {
-	if (row < 0 || row > this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (row < 0 || row > size) {
 		return std::pair<int, int>(0, 0);
 	}
 	return this->entity_group_types.getItem(row)->get_collide_offset();
@@ -510,7 +525,8 @@ const std::pair<int, int> TileSet::get_entity_group_collide_offset(const int row
 
 const std::pair<int, int> TileSet::get_entity_group_collide_dimensions(const int row)
 {
-	if (row < 0 || row > this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (row < 0 || row > size) {
 		return std::pair<int, int>(0, 0);
 	}
 	return this->entity_group_types.getItem(row)->get_collide_dimensions();
@@ -519,7 +535,8 @@ const std::pair<int, int> TileSet::get_entity_group_collide_dimensions(const int
 
 std::pair<int, int> TileSet::get_entity_group_center_offset(const int row)
 {
-	if (row < 0 || row > this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (row < 0 || row > size) {
 		return std::pair<int, int>(0, 0);
 	}
 	return this->entity_group_types.getItem(row)->get_center_offset();
@@ -527,7 +544,8 @@ std::pair<int, int> TileSet::get_entity_group_center_offset(const int row)
 
 std::vector<EntityComponentData*> TileSet::get_entity_group_components(const int row)
 {
-	if (row < 0 || row > this->entity_group_types.size()) {
+	const int size = this->entity_group_types.size();
+	if (row < 0 || row > size) {
 		return std::vector<EntityComponentData*>();
 	}
 	return this->entity_group_types.getItem(row)->get_components();

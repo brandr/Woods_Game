@@ -183,8 +183,9 @@ void MenuItem::set_confirm_action_key(std::string key)
 void MenuItem::set_text_options(std::vector<std::string> options)
 {
 	text_options.Clear();
+	const int size = options.size();
 	Register("TextOptions", &text_options);
-	for (int i = 0; i < options.size(); i++) {
+	for (int i = 0; i < size; i++) {
 		text_options.addItem(new TextOption(options[i]));
 	}
 }
@@ -208,12 +209,7 @@ void MenuItem::set_controls_input_label(std::string input_label)
 {
 	this->controls_input_label = input_label;
 }
-/*
-void MenuItem::set_selection_brackets(ALLEGRO_BITMAP * left_bracket, ALLEGRO_BITMAP * right_bracket)
-{
-	this->left_bracket = left_bracket, this->right_bracket = right_bracket;
-}
-*/
+
 void MenuItem::set_selection_bracket_filenames(std::string left_filename, std::string right_filename)
 {
 	this->left_bracket_filename = left_filename;

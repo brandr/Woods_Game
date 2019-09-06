@@ -146,6 +146,16 @@ const int GlobalTime::get_current_day_index()
 	return timeinfo.tm_mday;
 }
 
+const int GlobalTime::get_current_day_of_week_index()
+{
+	if (!this->intialized) {
+		return 0;
+	}
+	struct tm timeinfo;
+	gmtime_s(&timeinfo, &current_timestamp);
+	return timeinfo.tm_wday;
+}
+
 const int GlobalTime::get_day_index(const int mon, const int day)
 {
 	if (!this->intialized) {
