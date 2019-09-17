@@ -579,82 +579,6 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 	this->id = id;
 }
 
-Level::Level(std::string level_filename, std::string dungeon_filename,  std::string id, int grid_x, int grid_y, int grid_width, int grid_height)
-{
-	this->setClassName("Level");
-	this->Register("TilesetKey", &(this->tileset_key));
-	this->Register("GridX", &(this->grid_x));
-	this->Register("GridY", &(this->grid_y));
-	this->Register("GridWidth", &(this->grid_width));
-	this->Register("GridHeight", &(this->grid_height));
-	this->Register("TileRows", &(this->tile_rows));
-	this->Register("EntityGroups", &(this->entity_groups));
-	this->Register("Spawners", &(this->spawners));
-	this->Register("PathNodes", &(this->path_nodes));
-	this->Register("TiledImageLayers", &(this->tiled_image_layers));
-	this->Register("LevelGenData", &(this->gen_data));
-	this->map_filename = level_filename;
-	this->dungeon_filename = dungeon_filename;
-	this->id = id;
-	this->grid_x = grid_x;
-	this->grid_y = grid_y;
-	this->grid_width = grid_width;
-	this->grid_height = grid_height;
-	const int standard_width = STANDARD_LEVEL_GRID_WIDTH;
-	const int standard_height = STANDARD_LEVEL_GRID_HEIGHT;
-	this->width = standard_width * grid_width;
-	this->height = standard_height * grid_height;
-}
-
-Level::Level(std::string filename, int grid_x, int grid_y, int grid_width, int grid_height)
-{
-	this->setClassName("Level");
-	this->Register("TilesetKey", &(this->tileset_key));
-	this->Register("GridX", &(this->grid_x));
-	this->Register("GridY", &(this->grid_y));
-	this->Register("GridWidth", &(this->grid_width));
-	this->Register("GridHeight", &(this->grid_height));
-	this->Register("TileRows", &(this->tile_rows));
-	this->Register("EntityGroups", &(this->entity_groups));
-	this->Register("Spawners", &(this->spawners));
-	this->Register("PathNodes", &(this->path_nodes));
-	this->Register("TiledImageLayers", &(this->tiled_image_layers));
-	this->Register("LevelGenData", &(this->gen_data));
-	this->map_filename = filename;
-	this->grid_x = grid_x;
-	this->grid_y = grid_y;
-	this->grid_width = grid_width;
-	this->grid_height = grid_height;
-	const int standard_width = STANDARD_LEVEL_GRID_WIDTH;
-	const int standard_height = STANDARD_LEVEL_GRID_HEIGHT;
-	this->width = standard_width * grid_width;
-	this->height = standard_height * grid_height;
-}
-
-Level::Level(int grid_x, int grid_y, int grid_width, int grid_height)		
-{
-	this->setClassName("Level");
-	this->Register("TilesetKey", &(this->tileset_key));
-	this->Register("GridX", &(this->grid_x));
-	this->Register("GridY", &(this->grid_y));
-	this->Register("GridWidth", &(this->grid_width));
-	this->Register("GridHeight", &(this->grid_height));
-	this->Register("TileRows", &(this->tile_rows));
-	this->Register("EntityGroups", &(this->entity_groups));
-	this->Register("Spawners", &(this->spawners));
-	this->Register("PathNodes", &(this->path_nodes));
-	this->Register("TiledImageLayers", &(this->tiled_image_layers));
-	this->Register("LevelGenData", &(this->gen_data));
-	this->grid_x = grid_x;
-	this->grid_y = grid_y;
-	this->grid_width = grid_width;
-	this->grid_height = grid_height;
-	const int standard_width = STANDARD_LEVEL_GRID_WIDTH;
-	const int standard_height = STANDARD_LEVEL_GRID_HEIGHT;
-	this->width = standard_width * grid_width;
-	this->height = standard_height * grid_height;
-}
-
 Level::~Level()
 {
 }
@@ -712,7 +636,6 @@ void Level::reload_tiles(Level &copy_level)
 					const std::pair<int, int> ss_pos(copy_block->get_entity_sheet_col(), copy_block->get_entity_sheet_row());
 					const std::pair<int, int> pos(t->get_tile_pos_x(), t->get_tile_pos_y());
 					t->replace_block(this->tileset, block_index, ss_pos, pos);
-					//refresh_mask();
 				}
 			} else if (copy_block == NULL) {
 				t->remove_block();
@@ -722,6 +645,26 @@ void Level::reload_tiles(Level &copy_level)
 			}
 		}
 	}
+}
+
+ALLEGRO_BITMAP * Level::generate_cell_map_image(const int cell_width, const int cell_height, const int grid_x, const int grid_y)
+{
+	ALLEGRO_BITMAP * cell_image = al_create_bitmap(cell_width, cell_height);
+	const int gx_off = grid_x - this->get_grid_x(), gy_off = grid_y - this->get_grid_y();
+	const int full_width = this->width / this->get_grid_width(), full_height = this->height / this->get_grid_height();
+	ALLEGRO_BITMAP * full_image = al_create_bitmap(full_width, full_height);
+	Rect draw_rect(gx_off * full_width, gy_off * full_height, full_width, full_height);
+	this->draw_tiles_onto_bitmap(full_image, draw_rect);
+	this->draw_tiled_images_onto_bitmap(full_image, draw_rect);
+	this->draw_entity_groups_onto_bitmap(full_image, draw_rect);
+	
+	//TODO: draw other objects that should appear on the map
+	ALLEGRO_BITMAP * display = al_get_target_bitmap();
+	al_set_target_bitmap(cell_image);
+	al_draw_scaled_bitmap(full_image, 0, 0, full_width, full_height, 0, 0, cell_width, cell_height, 0);
+	al_destroy_bitmap(full_image);
+	al_set_target_bitmap(display);
+	return cell_image;
 }
 
 void Level::update_new_day(Player * player)
@@ -746,7 +689,6 @@ void Level::update_tiles_new_day(Player * player)
 				if (b->needs_plant_day_update()) {
 					this->plant_day_update(b, x, y);
 				}
-				//b->refresh_mask();
 			}
 		}
 	}
@@ -754,7 +696,6 @@ void Level::update_tiles_new_day(Player * player)
 
 void Level::update_npcs_new_day()
 {
-
 	//TODO: delete this if it doesn't make sense to do it in level
 	//TODO: send NPCs to the correct starting locations
 }
@@ -835,10 +776,8 @@ void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant
 	plant->unmark_needs_plant_day_update();
 }
 
-void Level::intialize_dimensions()
+void Level::intialize_dimensions(const int standard_width, const int standard_height)
 {
-	const int standard_width = STANDARD_LEVEL_GRID_WIDTH;
-	const int standard_height = STANDARD_LEVEL_GRID_HEIGHT;
 	this->width = standard_width * this->grid_width.value();
 	this->height = standard_height * this->grid_height.value();
 }
@@ -1864,7 +1803,7 @@ void Level::set_grid_width(const int value)
 
 int Level::get_grid_width()
 {
-	return width/STANDARD_LEVEL_GRID_WIDTH;
+	return this->grid_width.value();
 }
 
 void Level::set_grid_height(const int value)
@@ -1875,7 +1814,7 @@ void Level::set_grid_height(const int value)
 
 int Level::get_grid_height()
 {
-	return height/STANDARD_LEVEL_GRID_HEIGHT;
+	return this->grid_height.value();
 }
 
 // level editor methods

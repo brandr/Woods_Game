@@ -1,5 +1,4 @@
 #include "GameScreen.h"
-//class ImageLoader;
 
 GameScreen::GameScreen()
 {
@@ -173,6 +172,14 @@ void GameScreen::menu_left()
 }
 
 void GameScreen::menu_right()
+{
+}
+
+void GameScreen::tab_left()
+{
+}
+
+void GameScreen::tab_right()
 {
 }
 

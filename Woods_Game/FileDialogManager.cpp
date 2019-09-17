@@ -33,7 +33,8 @@ Dungeon * FileDialogManager::selected_dungeon()
 			file_path.erase(0, pos + 1);
 		}
 		std::string dungeon_name = file_path.substr(0, file_path.length() - 4);
-		return Dungeon::load_dungeon(dungeon_name);
+		const int grid_width = STANDARD_LEVEL_GRID_WIDTH, grid_height = STANDARD_LEVEL_GRID_HEIGHT;
+		return Dungeon::load_dungeon(dungeon_name, grid_width, grid_height);
 	}
 	return NULL;
 }

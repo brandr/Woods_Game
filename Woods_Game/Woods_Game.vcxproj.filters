@@ -283,7 +283,6 @@
     <ClInclude Include="Controls.h">
       <Filter>Controls\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="Configurations.h">
       <Filter>Application\Header Files</Filter>
     </ClInclude>

@@ -58,6 +58,7 @@ public:
 	virtual void update();
 	void pause_screen_update();
 	void dialog_update();
+	void inventory_update();
 	void cutscene_update();
 	void calendar_update();
 	virtual void draw(ALLEGRO_DISPLAY* display);

@@ -343,7 +343,6 @@
     <ClInclude Include="PPCD.h" />
     <ClInclude Include="Qualifier.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="resource1.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="Spawner.h" />
     <ClInclude Include="SpriteSheetAnimation.h" />

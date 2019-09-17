@@ -320,6 +320,8 @@ World::World()
 	Register("world_key", &world_key); 
 	Register("current_dungeon_key", &current_dungeon_key);
 	Register("player_key", &player_key);
+	Register("default_level_width", &default_level_width);
+	Register("default_level_height", &default_level_height);
 	Register("current_level_grid_x", &current_level_grid_x);
 	Register("current_level_grid_y", &current_level_grid_y);
 	Register("dungeon_data", &dungeon_data);
@@ -335,10 +337,15 @@ World::~World()
 
 void World::load_dungeons()
 {
+	this->load_dungeons("resources/load/dungeons/");
+}
+
+void World::load_dungeons(const std::string filepath)
+{
 	const int size = this->dungeon_data.size();
 	for (int i = 0; i < size; i++) {
 		const std::string dungeon_key = this->dungeon_data.getItem(i)->get_dungeon_key();
-		this->add_dungeon(new Dungeon(dungeon_key));
+		this->add_dungeon(new Dungeon(dungeon_key, filepath, this->default_level_width.value(), this->default_level_height.value()));
 	}
 }
 
@@ -403,6 +410,7 @@ void World::recalculate_npc_paths()
 		}
 		npc->cancel_current_pathing(0);
 		npc->clear_primary_destinations();
+		npc->stand_still();
 	}
 }
 
@@ -417,6 +425,29 @@ void World::generate_levels()
 	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
 			dungeons[i]->generate_levels();
+		}
+	}
+}
+
+void World::generate_map_images()
+{
+	const std::string path_prefix = "resources/load/saves/";
+	const std::string world_path = this->world_key.value();
+	const std::string filepath = world_path + "/maps/";
+	const std::string full_filepath = path_prefix + filepath;
+	if (!boost::filesystem::is_directory(full_filepath)) {
+		boost::filesystem::create_directory(full_filepath);
+	}
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
+		if (dungeons[i]) {
+			const std::string filename = filepath + dungeons[i]->get_dungeon_name();
+			const std::string full_filename = path_prefix + filename;
+			ALLEGRO_BITMAP * dungeon_bitmap = 
+				dungeons[i]->generate_map_image(this->default_level_width.value(), this->default_level_height.value());
+			al_save_bitmap((full_filename + ".png").c_str(), dungeon_bitmap);
+			al_destroy_bitmap(dungeon_bitmap);
+			ImageLoader::get_instance().load_image(filename, "", false, path_prefix);
 		}
 	}
 }
@@ -699,4 +730,14 @@ WorldState * World::get_world_state()
 TriggerStatus * World::matching_trigger_status(TriggerStatus * status)
 {
 	return this->world_state.matching_trigger_status(status);
+}
+
+const int World::get_default_level_width()
+{
+	return this->default_level_width.value();
+}
+
+const int World::get_default_level_height()
+{
+	return this->default_level_height.value();
 }

@@ -161,6 +161,18 @@ void input_menu_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
+void input_tab_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().tab_left();
+	}
+}
+
+void input_tab_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().tab_right();
+	}
+}
+
 void input_confirm_selection(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
 		screen.screen_receiving_input().confirm_selection();
@@ -292,12 +304,18 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
+
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_Q), &input_tab_left);
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_W), &input_tab_right);
 		// controller
 			// select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
+
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_LEFT_SHOULDER), &input_tab_left);
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_RIGHT_SHOULDER), &input_tab_right);
 			// resume
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
 
@@ -480,6 +498,8 @@ void MainGameScreen::load_content()
 	pause_screen.load_content();
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
+	inventory_screen.set_world_key(game_image_manager.get_world_key());
+	inventory_screen.set_dungeon_key(game_image_manager.get_current_dungeon_key());
 	calendar_screen.load_content();
 
 	GlobalTime * global_time = game_image_manager.get_current_global_time();
@@ -571,6 +591,9 @@ void MainGameScreen::update()
 		case MAIN_GAME_DIALOG:
 			dialog_update();
 			break;
+		case MAIN_GAME_INVENTORY:
+			inventory_update();
+			break;
 		case CUTSCENE:
 			cutscene_update();
 			break;
@@ -608,6 +631,11 @@ void MainGameScreen::dialog_update()
 		//TODO: may want to trigger a different game mode if the dialog leads to another one
 		this->resume_game();
 	}
+}
+
+void MainGameScreen::inventory_update()
+{
+	this->inventory_screen.update();
 }
 
 void MainGameScreen::cutscene_update()
@@ -997,9 +1025,12 @@ void MainGameScreen::open_inventory_action()
 {
 	if (game_image_manager.get_player()->get_current_action() != ACTION_NONE) return;
 	else {
+		std::pair<int, int> current_location;
 		switch (get_game_mode()) {
 		case TOP_DOWN:
 			game_image_manager.set_game_mode(MAIN_GAME_INVENTORY);
+			current_location = game_image_manager.current_player_location_for_map();
+			this->inventory_screen.set_current_location(current_location.first, current_location.second);
 			//TODO: any action necessary regarding the inventory screen
 			break;
 		case MAIN_GAME_INVENTORY:

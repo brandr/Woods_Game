@@ -24,25 +24,32 @@
 struct DialogLine {
 	std::string text;
 	std::string option_action_key;
+	int option_page_num = -1;
 	const bool has_option();
+	const bool has_option_action();
+	const bool has_option_page();
 };
 
 struct DialogPage {
 	std::vector<DialogLine*> lines;
+	int next_page_number = -1;
 	DialogPage();
 	const int total_num_characters();
 	const std::vector<std::string> get_text_lines(const int num_characters);
 	const std::string option_action_key(const int index);
+	const int option_next_page_num(const int index);
 	const bool has_option(const int index);
 	const bool has_options();
 	const int options_count();
 };
 
+struct DialogItem;
+struct DialogItemOption;
 class ImageLoader;
 class Dialog
 {
 private:
-	std::vector<DialogPage*> pages;
+	std::map<int, DialogPage *> page_map;
 	int page_num = 0;
 	int selected_option_index = 0;
 	std::string active_action_key = "";
@@ -60,8 +67,9 @@ public:
 	void draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off);
 	void advance_dialog();
 	const bool has_current_page();
-	void add_line(const std::string line, const int page_num, const int line_num, const std::string option_action_key);
+	void add_line(const std::string line, const int page_num, const int next_page_num, const int line_num, const std::string option_action_key, DialogItemOption * option);
 	void parse_text(const std::string text);
+	void parse_dialog(DialogItem * dialog_item);
 	const std::string get_active_action_key();
 	void decrement_option();
 	void increment_option();

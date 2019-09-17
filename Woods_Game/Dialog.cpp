@@ -1,4 +1,5 @@
 #include "Dialog.h"
+#include "DialogTree.h"
 #include "ImageLoader.h"
 
 const int Dialog::current_num_characters()
@@ -17,17 +18,16 @@ const bool Dialog::is_showing_full_page()
 
 const bool Dialog::has_current_page()
 {
-	return this->pages.size() > this->page_num;
+	return this->page_map.find(this->page_num) != this->page_map.end();
 }
 
 DialogPage * Dialog::current_page()
 {
-	return this->has_current_page() ? this->pages[this->page_num] : NULL;
+	return this->has_current_page() ? this->page_map[this->page_num] : NULL;
 }
 
 Dialog::Dialog()
 {
-	//ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
 }
 
@@ -45,17 +45,23 @@ void Dialog::update()
 	}
 }
 
-void Dialog::add_line(const std::string line_text, const int page_num, const int line_num, const std::string option_action_key)
+void Dialog::add_line(const std::string line_text, const int page_num, const int next_page_num, const int line_num, const std::string option_action_key, DialogItemOption * option)
 {
-	while (page_num >= this->pages.size()) {
-		this->pages.push_back(new DialogPage());
+	if (this->page_map.find(page_num) == this->page_map.end()) {
+		this->page_map[page_num] = new DialogPage();
+		this->page_map[page_num]->next_page_number = next_page_num;
 	}
-	DialogPage * page = this->pages[page_num];
+	DialogPage * page = this->page_map[page_num];
 	while (line_num >= page->lines.size()) {
 		page->lines.push_back(new DialogLine());
 	}
 	page->lines[line_num]->text = line_text;
-	page->lines[line_num]->option_action_key = option_action_key;
+	if (option != NULL) {
+		page->lines[line_num]->option_action_key = option->option_action_key.value();
+		page->lines[line_num]->option_page_num = option->next_page_index.value();
+	} else if (option_action_key != "") {
+		page->lines[line_num]->option_action_key = option_action_key;
+	}
 }
 
 void Dialog::parse_text(const std::string text)
@@ -86,15 +92,49 @@ void Dialog::parse_text(const std::string text)
 					const std::string option = options[0];
 					line_text = manager.parse_tags(option, option_text_token)[0];
 					option_action_key = manager.parse_tags(option, option_action_token)[0];
-					
 				}
-				this->add_line(line_text, page_index, line_index, option_action_key);
+				this->add_line(line_text, page_index, -1, line_index, option_action_key, NULL);
 				line_index++;
 				empty_page = false;
 			}
 		}
 		if (!empty_page) {
 			page_index++;
+		}
+	}
+}
+
+void Dialog::parse_dialog(DialogItem * dialog_item)
+{
+	FileManager manager;
+	std::string page_token = DIALOG_PAGE_TOKEN;
+	std::string line_token = DIALOG_LINE_TOKEN;
+	std::string option_token = DIALOG_OPTION_TOKEN;
+	std::string option_text_token = DIALOG_OPTION_TEXT_TOKEN;
+	std::string option_action_token = DIALOG_OPTION_ACTION_TOKEN;
+	std::vector<DialogItemPage *> pages = dialog_item->get_pages();
+	const int page_count = pages.size();
+	for (int p = 0; p < page_count; p++) {
+		int line_index = 0;
+		DialogItemPage * page = pages[p];
+		const int page_index = page->get_page_number();
+		const int next_page_index = page->next_page_index.value();
+		const std::vector<std::string> lines = manager.parse_tags(page->dialog_text.value(), line_token);
+		const int line_count = lines.size();
+		for (int l = 0; l < line_count; l++) {
+			const std::string line = lines[l];
+			if (line.size() > 0) {
+				std::string line_text = line;
+				this->add_line(line_text, page_index, next_page_index, line_index, "", NULL);
+				line_index++;
+			}
+		}
+		std::vector<DialogItemOption *> options = page->get_options();
+		const int option_size = options.size();
+		for (int i = 0; i < option_size; i++) {
+			DialogItemOption * dio = options[i];
+			this->add_line(dio->option_text.value(), page_index, next_page_index, line_index, "", dio);
+			line_index++;
 		}
 	}
 }
@@ -106,7 +146,7 @@ const std::string Dialog::get_active_action_key()
 
 void Dialog::decrement_option()
 {
-	DialogPage * page = this->pages[this->page_num];
+	DialogPage * page = this->page_map[this->page_num];
 	if (page != NULL && page->has_options()) {
 		const int option_count = page->options_count();
 		this->selected_option_index = (this->selected_option_index - 1) % option_count;
@@ -115,7 +155,7 @@ void Dialog::decrement_option()
 
 void Dialog::increment_option()
 {
-	DialogPage * page = this->pages[this->page_num];
+	DialogPage * page = this->page_map[this->page_num];
 	if (page != NULL && page->has_options()) {
 		const int option_count = page->options_count();
 		this->selected_option_index = (this->selected_option_index + 1) % option_count;
@@ -139,8 +179,8 @@ std::vector<ActionBinding*> Dialog::get_action_bindings()
 
 void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off)
 {
-	if (this->pages.size() > this->page_num) {
-		DialogPage * page = this->pages[this->page_num];
+	if (this->has_current_page()) {
+		DialogPage * page = this->page_map[this->page_num];
 		const bool page_has_options = page->has_options();
 		const int num_characters = this->should_scroll_text ? this->current_num_characters() : page->total_num_characters();
 		const std::vector<std::string> text_lines = page->get_text_lines(num_characters);
@@ -174,15 +214,27 @@ void Dialog::advance_dialog()
 			this->character_counter = page->total_num_characters()*DIALOG_TEXT_SCROLL_FRAMES;
 		}
 	} else {
+		int next_page_num = -1;
 		DialogPage * page = this->current_page();
 		if (page != NULL && page->has_options()) {
+			next_page_num = page->option_next_page_num(this->selected_option_index);
 			const std::string action_key = page->option_action_key(this->selected_option_index);
 			if (action_key.length() > 0) {
 				this->active_action_key = action_key;
 				return;
 			}
 		}
-		this->page_num++;
+		if (next_page_num < 0) {
+			next_page_num = page->next_page_number;
+		}
+		// use -2 to say the dialog should end
+		if (next_page_num == -2) {
+			this->page_num = -1;
+		} else if (next_page_num == -1) {
+			this->page_num = this->page_num + 1;
+		} else {
+			this->page_num = next_page_num;
+		}
 	}
 }
 
@@ -219,13 +271,28 @@ const std::string DialogPage::option_action_key(const int index)
 	int option_index = 0;
 	for (int i = 0; i < line_count; i++) {
 		if (this->lines[i]->has_option()) {
-			if (option_index == index) {
+			if (this->lines[i]->has_option_action() && option_index == index) {
 				return this->lines[i]->option_action_key;
 			}
 			option_index++;
 		}
 	}
 	return "";
+}
+
+const int DialogPage::option_next_page_num(const int index)
+{
+	const int line_count = this->lines.size();
+	int option_index = 0;
+	for (int i = 0; i < line_count; i++) {
+		if (this->lines[i]->has_option()) {
+			if (this->lines[i]->has_option_page() && option_index == index) {
+				return this->lines[i]->option_page_num;
+			}
+			option_index++;
+		}
+	}
+	return -1;
 }
 
 const bool DialogPage::has_option(const int index)
@@ -258,5 +325,15 @@ const int DialogPage::options_count()
 
 const bool DialogLine::has_option()
 {
+	return this->has_option_action() || this->has_option_page();
+}
+
+const bool DialogLine::has_option_action()
+{
 	return this->option_action_key.length() > 0;
+}
+
+const bool DialogLine::has_option_page()
+{
+	return this->option_page_num >= 0;
 }

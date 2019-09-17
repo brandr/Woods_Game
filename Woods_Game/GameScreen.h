@@ -24,7 +24,7 @@ enum SCREEN_FLAGS {
 };
 enum NUMBER_KEYS {NUM_0 = 27, NUM_1 = 28, NUM_2 = 29, NUM_3 = 30, NUM_4 = 31, 
 	NUM_5 = 32, NUM_6 = 33, NUM_7 = 34, NUM_8 = 35, NUM_9 = 36};
-enum FONT_KEYS {FONT_HOTBAR, FONT_DIALOG, FONT_CLOCK, FONT_CALENDAR_DAYS, FONT_CALENDAR_MONTH};
+enum FONT_KEYS {FONT_HOTBAR, FONT_DIALOG, FONT_CLOCK, FONT_CALENDAR_DAYS, FONT_CALENDAR_MONTH, FONT_TABS};
 
 // font colors
 const static std::string FONT_COLOR_HOTBAR = "333333";
@@ -81,6 +81,8 @@ public:
 	virtual void menu_down();
 	virtual void menu_left();
 	virtual void menu_right();
+	virtual void tab_left();
+	virtual void tab_right();
 	virtual void mouse_cursor_update();
 	virtual void set_mouse_position(std::pair<int, int> pos);
 	virtual void process_mouse_click_left(const int x, const int y);

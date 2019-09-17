@@ -1,4 +1,5 @@
 #include "Qualifier.h"
+#include "Level.h"
 #include "World.h"
 
 Qualifier::Qualifier()
@@ -12,6 +13,8 @@ Qualifier::Qualifier()
 	Register("hour", &hour);
 	Register("minute", &minute);
 	Register("day_of_week", &day_of_week);
+	Register("int_val", &int_val);
+	Register("string_val", &string_val);
 	Register("trigger_status", &trigger_status);
 }
 
@@ -19,22 +22,24 @@ Qualifier::~Qualifier()
 {
 }
 
-const bool Qualifier::evaluate(World * world)
+const bool Qualifier::evaluate(World * world, Level * current_level)
 {
 	switch (this->evaluator.value()) {
 	case EVALUATOR_KEY_VALUE:
 		// we're not passing in a pair of values, so this always returns false
 		return false;
 	case EVALUATOR_AND:
-		return this->and_evaluate(world);
+		return this->and_evaluate(world, current_level);
 	case EVALUATOR_OR:
-		return this->or_evaluate(world);
+		return this->or_evaluate(world, current_level);
 	case EVALUATOR_TIME:
 		return this->time_evaluate();
 	case EVALUATOR_TRIGGER:
 		return this->trigger_evaluate(world);
 	case EVALUATOR_DAY_OF_WEEK:
 		return this->day_of_week_evaluate();
+	case EVALUATOR_CURRENT_LEVEL:
+		return this->current_level_evaluate(world, current_level);
 	default:
 		return false;
 	}
@@ -62,13 +67,13 @@ const bool Qualifier::evaluate(const int a, const int b)
 	}
 }
 
-const bool Qualifier::and_evaluate(World * world)
+const bool Qualifier::and_evaluate(World * world, Level * level)
 {
 	const int size = this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		Qualifier * q = this->qualifiers.getItem(i);
 		q->set_other_time(this->other_time);
-		const bool value = q->evaluate(world);
+		const bool value = q->evaluate(world, level);
 		if (!value) {
 			return false;
 		}
@@ -76,13 +81,13 @@ const bool Qualifier::and_evaluate(World * world)
 	return true;
 }
 
-const bool Qualifier::or_evaluate(World * world)
+const bool Qualifier::or_evaluate(World * world, Level * level)
 {
 	const int size = this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		Qualifier * q = this->qualifiers.getItem(i);
 		q->set_other_time(this->other_time);
-		const bool value = q->evaluate(world);
+		const bool value = q->evaluate(world, level);
 		if (value) {
 			return true;
 		}
@@ -146,6 +151,16 @@ const bool Qualifier::day_of_week_evaluate()
 	const int day_of_week_val = this->day_of_week.value();
 	const int other_val = this->other_time->get_current_day_of_week_index();
 	return this->evaluate(other_val, day_of_week_val);
+}
+
+const bool Qualifier::current_level_evaluate(World * world, Level * level)
+{
+	if (COMPARATOR_EQUALS == this->comparator.value()) {
+		return level != NULL && level->get_filename() == this->string_val.value();
+	} else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+		return level == NULL || level->get_filename() != this->string_val.value();
+	}
+	return false;
 }
 
 void Qualifier::set_other_time(GlobalTime * value)

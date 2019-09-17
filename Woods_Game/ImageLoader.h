@@ -31,7 +31,8 @@ public:
 	ImageLoader(ImageLoader const&) = delete;
 	void operator=(ImageLoader const&) = delete;
 	static ImageLoader& get_instance();
-	static std::string full_filename(std::string);
+	const static std::string full_filename(const std::string);
+	const static std::string full_filename(const std::string filename, const std::string path_prefix);
 	~ImageLoader();
 	void load_content();
 	void unload_content();
@@ -44,6 +45,7 @@ public:
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);
 	void load_image(std::string filename, const std::string rect_string, const bool allow_failure);
+	void load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix);
 	void load_spritesheet(Animation);
 	void load_mask(const std::string base_filename);
 	void load_mask(const std::string base_filename, const std::string rect_string);
@@ -61,6 +63,7 @@ public:
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);
 	ALLEGRO_BITMAP* get_image(std::string filename, Rect subsection);
+	ALLEGRO_BITMAP* get_image(const std::string filename, const std::string rect_string, const std::string path_prefix);
 	mask_t * get_mask(const std::string filename);
 	mask_t * get_mask(const std::string filename, const std::string rect_string);
 	const bool has_mask(const std::string filename, const std::string rect_string);

@@ -4,10 +4,10 @@ Dungeon::Dungeon()
 {
 }
 
-Dungeon::Dungeon(std::string dungeon_name)
+Dungeon::Dungeon(const std::string dungeon_name, const std::string filepath, const int default_level_width, const int default_level_height)
 {
 	this->dungeon_name = dungeon_name;
-	this->intialize_levels();
+	this->intialize_levels(filepath, default_level_width, default_level_height);
 }
 
 Dungeon::~Dungeon()
@@ -53,16 +53,21 @@ void Dungeon::unload_content()
 	this->level_list.clear();
 }
 
-void Dungeon::intialize_levels()
+void Dungeon::intialize_levels(const int default_level_width, const int default_level_height)
+{
+	this->intialize_levels("resources/load/dungeons/", default_level_width, default_level_height);
+}
+
+void Dungeon::intialize_levels(const std::string filepath, int default_level_width, const int default_level_height)
 {
 	FileManager filemanager;
-	std::string filename = "resources/load/dungeons/" + dungeon_name;
+	std::string filename = filepath + dungeon_name;
 	std::vector<std::string> level_keys = filemanager.all_xml_keys(filename, "SerializableClass", "Level", "LevelKey");
 	const int size = level_keys.size();
 	for (std::string level_key : level_keys) {
 		Level *level = new Level(level_key, dungeon_name, level_key);
 		filemanager.load_xml_content(level, filename, "SerializableClass", "LevelKey", level_key);
-		level->intialize_dimensions();
+		level->intialize_dimensions(default_level_width, default_level_height);
 		add_level(level);
 	}
 }
@@ -74,9 +79,47 @@ void Dungeon::generate_levels()
 	}
 }
 
-Dungeon * Dungeon::load_dungeon(std::string dungeon_name)
+ALLEGRO_BITMAP * Dungeon::generate_map_image(const int standard_level_width, const int standard_level_height)
 {
-	Dungeon * dungeon = new Dungeon(dungeon_name);
+	const int grid_height = this->dungeon_grid.size();
+	int grid_width = -1;
+	for (int y = 0; y < grid_height; y++) {
+		const int row_width = this->dungeon_grid[y].size();
+		if (grid_width < row_width) {
+			grid_width = row_width;
+		}
+	}
+
+	const int cell_width = standard_level_width / LEVEL_MAP_SCALE;
+	const int cell_height = standard_level_height/ LEVEL_MAP_SCALE;
+
+	const int image_width = grid_width * cell_width;
+	const int image_height = grid_height * cell_height;
+
+	ALLEGRO_BITMAP * map_bitmap = al_create_bitmap(image_width, image_height);
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(map_bitmap);
+	al_clear_to_color(al_map_rgba(255, 255, 255, 255));
+	for (int y = 0; y < grid_height; y++) {
+		for (int x = 0; x < grid_width; x++) {
+			if (x >= this->dungeon_grid[y].size()) {
+				continue;
+			}
+			Level * level = this->dungeon_grid[y][x];
+			if (level == NULL) {
+				continue;
+			}
+			ALLEGRO_BITMAP * cell_bitmap = level->generate_cell_map_image(cell_width, cell_height, x, y);
+			al_draw_bitmap(cell_bitmap, x * cell_width, y * cell_height, 0);
+		}
+	}
+	al_set_target_bitmap(display);
+	return map_bitmap;
+}
+
+Dungeon * Dungeon::load_dungeon(const std::string dungeon_name, const int default_level_width, const int default_level_height)
+{
+	Dungeon * dungeon = new Dungeon(dungeon_name, "resources/load/dungeons/", default_level_width, default_level_height);
 	return dungeon;
 }
 

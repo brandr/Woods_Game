@@ -31,6 +31,8 @@ private:
 	std::string current_level_key = "";
 	std::string current_position_node_key = "";
 	bool is_processing = false; //TEMP. replace with AI state for AIBeing
+	int current_dialog_index = 0;
+	DialogGroup * current_dialog_group = NULL;
 protected:
 	virtual const std::string calculate_destination_node_key(World * world, GlobalTime * time);
 public:

@@ -86,6 +86,8 @@ public:
 	void save_game();
 	void set_game_mode(int game_mode);
 	int get_game_mode();
+	const std::string get_world_key();
+	const std::string get_current_dungeon_key();
 	Player* get_player();
 	void unload_content();
 	void unload_level_content();
@@ -110,6 +112,8 @@ public:
 	void increment_dialog_option();
 	// cutscene
 	void process_cutscene(Cutscene * cutscene);
+	// map
+	const std::pair<int, int> current_player_location_for_map();
 };
 
 #endif

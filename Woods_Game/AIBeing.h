@@ -73,6 +73,7 @@ public:
 	virtual const bool pathing_blocked_by_moving_at(const int x, const int y, Level * level, const bool ignore_should_push_others);
 	virtual Entity * blocking_entity_at(const int x, const int y, Level * level);
 	virtual const bool pathing_blocked_at(const int x, const int y, std::vector<Entity*> interactables);
+	virtual void stand_still();
 	virtual void set_is_processing(const bool value);
 	virtual const bool is_locked();
 	virtual const bool needs_pathing_calculation();

@@ -28,6 +28,8 @@ private:
 	xmls::xString current_dungeon_key;
 	xmls::xInt current_day;
 	xmls::xString player_key;
+	xmls::xInt default_level_width;
+	xmls::xInt default_level_height;
 	xmls::xInt current_level_grid_x;
 	xmls::xInt current_level_grid_y;
 	xmls::Collection<DungeonData> dungeon_data;
@@ -60,12 +62,14 @@ public:
 	World();
 	~World();
 	void load_dungeons();
+	void load_dungeons(const std::string filepath);
 	void reload_dungeons(const std::string dungeons_path);
 	void reload_world_state(const std::string world_state_path);
 	void load_npcs();
 	void recalculate_npc_paths();
 	void load_player();
 	void generate_levels();
+	void generate_map_images();
 	void unload_content();
 	void load_images(ImageLoader&);
 	static void save_game(World * world, GlobalTime * global_time);
@@ -96,6 +100,8 @@ public:
 	void set_current_day(const int day);
 	WorldState * get_world_state();
 	TriggerStatus * matching_trigger_status(TriggerStatus * status);
+	const int get_default_level_width();
+	const int get_default_level_height();
 };
 
 #endif

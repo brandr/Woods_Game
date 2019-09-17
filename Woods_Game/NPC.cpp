@@ -11,7 +11,8 @@ void NPC::clear_primary_destinations()
 const std::string NPC::calculate_destination_node_key(World * world, GlobalTime * time)
 {
 	//TEMP. should probably have more AIState filtering before we get here.
-	const std::string scheduled_node_key = this->schedule.scheduled_node_key(world, time);
+	Level * current_level = world->get_level_with_key(this->current_level_key);
+	const std::string scheduled_node_key = this->schedule.scheduled_node_key(world, current_level, time);
 	return scheduled_node_key;
 }
 
@@ -89,7 +90,32 @@ const bool NPC::get_obeys_tile_rules()
 
 Dialog * NPC::choose_dialog(World * world, GlobalTime * time, Player * player)
 {
-	Dialog * dialog = this->dialog_tree.choose_dialog(world, time);
+	Dialog * dialog = NULL;
+	if (this->current_dialog_group != NULL) {
+		DialogItem * dialog_item = this->current_dialog_group->get_dialog_item(this->current_dialog_index);
+		if (dialog_item != NULL) {
+			dialog = new Dialog();
+			dialog->parse_dialog(dialog_item);
+		} else {
+			this->current_dialog_group = NULL;
+			this->current_dialog_index = 0;
+		}
+	}
+	if (dialog == NULL) {
+		Level * current_level = world->get_level_with_key(this->current_level_key);
+		this->current_dialog_group = this->dialog_tree.choose_dialog_group(world, current_level, time);
+		if (this->current_dialog_group != NULL) {
+			DialogItem * dialog_item = this->current_dialog_group->get_dialog_item(this->current_dialog_index);
+			if (dialog_item != NULL) {
+				dialog = new Dialog();
+				dialog->parse_dialog(dialog_item);
+			} else {
+				this->current_dialog_group = NULL;
+				this->current_dialog_index = 0;
+			}
+		}
+	}
+	
 	if (dialog == NULL) {
 		const std::string default_text = this->get_default_dialog_text();
 		if (!default_text.empty()) {
@@ -111,7 +137,8 @@ const bool NPC::interact_action(World * world, GlobalTime * time, Player * playe
 		GameImage::update();
 		player->set_open_dialog(dialog);
 		player->set_has_met_npc(this->get_npc_key());
-		//TODO: update relationship with player
+		this->current_dialog_index++;
+		//TODO: update relationship with player (not sure what general objects handle this)
 		return true;
 	}
 	return false;

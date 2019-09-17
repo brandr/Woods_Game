@@ -1,10 +1,11 @@
 #include "NPCSchedule.h"
+#include "Level.h"
 #include "World.h"
 
-ScheduleTimeBlock * NPCSchedule::schedule_block_for_time(World * world, GlobalTime * time)
+ScheduleTimeBlock * NPCSchedule::schedule_block_for_time(World * world, Level * level, GlobalTime * time)
 {
 	ScheduleTimeBlock * block_for_time = NULL;
-	const std::vector<ScheduleTimeBlock *> blocks = this->matching_blocks(world, time);
+	const std::vector<ScheduleTimeBlock *> blocks = this->matching_blocks(world, level, time);
 	if (blocks.size() == 1) {
 		return blocks[0];
 	} else if (blocks.size() > 1) {
@@ -33,13 +34,13 @@ DaySchedule * NPCSchedule::day_schedule_for_time(GlobalTime * time)
 }
 
 // TODO: other conditions besides time
-const std::vector<ScheduleTimeBlock*> NPCSchedule::matching_blocks(World * world, GlobalTime * time)
+const std::vector<ScheduleTimeBlock*> NPCSchedule::matching_blocks(World * world, Level * level, GlobalTime * time)
 {
 	std::vector<ScheduleTimeBlock*> matches;
 	const int size = this->schedule_blocks.size();
 	for (int i = 0; i < size; i++) {
 		ScheduleTimeBlock * block = this->schedule_blocks.getItem(i);
-		if (block->matches_time(world, time)) {
+		if (block->matches_time(world, level, time)) {
 			matches.push_back(block);
 		}
 	}
@@ -57,10 +58,10 @@ NPCSchedule::~NPCSchedule()
 {
 }
 
-const std::string NPCSchedule::scheduled_node_key(World * world, GlobalTime * time)
+const std::string NPCSchedule::scheduled_node_key(World * world, Level * level, GlobalTime * time)
 {
 	//TODO: probably want to pass in quest triggers here
-	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, time);
+	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
 	if (schedule_block != NULL) {
 		return schedule_block->node_key.value();
 	}
@@ -77,12 +78,12 @@ DaySchedule::~DaySchedule()
 {
 }
 
-ScheduleTimeBlock * DaySchedule::schedule_block_for_time(World * world, GlobalTime * time)
+ScheduleTimeBlock * DaySchedule::schedule_block_for_time(World * world, Level * level, GlobalTime * time)
 {
 	const int size = this->schedule_blocks.size();
 	for (int i = 0; i < size; i++) {
 		ScheduleTimeBlock * block = this->schedule_blocks.getItem(i);
-		if (block->matches_time(world, time)) {
+		if (block->matches_time(world, level, time)) {
 			return block;
 		}
 	}
@@ -103,13 +104,13 @@ ScheduleTimeBlock::~ScheduleTimeBlock()
 }
 
 //TODO: probably want other match methods like quest triggers
-const bool ScheduleTimeBlock::matches_time(World * world, GlobalTime * time)
+const bool ScheduleTimeBlock::matches_time(World * world, Level * level, GlobalTime * time)
 {
 	const int size = this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		Qualifier * q = this->qualifiers.getItem(i);
 		q->set_other_time(time);
-		if (!q->evaluate(world)) {
+		if (!q->evaluate(world, level)) {
 			return false;
 		}
 	}

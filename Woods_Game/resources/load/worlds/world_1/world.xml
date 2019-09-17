@@ -3,7 +3,9 @@
 		<Member Name="world_key">world_1</Member>
 		<Member Name="current_dungeon_key">dungeon_1</Member>
 		<Member Name="player_key">default_player</Member>
-		<Member Name="current_level_grid_x">0</Member>
+		<Member Name="default_level_width">832</Member>
+        <Member Name="default_level_height">640</Member>
+        <Member Name="current_level_grid_x">0</Member>
 		<Member Name="current_level_grid_y">0</Member>
 		<Member Name="current_day">1</Member>
 		<Collection Name="dungeon_data">
@@ -39,6 +41,8 @@
             								<Member Name="hour">5</Member>
             								<Member Name="minute">-1</Member>
                                             <Member Name="day_of_week">-1</Member>
+                                            <Member Name="int_val"></Member>
+                                            <Member Name="string_val"></Member>
             							</Class>
             						</Collection>
             					</Class>
@@ -83,64 +87,117 @@
                         <Member Name="dialog_text"></Member>
                         <Collection Name="child_nodes">
                             <Class Type="DialogTreeNode" Version="1">
-                                <Member Name="dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
-                                <Collection Name="child_nodes">
-                                </Collection>
-                                <Collection Name="qualifiers">
-                                    <Class Type="Qualifier" Version="1">
-                                        <Member Name="comparator">1</Member>
-                                        <Member Name="evaluator">4</Member>
-                                        <Member Name="month">-1</Member>
-                                        <Member Name="day">-1</Member>
-                                        <Member Name="hour">-1</Member>
-                                        <Member Name="minute">-1</Member>
-                                        <Member Name="day_of_week">-1</Member>
-                                        <Class Type="TriggerStatus" Name="trigger_status" Version="1">
-                                            <Member Name="trigger_key">has_met_npc</Member>
-                                            <Member Name="trigger_state">1</Member>
-                                            <Collection Name="trigger_attributes">
-                                                <Class Type="TriggerAttribute" Version="1">
-                                                    <Member Name="attribute_key">npc_key</Member>
-                                                    <Member Name="attribute_value">stranger_1</Member>
-                                                 </Class>
-                                            </Collection>
-                                         </Class>
-                                    </Class>
-                                </Collection>
-                            </Class>
-                        </Collection>
-                    </Class>
-                    <Class Type="DialogTreeNode" Name="root_node" Version="1">
-                        <Member Name="dialog_text"></Member>
-                        <Collection Name="child_nodes">
-                            <Class Type="DialogTreeNode" Version="1">
                                 <Member Name="dialog_text"></Member>
                                 <Collection Name="child_nodes">
                                     <Class Type="DialogTreeNode" Version="1">
-                                        <Member Name="dialog_text">[p][l]I am not a stranger and it is monday.[/l][/p]</Member>
+                                        <Member Name="dialog_text"></Member>
+                                        <Collection Name="child_nodes">
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[l]I am not a stranger and it is monday.[/l]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">15</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                    <Class Type="Qualifier" Version="1">
+                                                        <Member Name="comparator">0</Member>
+                                                        <Member Name="evaluator">5</Member>
+                                                        <Member Name="month">-1</Member>
+                                                        <Member Name="day">-1</Member>
+                                                        <Member Name="hour">-1</Member>
+                                                        <Member Name="minute">-1</Member>
+                                                        <Member Name="day_of_week">1</Member>
+                                                        <Member Name="int_val"></Member>
+                                                        <Member Name="string_val"></Member>
+                                                    </Class>
+                                                </Collection>
+                                            </Class>
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[l]I am not a stranger.[/l]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">10</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                </Collection>
+                                            </Class>
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[p][l]I am not a stranger. Or am I?[/l][/p]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">10</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                </Collection>
+                                            </Class>
+                                        </Collection>
                                         <Collection Name="qualifiers">
                                             <Class Type="Qualifier" Version="1">
-                                                <Member Name="comparator">0</Member>
-                                                <Member Name="evaluator">5</Member>
+                                                <Member Name="comparator">1</Member>
+                                                <Member Name="evaluator">6</Member>
                                                 <Member Name="month">-1</Member>
                                                 <Member Name="day">-1</Member>
                                                 <Member Name="hour">-1</Member>
                                                 <Member Name="minute">-1</Member>
-                                                <Member Name="day_of_week">1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val"></Member>
+                                                <Member Name="string_val">stranger_house</Member>
                                             </Class>
                                         </Collection>
                                     </Class>
                                     <Class Type="DialogTreeNode" Version="1">
-                                        <Member Name="dialog_text">[p][l]I am not a stranger.[/l][/p]</Member>
+                                        <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                        <Collection Name="dialog_items">
+                                                <Class Type="DialogItem" Version="1">
+                                                    <Member Name="conversation_index">0</Member>
+                                                    <Collection Name="pages">
+                                                        <Class Type="DialogItemPage" Version="1">
+                                                            <Member Name="dialog_text">[l]I am not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
+                                                            <Member Name="next_page_index">-1</Member>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="priority">20</Member>
+                                        </Class>
                                         <Collection Name="qualifiers">
                                             <Class Type="Qualifier" Version="1">
-                                                <Member Name="comparator">1</Member>
-                                                <Member Name="evaluator">5</Member>
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">6</Member>
                                                 <Member Name="month">-1</Member>
                                                 <Member Name="day">-1</Member>
                                                 <Member Name="hour">-1</Member>
                                                 <Member Name="minute">-1</Member>
-                                                <Member Name="day_of_week">1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">-1</Member>
+                                                <Member Name="string_val">stranger_house</Member>
                                             </Class>
                                         </Collection>
                                     </Class>
@@ -154,6 +211,8 @@
                                         <Member Name="hour">-1</Member>
                                         <Member Name="minute">-1</Member>
                                         <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
                                         <Class Type="TriggerStatus" Name="trigger_status" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -168,7 +227,63 @@
                                 </Collection>
                             </Class>
                             <Class Type="DialogTreeNode" Version="1">
-                                <Member Name="dialog_text">[p][l]I am a stranger.[/l][/p]</Member>
+                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                    <Collection Name="dialog_items">
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="conversation_index">0</Member>
+                                            <Collection Name="pages">
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]I am a stranger.[/l]</Member>
+                                                    <Member Name="page_number">0</Member>
+                                                    <Member Name="next_page_index">-1</Member>
+                                                </Class>
+                                            </Collection>
+                                        </Class>
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="conversation_index">1</Member>
+                                            <Collection Name="pages">
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]I am still a stranger.[/l]</Member>
+                                                    <Member Name="page_number">0</Member>
+                                                    <Member Name="next_page_index">-1</Member>
+                                                </Class>
+                                            </Collection>
+                                        </Class>
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="conversation_index">2</Member>
+                                            <Collection Name="pages">
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]Do you want to get a missable collectible?[/l]</Member>
+                                                    <Member Name="page_number">0</Member>
+                                                    <Member Name="next_page_index">-1</Member>
+                                                    <Collection Name="options">
+                                                        <Class Type="DialogItemOption" Version="1">
+                                                            <Member Name="option_text">Yes</Member>
+                                                            <Member Name="next_page_index">1</Member>
+                                                            <Member Name="option_action_key"></Member>
+                                                        </Class>
+                                                        <Class Type="DialogItemOption" Version="1">
+                                                            <Member Name="option_text">No</Member>
+                                                            <Member Name="next_page_index">2</Member>
+                                                            <Member Name="option_action_key"></Member>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]Too bad, it's not implemented.[/l]</Member>
+                                                    <Member Name="page_number">1</Member>
+                                                    <Member Name="next_page_index">-2</Member>
+                                                </Class>
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]Don't say I didn't warn you.[/l]</Member>
+                                                    <Member Name="page_number">2</Member>
+                                                    <Member Name="next_page_index">-2</Member>
+                                                </Class>
+                                            </Collection>
+                                        </Class>
+                                    </Collection>
+                                    <Member Name="priority">10</Member>
+                                </Class>
                                 <Collection Name="qualifiers">
                                     <Class Type="Qualifier" Version="1">
                                         <Member Name="comparator">1</Member>
@@ -178,6 +293,8 @@
                                         <Member Name="hour">-1</Member>
                                         <Member Name="minute">-1</Member>
                                         <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
                                         <Class Type="TriggerStatus" Name="trigger_status" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -223,6 +340,8 @@
             								<Member Name="hour">8</Member>
             								<Member Name="minute">-1</Member>
                                             <Member Name="day_of_week">-1</Member>
+                                            <Member Name="int_val"></Member>
+                                            <Member Name="string_val"></Member>
             							</Class>
             						</Collection>
             					</Class>
@@ -266,7 +385,15 @@
                         <Member Name="dialog_text"></Member>
                         <Collection Name="child_nodes">
                             <Class Type="DialogTreeNode" Version="1">
-                                <Member Name="dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
+                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                    <Collection Name="dialog_items">
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
+                                            <Member Name="conversation_index">0</Member>
+                                        </Class>
+                                    </Collection>
+                                    <Member Name="priority">10</Member>
+                                </Class>
                                 <Collection Name="child_nodes">
                                 </Collection>
                                 <Collection Name="qualifiers">
@@ -278,6 +405,8 @@
                                         <Member Name="hour">-1</Member>
                                         <Member Name="minute">-1</Member>
                                         <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
                                         <Class Type="TriggerStatus" Name="trigger_status" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -297,7 +426,15 @@
                         <Member Name="dialog_text"></Member>
                         <Collection Name="child_nodes">
                             <Class Type="DialogTreeNode" Version="1">
-                                <Member Name="dialog_text">[p][l]You are not a stranger.[/l][/p]</Member>
+                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                    <Collection Name="dialog_items">
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="dialog_text">[p][l]You are not a stranger.[/l][/p]</Member>
+                                            <Member Name="conversation_index">0</Member>
+                                        </Class>
+                                    </Collection>
+                                    <Member Name="priority">10</Member>
+                                </Class>
                                 <Collection Name="child_nodes">
                                 </Collection>
                                 <Collection Name="qualifiers">
@@ -309,6 +446,8 @@
                                         <Member Name="hour">-1</Member>
                                         <Member Name="minute">-1</Member>
                                         <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
                                         <Class Type="TriggerStatus" Name="trigger_status" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>

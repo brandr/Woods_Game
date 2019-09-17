@@ -60,6 +60,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.load_dungeons();
 	this->world.load_npcs();
 	this->world.generate_levels();
+	this->world.generate_map_images();
 	const std::string initial_state_filename = new_game_path + "world_state";
 	this->world.reload_world_state(initial_state_filename);
 	this->load_player();
@@ -76,13 +77,13 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	FileManager filemanager;
 	const std::string filename = "resources/load/saves/" + save_file + "/world";
 	filemanager.load_xml_content(&(this->world), filename, "SerializableClass", "WorldKey", save_file);
-	this->world.load_dungeons();
-	this->world.load_npcs();
 	const std::string world_key = this->world.get_world_key();
 	const int day = this->world.get_current_day();
 	this->current_global_time = new GlobalTime(day, START_TIME_HOUR*TIME_RATIO); //TODO: calculate start time as necessary
-	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/dungeons";
-	this->world.reload_dungeons(dungeons_path);
+	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/dungeons/";
+	this->world.load_dungeons(dungeons_path);
+	this->world.load_npcs();
+	this->world.generate_map_images();
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/world_state";
 	this->world.reload_world_state(world_state_path);
 	this->load_player();
@@ -125,6 +126,17 @@ void GameImageManager::set_game_mode(int game_mode)
 int GameImageManager::get_game_mode()
 {
 	return game_mode;
+}
+
+const std::string GameImageManager::get_world_key()
+{
+	return this->world.get_world_key();
+}
+
+const std::string GameImageManager::get_current_dungeon_key()
+{
+	Dungeon * dungeon = this->world.get_current_dungeon();
+	return dungeon != NULL ? dungeon->get_dungeon_name() : "";
 }
 
 void GameImageManager::load_player()
@@ -587,6 +599,17 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 			cutscene->advance_block();
 		}
 	}
+}
+
+const std::pair<int, int> GameImageManager::current_player_location_for_map()
+{
+	const int grid_x = this->current_level->get_grid_x(), grid_y = this->current_level->get_grid_y();
+	if (grid_x < 0 || grid_y < 0) {
+		return std::pair<int, int>(0, 0); //TODO: how to show location of a building that the player is inside?
+	}
+	const int standard_w = this->world.get_default_level_width(), standard_h = this->world.get_default_level_height();
+	const int x_off = this->player->get_x(), y_off = this->player->get_y();
+	return std::pair<int, int>(grid_x * standard_w + x_off, grid_y * standard_h + y_off);
 }
 
 

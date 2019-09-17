@@ -152,7 +152,7 @@ void LevelEditorDataManager::load_dungeon(std::string dungeon_path)
 		this->active_dungeon->unload_content();
 		this->active_dungeon.release();
 	}
-	this->active_dungeon.reset(Dungeon::load_dungeon(dungeon_name));
+	this->active_dungeon.reset(Dungeon::load_dungeon(dungeon_name, STANDARD_LEVEL_GRID_WIDTH, STANDARD_LEVEL_GRID_HEIGHT));
 	this->reset_active_levels();
 }
 
@@ -225,7 +225,7 @@ void LevelEditorDataManager::add_level(std::string level_name)
 			? this->get_selected_tileset_name() : this->get_tileset_name(0);
 		level->set_tileset_key(tileset_key);
 		level->load_tileset();
-		level->intialize_dimensions();
+		level->intialize_dimensions(STANDARD_LEVEL_GRID_WIDTH, STANDARD_LEVEL_GRID_HEIGHT);
 		level->initialize_empty();
 		this->active_dungeon->add_level(level);
 		this->active_levels.push_back(unique_ptr<Level, LevelDeleter>(level));

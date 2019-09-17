@@ -15,12 +15,14 @@ private:
 public:
 	std::vector<std::vector<Level*>> dungeon_grid;
 	Dungeon();
-	Dungeon(std::string dungeon_name);
+	Dungeon(const std::string filepath, const std::string dungeon_name, const int default_level_width, const int default_level_height);
 	~Dungeon();
 	void unload_content();
-	void intialize_levels();
+	void intialize_levels(const int default_level_width, const int default_level_height);
+	void intialize_levels(const std::string filepath, int default_level_width, const int default_level_height);
 	void generate_levels();
-	static Dungeon * load_dungeon(std::string dungeon_name);
+	ALLEGRO_BITMAP * generate_map_image(const int standard_level_width, const int standard_level_height);
+	static Dungeon * load_dungeon(const std::string dungeon_name, const int default_level_width, const int default_level_height);
 	void load_images(ImageLoader&);
 	void update_new_day(Player * player);
 	void add_level(Level*);

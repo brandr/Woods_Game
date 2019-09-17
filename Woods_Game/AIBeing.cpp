@@ -388,6 +388,12 @@ void AIBeing::walk_to_next_level_update(Level * level)
 		return !this->empty_at(check_rect, interactables);
 	}
 
+	void AIBeing::stand_still()
+	{
+		this->xvel = 0, this->yvel = 0;
+		this->anim_state = ANIM_STATE_NEUTRAL;
+	}
+
 	void AIBeing::set_is_processing(const bool value)
 	{
 		if (value) {
@@ -424,6 +430,8 @@ void AIBeing::walk_to_next_level_update(Level * level)
 			this->ai_state.set_is_idle();
 		}
 		this->ai_state.set_current_destination_node_key("");
+		this->should_push_others = false;
+		this->should_path_around_moving = false;
 	}
 
 	void AIBeing::clear_primary_destinations()

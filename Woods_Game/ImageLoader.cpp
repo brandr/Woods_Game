@@ -20,9 +20,14 @@ ImageLoader &ImageLoader::get_instance()
 	return loader;
 }
 
-std::string ImageLoader::full_filename(std::string filename)
+const std::string ImageLoader::full_filename(const std::string filename)
 {
-	return "resources/images/" + filename + ".png";
+	return ImageLoader::full_filename(filename, "resources/images/");
+}
+
+const std::string ImageLoader::full_filename(const std::string filename, const std::string path_prefix)
+{
+	return path_prefix + filename + ".png";
 }
 
 ImageLoader::~ImageLoader()
@@ -93,7 +98,6 @@ void ImageLoader::load_image(std::string filename)
 
 void ImageLoader::load_image(std::string filename, Rect subsection)
 {
-	std::string full_filename = ImageLoader::full_filename(filename);
 	const std::string rect_string = rect_to_string(subsection);
 	ImageLoader::get_instance().load_image(filename, rect_string, false);
 }
@@ -101,13 +105,19 @@ void ImageLoader::load_image(std::string filename, Rect subsection)
 // only load the part of the image encompassed by the rect
 void ImageLoader::load_image(const std::string filename, const std::string rect_string, const bool allow_failure)
 {
+	ImageLoader::get_instance().load_image(filename, rect_string, allow_failure, "resources/images/");
+}
+
+void ImageLoader::load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix)
+{
 	// if the full image is not already loaded in, we load it here.
-	const std::string full_filename = ImageLoader::full_filename(filename);
+	const std::string full_filename = ImageLoader::full_filename(filename, path_prefix);
 	if (image_map.find(std::pair<std::string, std::string>(full_filename, rect_string)) == image_map.end()
 		&& rect_string != ""
 		&& (image_map.find(std::pair<std::string, std::string>(full_filename, "")) == image_map.end())) {
 		load_image(filename, "", allow_failure);
-	} else {
+	}
+	else {
 		// don't do anything if we have already lodaed this subsection
 		auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 		if (it != image_map.end()) {
@@ -118,7 +128,8 @@ void ImageLoader::load_image(const std::string filename, const std::string rect_
 	if (image == NULL) {
 		if (allow_failure) {
 			return;
-		} else {
+		}
+		else {
 			std::cout << filename << std::endl;
 			std::cout << "loader failed to load image" << std::endl;
 			//TODO: better error handling
@@ -129,13 +140,14 @@ void ImageLoader::load_image(const std::string filename, const std::string rect_
 	std::vector<std::string> rect_parts;
 	if (rect_string.length() > 0) {
 		rect_parts = fm.string_to_parts(rect_string, ",");
-		Rect subsection(::atoi(rect_parts[0].c_str()), 
-			::atoi(rect_parts[1].c_str()), 
+		Rect subsection(::atoi(rect_parts[0].c_str()),
+			::atoi(rect_parts[1].c_str()),
 			::atoi(rect_parts[2].c_str()),
 			::atoi(rect_parts[3].c_str()));
 		ALLEGRO_BITMAP * sub_image = al_create_sub_bitmap(image, subsection.x, subsection.y, subsection.width, subsection.height);
 		image_map[(std::pair<std::string, std::string>(full_filename, rect_string))] = sub_image;
-	} else {
+	}
+	else {
 		image_map[(std::pair<std::string, std::string>(full_filename, ""))] = image;
 	}
 }
@@ -373,6 +385,14 @@ ALLEGRO_BITMAP * ImageLoader::get_image(std::string filename, Rect subsection)
 	const std::string rect_string = rect_to_string(subsection);
 	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
 	if (it == image_map.end()) return nullptr;
+	else return it->second;
+}
+
+ALLEGRO_BITMAP * ImageLoader::get_image(const std::string filename, const std::string rect_string, const std::string path_prefix)
+{
+	const std::string full_filename = ImageLoader::full_filename(filename, path_prefix);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) return NULL;
 	else return it->second;
 }
 
