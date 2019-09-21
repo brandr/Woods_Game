@@ -5,6 +5,7 @@
 #include "Level.h"
 #include "Dungeon.h"
 #include "FileManager.h"
+#include "LocationMarker.h"
 #include <Agui/Backends/Allegro5/Allegro5Image.hpp>
 #include <Agui/Backends/Allegro5/Allegro5Graphics.hpp>
 
@@ -20,7 +21,8 @@ enum OBJECT_TYPES {
 	OBJECT_TYPE_BLOCK = 1, 
 	OBJECT_TYPE_ENTITY_GROUP = 2, 
 	OBJECT_TYPE_SPAWNER = 3, 
-	OBJECT_TYPE_PATH_NODE = 4
+	OBJECT_TYPE_PATH_NODE = 4,
+	OBJECT_TYPE_LOCATION_MARKER = 5
 };
 
 class Level;
@@ -44,6 +46,7 @@ public:
 	static constexpr const char* TILED_IMAGE_LAYER = "tiled_image_layer";
 	static constexpr const char* PATH_NODE_LAYER = "path_node_layer";
 	static constexpr const char* SPAWNER_LAYER = "spawner_layer";
+	static constexpr const char* LOCATION_MARKER_LAYER = "location_marker_layer";
 	static constexpr const char* GRID_LINES_LAYER = "grid_lines_layer";
 	
 private:
@@ -75,12 +78,14 @@ private:
 	void add_selected_level_tiled_image(const int tiled_image_index, const std::pair<int, int> tiled_image_grid_pos, const std::pair<int, int> level_grid_pos);
 	void add_selected_level_spawner(const int spawner_index, const std::pair<int, int> pos);
 	void add_selected_level_path_node(const int path_node_index, const std::pair<int, int> pos);
+	void add_selected_level_location_marker(const int path_node_index, const std::pair<int, int> pos);
 	void delete_level_tile(std::pair<int, int> pos);
 	void delete_level_block(std::pair<int, int> pos);
 	void delete_level_entity_group(std::pair<int, int> pos);
 	bool delete_level_tiled_image(const std::pair<int, int> pos);
 	void delete_level_spawner(std::pair<int, int> pos);
 	void delete_level_path_node(const std::pair<int, int> pos);
+	void delete_level_location_marker(const std::pair<int, int> pos);
 public:
 	LevelEditorDataManager(LevelEditorDataManager const&) = delete;
 	void operator=(LevelEditorDataManager const&) = delete;
@@ -152,6 +157,7 @@ public:
 	std::vector<std::string> all_selected_tiled_image_keys();
 	std::vector<std::string> all_selected_spawner_keys();
 	const std::vector<std::string> all_selected_path_node_keys();
+	const std::vector<std::string> all_selected_location_marker_keys();
 	std::string get_selected_tileset_name();
 	std::string get_tileset_name(int index);
 	ALLEGRO_BITMAP * get_default_tile_bitmap(int index);
@@ -163,6 +169,7 @@ public:
 	ALLEGRO_BITMAP * get_default_tiled_image_bitmap(int index);
 	ALLEGRO_BITMAP * get_spawner_bitmap_for_selected_col(const int index);
 	ALLEGRO_BITMAP * get_path_node_bitmap_for_selected_col(const int index);
+	ALLEGRO_BITMAP * get_location_marker_bitmap_for_selected_col(const int index);
 
 	std::pair<int, int> get_entity_group_image_dimensions_by_index(int index);
 	const int get_tile_sheet_image_cols_by_index(const int index);
@@ -191,6 +198,7 @@ const std::vector<std::string> LEVEL_LAYERS({
 	LevelEditorDataManager::ENTITY_GROUP_LAYER,
 	LevelEditorDataManager::SPAWNER_LAYER,
 	LevelEditorDataManager::PATH_NODE_LAYER,
+	LevelEditorDataManager::LOCATION_MARKER_LAYER,
 
 	LevelEditorDataManager::TILED_IMAGE_LAYER,
 	LevelEditorDataManager::GRID_LINES_LAYER

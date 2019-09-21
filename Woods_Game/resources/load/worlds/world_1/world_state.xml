@@ -23,6 +23,8 @@
         		</Collection>
         	</Class>
         </Collection>
+        <Collection Name="explored_cells">
+        </Collection>
         <Class Type="Player" Version="1" Name="player">
 		<Member Name="spawn_key">player_spawner_room</Member>
 		<Member Name="start_pos_x">10</Member>

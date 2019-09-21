@@ -23,9 +23,14 @@ public:
 	static constexpr const char* SELECTION_KEY_QUIT_GAME = "quit_game";
 	static constexpr const char* SELECTION_KEY_OPEN_VIDEO_SETTINGS = "open_video_settings";
 	static constexpr const char* SELECTION_KEY_OPEN_CONTROL_SETTINGS = "open_control_settings";
+	static constexpr const char* SELECTION_KEY_OPEN_AUDIO_SETTINGS = "open_audio_settings";
 	// pause video settings	
 	static constexpr const char* SELECTION_KEY_SET_RESOLUTION = "set_resolution";
 	static constexpr const char* SELECTION_KEY_SET_SCREEN_STYLE = "set_screen_style";
+	// pause audio settings
+	static constexpr const char* SELECTION_KEY_SET_MASTER_VOLUME = "set_master_volume";
+	static constexpr const char* SELECTION_KEY_SET_MUSIC_VOLUME = "set_music_volume";
+	static constexpr const char* SELECTION_KEY_SET_SFX_VOLUME = "set_sfx_volume";
 	// pause controls settings
 	static constexpr const char* SELECTION_KEY_OPEN_KEYBOARD_CONTROLS = "open_keyboard_controls";
 	static constexpr const char* SELECTION_KEY_OPEN_CONTROLLER_CONTROLS = "open_controller_controls";

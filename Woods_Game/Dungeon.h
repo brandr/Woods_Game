@@ -3,7 +3,9 @@
 
 #include "Level.h"
 #include "PathNode.h"
+#include "LocationMarker.h"
 #include "vector"  // for vector
+#include <set>
 #include <memory>  // for allocator
 #include "ImageLoader.h"
 
@@ -34,6 +36,8 @@ public:
 	Level* find_level_with_path_node_key(const std::string node_key);
 	Level* find_any_level_with_node();
 	PathNode * find_path_node_with_key(const std::string node_key);
+	std::vector<LocationMarker *> get_all_location_markers();
+	LocationMarker * location_marker_matching_level(Level * level);
 	void set_dungeon_name(std::string name);
 	std::string get_dungeon_name();
 	std::vector<Level*> get_level_list();

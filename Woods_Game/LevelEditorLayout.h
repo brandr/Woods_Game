@@ -39,7 +39,8 @@ class LevelEditorLayout : public agui::FlowLayout {
 		BLOCK_SELECT_TAB = 1,
 		ENTITY_GROUP_SELECT_TAB = 2,
 		SPAWNER_TAB = 3,
-		PATH_NODE_TAB = 4
+		PATH_NODE_TAB = 4,
+		LOCATION_MARKER_TAB = 5
 	};
 
 	enum SECONDARY_TABS {
@@ -77,7 +78,7 @@ private:
 	agui::ScrollPane object_instance_attributes_scroll_pane;
 	agui::Frame level_grid_frame;
 	agui::Frame tiled_image_grid_frame;
-	agui::Tab level_edit_object_tabs[5];
+	agui::Tab level_edit_object_tabs[6];
 	agui::Tab level_edit_secondary_tabs[3];
 	agui::ScrollPane level_edit_object_tile_scroll_pane;
 	agui::ScrollPane level_edit_object_block_scroll_pane;
@@ -89,6 +90,7 @@ private:
 	agui::ListBox level_edit_object_entity_group_select_box;
 	agui::ListBox level_edit_object_spawner_select_box;
 	agui::ListBox level_edit_object_path_node_select_box;
+	agui::ListBox level_edit_object_location_marker_select_box;
 	agui::ListBox tiled_image_select_box;
 
 	agui::Button level_edit_reset_level_button;
@@ -105,6 +107,7 @@ private:
 	agui::CheckBox tiled_image_visibility_checkbox;
 	agui::CheckBox spawner_visibility_checkbox;
 	agui::CheckBox path_node_visibility_checkbox;
+	agui::CheckBox location_marker_visibility_checkbox;
 	agui::CheckBox grid_lines_visibility_checkbox;
 
 	// listeners
@@ -148,6 +151,7 @@ public:
 	void load_selected_tileset_entity_groups();
 	void load_selected_tileset_spawners();
 	void load_selected_tileset_path_nodes();
+	void load_selected_tileset_location_markers();
 	void load_selected_tileset_tiled_images();
 	void update();
 	void update_level_grid();

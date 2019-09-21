@@ -53,6 +53,7 @@ public:
 	const std::string get_current_level_key();
 	const std::string get_current_destination_node_key();
 	virtual void clear_primary_destinations();
+	virtual const std::string get_sound_key();
 };
 
 #endif

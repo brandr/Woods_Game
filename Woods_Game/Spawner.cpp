@@ -20,6 +20,7 @@ Spawner::Spawner()
 Spawner::~Spawner()
 {
 }
+
 void Spawner::set_content(std::string image_filename, Rect * image_subsection, std::pair<int, int> position)
 {
 	this->entity_starting_pos_x = position.first;

@@ -22,6 +22,37 @@ const std::string Entity::image_filename_suffix()
 	return GameImage::image_filename_suffix();
 }
 
+void Entity::emit_sound(const std::string filename)
+{
+	if (this->entity_sounds.find(filename) == this->entity_sounds.end()) {
+		EntitySound * sound = new EntitySound(filename);
+		this->entity_sounds[filename] = sound;
+	}
+	EntitySound * sound = this->entity_sounds[filename];
+	if (!sound->is_playing) {
+		sound->is_playing = true;
+	}
+	sound->source_x = this->get_x(), sound->source_y = this->get_y(); //TODO: should this be center?
+}
+
+void Entity::stop_sound(const std::string filename)
+{
+	if (this->entity_sounds.find(filename) != this->entity_sounds.end()) {
+		EntitySound * sound = this->entity_sounds[filename];
+		if (sound->is_playing) {
+			sound->is_playing = false;
+		}
+	}
+}
+
+void Entity::clear_sounds()
+{
+	for (auto const &it : this->entity_sounds) {
+		EntitySound * sound = it.second;
+		sound->is_playing = false;
+	}
+}
+
 Entity::Entity()
 {
 	// NOTE: we do not register xml attributes here, only in subclass constructors
@@ -393,6 +424,23 @@ void Entity::push_back(Level * level, const float xvel, const float yvel)
 	//override in subclasse	
 }
 
+const std::string Entity::get_sound_key()
+{
+	return "" + SOUND_KEY_DEFAULT;
+}
+
+std::vector<EntitySound*> Entity::get_active_entity_sounds()
+{
+	std::vector<EntitySound*> active_sounds;
+	for (auto const &it : this->entity_sounds) {
+		EntitySound * s = it.second;
+		if (s->is_playing) {
+			active_sounds.push_back(s);
+		}
+	}
+	return active_sounds;
+}
+
 // EntityData
 
 EntityData::EntityData()
@@ -731,4 +779,13 @@ const int Entity::get_collide_width()
 const int Entity::get_collide_height()
 {
 	return this->collide_height.value();
+}
+
+EntitySound::EntitySound()
+{
+}
+
+EntitySound::EntitySound(const std::string name)
+{
+	this->filename = name;
 }

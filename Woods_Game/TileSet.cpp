@@ -10,6 +10,7 @@ TileSet::TileSet()
 	Register("tiled_image_types", &tiled_image_types);
 	Register("spawner_types", &spawner_types);
 	Register("path_node_types", &path_node_types);
+	Register("location_marker_types", &location_marker_types);
 }
 
 TileSet::~TileSet()
@@ -119,6 +120,13 @@ void TileSet::load_sheet_images()
 	for (int i = 0; i < path_node_type_count; i++) {
 		EntityData * e = this->path_node_types.getItem(i);
 		const std::string filename = this->tile_sheet_name.value() + "/path_nodes/" + e->get_entity_data_key();
+		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
+	}
+
+	const int location_marker_count = this->location_marker_types.size();
+	for (int i = 0; i < location_marker_count; i++) {
+		EntityData * e = this->location_marker_types.getItem(i);
+		const std::string filename = this->tile_sheet_name.value() + "/location_markers/" + e->get_entity_data_key();
 		TileSet::load_sheet_images(filename, TILE_SIZE, TILE_SIZE);
 	}
 }
@@ -664,4 +672,31 @@ const std::vector<std::string> TileSet::all_path_node_keys()
 		node_keys.push_back(node_data->get_entity_data_key());
 	}
 	return node_keys;
+}
+
+const std::string TileSet::get_full_location_marker_sheet_filename(const int index)
+{
+	return this->get_tile_sheet_filename() + "/location_markers/" + this->location_marker_types.getItem(index)->get_entity_data_key();
+}
+
+ALLEGRO_BITMAP * TileSet::get_location_marker_bitmap_for_col(const int index, const int col)
+{
+	return ImageLoader::get_instance().get_location_marker_image_for_col(this
+		->get_tile_sheet_filename(), this->location_marker_types.getItem(index), col);
+}
+
+EntityData * TileSet::get_location_marker_data_by_index(const int index)
+{
+	return this->location_marker_types.getItem(index);
+}
+
+const std::vector<std::string> TileSet::all_location_marker_keys()
+{
+	std::vector<std::string> marker_keys;
+	const int size = this->location_marker_types.size();
+	for (int i = 0; i < size; i++) {
+		EntityData * marker_data = this->location_marker_types.getItem(i);
+		marker_keys.push_back(marker_data->get_entity_data_key());
+	}
+	return marker_keys;
 }

@@ -3,6 +3,7 @@
 
 #define JOYSTICK_DEADZONE 0.1f
 
+#include "AudioManager.h"
 #include "Being.h"
 #include "Cutscene.h"
 #include "Dialog.h"
@@ -46,6 +47,9 @@ private:
 	bool should_open_calendar = false;
 protected:
 	virtual void collide_with_entity(Entity* e);
+	virtual void play_sounds_for_entity(Entity* e);
+	virtual const float calculate_gain_for_sound(EntitySound * sound);
+	virtual const float calculate_pan_for_sound(EntitySound * sound);
 public:
 	Player();
 	virtual ~Player();
@@ -60,7 +64,10 @@ public:
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void interact_update(World * world, Level * level, GlobalTime * time);
-	//void interact_update(World * world, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	//audio
+	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual const std::string get_sound_key();
 	//time
 	const int wake_up_time();
 	//dialog

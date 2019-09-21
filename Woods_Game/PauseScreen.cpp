@@ -45,6 +45,10 @@ void PauseScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/pause_video_backdrop");
 	backdrop_filenames[PAUSE_VIDEO_MENU] = "ui/pause_video_backdrop";
 
+	//video settings
+	ImageLoader::get_instance().load_image("ui/pause_audio_backdrop");
+	backdrop_filenames[PAUSE_AUDIO_MENU] = "ui/pause_audio_backdrop";
+
 	// controls settings
 	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
 	backdrop_filenames[PAUSE_CONTROLS_MENU] = "ui/pause_controls_backdrop";
@@ -56,6 +60,7 @@ void PauseScreen::load_content()
 	// controller controls settings
 	ImageLoader::get_instance().load_image("ui/pause_controls_controller_backdrop");
 	backdrop_filenames[PAUSE_CONTROLS_MENU_CONTROLLER] = "ui/pause_controls_controller_backdrop";
+	this->load_config_settings();
 }
 
 void PauseScreen::load_menus()
@@ -67,6 +72,10 @@ void PauseScreen::load_menus()
 	//video settings
 	menus[PAUSE_VIDEO_MENU] = std::make_unique<MenuManager>();
 	menus[PAUSE_VIDEO_MENU]->load_xml_content("pause_video_menu");
+
+	//audio setings
+	menus[PAUSE_AUDIO_MENU] = std::make_unique<MenuManager>();
+	menus[PAUSE_AUDIO_MENU]->load_xml_content("pause_audio_menu");
 
 	// controls settings
 	menus[PAUSE_CONTROLS_MENU] = std::make_unique<MenuManager>();
@@ -165,6 +174,9 @@ void PauseScreen::cancel_menu()
 	case PAUSE_VIDEO_MENU:
 		menu_key = PAUSE_MAIN_MENU;
 		break;
+	case PAUSE_AUDIO_MENU:
+		menu_key = PAUSE_MAIN_MENU;
+		break;
 	case PAUSE_CONTROLS_MENU:
 		menu_key = PAUSE_MAIN_MENU;
 		break;
@@ -210,7 +222,6 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 		const std::string confirm_key = current_menu_manager().get_confirm_action_key();
 		// video settings confirm actions
 		if (confirm_key == MenuManager::SELECTION_KEY_SET_RESOLUTION) {
-			//TODO: write the new resolution to the config xml file
 			const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
 			const std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
 			al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
@@ -252,6 +263,26 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 			this->config->set_screen_mode(style_string);
 			this->save_configurations();
 		}
+		//audio
+		else if (confirm_key == MenuManager::SELECTION_KEY_SET_MASTER_VOLUME) {
+			const std::string volume_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			const float volume = ::atof(volume_string.c_str());
+			AudioManager::get_instance().set_master_gain(volume / 100.0);
+			this->config->set_master_volume(volume);
+			this->save_configurations();
+		} else if (confirm_key == MenuManager::SELECTION_KEY_SET_MUSIC_VOLUME) {
+			const std::string volume_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
+			const float volume = ::atof(volume_string.c_str());
+			AudioManager::get_instance().set_music_gain(volume / 100.0);
+			this->config->set_music_volume(volume);
+			this->save_configurations();
+		} else if (confirm_key == MenuManager::SELECTION_KEY_SET_SFX_VOLUME) {
+			const std::string volume_string = current_menu_manager().get_menu_items().getItem(2)->get_selected_text_option();
+			const float volume = ::atof(volume_string.c_str());
+			AudioManager::get_instance().set_sfx_gain(volume / 100.0);
+			this->config->set_sfx_volume(volume);
+			this->save_configurations();
+		}
 		current_menu_manager().confirm_option_select();
 	}
 	else {
@@ -269,6 +300,9 @@ else if (action_key == MenuManager::SELECTION_KEY_QUIT_GAME) {
 }
 else if (action_key == MenuManager::SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
 	menu_key = PAUSE_VIDEO_MENU;
+}
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_AUDIO_SETTINGS) {
+	menu_key = PAUSE_AUDIO_MENU;
 }
 else if (action_key == MenuManager::SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
 	menu_key = PAUSE_CONTROLS_MENU;

@@ -37,6 +37,7 @@
 #define SUNSET_END_A 140
 
 #include <string>
+#include <set>
 #include "utility"  // for pair
 #include "xstring"  // for string
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
@@ -48,6 +49,7 @@
 #include "Cutscene.h"
 #include "InteractActionManager.h"
 #include "LoadingData.h"
+#include "LocationMarker.h"
 #include "boost/filesystem.hpp"
 
 
@@ -64,6 +66,7 @@ private:
 	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
 	const bool player_update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void player_exploration_update();
 	void pending_trigger_update();
 	NPC * get_npc(const std::string npc_key);
 
@@ -88,6 +91,10 @@ public:
 	int get_game_mode();
 	const std::string get_world_key();
 	const std::string get_current_dungeon_key();
+	const int default_level_width();
+	const int default_level_height();
+	Level * get_level_with_key(const std::string level_key);
+	std::vector<LocationMarker *> get_current_dungeon_location_markers();
 	Player* get_player();
 	void unload_content();
 	void unload_level_content();
@@ -114,6 +121,7 @@ public:
 	void process_cutscene(Cutscene * cutscene);
 	// map
 	const std::pair<int, int> current_player_location_for_map();
+	const std::set<std::pair<int, int>> explored_map();
 };
 
 #endif

@@ -1,5 +1,3 @@
-
-
 #include "ImageLoader.h"
 #include "GameImage.h"
 
@@ -128,8 +126,7 @@ void ImageLoader::load_image(std::string filename, const std::string rect_string
 	if (image == NULL) {
 		if (allow_failure) {
 			return;
-		}
-		else {
+		} else {
 			std::cout << filename << std::endl;
 			std::cout << "loader failed to load image" << std::endl;
 			//TODO: better error handling
@@ -328,6 +325,21 @@ ALLEGRO_BITMAP * ImageLoader::get_spawner_image_for_col(const std::string sheet_
 ALLEGRO_BITMAP * ImageLoader::get_path_node_image_for_col(const std::string sheet_filename, EntityData * node_type, const int col)
 {
 	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/path_nodes/" + node_type->get_entity_data_key());
+	Rect * subsection = new Rect(col*TILE_SIZE, 0,
+		TILE_SIZE, TILE_SIZE);
+	const std::string rect_string = rect_to_string(*subsection);
+	auto it = image_map.find(std::pair<std::string, std::string>(full_filename, rect_string));
+	if (it == image_map.end()) {
+		return NULL;
+	}
+	else {
+		return it->second;
+	}
+}
+
+ALLEGRO_BITMAP * ImageLoader::get_location_marker_image_for_col(const std::string sheet_filename, EntityData * marker_type, const int col)
+{
+	const std::string full_filename = ImageLoader::full_filename(sheet_filename + "/location_markers/" + marker_type->get_entity_data_key());
 	Rect * subsection = new Rect(col*TILE_SIZE, 0,
 		TILE_SIZE, TILE_SIZE);
 	const std::string rect_string = rect_to_string(*subsection);

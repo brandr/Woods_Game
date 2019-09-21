@@ -357,5 +357,6 @@
                 </Collection>
             </Class>
         </Collection>
+        <Collection Name="explored_cells"/>
     </SerializableClass>
 </root>

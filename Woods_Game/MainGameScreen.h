@@ -12,6 +12,8 @@
 #include "PauseScreen.h"       // for PauseScreen
 #include "Dialog.h"
 
+#include <set>
+
 #define DEFAULT_SCREEN_WIDTH 800
 #define DEFAULT_SCREEN_HEIGHT 600
 
@@ -50,6 +52,7 @@ public:
 	virtual void load_content();
 	virtual void load_fonts();
 	void load_ui_content();
+	void load_location_markers();
 	void start_new_game(const std::string world_key);
 	void load_game(const std::string filepath);
 	virtual void unload_content();

@@ -117,6 +117,7 @@ void LevelEditorManager::update_selected_level()
 		this->level_edit_layout->load_selected_tileset_entity_groups();
 		this->level_edit_layout->load_selected_tileset_spawners();
 		this->level_edit_layout->load_selected_tileset_path_nodes();
+		this->level_edit_layout->load_selected_tileset_location_markers();
 		this->level_edit_layout->load_selected_tileset_tiled_images();
 		// tileset layout
 		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
@@ -195,6 +196,7 @@ void LevelEditorManager::update_selected_tileset()
 		this->load_selected_tileset_entity_groups();
 		this->load_selected_tileset_spawners();
 		this->load_selected_tileset_path_nodes();
+		this->load_selected_tileset_location_markers();
 
 		this->tileset_edit_layout->update_selected_tileset_fields();
 
@@ -203,6 +205,7 @@ void LevelEditorManager::update_selected_tileset()
 		this->level_edit_layout->load_selected_tileset_entity_groups();
 		this->level_edit_layout->load_selected_tileset_spawners();
 		this->level_edit_layout->load_selected_tileset_path_nodes();
+		this->level_edit_layout->load_selected_tileset_location_markers();
 		this->level_edit_layout->load_selected_tileset_tiled_images();
 
 		this->tileset_edit_layout->set_selected_tileset_index(tileset_index);
@@ -271,16 +274,17 @@ void LevelEditorManager::load_selected_tileset_tiled_images()
 void LevelEditorManager::load_selected_tileset_spawners()
 {
 	this->level_edit_layout->load_selected_tileset_spawners();
-	//this->tileset_edit_layout->load_selected_tileset_spawners(); //TODO
 }
 
 void LevelEditorManager::load_selected_tileset_path_nodes()
 {
 	this->level_edit_layout->load_selected_tileset_path_nodes();
-	//this->tileset_edit_layout->load_selected_tileset_path_nodes(); //TODO
 }
 
-
+void LevelEditorManager::load_selected_tileset_location_markers()
+{
+	this->level_edit_layout->load_selected_tileset_location_markers();
+}
 
 void LevelEditorManager::draw(ALLEGRO_DISPLAY * display)
 {

@@ -8,6 +8,11 @@ void NPC::clear_primary_destinations()
 	AIBeing::clear_primary_destinations();
 }
 
+const std::string NPC::get_sound_key()
+{
+	return "" + std::to_string(SOUND_KEY_NPC) + ":" + this->get_npc_key();
+}
+
 const std::string NPC::calculate_destination_node_key(World * world, GlobalTime * time)
 {
 	//TEMP. should probably have more AIState filtering before we get here.

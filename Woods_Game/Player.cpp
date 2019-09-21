@@ -12,6 +12,40 @@ void Player::collide_with_entity(Entity * e)
 	e->contact_action(this);
 }
 
+void Player::play_sounds_for_entity(Entity * e)
+{
+	std::vector<EntitySound*> sounds = e->get_active_entity_sounds();
+	for (EntitySound * s : sounds) {
+		const std::string sound_key = e->get_sound_key();
+		const float pan = this->calculate_pan_for_sound(s);
+		const float gain = this->calculate_gain_for_sound(s);
+		AudioManager::get_instance().play_sfx(s->filename, sound_key, gain, pan);
+	}
+}
+
+//TODO: tweak this until it sounds good
+const float Player::calculate_gain_for_sound(EntitySound * sound)
+{
+	const float dx = sound->source_x - this->get_x(), dy = sound->source_y - this->get_y();
+	const float dist = std::pow(std::pow(std::abs(dx), 2.0) + std::pow(std::abs(dy), 2.0), 0.5);
+	const float r1 = (float)(TILE_SIZE * 4.0f); // reference point of "high intensity" is about 4 tiles away
+	if (dist < r1) {
+		return 1.0f;
+	}
+	const float gain = std::pow(r1 / dist , 2.0f);
+	return std::max(std::min(gain, 2.0f), 0.1f);
+}
+
+const float Player::calculate_pan_for_sound(EntitySound * sound)
+{
+	const float dx = sound->source_x - this->get_x(), dy = sound->source_y - this->get_y();
+	const float dist = std::pow(std::pow(std::abs(dx), 2.0) + std::pow(std::abs(dy), 2.0), 0.5);
+	if (std::abs(dx) < TILE_SIZE && std::abs(dy) < TILE_SIZE) {
+		return 0.0;
+	}
+	return dx/dist;
+}
+
 Player::Player()
 {
 	// xml serialization attributes
@@ -113,6 +147,7 @@ void Player::update_top_down(Level * level)
 		}
 		return;
 	}
+	bool was_walking = this->anim_state == ANIM_STATE_WALKING;
 	current_action = ACTION_NONE;
 	reset_entity_flags();
 	//TODO: figure out how best to handle joystick and keyboard inputs that occur at the same time
@@ -136,23 +171,27 @@ void Player::update_top_down(Level * level)
 	//joystick
 	if (abs(move_joystick_pos.first) <= JOYSTICK_DEADZONE && abs(move_joystick_pos.second) <= JOYSTICK_DEADZONE) {
 		return;
-	}
-	xvel = move_joystick_pos.first*get_walk_speed(), yvel = move_joystick_pos.second*get_walk_speed();
-	if (xvel >= 0) {
-		if (xvel >= std::abs(yvel)) direction = DIR_RIGHT;
-		else if (yvel > 0) direction = DIR_DOWN;
-		else direction = DIR_UP;
 	} else {
-		if (std::abs(xvel) >= std::abs(yvel)) direction = DIR_LEFT;
-		else if (yvel > 0) direction = DIR_DOWN;
-		else direction = DIR_UP;
+		xvel = move_joystick_pos.first*get_walk_speed(), yvel = move_joystick_pos.second*get_walk_speed();
+		if (xvel >= 0) {
+			if (xvel >= std::abs(yvel)) direction = DIR_RIGHT;
+			else if (yvel > 0) direction = DIR_DOWN;
+			else direction = DIR_UP;
+		} else {
+			if (std::abs(xvel) >= std::abs(yvel)) direction = DIR_LEFT;
+			else if (yvel > 0) direction = DIR_DOWN;
+			else direction = DIR_UP;
+		}
+		anim_state = ANIM_STATE_WALKING;
 	}
-	anim_state = ANIM_STATE_WALKING;
 }
 
 void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
-	if (counters[BOUNCE]) return;
+	//this->sound_update(); //TODO: move this if necessary
+	if (counters[BOUNCE]) {
+		return;
+	}
 	if (counters[SWING]) {
 		switch (current_action) {
 		case(ACTION_SHEAR):
@@ -286,46 +325,26 @@ void Player::interact_update(World * world, Level * level, GlobalTime * time)
 	}
 }
 
-/*
-void Player::interact_update(World * world, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
+//TODO: anything player-specific goes here
+void Player::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	const int t_size = nearby_tiles.size();
-	for (int i = 0; i < t_size; i++) {
-		Block *b = nearby_tiles[i]->get_block();
-		if (b) interactables.push_back(b);
-	}
-	const int size = interactables.size();
-
-	float x_off = 0, y_off = 0;
-	switch (direction) {
-	case DIR_NEUTRAL:
-		x_off = 0, y_off = 14;
-		break;
-	case DIR_UP:
-		x_off = 0, y_off = -14;
-		break;
-	case DIR_DOWN:
-		x_off = 0, y_off = 14;
-		break;
-	case DIR_LEFT:
-		x_off = -8, y_off = 0;
-		break;
-	case DIR_RIGHT:
-		x_off = 8, y_off = 0;
-		break;
-	}
-
-	const int x1 = this->get_rect_center().first, y1 = this->get_rect_center().second;
-	for (int i = 0; i < size; i++) {
-		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
-			Entity* e = interactables[i];
-			if (this->interact(world, time, e)) {
-				return;
-			}
-		}
-	}
+	Being::emit_sound_update(world, level, time, game_mode);
 }
-*/
+
+void Player::play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
+{
+	//TODO: should music go here or elsewhere?
+	std::vector<Entity *> moving_interactables = level->get_moving_interactables(this);
+	for (Entity * e : moving_interactables) {
+		this->play_sounds_for_entity(e);
+	}
+	this->play_sounds_for_entity(this);
+}
+
+const std::string Player::get_sound_key()
+{
+	return "" + SOUND_KEY_PLAYER;
+}
 
 const int Player::wake_up_time()
 {

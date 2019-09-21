@@ -308,6 +308,14 @@
                 <Collection Name="components"/>
             </Class>
         </Collection>
+        <Collection Name="location_marker_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">location_marker_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
     </SerializableClass>
     <SerializableClass Type="TileSet" Version="1" TilesetKey="tileset_indoors">
         <Member Name="tile_sheet_name">indoors</Member>
@@ -447,6 +455,14 @@
                 <Collection Name="components"/>
             </Class>
         </Collection>
+        <Collection Name="location_marker_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">location_marker_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
     </SerializableClass>
     <SerializableClass Type="TileSet" Version="1" TilesetKey="suburbs">
         <Member Name="tile_sheet_name">suburbs</Member>
@@ -562,6 +578,14 @@
         <Collection Name="path_node_types">
             <Class Type="EntityData" Version="1">
                 <Member Name="entity_data_key">path_node_1</Member>
+                <Member Name="entity_data_index">0</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+        </Collection>
+        <Collection Name="location_marker_types">
+            <Class Type="EntityData" Version="1">
+                <Member Name="entity_data_key">location_marker_1</Member>
                 <Member Name="entity_data_index">0</Member>
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>

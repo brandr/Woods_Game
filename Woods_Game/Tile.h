@@ -23,8 +23,6 @@ class Tile:
 private:
 	Block block;
 	int sheet_row = 0;
-	//int edge_priority = 0;
-	//std::string id;
 	xmls::xInt tile_pos_x;
 	xmls::xInt tile_pos_y;
 	xmls::xInt tile_type_index;

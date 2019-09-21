@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
+#include "AudioManager.h"
 #include "EntityEffect.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "GameImage.h"         // for GameImage
@@ -15,6 +16,8 @@
 #include <filesystem>
 #include <iostream>
 #include "XMLSerialization.h"
+
+
 
 struct EntitySpawnTileRule : xmls::Serializable {
 	xmls::xInt tile_type_index;
@@ -97,6 +100,14 @@ struct EntityGroupData : public EntityData {
 	std::pair<int, int> get_entity_group_image_dimensions();
 };
 
+struct EntitySound {
+	std::string filename;
+	bool is_playing = false;
+	int source_x = 0, source_y = 0;
+	EntitySound();
+	EntitySound(const std::string filename);
+};
+
 class GlobalTime;
 class Player;
 class Level;
@@ -122,7 +133,13 @@ protected:
 	const int get_collide_width();
 	const int get_collide_height();
 	std::map<int, int> counters;
+
 	std::map<std::string, EntityEffect> entity_effects;
+	std::map<std::string, EntitySound*> entity_sounds;
+
+	virtual void emit_sound(const std::string filename);
+	virtual void stop_sound(const std::string filename);
+	virtual void clear_sounds();
 public:
 	Entity();
 	~Entity();
@@ -138,6 +155,7 @@ public:
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void update();
+	
 	void counter_update();
 	virtual void durability_update();
 	virtual void mark_needs_plant_day_update();
@@ -171,5 +189,8 @@ public:
 	static std::vector<std::string> get_entity_effect_names();
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
+	//sounds
+	virtual const std::string get_sound_key();
+	virtual std::vector<EntitySound*> get_active_entity_sounds();
 };
 #endif

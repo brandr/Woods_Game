@@ -271,6 +271,47 @@ PathNode * World::get_npc_destination_node(NPC * npc)
 	return NULL;
 }
 
+Level * World::level_containing_location_marker(LocationMarker * marker)
+{
+	if (marker != NULL) {
+		const std::string level_key = marker->get_containing_level_key();
+		if (level_key != "") {
+			return this->get_level_with_key(level_key);
+		}
+	}
+	return NULL;
+}
+
+LocationMarker * World::location_marker_matching_level(Level * level)
+{
+	if (level != NULL) {
+		const int size = this->dungeons.size();
+		for (int i = 0; i < size; i++) {
+			Dungeon *d = this->dungeons[i].get();
+			LocationMarker * lm = d->location_marker_matching_level(level);
+			if (lm) {
+				return lm;
+			}
+		}
+	}
+	return NULL;
+}
+
+const std::pair<int, int> World::map_location_for_level(Level * level)
+{
+	if (level != NULL) {
+		LocationMarker * lm = this->location_marker_matching_level(level);
+		if (lm != NULL) {
+			Level * containing_level = this->level_containing_location_marker(lm);
+			const int grid_x = containing_level->get_grid_x(), grid_y = containing_level->get_grid_y();
+			const int standard_w = this->get_default_level_width(), standard_h = this->get_default_level_height();
+			const int x_off = lm->get_x(), y_off = lm->get_y();
+			return std::pair<int, int>(grid_x * standard_w + x_off, grid_y * standard_h + y_off);
+		}
+	}
+	return std::pair<int, int>(-1, -1);
+}
+
 Level * World::find_any_level_with_node()
 {
 	const int size = this->dungeons.size();
@@ -372,6 +413,7 @@ void World::reload_dungeons(const std::string dungeons_path)
 void World::reload_world_state(const std::string world_state_path)
 {
 	FileManager filemanager;
+	this->world_state.reset();
 	filemanager.load_xml_content(&(this->world_state), world_state_path, "SerializableClass", "WorldKey", this->get_world_key());
 }
 
@@ -740,4 +782,15 @@ const int World::get_default_level_width()
 const int World::get_default_level_height()
 {
 	return this->default_level_height.value();
+}
+
+void World::mark_grid_explored(const int grid_x, const int grid_y)
+{
+	this->world_state.mark_grid_explored(grid_x, grid_y);
+}
+
+const std::set<std::pair<int, int>> World::explored_map()
+{
+	//TODO: does this need to take current dungeon into account? or do we never switch dungeons within a single world?
+	return this->world_state.explored_map();
 }

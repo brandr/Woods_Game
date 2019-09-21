@@ -23,6 +23,43 @@ void Being::update(World * world, Level * level, GlobalTime * time, const int ga
 	movement_update(level, game_mode);
 	animation_update(game_mode);
 	Entity::update();
+	emit_sound_update(world, level, time, game_mode);
+	play_sound_update(world, level, time, game_mode);
+}
+
+void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
+{
+	this->clear_sounds();
+	TileSet * tileset = level->get_tileset();
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	std::vector<Tile*> colliding_tiles = this->get_colliding_tiles(tileset, nearby_tiles);
+	Tile * t = colliding_tiles.size() > 0 ? colliding_tiles[0] : NULL; //TODO: do we want some priority for which tile we're stepping on?
+
+	const std::string default_name = DEFAULT_FOOTSTEP_FILENAME;
+	std::string footstep_filename = "entity_sounds/" + default_name;
+	if (t != NULL) {
+		const std::string tile_key = tileset->get_tile_key(t->get_tile_type_index());
+		const std::string footstep_key = "footstep_" + tile_key;
+		footstep_filename = "entity_sounds/" + footstep_key;
+	}
+	
+	// TODO: also include information about the being in forming the key
+
+	if (!AudioManager::get_instance().sfx_exists(footstep_filename, this->get_sound_key())) {
+		
+		footstep_filename = "entity_sounds/" + default_name;
+	}
+	if (this->anim_state == ANIM_STATE_WALKING) {
+		this->emit_sound(footstep_filename);
+	}
+	else {
+		this->stop_sound(footstep_filename);
+	}
+}
+
+void Being::play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
+{
+	// probably just override this in player, unless there's some reason we have to play sounds elsewhere
 }
 
 void Being::set_xvel(int vel)
@@ -34,19 +71,6 @@ void Being::set_yvel(int vel)
 {
 	yvel = vel;
 }
-
-/*
-void Being::update(TileSet * tileset, std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, const std::pair<int, int> level_dimensions, const int game_mode)
-{
-
-//TODO: collide with the edge of the screen (keep in mind that for the player, this will sometimes lead to other levels)
-collision_update(interactables, nearby_tiles, game_mode);
-movement_update(tileset, interactables, nearby_tiles, game_mode);
-animation_update(game_mode);
-Entity::update();
-//TODO: non-platform collisions (some beings may pass through some objects, so need a system to handle nuance instead of just checking is_solid)
-}
-*/
 
 void Being::animation_update(const int game_mode)
 {
@@ -356,20 +380,16 @@ const bool Being::precise_empty_at(std::vector<Entity*> interactables, const int
 	}
 	return true;
 }
+
 const float Being::get_speed_multiplier(TileSet* tileset, std::vector<Tile*> tiles)
 {
 	float mult = 1.0f;
-	int t_size = tiles.size();
+	std::vector<Tile *> colliding_tiles = this->get_colliding_tiles(tileset, tiles);
+	int t_size = colliding_tiles.size();
 	for (int i = 0; i < t_size; i++) {
-		mask_t *tmask = tiles[i]->get_mask();
-		if (tmask)
-			if (tmask && Mask_Collide(this->get_mask(),
-				tmask, get_x() - tiles[i]->get_x(), get_y() - tiles[i]->get_y())) {
-				const int speed_mod =
-					mult = std::min(mult, tileset->get_tile_speed_mod(tiles[i]->get_tile_type_index()));
-			}
+		mult = std::min(mult, tileset->get_tile_speed_mod(colliding_tiles[i]->get_tile_type_index()));
 	}
-	int e_size = colliding_entities.size();
+	int e_size = this->colliding_entities.size();
 	for (int i = 0; i < e_size; i++) {
 		Entity* e = colliding_entities[i];
 		if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_SLOW)) {
@@ -377,4 +397,25 @@ const float Being::get_speed_multiplier(TileSet* tileset, std::vector<Tile*> til
 		}
 	}
 	return mult;
+}
+
+std::vector<Tile *> Being::get_colliding_tiles(TileSet * tileset, std::vector<Tile*> tiles)
+{
+	std::vector<Tile *> colliding_tiles;
+	int t_size = tiles.size();
+	for (int i = 0; i < t_size; i++) {
+		mask_t *tmask = tiles[i]->get_mask();
+		if (tmask) {
+			if (tmask && Mask_Collide(this->get_mask(),
+				tmask, get_x() - tiles[i]->get_x(), get_y() - tiles[i]->get_y())) {
+				colliding_tiles.push_back(tiles[i]);
+			}
+		}
+	}
+	return colliding_tiles;
+}
+
+void Being::play_sounds_for_entity(Entity * e)
+{
+	// probably just override in player
 }

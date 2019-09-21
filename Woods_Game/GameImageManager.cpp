@@ -139,6 +139,27 @@ const std::string GameImageManager::get_current_dungeon_key()
 	return dungeon != NULL ? dungeon->get_dungeon_name() : "";
 }
 
+const int GameImageManager::default_level_width()
+{
+	return this->world.get_default_level_width();
+}
+
+const int GameImageManager::default_level_height()
+{
+	return this->world.get_default_level_height();
+}
+
+Level * GameImageManager::get_level_with_key(const std::string level_key)
+{
+	return this->world.get_level_with_key(level_key);
+}
+
+std::vector<LocationMarker*> GameImageManager::get_current_dungeon_location_markers()
+{
+	Dungeon * current_dungeon = this->world.current_dungeon;
+	return current_dungeon->get_all_location_markers();
+}
+
 void GameImageManager::load_player()
 {
 	this->player = this->world.get_player();
@@ -180,9 +201,22 @@ const bool GameImageManager::player_update(std::map<int, bool> input_map, std::m
 			set_game_mode(CALENDAR);
 			return false;
 		}
+		this->player_exploration_update();
 		player->update_input(input_map, joystick_map, game_mode);
 	}
 	return true;
+}
+
+void GameImageManager::player_exploration_update()
+{
+	if (this->player) {
+		const std::pair<int, int> current_pixel_loc = this->current_player_location_for_map();
+		if (current_pixel_loc.first >= 0 && current_pixel_loc.second >= 0) {
+			const int default_w = this->world.get_default_level_width(), default_h = this->world.get_default_level_height();
+			const int explore_grid_x = current_pixel_loc.first / default_w, explore_grid_y = current_pixel_loc.second / default_h;
+			this->world.mark_grid_explored(explore_grid_x, explore_grid_y);
+		}
+	}
 }
 
 void GameImageManager::pending_trigger_update()
@@ -246,6 +280,8 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 	const std::string filename = "resources/load/saves/" + world_key + "/worlds";
 	const std::string dungeons_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(data->global_time->get_day()) + "/dungeons";
 	data->world->reload_dungeons(dungeons_path);
+	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(data->global_time->get_day()) + "/world_state";
+	data->world->reload_world_state(world_state_path);
 	data->world->update_reload_day(data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
@@ -605,11 +641,16 @@ const std::pair<int, int> GameImageManager::current_player_location_for_map()
 {
 	const int grid_x = this->current_level->get_grid_x(), grid_y = this->current_level->get_grid_y();
 	if (grid_x < 0 || grid_y < 0) {
-		return std::pair<int, int>(0, 0); //TODO: how to show location of a building that the player is inside?
+		return this->world.map_location_for_level(this->current_level);
 	}
 	const int standard_w = this->world.get_default_level_width(), standard_h = this->world.get_default_level_height();
 	const int x_off = this->player->get_x(), y_off = this->player->get_y();
 	return std::pair<int, int>(grid_x * standard_w + x_off, grid_y * standard_h + y_off);
+}
+
+const std::set<std::pair<int, int>> GameImageManager::explored_map()
+{
+	return this->world.explored_map();
 }
 
 

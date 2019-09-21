@@ -8,6 +8,9 @@ Configurations::Configurations()
 	Register("screen_res_x", &screen_res_x);
 	Register("screen_res_y", &screen_res_y);
 	Register("screen_mode", &screen_mode);
+	Register("master_volume", &master_volume);
+	Register("music_volume", &music_volume);
+	Register("sfx_volume", &sfx_volume);
 }
 
 
@@ -44,4 +47,34 @@ int Configurations::get_screen_res_x()
 int Configurations::get_screen_res_y()
 {
 	return this->screen_res_y.value();
+}
+
+void Configurations::set_master_volume(const float value)
+{
+	this->master_volume = value;
+}
+
+void Configurations::set_music_volume(const float value)
+{
+	this->music_volume = value;
+}
+
+void Configurations::set_sfx_volume(const float value)
+{
+	this->sfx_volume = value;
+}
+
+const float Configurations::get_master_volume()
+{
+	return this->master_volume.value();
+}
+
+const float Configurations::get_music_volume()
+{
+	return this->music_volume.value();
+}
+
+const float Configurations::get_sfx_volume()
+{
+	return this->sfx_volume.value();
 }

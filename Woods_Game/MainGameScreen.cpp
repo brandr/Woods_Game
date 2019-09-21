@@ -500,6 +500,7 @@ void MainGameScreen::load_content()
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
 	inventory_screen.set_world_key(game_image_manager.get_world_key());
 	inventory_screen.set_dungeon_key(game_image_manager.get_current_dungeon_key());
+	this->load_location_markers();
 	calendar_screen.load_content();
 
 	GlobalTime * global_time = game_image_manager.get_current_global_time();
@@ -536,6 +537,30 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
 	//TODO: other UI components like stamina
+}
+
+void MainGameScreen::load_location_markers()
+{
+	std::set<std::pair<int, int>> explored_map = this->game_image_manager.explored_map();
+	std::vector<std::pair<std::string, std::pair<int, int>>> locations;
+	std::vector<LocationMarker *> location_markers = game_image_manager.get_current_dungeon_location_markers();
+	const int default_level_width = this->game_image_manager.default_level_width(), default_level_height = this->game_image_manager.default_level_height();
+	for (LocationMarker * lm : location_markers) {
+		const std::string containing_level_key = lm->get_containing_level_key();
+		Level * containing_level = this->game_image_manager.get_level_with_key(containing_level_key);
+		if (containing_level != NULL) {
+			const int grid_x = containing_level->get_grid_x(), grid_y = containing_level->get_grid_y();
+			const int lm_off_x = lm->get_x(), lm_off_y = lm->get_y();
+			const std::pair<int, int> map_pos(grid_x + lm_off_x / default_level_width, grid_y + lm_off_y / default_level_height);
+			if (explored_map.find(map_pos) != explored_map.end()) {
+				const std::string lm_name = lm->get_location_name();
+				locations.push_back(std::pair<std::string, std::pair<int, int>>(lm_name, std::pair<int, int>(grid_x * default_level_width + lm_off_x, grid_y * default_level_height + lm_off_y)));
+			}
+		}
+	}
+	inventory_screen.set_locations_for_display(locations);
+	inventory_screen.set_default_level_dimensions(default_level_width, default_level_height);
+	inventory_screen.set_explored_map(explored_map);
 }
 
 void MainGameScreen::start_new_game(const std::string world_key)
@@ -1031,7 +1056,8 @@ void MainGameScreen::open_inventory_action()
 			game_image_manager.set_game_mode(MAIN_GAME_INVENTORY);
 			current_location = game_image_manager.current_player_location_for_map();
 			this->inventory_screen.set_current_location(current_location.first, current_location.second);
-			//TODO: any action necessary regarding the inventory screen
+			this->load_location_markers();
+			//TODO: any action necessary when we open the inventory screen
 			break;
 		case MAIN_GAME_INVENTORY:
 			resume_game();

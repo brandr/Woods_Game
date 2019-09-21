@@ -287,6 +287,8 @@
     <ClInclude Include="AIBeing.h" />
     <ClInclude Include="AIState.h" />
     <ClInclude Include="Animation.h" />
+    <ClInclude Include="AudioLoader.h" />
+    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="Being.h" />
     <ClInclude Include="Binding.h" />
     <ClInclude Include="CalendarScreen.h" />
@@ -331,6 +333,7 @@
     <ClInclude Include="LoadGameMenuManager.h" />
     <ClInclude Include="LoadingData.h" />
     <ClInclude Include="LoadingScreen.h" />
+    <ClInclude Include="LocationMarker.h" />
     <ClInclude Include="MainGameScreen.h" />
     <ClInclude Include="Block.h" />
     <ClInclude Include="MenuItem.h" />
@@ -365,6 +368,8 @@
     <ClCompile Include="AIBeing.cpp" />
     <ClCompile Include="AIState.cpp" />
     <ClCompile Include="Animation.cpp" />
+    <ClCompile Include="AudioLoader.cpp" />
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Being.cpp" />
     <ClCompile Include="CalendarScreen.cpp" />
     <ClCompile Include="Configurations.cpp" />
@@ -406,6 +411,7 @@
     <ClCompile Include="LevelGridListener.cpp" />
     <ClCompile Include="LoadGameMenuManager.cpp" />
     <ClCompile Include="LoadingScreen.cpp" />
+    <ClCompile Include="LocationMarker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainGameScreen.cpp" />
     <ClCompile Include="Block.cpp" />

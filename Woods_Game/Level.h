@@ -12,6 +12,7 @@
 #include "xstring"             // for string
 #include "EntityGroup.h"
 #include "LevelGenData.h"
+#include "LocationMarker.h"
 #include "XMLSerialization.h"
 #include "PathNode.h"
 #include "Spawner.h"
@@ -41,6 +42,7 @@ private:
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	xmls::Collection<Spawner> spawners;
 	xmls::Collection<PathNode> path_nodes;
+	xmls::Collection<LocationMarker> location_markers;
 	xmls::Collection<TiledImageLayer> tiled_image_layers;
 	LevelGenData gen_data;
 	std::vector<Being*> beings;
@@ -95,6 +97,7 @@ public:
 	void initialize_tiled_images();
 	void initialize_spawners();
 	void initialize_path_nodes();
+	void initialize_location_markers();
 	void clear_level();
 	void remove_tile_edges();
 	void load_tile_edges();
@@ -125,6 +128,7 @@ public:
 	bool remove_tiled_image(const std::pair<int, int> pos, const int layer_index);
 	void remove_spawner(const std::pair<int, int> pos);
 	void remove_path_node(const std::pair<int, int> pos);
+	void remove_location_marker(const std::pair<int, int> pos);
 	void replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void replace_block(int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void add_entity_group(int eg_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
@@ -142,6 +146,11 @@ public:
 	PathNode * find_path_node_with_key(const std::string node_key);
 	const bool has_any_path_node();
 	PathNode * find_any_path_node();
+	void add_location_marker(const int marker_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
+	LocationMarker * create_location_marker(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
+	std::vector<LocationMarker *> get_location_markers();
+	LocationMarker * find_location_marker_matching_level(const std::string level_key);
+
 	// tile stuff
 	void set_tile(Tile * tile, std::pair<int, int> pos);
 	Tile *get_tile(int x, int y);
@@ -153,6 +162,7 @@ public:
 	EntityGroup * entity_group_at_tile_pos(const std::pair<int, int> pos, const bool root_only);
 	Spawner * spawner_at_tile_pos(const std::pair<int, int> pos);
 	PathNode * path_node_at_tile_pos(const std::pair<int, int> pos);
+	LocationMarker * location_marker_at_tile_pos(const std::pair<int, int> pos);
 	std::vector<PathNode *> get_path_nodes();
 	const bool has_rect_collisions(Entity * e, Rect collide_rect, const bool ignore_moving_obstacles);
 	std::string get_dungeon_filename();
@@ -178,5 +188,6 @@ public:
 	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_spawners_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_path_nodes_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_location_markers_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 };
 #endif

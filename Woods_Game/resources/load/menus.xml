@@ -22,7 +22,7 @@
                 <Member Name="RightBracketFilename"/>
             </Class>
             <Class Type="MenuItem" Version="1">
-                <Member Name="MenuText">Video Settings</Member>
+                <Member Name="MenuText">Video</Member>
                 <Member Name="xPos">30</Member>
                 <Member Name="yPos">60</Member>
                 <Member Name="SelectionActionKey">open_video_settings</Member>
@@ -35,7 +35,7 @@
                 <Member Name="RightBracketFilename"/>
             </Class>
             <Class Type="MenuItem" Version="1">
-                <Member Name="MenuText">Control Settings</Member>
+                <Member Name="MenuText">Controls</Member>
                 <Member Name="xPos">30</Member>
                 <Member Name="yPos">90</Member>
                 <Member Name="SelectionActionKey">open_control_settings</Member>
@@ -48,9 +48,22 @@
                 <Member Name="RightBracketFilename"/>
             </Class>
             <Class Type="MenuItem" Version="1">
-                <Member Name="MenuText">Quit</Member>
+                <Member Name="MenuText">Audio</Member>
                 <Member Name="xPos">30</Member>
                 <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">open_audio_settings</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Quit</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">150</Member>
                 <Member Name="SelectionActionKey">quit_game</Member>
                 <Member Name="ImageFilename"/>
                 <Member Name="ConfirmActionKey"/>
@@ -122,6 +135,179 @@
                 <Member Name="MenuText">Return</Member>
                 <Member Name="xPos">30</Member>
                 <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">return_to_main_pause</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_audio_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Master Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_master_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">10</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Music Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_music_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">10</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Effects Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_sfx_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">10</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Return</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
                 <Member Name="SelectionActionKey">return_to_main_pause</Member>
                 <Member Name="ConfirmActionKey"/>
                 <Member Name="LeftBracketFilename"/>

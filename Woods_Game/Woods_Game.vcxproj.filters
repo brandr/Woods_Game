@@ -182,6 +182,15 @@
     <Filter Include="Quests\Source Files">
       <UniqueIdentifier>{e1f2ed2c-68fe-4ab6-bf7a-57f15cb0d11a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{09f6bae8-3a2a-4443-9cee-03c0d07fd624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio\Header Files">
+      <UniqueIdentifier>{d7368f76-8439-4ca2-b087-84701042d5ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio\Source Files">
+      <UniqueIdentifier>{f3d02c3f-cef1-4c3c-b008-0dab0947b600}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -412,6 +421,15 @@
     <ClInclude Include="DialogTree.h">
       <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LocationMarker.h">
+      <Filter>GameImages\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioLoader.h">
+      <Filter>Audio\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>Audio\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -635,6 +653,15 @@
     </ClCompile>
     <ClCompile Include="DialogTree.cpp">
       <Filter>Dialogs\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LocationMarker.cpp">
+      <Filter>GameImages\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioLoader.cpp">
+      <Filter>Audio\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>Audio\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

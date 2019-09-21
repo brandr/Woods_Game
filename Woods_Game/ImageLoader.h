@@ -59,6 +59,7 @@ public:
 	ALLEGRO_BITMAP* get_entity_group_image_for_col(const std::string, EntityGroupData*, const int col);
 	ALLEGRO_BITMAP* get_spawner_image_for_col(const std::string, EntityData*, const int col);
 	ALLEGRO_BITMAP* get_path_node_image_for_col(const std::string, EntityData*, const int col);
+	ALLEGRO_BITMAP* get_location_marker_image_for_col(const std::string, EntityData*, const int col);
 	ALLEGRO_BITMAP* get_full_tiled_image_sheet(std::string, TiledImageData*);
 	ALLEGRO_BITMAP* get_current_image(GameImage*);
 	ALLEGRO_BITMAP* get_image(std::string filename);

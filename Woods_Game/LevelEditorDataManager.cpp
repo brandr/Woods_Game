@@ -27,6 +27,9 @@ GameImage * LevelEditorDataManager::selected_level_object()
 		case OBJECT_TYPE_PATH_NODE:
 			return this->active_levels[this->selected_level_index]->path_node_at_tile_pos(grid_pos);
 			break;
+		case OBJECT_TYPE_LOCATION_MARKER:
+			return this->active_levels[this->selected_level_index]->location_marker_at_tile_pos(grid_pos);
+			break;
 		default:
 			break;
 		}
@@ -386,6 +389,9 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(const std::string
 	else if (PATH_NODE_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_path_nodes_onto_bitmap(image_bitmap, subsection);
 	}
+	else if (LOCATION_MARKER_LAYER == layer) {
+		this->active_levels[this->selected_level_index]->draw_location_markers_onto_bitmap(image_bitmap, subsection);
+	}
 	else if (GRID_LINES_LAYER == layer) {
 		ALLEGRO_BITMAP *display = al_get_target_bitmap();
 		al_set_target_bitmap(image_bitmap);
@@ -443,6 +449,8 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 		EntityGroup * eg = NULL;
 		Spawner * s = NULL;
 		PathNode * n = NULL;
+		LocationMarker * lm = NULL;
+
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -486,6 +494,16 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 				did_serialize = xmls::Serializable::fromXML(xml, n2);
 				if (did_serialize) {
 					n->Copy(n2);
+				}
+			}
+			break;
+		case OBJECT_TYPE_LOCATION_MARKER:
+			lm = this->active_levels[this->selected_level_index]->location_marker_at_tile_pos(grid_pos);
+			if (lm) {
+				LocationMarker * lm2 = new LocationMarker();
+				did_serialize = xmls::Serializable::fromXML(xml, lm2);
+				if (did_serialize) {
+					lm->Copy(lm2);
 				}
 			}
 			break;
@@ -581,6 +599,10 @@ bool LevelEditorDataManager::add_level_object(std::pair<int, int> tile_pos)
 					this->add_selected_level_path_node(this->selected_object_select_index, tile_pos);
 					update = true;
 					break;
+				case OBJECT_TYPE_LOCATION_MARKER:
+					this->add_selected_level_location_marker(this->selected_object_select_index, tile_pos);
+					update = true;
+					break;
 				default:
 					break;
 				}
@@ -622,6 +644,10 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 						break;
 					case OBJECT_TYPE_PATH_NODE:
 						this->delete_level_path_node(tile_pos);
+						update = true;
+						break;
+					case OBJECT_TYPE_LOCATION_MARKER:
+						this->delete_level_location_marker(tile_pos);
 						update = true;
 						break;
 					default:
@@ -680,6 +706,7 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 		EntityGroup * eg = NULL;
 		Spawner * s = NULL;
 		PathNode * n = NULL;
+		LocationMarker * lm = NULL;
 		switch (this->selected_object_grid_index) {
 		case OBJECT_TYPE_TILE:
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
@@ -712,6 +739,12 @@ const std::string LevelEditorDataManager::get_selected_object_instance_xml()
 			n = this->active_levels[this->selected_level_index]->path_node_at_tile_pos(grid_pos);
 			if (n) {
 				return n->toXML();
+			}
+			break;
+		case OBJECT_TYPE_LOCATION_MARKER:
+			lm = this->active_levels[this->selected_level_index]->location_marker_at_tile_pos(grid_pos);
+			if (lm) {
+				return lm->toXML();
 			}
 			break;
 		default:
@@ -775,6 +808,11 @@ void LevelEditorDataManager::delete_level_spawner(std::pair<int, int> pos)
 void LevelEditorDataManager::delete_level_path_node(const std::pair<int, int> pos)
 {
 	this->active_levels[this->selected_level_index]->remove_path_node(pos);
+}
+
+void LevelEditorDataManager::delete_level_location_marker(const std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->remove_location_marker(pos);
 }
 
 std::string LevelEditorDataManager::get_active_dungeon_name()
@@ -914,6 +952,14 @@ const std::vector<std::string> LevelEditorDataManager::all_selected_path_node_ke
 	return std::vector<std::string>();
 }
 
+const std::vector<std::string> LevelEditorDataManager::all_selected_location_marker_keys()
+{
+	if (this->has_selected_tileset()) {
+		return this->active_tilesets[this->selected_tileset_index]->all_location_marker_keys();
+	}
+	return std::vector<std::string>();
+}
+
 std::string LevelEditorDataManager::get_selected_tileset_name()
 {
 	return this->get_tileset_name(this->selected_tileset_index);
@@ -1001,6 +1047,15 @@ ALLEGRO_BITMAP * LevelEditorDataManager::get_path_node_bitmap_for_selected_col(c
 	if (index >= 0
 		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
 		return this->active_tilesets[this->selected_tileset_index]->get_path_node_bitmap_for_col(index, this->selected_object_sheet_col);
+	}
+	return NULL;
+}
+
+ALLEGRO_BITMAP * LevelEditorDataManager::get_location_marker_bitmap_for_selected_col(const int index)
+{
+	if (index >= 0
+		&& this->active_tilesets[this->selected_tileset_index] != NULL) {
+		return this->active_tilesets[this->selected_tileset_index]->get_location_marker_bitmap_for_col(index, this->selected_object_sheet_col);
 	}
 	return NULL;
 }
@@ -1107,6 +1162,11 @@ void LevelEditorDataManager::add_selected_level_spawner(const int index, const s
 void LevelEditorDataManager::add_selected_level_path_node(const int index, const std::pair<int, int> pos)
 {
 	this->active_levels[this->selected_level_index]->add_path_node(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
+}
+
+void LevelEditorDataManager::add_selected_level_location_marker(const int index, const std::pair<int, int> pos)
+{
+	this->active_levels[this->selected_level_index]->add_location_marker(index, std::pair<int, int>(this->selected_object_sheet_col, 0), pos);
 }
 
 void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)

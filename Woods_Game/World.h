@@ -14,6 +14,7 @@
 #include "FileManager.h"
 #include <future>
 #include <memory>
+#include <set>
 #include "allegro5/threads.h"
 
 class ImageLoader;
@@ -91,6 +92,9 @@ public:
 	Level * find_level_with_path_node_key(const std::string node_key);
 	Level * find_any_level_with_node();
 	PathNode * get_npc_destination_node(NPC * npc);
+	Level * level_containing_location_marker(LocationMarker *marker);
+	LocationMarker * location_marker_matching_level(Level * level);
+	const std::pair<int, int> map_location_for_level(Level * level);
 	void clear_all_beings();
 	Dungeon* get_dungeon(std::string dungeon_name);
 	std::vector<std::shared_ptr<Dungeon>> get_dungeons();
@@ -102,6 +106,8 @@ public:
 	TriggerStatus * matching_trigger_status(TriggerStatus * status);
 	const int get_default_level_width();
 	const int get_default_level_height();
+	void mark_grid_explored(const int grid_x, const int grid_y);
+	const std::set<std::pair<int, int>> explored_map();
 };
 
 #endif

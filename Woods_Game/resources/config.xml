@@ -3,15 +3,24 @@
         <Member Name="screen_res_x">800</Member>
         <Member Name="screen_res_y">600</Member>
         <Member Name="screen_mode">Windowed</Member>
+        <Member Name="master_volume">100</Member>
+        <Member Name="music_volume">100</Member>
+        <Member Name="sfx_volume">100</Member>
     </SerializableClass>
     <SerializableClass Type="Configurations" Version="1" ConfigurationsKey="default_configurations">
         <Member Name="screen_res_x">800</Member>
         <Member Name="screen_res_y">600</Member>
         <Member Name="screen_mode">Windowed</Member>
+        <Member Name="master_volume">100</Member>
+        <Member Name="music_volume">100</Member>
+        <Member Name="sfx_volume">100</Member>
     </SerializableClass>
     <SerializableClass Type="Configurations" Version="1" ConfigurationsKey="level_editor_configurations">
         <Member Name="screen_res_x">1200</Member>
         <Member Name="screen_res_y">800</Member>
         <Member Name="screen_mode">Windowed</Member>
+        <Member Name="master_volume">100</Member>
+        <Member Name="music_volume">100</Member>
+        <Member Name="sfx_volume">100</Member>
     </SerializableClass>
 </root>

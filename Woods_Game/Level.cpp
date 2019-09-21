@@ -556,6 +556,7 @@ Level::Level()
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
 	this->Register("PathNodes", &(this->path_nodes));
+	this->Register("LocationMarkers", &(this->location_markers));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 }
@@ -572,6 +573,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 	this->Register("EntityGroups", &(this->entity_groups));
 	this->Register("Spawners", &(this->spawners));
 	this->Register("PathNodes", &(this->path_nodes));
+	this->Register("LocationMarkers", &(this->location_markers));
 	this->Register("TiledImageLayers", &(this->tiled_image_layers));
 	this->Register("LevelGenData", &(this->gen_data));
 	this->map_filename = level_filename;
@@ -603,6 +605,7 @@ void Level::load_from_xml()
 	this->initialize_tiled_images();
 	this->initialize_spawners();
 	this->initialize_path_nodes();
+	this->initialize_location_markers();
 }
 
 void Level::reload_from_xml(Level &copy_level)
@@ -928,6 +931,20 @@ void Level::initialize_path_nodes()
 		std::pair<int, int> position(n->get_entity_starting_pos_x(), n->get_entity_starting_pos_y());
 		n->set_content(filename, subsection, position);
 		n->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
+	}
+}
+
+void Level::initialize_location_markers()
+{
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker *lm = this->location_markers.getItem(i);
+		Rect *subsection = lm->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_location_marker_sheet_filename(lm->get_entity_data_index());
+		std::pair<int, int> position(lm->get_entity_starting_pos_x(), lm->get_entity_starting_pos_y());
+		lm->set_content(filename, subsection, position);
+		lm->set_rect(position.first, position.second,
 			TILE_SIZE, TILE_SIZE);
 	}
 }
@@ -1390,6 +1407,19 @@ void Level::remove_path_node(const std::pair<int, int> pos)
 	}
 }
 
+void Level::remove_location_marker(const std::pair<int, int> pos)
+{
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker *lm = this->location_markers.getItem(i);
+		if (lm != NULL && lm->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			this->location_markers.removeItem(i);
+			lm->unload_content();
+			break;
+		}
+	}
+}
+
 void Level::replace_tile(int tile_index, std::pair<int, int> ss_pos, std::pair<int, int> pos)
 {
 	Tile * replacing_tile = new Tile(this->tileset, pos.first, pos.second, 
@@ -1520,6 +1550,54 @@ PathNode * Level::find_any_path_node()
 	const int size = this->path_nodes.size();
 	if (size > 0) {
 		return this->path_nodes.getItem(0);
+	}
+	return NULL;
+}
+
+void Level::add_location_marker(const int marker_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos)
+{
+	std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::string filename_start = this->tileset->get_tile_sheet_filename();
+	LocationMarker * lm = this->create_location_marker(filename_start, marker_index, ss_pos, pixel_pos);
+	this->location_markers.addItem(lm);
+}
+
+LocationMarker * Level::create_location_marker(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos)
+{
+	EntityData* marker_data = tileset->get_location_marker_data_by_index(index);
+	const std::string filename = filename_start + "/location_markers/" + marker_data->get_entity_data_key();
+	LocationMarker * marker = new LocationMarker();
+	marker->set_entity_data_index(index);
+	Rect * ss_offset_rect = new Rect(TILE_SIZE*ss_pos.first,
+		TILE_SIZE*ss_pos.second,
+		TILE_SIZE*(ss_pos.first + 1),
+		TILE_SIZE*(ss_pos.second + 1));
+	marker->set_content(filename, ss_offset_rect, pos);
+	marker->set_rect(pos.first, pos.second,
+		TILE_SIZE, TILE_SIZE);
+	marker->set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	return marker;
+}
+
+std::vector<LocationMarker*> Level::get_location_markers()
+{
+	std::vector<LocationMarker*> markers;
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker * lm = this->location_markers.getItem(i);
+		markers.push_back(lm);
+	}
+	return markers;
+}
+
+LocationMarker * Level::find_location_marker_matching_level(const std::string level_key)
+{
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker * lm = this->location_markers.getItem(i);
+		if (lm != NULL && lm->matches_level(level_key)) {
+			return lm;
+		}
 	}
 	return NULL;
 }
@@ -1696,6 +1774,18 @@ PathNode * Level::path_node_at_tile_pos(const std::pair<int, int> pos)
 		PathNode *n = this->path_nodes.getItem(i);
 		if (n != NULL && n->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
 			return n;
+		}
+	}
+	return NULL;
+}
+
+LocationMarker * Level::location_marker_at_tile_pos(const std::pair<int, int> pos)
+{
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker *lm = this->location_markers.getItem(i);
+		if (lm != NULL && lm->contains_point(pos.first*TILE_SIZE, pos.second*TILE_SIZE)) {
+			return lm;
 		}
 	}
 	return NULL;
@@ -1931,6 +2021,25 @@ void Level::draw_path_nodes_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & subsecti
 			&& dy < subsection.height) {
 			ALLEGRO_BITMAP *node_bitmap = ImageLoader::get_instance().get_current_image(n);
 			al_draw_bitmap(node_bitmap, dx, dy, 0);
+		}
+	}
+	al_set_target_bitmap(display);
+}
+
+void Level::draw_location_markers_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & subsection)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
+	const int size = this->location_markers.size();
+	for (int i = 0; i < size; i++) {
+		LocationMarker *lm = this->location_markers.getItem(i);
+		float dx = lm->get_x() - subsection.x;
+		float dy = lm->get_y() - subsection.y;
+		if (dx >= 0 && dy >= 0
+			&& dx < subsection.width
+			&& dy < subsection.height) {
+			ALLEGRO_BITMAP *marker_bitmap = ImageLoader::get_instance().get_current_image(lm);
+			al_draw_bitmap(marker_bitmap, dx, dy, 0);
 		}
 	}
 	al_set_target_bitmap(display);

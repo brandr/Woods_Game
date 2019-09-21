@@ -22,6 +22,7 @@ private:
 	xmls::Collection<TiledImageData> tiled_image_types;
 	xmls::Collection<EntityData> spawner_types;
 	xmls::Collection<EntityData> path_node_types;
+	xmls::Collection<EntityData> location_marker_types;
 	void ensure_room_for_type(const int type_key, const int row);
 public:
 	TileSet();
@@ -103,5 +104,10 @@ public:
 	ALLEGRO_BITMAP * get_path_node_bitmap_for_col(const int index, const int col);
 	EntityData * get_path_node_data_by_index(const int index);
 	const std::vector<std::string> all_path_node_keys();
+	// location marker types
+	const std::string get_full_location_marker_sheet_filename(const int index);
+	ALLEGRO_BITMAP * get_location_marker_bitmap_for_col(const int index, const int col);
+	EntityData * get_location_marker_data_by_index(const int index);
+	const std::vector<std::string> all_location_marker_keys();
 };
 #endif

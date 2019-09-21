@@ -236,6 +236,30 @@ PathNode * Dungeon::find_path_node_with_key(const std::string node_key)
 	return NULL;
 }
 
+std::vector<LocationMarker*> Dungeon::get_all_location_markers()
+{
+	std::vector<LocationMarker*> markers;
+	for (Level * level : this->level_list) {
+		std::vector<LocationMarker *> level_markers = level->get_location_markers();
+		for (LocationMarker * lm : level_markers) {
+			markers.push_back(lm);
+		}
+	}
+	return markers;
+}
+
+LocationMarker * Dungeon::location_marker_matching_level(Level * l)
+{
+	for (Level * level : this->level_list) {
+		LocationMarker * lm = level->find_location_marker_matching_level(l->get_filename());
+		if (lm)
+		{
+			return lm;
+		}
+	}
+	return NULL;
+}
+
 void Dungeon::set_dungeon_name(std::string name)
 {
 	this->dungeon_name = name;

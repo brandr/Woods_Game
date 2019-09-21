@@ -13,6 +13,11 @@ private:
 	xmls::xInt screen_res_x;
 	xmls::xInt screen_res_y;
 	xmls::xString screen_mode;
+
+	// audio settings
+	xmls::xFloat master_volume;
+	xmls::xFloat music_volume;
+	xmls::xFloat sfx_volume;
 public:
 	static constexpr const char* SCREEN_STYLE_WINDOWED = "Windowed";
 	static constexpr const char* SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
@@ -25,6 +30,12 @@ public:
 	std::string get_screen_mode();
 	int get_screen_res_x();
 	int get_screen_res_y();
+	void set_master_volume(const float value);
+	void set_music_volume(const float value);
+	void set_sfx_volume(const float value);
+	const float get_master_volume();
+	const float get_music_volume();
+	const float get_sfx_volume();
 };
 
 #endif

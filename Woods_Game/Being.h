@@ -1,6 +1,8 @@
 #ifndef BEING_H
 #define BEING_H
 
+#define DEFAULT_FOOTSTEP_FILENAME "footstep_default"
+
 #include "TileSet.h"
 #include "Tile.h"
 #include "Entity.h"  // for Entity
@@ -33,10 +35,14 @@ protected:
 	
 	const bool empty_at(Rect, std::vector<Entity*>);
 	const float get_speed_multiplier(TileSet * tileset, std::vector<Tile*> tiles);
+	std::vector<Tile *> get_colliding_tiles(TileSet * tileset, std::vector<Tile*> tiles);
+	virtual void play_sounds_for_entity(Entity* e);
 public:
 	Being();
 	~Being();
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
 	void set_xvel(int);
 	void set_yvel(int);

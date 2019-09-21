@@ -130,6 +130,14 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 	path_node_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
 	path_node_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
 	path_node_visibility_checkbox.setChecked(true);
+
+	// path node layer
+	this->level_editor_layout_1.add(&location_marker_visibility_checkbox);
+	location_marker_visibility_checkbox.setAutosizing(true);
+	location_marker_visibility_checkbox.setText("Show location markers");
+	location_marker_visibility_checkbox.setFontColor(agui::Color(0, 0, 0));
+	location_marker_visibility_checkbox.setCheckBoxAlignment(agui::ALIGN_MIDDLE_LEFT);
+	location_marker_visibility_checkbox.setChecked(true);
 	
 	// gridlines
 	this->level_editor_layout_1.add(&grid_lines_visibility_checkbox);
@@ -158,12 +166,14 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 
 	this->level_editor_layout_1.add(&level_edit_object_tabbed_pane);
 
-	level_edit_object_tabbed_pane.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_tabbed_pane.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
 	level_edit_object_tabs[TILE_SELECT_TAB].setText("Tiles");
 	level_edit_object_tabs[BLOCK_SELECT_TAB].setText("Blocks");
 	level_edit_object_tabs[ENTITY_GROUP_SELECT_TAB].setText("EntityGroups");
 	level_edit_object_tabs[SPAWNER_TAB].setText("Spawners");
 	level_edit_object_tabs[PATH_NODE_TAB].setText("Nodes");
+	level_edit_object_tabs[LOCATION_MARKER_TAB].setText("Markers");
+
 
 	// tabs for selecting objects to place in the level
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[TILE_SELECT_TAB],
@@ -176,19 +186,23 @@ LevelEditorLayout::LevelEditorLayout(ALLEGRO_DISPLAY *display)
 		&level_edit_object_spawner_select_box);
 	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[PATH_NODE_TAB],
 		&level_edit_object_path_node_select_box);
+	level_edit_object_tabbed_pane.addTab(&level_edit_object_tabs[LOCATION_MARKER_TAB],
+		&level_edit_object_location_marker_select_box);
 
 	level_edit_object_tile_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_block_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_entity_group_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_spawner_select_box.setMargins(0, 0, 28, 0);
 	level_edit_object_path_node_select_box.setMargins(0, 0, 28, 0);
+	level_edit_object_location_marker_select_box.setMargins(0, 0, 28, 0);
 
 	// set select box sizes
-	level_edit_object_tile_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
-	level_edit_object_block_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
-	level_edit_object_entity_group_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
-	level_edit_object_spawner_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
-	level_edit_object_path_node_select_box.setSize(2 * LEVEL_EDITOR_GRID_WIDTH / 3, 140);
+	level_edit_object_tile_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
+	level_edit_object_block_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
+	level_edit_object_entity_group_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
+	level_edit_object_spawner_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
+	level_edit_object_path_node_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
+	level_edit_object_location_marker_select_box.setSize(3 * LEVEL_EDITOR_GRID_WIDTH / 4, 140);
 
 	// selected object display
 	this->level_editor_layout_1.add(&selected_level_object_display);
@@ -381,6 +395,20 @@ void LevelEditorLayout::load_selected_tileset_path_nodes()
 	}
 }
 
+void LevelEditorLayout::load_selected_tileset_location_markers()
+{
+	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
+	this->level_edit_object_location_marker_select_box.clearItems();
+	if (manager.has_selected_tileset()) {
+		std::vector<std::string> marker_keys = manager.all_selected_location_marker_keys();
+		for (std::string marker_key : marker_keys) {
+			// level editor tab selection
+			this->level_edit_object_location_marker_select_box.addItem(marker_key);
+		}
+		this->level_edit_object_location_marker_select_box.resizeHeightToContents();
+	}
+}
+
 //TODO: is this actually used?
 void LevelEditorLayout::load_selected_tileset_tiled_images()
 {
@@ -421,6 +449,7 @@ void LevelEditorLayout::update_level_grid()
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::TILED_IMAGE_LAYER, this->tiled_image_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::SPAWNER_LAYER, this->spawner_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::PATH_NODE_LAYER, this->path_node_visibility_checkbox.checked());
+		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::LOCATION_MARKER_LAYER, this->location_marker_visibility_checkbox.checked());
 		this->level_editor_grid.set_layer_visible(LevelEditorDataManager::GRID_LINES_LAYER, this->grid_lines_visibility_checkbox.checked());
 	}
 	// resize if necessary
@@ -467,6 +496,9 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 		break;
 	case PATH_NODE_TAB:
 		object_box = &(this->level_edit_object_path_node_select_box);
+		break;
+	case LOCATION_MARKER_TAB:
+		object_box = &(this->level_edit_object_location_marker_select_box);
 		break;
 	default:
 		break;
@@ -516,6 +548,10 @@ void LevelEditorLayout::update_selected_level_object(const bool force)
 					break;
 				case PATH_NODE_TAB:
 					object_bitmap = manager.get_path_node_bitmap_for_selected_col(object_index);
+					dim = std::pair<int, int>(TILE_SIZE, TILE_SIZE);
+					break;
+				case LOCATION_MARKER_TAB:
+					object_bitmap = manager.get_location_marker_bitmap_for_selected_col(object_index);
 					dim = std::pair<int, int>(TILE_SIZE, TILE_SIZE);
 					break;
 				default:

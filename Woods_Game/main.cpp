@@ -42,7 +42,7 @@
 #include <memory>                            // for allocator
 #include "Configurations.h"
 
-
+#include "AudioManager.h" //temporary
 
 static const std::string RUN_GAME = "RunGame";
 static const std::string LEVEL_EDITOR = "LevelEditor";
@@ -62,7 +62,7 @@ ALLEGRO_DISPLAY * initialize_display(std::string config_path, std::string run_mo
 	ALLEGRO_DISPLAY *display = NULL;
 	FileManager filemanager;
 	Configurations config;
-	std::string config_key = run_mode == LEVEL_EDITOR ? "level_editor_configurations" : "current_configurations";
+	const std::string config_key = run_mode == LEVEL_EDITOR ? "level_editor_configurations" : "current_configurations";
 	filemanager.load_xml_content(&config, config_path, "SerializableClass", "ConfigurationsKey", config_key);
 	if (config.get_screen_mode() == Configurations::SCREEN_STYLE_FULLSCREEN) {
 		ALLEGRO_DISPLAY_MODE   disp_data;
@@ -121,6 +121,13 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	ALLEGRO_FONT *fps_font = al_load_ttf_font("resources/fonts/ArialBlack.ttf", 14, 0);
 	//TEMP
 
+	AudioManager::get_instance().initialize_audio();
+
+	//temp
+	//AudioManager::get_instance().play_sfx("storm");
+	//AudioManager::get_instance().play_music("running_theme");
+	//temp
+	
 	// game loop
 	bool done = false, draw = true;
 	while (!done && !ScreenManager::get_instance().should_close()) {
@@ -147,13 +154,11 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 			double fps = 1.0 / (delta);
 			old_time = new_time;
 			
-			al_draw_text(fps_font, al_map_rgb(255, 0, 0), 72, 16, ALLEGRO_ALIGN_LEFT, ("FPS: " + std::to_string(fps)).c_str());
+			al_draw_text(fps_font, al_map_rgb(255, 0, 0), 72, 16, ALLEGRO_ALIGN_LEFT, ("FPS: " + std::to_string((int)fps)).c_str());
 			if (fps < 10.0) {
 				std::cout << "Low FPS: " << std::to_string(fps) << "\n";
 			}
 			//temp
-
-			
 
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -172,6 +177,7 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	al_uninstall_joystick();
 	al_uninstall_mouse();
 	al_uninstall_keyboard();
+	al_uninstall_audio();
 	al_uninstall_system();
 }
 
@@ -185,6 +191,7 @@ int initialize_allegro_libraries() {
 	al_install_keyboard();
 	al_install_joystick();
 	al_install_mouse();
+	al_install_audio();
 	return 1;
 }
 

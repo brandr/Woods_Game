@@ -48,6 +48,26 @@ ALLEGRO_BITMAP * InventoryScreen::map_current_location_icon()
 	return ImageLoader::get_instance().get_image("ui/map_current_location_icon");
 }
 
+ALLEGRO_BITMAP * InventoryScreen::map_location_icon()
+{
+	return ImageLoader::get_instance().get_image("ui/map_location_icon");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::map_selection_icon()
+{
+	return ImageLoader::get_instance().get_image("ui/map_selection_icon");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::map_location_label_frame()
+{
+	return ImageLoader::get_instance().get_image("ui/map_location_label_frame");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::map_fog()
+{
+	return ImageLoader::get_instance().get_image("ui/map_fog");
+}
+
 const std::string InventoryScreen::label_for_tab(const int index)
 {
 	switch (index) {
@@ -125,6 +145,36 @@ void InventoryScreen::items_tab_select()
 	}
 }
 
+// TODO: did I do modulo correctly for these? (try scrolling left from the start)
+
+void InventoryScreen::map_tab_menu_up()
+{
+	if (this->locations_for_display.size() > 0) {
+		this->map_selected_location_index = (this->map_selected_location_index - 1) % this->locations_for_display.size();
+	}
+}
+
+void InventoryScreen::map_tab_menu_down()
+{
+	if (this->locations_for_display.size() > 0) {
+		this->map_selected_location_index = (this->map_selected_location_index + 1) % this->locations_for_display.size();
+	}
+}
+
+void InventoryScreen::map_tab_menu_left()
+{
+	if (this->locations_for_display.size() > 0) {
+		this->map_selected_location_index = (this->map_selected_location_index - 1) % this->locations_for_display.size();
+	}
+}
+
+void InventoryScreen::map_tab_menu_right()
+{
+	if (this->locations_for_display.size() > 0) {
+		this->map_selected_location_index = (this->map_selected_location_index + 1) % this->locations_for_display.size();
+	}
+}
+
 InventoryScreen::InventoryScreen()
 {
 }
@@ -148,6 +198,10 @@ void InventoryScreen::load_content()
 	// map
 	ImageLoader::get_instance().load_image("ui/map_frame");
 	ImageLoader::get_instance().load_image("ui/map_current_location_icon");
+	ImageLoader::get_instance().load_image("ui/map_location_icon");
+	ImageLoader::get_instance().load_image("ui/map_selection_icon");
+	ImageLoader::get_instance().load_image("ui/map_location_label_frame");
+	ImageLoader::get_instance().load_image("ui/map_fog");
 }
 
 void InventoryScreen::load_fonts()
@@ -155,6 +209,7 @@ void InventoryScreen::load_fonts()
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 	font_map[FONT_TABS] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
+	font_map[FONT_LOCATION_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
@@ -240,8 +295,7 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		const float x = (width - box_width*size) / 2 + i*box_width;
 		if (!selecting_internal_inventory() && i == hotbar_index) {
 			al_draw_bitmap(item_box_selected(), x, y, 0);
-		}
-		else {
+		} else {
 			al_draw_bitmap(item_box_hotbar(), x, y, 0);
 		}
 		if (i == dragging_selection.first && dragging_selection.second < 0) {
@@ -272,20 +326,62 @@ void InventoryScreen::draw_map(ALLEGRO_DISPLAY * display)
 	const std::string filename = this->world_key + "/maps/" + this->dungeon_key;
 	ALLEGRO_BITMAP * map_bitmap = ImageLoader::get_instance().get_image(filename, "", "resources/load/saves/");
 	ALLEGRO_BITMAP * sub_map_bitmap = al_create_sub_bitmap(map_bitmap, 0, 0, map_frame_width - pad * 2, map_frame_height - pad * 2);
-	al_draw_bitmap(map_frame_bitmap, x, y, 0);
+	
 	al_draw_bitmap(sub_map_bitmap, x + pad, y + pad, 0);
+
+	ALLEGRO_BITMAP * full_fog_bitmap = this->map_fog();
+	const int full_fog_w = al_get_bitmap_width(full_fog_bitmap), full_fog_h = al_get_bitmap_height(full_fog_bitmap);
+	const int grid_square_w = this->default_level_width / LEVEL_MAP_SCALE, grid_square_h = this->default_level_height / LEVEL_MAP_SCALE;
+	const int grid_rows = map_frame_height / grid_square_h, grid_cols = map_frame_width / grid_square_w;
+	for (int gy = 0; gy < grid_rows; gy++) {
+		for (int gx = 0; gx < grid_cols; gx++) {
+			if (this->explored_map.find(std::pair<int, int>(gx, gy)) == this->explored_map.end()) {
+				al_draw_scaled_bitmap(full_fog_bitmap, 0, 0, full_fog_w, full_fog_h, x + pad + gx * grid_square_w, y + pad + gy * grid_square_h, grid_square_w + 3, grid_square_h + 3, 0);
+			}
+		}
+	}
+
+	al_draw_bitmap(map_frame_bitmap, x, y, 0);
+
 	const int current_loc_off_x = this->current_location_x / LEVEL_MAP_SCALE;
 	const int current_loc_off_y = this->current_location_y / LEVEL_MAP_SCALE;
 
-	//TODO: need to get correct location if player is inside a building (probably happens before here)
-	//			do we want the map to show the building? (probably never necessary but might look cool)
+	ALLEGRO_BITMAP * location_icon = this->map_location_icon();
+	ALLEGRO_BITMAP * selection_icon = this->map_selection_icon();
+
+	const int display_loc_count = this->locations_for_display.size();
+	for (int i = 0; i < display_loc_count; i++) {
+		const std::pair<std::string, std::pair<int, int>> loc = this->locations_for_display[i];
+		const std::pair<int, int> loc_pos = loc.second;
+		const int loc_off_x = loc_pos.first / LEVEL_MAP_SCALE;
+		const int loc_off_y = loc_pos.second / LEVEL_MAP_SCALE;
+		const int loc_grid_x = loc_off_x / grid_square_w, loc_grid_y = loc_off_y / grid_square_h;
+		if (this->explored_map.find(std::pair<int, int>(loc_grid_x, loc_grid_y)) != this->explored_map.end()) {
+			al_draw_bitmap(location_icon, x + pad + loc_off_x - 10, y + pad + loc_off_y - 5, 0);
+			if (i == this->map_selected_location_index) {
+				al_draw_bitmap(selection_icon, x + pad + loc_off_x - 10, y + pad + loc_off_y - 5, 0);
+			}
+		}
+	}
+
 	if (this->map_current_location_blink_index < MAP_CURRENT_LOCATION_BLINK_TIME / 2) {
 		if (current_loc_off_x > 0 && current_loc_off_y > 0) {
 			al_draw_bitmap(this->map_current_location_icon(), x + pad + current_loc_off_x - 10, y + pad + current_loc_off_y - 5, 0);
 		}
 	}
-	//TODO: grid lines?
-	//TODO: how to track which grid areas have been explored? (need to serialize, possibly in world state)
+
+	ALLEGRO_BITMAP * location_frame = this->map_location_label_frame();
+
+	const std::string location_text 
+		= this->map_selected_location_index >= 0 
+			&& this->map_selected_location_index  < this->locations_for_display.size()
+			? this->locations_for_display[this->map_selected_location_index].first : "???";
+
+	const int location_frame_width = al_get_bitmap_width(location_frame), location_frame_height = al_get_bitmap_height(location_frame);
+	const int l_frame_x = x + (map_frame_width - location_frame_width) / 2;
+	const int l_frame_y = y + map_frame_height + 8;
+	al_draw_bitmap(location_frame, l_frame_x, l_frame_y, 0);
+	al_draw_text(font_map[FONT_LOCATION_LABEL], al_map_rgb(0, 0, 0), l_frame_x + 8, l_frame_y + 4, 0, location_text.c_str());
 }
 
 void InventoryScreen::update()
@@ -308,6 +404,9 @@ void InventoryScreen::menu_up()
 	case INVENTORY_TAB_ITEMS:
 		this->items_tab_menu_up();
 		break;
+	case INVENTORY_TAB_MAP:
+		this->map_tab_menu_up();
+		break;
 	default:
 		break;
 	}
@@ -319,6 +418,9 @@ void InventoryScreen::menu_down()
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
 		this->items_tab_menu_down();
+		break;
+	case INVENTORY_TAB_MAP:
+		this->map_tab_menu_down();
 		break;
 	default:
 		break;
@@ -332,6 +434,9 @@ void InventoryScreen::menu_left()
 	case INVENTORY_TAB_ITEMS:
 		this->items_tab_menu_left();
 		break;
+	case INVENTORY_TAB_MAP:
+		this->map_tab_menu_left();
+		break;
 	default:
 		break;
 	}
@@ -344,6 +449,9 @@ void InventoryScreen::menu_right()
 	case INVENTORY_TAB_ITEMS:
 		this->items_tab_menu_right();
 		break;
+	case INVENTORY_TAB_MAP:
+		this->map_tab_menu_right();
+		break;
 	default:
 		break;
 	}
@@ -351,7 +459,11 @@ void InventoryScreen::menu_right()
 
 void InventoryScreen::tab_left()
 {
-	this->tab_index = (this->tab_index - 1) % NUM_INVENTORY_TABS;
+	if (this->tab_index == 0) {
+		this-> tab_index = NUM_INVENTORY_TABS - 1;
+	} else {
+		this->tab_index = this->tab_index - 1;
+	}
 }
 
 void InventoryScreen::tab_right()
@@ -418,4 +530,20 @@ void InventoryScreen::set_current_location(const int x, const int y)
 {
 	this->current_location_x = x;
 	this->current_location_y = y;
+}
+
+void InventoryScreen::set_locations_for_display(const std::vector<std::pair<std::string, std::pair<int, int>>> locations)
+{
+	this->locations_for_display = locations;
+}
+
+void InventoryScreen::set_default_level_dimensions(const int default_width, const int default_height)
+{
+	this->default_level_width = default_width;
+	this->default_level_height = default_height;
+}
+
+void InventoryScreen::set_explored_map(const std::set<std::pair<int, int>> value)
+{
+	this->explored_map = value;
 }

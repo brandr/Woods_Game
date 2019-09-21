@@ -69,6 +69,7 @@ private:
 	void load_selected_tileset_tiled_images();
 	void load_selected_tileset_spawners();
 	void load_selected_tileset_path_nodes();
+	void load_selected_tileset_location_markers();
 
 		// update methods
 	void dungeon_update();

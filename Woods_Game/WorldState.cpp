@@ -22,12 +22,19 @@ WorldState::WorldState()
 	setClassName("WorldState");
 	Register("world_key", &world_key);
 	Register("trigger_statuses", &trigger_statuses);
+	Register("explored_cells", &explored_cells);
 	Register("player", &player);
 }
 
 
 WorldState::~WorldState()
 {
+}
+
+void WorldState::reset()
+{
+	this->trigger_statuses.Clear();
+	this->explored_cells.Clear();
 }
 
 Player * WorldState::get_player()
@@ -77,4 +84,40 @@ void WorldState::set_has_met_npc(const std::string npc_key)
 		this->trigger_statuses.addItem(status);
 	}
 	status->set_trigger_state(1);
+}
+
+const std::set<std::pair<int, int>> WorldState::explored_map()
+{
+	std::set<std::pair<int, int>> map;
+	const int size = this->explored_cells.size();
+	for (int i = 0; i < size; i++) {
+		DungeonGridCell * cell = this->explored_cells.getItem(i);
+		map.insert(std::pair<int, int>(cell->grid_x.value(), cell->grid_y.value()));
+	}
+	return map;
+}
+
+void WorldState::mark_grid_explored(const int grid_x, const int grid_y)
+{
+	const int size = this->explored_cells.size();
+	for (int i = 0; i < size; i++) {
+		DungeonGridCell * cell = this->explored_cells.getItem(i);
+		if (grid_x == cell->grid_x.value() && grid_y == cell->grid_y.value()) {
+			return;
+		}
+	}
+	DungeonGridCell * explored_cell = new DungeonGridCell();
+	explored_cell->grid_x = grid_x, explored_cell->grid_y = grid_y;
+	this->explored_cells.addItem(explored_cell);
+}
+
+DungeonGridCell::DungeonGridCell()
+{
+	setClassName("DungeonGridCell");
+	Register("grid_x", &grid_x);
+	Register("grid_y", &grid_y);
+}
+
+DungeonGridCell::~DungeonGridCell()
+{
 }

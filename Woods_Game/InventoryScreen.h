@@ -7,8 +7,11 @@
 #include "Inventory.h"
 #include "GameScreen.h"
 #include "ImageLoader.h"
+#include "LocationMarker.h"
+
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include <set>
 #include "utility"             // for pair
 
 enum INVENTORY_SCREEN_TABS {
@@ -21,11 +24,6 @@ class InventoryScreen :
 	public GameScreen
 {
 private:
-
-	std::string world_key;
-	std::string dungeon_key;
-
-	int current_location_x = -1, current_location_y = -1;
 
 	int tab_index = INVENTORY_TAB_ITEMS;
 	
@@ -44,27 +42,47 @@ private:
 	// map tab
 	ALLEGRO_BITMAP* map_frame();
 	ALLEGRO_BITMAP* map_current_location_icon();
+	ALLEGRO_BITMAP* map_location_icon();
+	ALLEGRO_BITMAP* map_selection_icon();
+	ALLEGRO_BITMAP* map_location_label_frame();
+	ALLEGRO_BITMAP* map_fog();
 
-	//inventory
+	const std::string label_for_tab(const int index);
+
+	// items
 	Inventory *inventory;
 
 	std::pair<int, int> inventory_selection = std::pair<int, int>(-1, -1);
 	std::pair<int, int> dragging_selection = std::pair<int, int>(-1, -1);
 
-	// map
-
-	int map_current_location_blink_index = 0;
-
-	// journal tab
-
-	// TODO
-
-	const std::string label_for_tab(const int index);
 	void items_tab_menu_up();
 	void items_tab_menu_down();
 	void items_tab_menu_left();
 	void items_tab_menu_right();
 	void items_tab_select();
+
+	// map
+
+	int map_current_location_blink_index = 0;
+
+	int map_selected_location_index = 0;
+
+	std::string world_key;
+	std::string dungeon_key;
+	int current_location_x = -1, current_location_y = -1;
+	std::vector <std::pair<std::string, std::pair<int, int>>> locations_for_display;
+	int default_level_width, default_level_height;
+	std::set<std::pair<int, int>> explored_map;
+
+	void map_tab_menu_up();
+	void map_tab_menu_down();
+	void map_tab_menu_left();
+	void map_tab_menu_right();
+
+	// journal
+
+	//TODO
+	
 
 public:
 	InventoryScreen();
@@ -92,7 +110,9 @@ public:
 	void set_world_key(const std::string value);
 	void set_dungeon_key(const std::string value);
 	void set_current_location(const int x, const int y);
-
+	void set_locations_for_display(const std::vector<std::pair<std::string, std::pair<int, int>>> locations);
+	void set_default_level_dimensions(const int default_width, const int default_height);
+	void set_explored_map(const std::set<std::pair<int, int>> value);
 };
 
 #endif
