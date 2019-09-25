@@ -83,6 +83,7 @@ public:
 	void add_dungeon(Dungeon*);
 	Player * get_player();
 	NPC * get_npc(const std::string npc_key);
+	const bool npc_is_on_node(const std::string npc_key, const std::string node_key);
 	void set_has_met_npc(const std::string npc_key);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
@@ -107,6 +108,8 @@ public:
 	const int get_default_level_width();
 	const int get_default_level_height();
 	void mark_grid_explored(const int grid_x, const int grid_y);
+	void mark_cutscene_viewed(const std::string cutscene_key);
+	const bool has_viewed_cutscene(const std::string cutscene_key);
 	const std::set<std::pair<int, int>> explored_map();
 };
 

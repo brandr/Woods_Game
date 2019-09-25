@@ -17,6 +17,17 @@ TriggerStatus * WorldState::status_for_npc(const std::string trigger_key, const 
 	return NULL;
 }
 
+TriggerStatus * WorldState::status_for_cutscene(const std::string trigger_key, const std::string cutscene_key)
+{
+	std::vector<TriggerStatus *> statuses = this->get_trigger_statuses(trigger_key);
+	for (TriggerStatus * status : statuses) {
+		if (status->get_attribute(TRIGGER_ATTR_CUTSCENE_KEY) == cutscene_key) {
+			return status;
+		}
+	}
+	return NULL;
+}
+
 WorldState::WorldState()
 {
 	setClassName("WorldState");
@@ -109,6 +120,27 @@ void WorldState::mark_grid_explored(const int grid_x, const int grid_y)
 	DungeonGridCell * explored_cell = new DungeonGridCell();
 	explored_cell->grid_x = grid_x, explored_cell->grid_y = grid_y;
 	this->explored_cells.addItem(explored_cell);
+}
+
+void WorldState::mark_cutscene_viewed(const std::string cutscene_key)
+{
+	TriggerStatus * status = this->status_for_cutscene(TRIGGER_HAS_VIEWED_CUTSCENE, cutscene_key);
+	if (status == NULL) {
+		status = this->create_trigger_status(TRIGGER_HAS_VIEWED_CUTSCENE);
+		status->set_attribute(TRIGGER_ATTR_CUTSCENE_KEY, cutscene_key);
+		this->trigger_statuses.addItem(status);
+	}
+	status->set_trigger_state(1);
+}
+
+const bool WorldState::has_viewed_cutscene(const std::string cutscene_key)
+{
+	TriggerStatus * status = this->status_for_cutscene(TRIGGER_HAS_VIEWED_CUTSCENE, cutscene_key);
+	if (status == NULL) {
+		return false;
+	} else {
+		return status->get_trigger_state() > 0;
+	}
 }
 
 DungeonGridCell::DungeonGridCell()

@@ -55,6 +55,11 @@ const std::vector<ALLEGRO_BITMAP*> Cutscene::get_filters(ALLEGRO_DISPLAY * displ
 	return filters;
 }
 
+void Cutscene::add_block(CutsceneBlock * block)
+{
+	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+}
+
 void Cutscene::add_effect(const std::string effect_key, const int duration)
 {
 	CutsceneBlock * block = new CutsceneBlock();
@@ -118,6 +123,16 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+}
+
+void Cutscene::set_cutscene_key(const std::string key)
+{
+	this->cutscene_key = key;
+}
+
+const std::string Cutscene::get_cutscene_key()
+{
+	return this->cutscene_key;
 }
 
 

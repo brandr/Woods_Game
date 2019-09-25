@@ -25,6 +25,10 @@ void PathNode::set_content(std::string image_filename, Rect * image_subsection, 
 	this->entity_starting_pos_x = position.first;
 	this->entity_starting_pos_y = position.second;
 	GameImage::set_content(image_filename, image_subsection, position);
+	this->collide_rect.x = this->rect.x;
+	this->collide_rect.y = this->rect.y;
+	this->collide_rect.width = TILE_SIZE;
+	this->collide_rect.height = TILE_SIZE;
 }
 
 const std::string PathNode::get_node_id()

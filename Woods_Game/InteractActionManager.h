@@ -23,10 +23,8 @@ public:
 	void operator=(InteractActionManager const&) = delete;
 	static InteractActionManager& get_instance();
 	~InteractActionManager();
-	const bool run_action(InteractAction * action, Player * player) const;
-	const bool run_action(const std::string action_key, Player * player) const;
-	const bool run_action(const std::string action_key, std::vector<ActionBinding *> bindings, Player * player) const;
-	const bool run_action(InteractAction * action, Player * player, Entity * actor) const;
+	const bool run_action(World * world, Level * level, const std::string action_key, std::vector<ActionBinding *> bindings, Player * player) const;
+	const bool run_action(World * world, Level * level, InteractAction * action, Player * player, Entity * actor) const;
 	void update_current_time(GlobalTime * other_time);
 	GlobalTime * get_current_time();
 };

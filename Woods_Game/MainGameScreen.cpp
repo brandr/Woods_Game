@@ -419,8 +419,6 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
 	this->unmap_controller_control_action(CALENDAR, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance");
-
-	//TODO: calendar
 }
 
 void MainGameScreen::set_mappable_input_list()
@@ -506,6 +504,8 @@ void MainGameScreen::load_content()
 	GlobalTime * global_time = game_image_manager.get_current_global_time();
 	calendar_screen.set_global_time(global_time);
 	calendar_screen.set_player(game_image_manager.get_player());
+	calendar_screen.set_world(game_image_manager.get_world());
+	calendar_screen.set_level(game_image_manager.get_world()->get_current_level());
 	load_controls();
 	set_default_controls();
 	set_mappable_controls();
@@ -605,7 +605,9 @@ void MainGameScreen::reset_controls()
 void MainGameScreen::update()
 {
 	const int game_mode = game_image_manager.get_game_mode();
-	GlobalTime * global_time = game_image_manager.get_current_global_time();
+	GlobalTime * global_time = NULL;
+	World * world = NULL;
+	Level * current_level = NULL;
 	switch (game_mode) {
 		case TOP_DOWN:
 			game_image_manager.update(input_map, joystick_pos_map);
@@ -623,7 +625,11 @@ void MainGameScreen::update()
 			cutscene_update();
 			break;
 		case CALENDAR:
+			world = this->game_image_manager.get_world();
+			current_level = world->get_current_level();
+			global_time = game_image_manager.get_current_global_time();
 			this->calendar_screen.set_global_time(global_time);
+			this->calendar_screen.set_level(current_level);
 			calendar_update();
 			break;
 		case TAKING_MAPPABLE_INPUT:
@@ -651,7 +657,8 @@ void MainGameScreen::pause_screen_update()
 void MainGameScreen::dialog_update()
 {
 	Player * player = game_image_manager.get_player();
-	player->dialog_update();
+	World * world = this->game_image_manager.get_world();
+	player->dialog_update(world, world->get_current_level());
 	if (!player->has_open_dialog()) {
 		//TODO: may want to trigger a different game mode if the dialog leads to another one
 		this->resume_game();

@@ -65,6 +65,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.reload_world_state(initial_state_filename);
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
+	this->load_all_cutscenes();
 	this->save_game();
 	this->world.recalculate_npc_paths();
 	this->thread_data.world = &(this->world);
@@ -87,6 +88,7 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/world_state";
 	this->world.reload_world_state(world_state_path);
 	this->load_player();
+	this->load_all_cutscenes();
 	this->save_game();
 	this->world.recalculate_npc_paths();
 	this->thread_data.world = &(this->world);
@@ -149,6 +151,11 @@ const int GameImageManager::default_level_height()
 	return this->world.get_default_level_height();
 }
 
+World * GameImageManager::get_world()
+{
+	return &world;
+}
+
 Level * GameImageManager::get_level_with_key(const std::string level_key)
 {
 	return this->world.get_level_with_key(level_key);
@@ -156,7 +163,7 @@ Level * GameImageManager::get_level_with_key(const std::string level_key)
 
 std::vector<LocationMarker*> GameImageManager::get_current_dungeon_location_markers()
 {
-	Dungeon * current_dungeon = this->world.current_dungeon;
+	Dungeon * current_dungeon = this->world.get_current_dungeon();
 	return current_dungeon->get_all_location_markers();
 }
 
@@ -180,6 +187,48 @@ void GameImageManager::load_player_from_xml(std::string filepath, std::string pl
 	this->current_level->add_being(player);
 }
 
+void GameImageManager::load_all_cutscenes()
+{
+	FileManager filemanager;
+	const std::string filename = "resources/load/cutscenes";
+	filemanager.load_xml_content(&(this->cutscene_list), filename, "SerializableClass", "CutsceneListKey", "all_cutscenes");
+	//TODO: any other loading necessary for cutscenes
+}
+
+CutsceneScript * GameImageManager::get_cutscene_script(const std::string cutscene_key)
+{
+	return this->cutscene_list.get_cutscene_script(cutscene_key);
+}
+
+Cutscene * GameImageManager::generate_cutscene(CutsceneScript * script)
+{
+	//TODO: do we want to always create a new object and destroy it later, or should we have a persistent map?
+	Cutscene * scene = new Cutscene();
+	const std::string cutscene_key = script->get_cutscene_key();
+	if (!cutscene_key.empty()) {
+		scene->set_cutscene_key(script->get_cutscene_key());
+		this->world.mark_cutscene_viewed(cutscene_key);
+		//TODO: elsewhere, if a cutscene shouldn't play more than once, don't play it if it's viewed
+	}
+	
+	std::vector<CutsceneScriptBlock *> script_blocks = script->get_blocks();
+	for (CutsceneScriptBlock * sb : script_blocks) {
+		CutsceneBlock * block = this->generate_cutscene_block(sb);
+		scene->add_block(block);
+	}
+	
+	return scene;
+}
+
+CutsceneBlock * GameImageManager::generate_cutscene_block(CutsceneScriptBlock * script_block)
+{
+	CutsceneBlock * block = new CutsceneBlock();
+	block->duration = script_block->get_duration();
+	block->action_key = script_block->get_action_key();
+	//TODO: use stuff from the script to figure out action keys, durations, etc
+	return block;
+}
+
 const bool GameImageManager::player_update(std::map<int, bool> input_map, std::map<int, std::pair<float, float>> joystick_map)
 {
 	if (this->player) {
@@ -193,6 +242,7 @@ const bool GameImageManager::player_update(std::map<int, bool> input_map, std::m
 			set_game_mode(MAIN_GAME_DIALOG);
 			return false;
 		}
+		this->check_player_cutscene(player);
 		if (player->has_active_cutscene()) {
 			set_game_mode(CUTSCENE);
 			return false;
@@ -205,6 +255,20 @@ const bool GameImageManager::player_update(std::map<int, bool> input_map, std::m
 		player->update_input(input_map, joystick_map, game_mode);
 	}
 	return true;
+}
+
+void GameImageManager::check_player_cutscene(Player * player)
+{
+	const std::string cutscene_key = player->get_active_cutscene_key();
+	if (!cutscene_key.empty() && !player->has_active_cutscene()) {
+		CutsceneScript * script = this->get_cutscene_script(cutscene_key);
+		if (script != NULL) {
+			if (script->is_replayable() || !this->world.has_viewed_cutscene(cutscene_key)) {
+				Cutscene * scene = this->generate_cutscene(script);
+				player->set_active_cutscene(scene);
+			}
+		}
+	}
 }
 
 void GameImageManager::player_exploration_update()

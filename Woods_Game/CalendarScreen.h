@@ -16,6 +16,8 @@
 #include "MenuItem.h"
 #include <allegro5/display.h>
 
+class Level;
+class World;
 class CalendarScreen :
 	public GameScreen
 {
@@ -31,6 +33,8 @@ private:
 
 	GlobalTime * global_time;
 	Player * player;
+	World * world;
+	Level * level;
 	
 	int month_index = -1;
 	std::pair<int, int> select_pos = std::pair<int,int>(-1, -1);
@@ -65,6 +69,8 @@ public:
 	const bool showing_dialog();
 	void close_dialog();
 	void set_player(Player * p);
+	void set_level(Level * l);
+	void set_world(World * w);
 };
 
 #endif

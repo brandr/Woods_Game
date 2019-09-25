@@ -55,6 +55,7 @@
                                     <Member Name="day_of_week"/>
                                     <Member Name="int_val"/>
                                     <Member Name="string_val"/>
+                                    <Member Name="npc_key"/>
                                     <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                         <Member Name="trigger_key"/>
                                         <Member Name="trigger_state"/>
@@ -71,6 +72,7 @@
                                             <Member Name="day_of_week">-1</Member>
                                             <Member Name="int_val"/>
                                             <Member Name="string_val"/>
+                                            <Member Name="npc_key"/>
                                             <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                                 <Member Name="trigger_key"/>
                                                 <Member Name="trigger_state"/>
@@ -132,6 +134,7 @@
                                                         <Member Name="day_of_week">1</Member>
                                                         <Member Name="int_val"/>
                                                         <Member Name="string_val"/>
+                                                        <Member Name="npc_key"/>
                                                         <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                                             <Member Name="trigger_key"/>
                                                             <Member Name="trigger_state"/>
@@ -193,6 +196,7 @@
                                                 <Member Name="day_of_week">-1</Member>
                                                 <Member Name="int_val"/>
                                                 <Member Name="string_val"/>
+                                                <Member Name="npc_key"/>
                                                 <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                                     <Member Name="trigger_key"/>
                                                     <Member Name="trigger_state"/>
@@ -231,6 +235,7 @@
                                                 <Member Name="day_of_week">-1</Member>
                                                 <Member Name="int_val">-1</Member>
                                                 <Member Name="string_val">stranger_house</Member>
+                                                <Member Name="npc_key"/>
                                                 <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                                     <Member Name="trigger_key"/>
                                                     <Member Name="trigger_state"/>
@@ -252,6 +257,7 @@
                                         <Member Name="day_of_week">-1</Member>
                                         <Member Name="int_val"/>
                                         <Member Name="string_val"/>
+                                        <Member Name="npc_key"/>
                                         <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -340,6 +346,7 @@
                                         <Member Name="day_of_week">-1</Member>
                                         <Member Name="int_val"/>
                                         <Member Name="string_val"/>
+                                        <Member Name="npc_key"/>
                                         <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -415,6 +422,7 @@
                                     <Member Name="day_of_week"/>
                                     <Member Name="int_val"/>
                                     <Member Name="string_val"/>
+                                    <Member Name="npc_key"/>
                                     <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                         <Member Name="trigger_key"/>
                                         <Member Name="trigger_state"/>
@@ -431,6 +439,7 @@
                                             <Member Name="day_of_week">-1</Member>
                                             <Member Name="int_val"/>
                                             <Member Name="string_val"/>
+                                            <Member Name="npc_key"/>
                                             <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                                 <Member Name="trigger_key"/>
                                                 <Member Name="trigger_state"/>
@@ -473,6 +482,7 @@
                                         <Member Name="day_of_week">-1</Member>
                                         <Member Name="int_val"/>
                                         <Member Name="string_val"/>
+                                        <Member Name="npc_key"/>
                                         <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>
@@ -509,6 +519,7 @@
                                         <Member Name="day_of_week">-1</Member>
                                         <Member Name="int_val"/>
                                         <Member Name="string_val"/>
+                                        <Member Name="npc_key"/>
                                         <Class Name="trigger_status" Type="TriggerStatus" Version="1">
                                             <Member Name="trigger_key">has_met_npc</Member>
                                             <Member Name="trigger_state">1</Member>

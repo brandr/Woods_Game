@@ -26,10 +26,10 @@ protected:
 	void movement_update(Level * level, const int game_mode);
 	void movement_update_top_down(Level * level);
 	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
-	void collision_update(Level * level, const int game_mode);
+	void collision_update(World * world, Level * level, const int game_mode);
 	const bool adjust_movement(Level * level, float xoff, float yoff, const bool snap);
 	const bool adjust_movement(Level * level, std::vector<Entity*> collide_entities, float xoff, float yoff, const bool snap, const bool push_others);
-	virtual void collide_with_entity(Entity* e);
+	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	const bool on_ground(std::vector<Entity*>);
 	const bool empty_at(Rect collide_rect, Level * level);
 	

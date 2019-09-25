@@ -4,12 +4,10 @@
 #include <iostream>
 #include <algorithm>
 
-
-
-void Player::collide_with_entity(Entity * e)
+void Player::collide_with_entity(World * world, Level * level, Entity * e)
 {
-	Being::collide_with_entity(e);
-	e->contact_action(this);
+	Being::collide_with_entity(world, level, e);
+	e->contact_action(world, level, this);
 }
 
 void Player::play_sounds_for_entity(Entity * e)
@@ -19,7 +17,7 @@ void Player::play_sounds_for_entity(Entity * e)
 		const std::string sound_key = e->get_sound_key();
 		const float pan = this->calculate_pan_for_sound(s);
 		const float gain = this->calculate_gain_for_sound(s);
-		AudioManager::get_instance().play_sfx(s->filename, sound_key, gain, pan);
+		AudioManager::get_instance().play_sfx(s->filename, sound_key, gain, pan, true);
 	}
 }
 
@@ -66,6 +64,7 @@ Player::Player()
 	this->direction = DIR_NEUTRAL;
 	this->anim_state = ANIM_NEUTRAL;
 	this->solid = true; // the player counts as solid because NPCs will not be able to walk through
+	this->active_cutscene_key = "";
 }
 
 Player::~Player()
@@ -100,7 +99,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 		update_top_down(level);
 		break;
 	case MAIN_GAME_DIALOG:
-		dialog_update();
+		dialog_update(world, level);
 		break;
 	}
 
@@ -318,7 +317,7 @@ void Player::interact_update(World * world, Level * level, GlobalTime * time)
 	for (int i = 0; i < size; i++) {
 		if (interactables[i]->contains_point(x1 + x_off, y1 + y_off)) {
 			Entity* e = interactables[i];
-			if (this->interact(world, time, e)) {
+			if (this->interact(world, level, time, e)) {
 				return;
 			}
 		}
@@ -352,13 +351,13 @@ const int Player::wake_up_time()
 	// maybe set the base variable on player when loading it in?
 }
 
-void Player::dialog_update()
+void Player::dialog_update(World * world, Level * level)
 {
 	if (this->open_dialog) {
 		const std::string action_key = this->open_dialog->get_active_action_key();
 		if (action_key.length() > 0) {
 			const InteractActionManager &manager = InteractActionManager::get_instance();
-			manager.run_action(action_key, this->open_dialog->get_action_bindings(), this);
+			manager.run_action(world, level, action_key, this->open_dialog->get_action_bindings(), this);
 		}  else {
 			this->open_dialog->update();
 		}
@@ -420,11 +419,22 @@ void Player::end_active_cutscene()
 		delete(this->active_cutscene);
 		this->active_cutscene = NULL;
 	}
+	this->active_cutscene_key = "";
 }
 
-const bool Player::interact(World * world, GlobalTime * time, Entity * e)
+void Player::set_active_cutscene_key(const std::string key)
 {
-	return e->interact_action(world, time, this);
+	this->active_cutscene_key = key;
+}
+
+const std::string Player::get_active_cutscene_key()
+{
+	return this->active_cutscene_key;
+}
+
+const bool Player::interact(World * world, Level * level, GlobalTime * time, Entity * e)
+{
+	return e->interact_action(world, level, time, this);
 }
 
 void Player::shear_update(Level * level)
@@ -738,6 +748,12 @@ Cutscene * Player::get_active_cutscene()
 {
 	return this->active_cutscene;
 }
+
+void Player::set_active_cutscene(Cutscene * scene)
+{
+	this->active_cutscene = scene;
+}
+
 
 const std::string Player::get_spawn_key()
 {

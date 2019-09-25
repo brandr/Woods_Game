@@ -44,9 +44,10 @@ private:
 	int current_action = ACTION_NONE;
 	Dialog * open_dialog;
 	Cutscene * active_cutscene;
+	std::string active_cutscene_key = "";
 	bool should_open_calendar = false;
 protected:
-	virtual void collide_with_entity(Entity* e);
+	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	virtual void play_sounds_for_entity(Entity* e);
 	virtual const float calculate_gain_for_sound(EntitySound * sound);
 	virtual const float calculate_pan_for_sound(EntitySound * sound);
@@ -71,7 +72,7 @@ public:
 	//time
 	const int wake_up_time();
 	//dialog
-	void dialog_update();
+	void dialog_update(World * world, Level * level);
 	const bool has_open_dialog();
 	void close_dialog();
 	void open_calendar();
@@ -81,8 +82,10 @@ public:
 	const std::vector<ALLEGRO_BITMAP*> get_cutscene_filters(ALLEGRO_DISPLAY * display, const int width, const int height);
 	void cutscene_update();
 	void end_active_cutscene();
+	void set_active_cutscene_key(const std::string key);
+	const std::string get_active_cutscene_key();
 	//interact
-	const bool interact(World * world, GlobalTime * time, Entity* e);
+	const bool interact(World * world, Level * level, GlobalTime * time, Entity* e);
 	void shear_update(Level * level);
 	void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
 	void sleep_in_bed(GlobalTime * current_time);
@@ -118,6 +121,7 @@ public:
 	void increment_dialog_option();
 	const bool has_active_cutscene();
 	Cutscene * get_active_cutscene();
+	void set_active_cutscene(Cutscene * scene);
 	const std::string get_spawn_key();
 	const std::map<std::string, std::string> get_pending_trigger_updates();
 	void clear_pending_triggers();

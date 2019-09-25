@@ -47,6 +47,7 @@
 #include "FileManager.h"
 #include "GlobalTime.h"
 #include "Cutscene.h"
+#include "CutsceneScript.h"
 #include "InteractActionManager.h"
 #include "LoadingData.h"
 #include "LocationMarker.h"
@@ -59,13 +60,19 @@ class GameImageManager
 private:
 	int game_mode = TOP_DOWN;
 	FileManager file_manager;
+	CutsceneList cutscene_list;
 	std::pair<int, int> get_camera_offset(ALLEGRO_DISPLAY *display);
 	std::pair<int, int> tile_image_offset(std::string tile_string);
 	World world;
 	GlobalTime * current_global_time = NULL;
 	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
+	void load_all_cutscenes();
+	CutsceneScript * get_cutscene_script(const std::string cutscene_key);
+	Cutscene * generate_cutscene(CutsceneScript * script);
+	CutsceneBlock * generate_cutscene_block(CutsceneScriptBlock * block);
 	const bool player_update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
+	void check_player_cutscene(Player * player);
 	void player_exploration_update();
 	void pending_trigger_update();
 	NPC * get_npc(const std::string npc_key);
@@ -93,6 +100,7 @@ public:
 	const std::string get_current_dungeon_key();
 	const int default_level_width();
 	const int default_level_height();
+	World * get_world();
 	Level * get_level_with_key(const std::string level_key);
 	std::vector<LocationMarker *> get_current_dungeon_location_markers();
 	Player* get_player();

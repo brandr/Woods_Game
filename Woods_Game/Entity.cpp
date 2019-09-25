@@ -22,16 +22,18 @@ const std::string Entity::image_filename_suffix()
 	return GameImage::image_filename_suffix();
 }
 
-void Entity::emit_sound(const std::string filename)
+void Entity::emit_sound(const std::string filename, const int duration)
 {
 	if (this->entity_sounds.find(filename) == this->entity_sounds.end()) {
-		EntitySound * sound = new EntitySound(filename);
+		EntitySound * sound = new EntitySound(filename, duration); 
 		this->entity_sounds[filename] = sound;
 	}
 	EntitySound * sound = this->entity_sounds[filename];
 	if (!sound->is_playing) {
+		//sound->duration_counter = 0;
 		sound->is_playing = true;
 	}
+	sound->duration = duration;
 	sound->source_x = this->get_x(), sound->source_y = this->get_y(); //TODO: should this be center?
 }
 
@@ -189,42 +191,43 @@ const int Entity::get_plant_growth_spread_range()
 	return this->get_entity_attribute(E_ATTR_PLANT_GROWTH_SPREAD_RANGE);
 }
 
-const bool Entity::update_new_day(Player * player)
+const bool Entity::update_new_day(World * world, Level * level, Player * player)
 {
 	const InteractActionManager &manager = InteractActionManager::get_instance();
 	const int size = this->load_day_actions.size();
 	bool interacted = false;
 	for (int i = 0; i < size; i++) {
 		InteractAction * action = this->load_day_actions.getItem(i);
-		if (manager.run_action(action, player, this)) {
+		if (manager.run_action(world, level, action, player, this)) {
 			interacted = true;
 		}
 	}
 	return interacted;
 }
 
-const bool Entity::contact_action(Player * player)
+const bool Entity::contact_action(World * world, Level * level, Player * player)
 {
 	const InteractActionManager &manager = InteractActionManager::get_instance();
 	const int size = this->contact_actions.size();
 	bool interacted = false;
 	for (int i = 0; i < size; i++) {
 		InteractAction * action = this->contact_actions.getItem(i);
-		if (manager.run_action(action, player)) {
+		if (manager.run_action(world, level, action, player, this)) {
 			interacted = true;
 		}
 	}
 	return interacted;
 }
 
-const bool Entity::interact_action(World * world, GlobalTime * time, Player * player)
+const bool Entity::interact_action(World * world, Level * level, GlobalTime * time, Player * player)
 {
 	const InteractActionManager &manager = InteractActionManager::get_instance();
 	const int size = this->interact_actions.size();
 	bool interacted = false;
 	for (int i = 0; i < size; i++) {
 		InteractAction * action = this->interact_actions.getItem(i);
-		if (manager.run_action(action, player)) {
+		std::vector<ActionBinding*> bindings = action->get_bindings();
+		if (manager.run_action(world, level, action, player, this)) {
 			interacted = true;
 		}
 	}
@@ -435,8 +438,14 @@ std::vector<EntitySound*> Entity::get_active_entity_sounds()
 	for (auto const &it : this->entity_sounds) {
 		EntitySound * s = it.second;
 		if (s->is_playing) {
-			active_sounds.push_back(s);
+			s->duration_counter = (s->duration_counter + 1) % s->duration;
+			if (s->duration_counter == 0) {
+				active_sounds.push_back(s);
+			}
+		} else {
+			s->duration_counter = 0;
 		}
+		this->entity_sounds[it.first] = s;
 	}
 	return active_sounds;
 }
@@ -785,7 +794,8 @@ EntitySound::EntitySound()
 {
 }
 
-EntitySound::EntitySound(const std::string name)
+EntitySound::EntitySound(const std::string name, const int duration)
 {
 	this->filename = name;
+	this->duration = duration;
 }

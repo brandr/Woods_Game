@@ -224,6 +224,20 @@
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">false</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_trigger_cutscene</Member>
+                <Member Name="entity_data_index">6</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">trigger_cutscene</Member>
+                        <Member Name="FunctionName">trigger_cutscene</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
         <Collection Name="entity_group_types">
             <Class Type="EntityGroupData" Version="1">
@@ -396,6 +410,20 @@
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">false</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_trigger_cutscene</Member>
+                <Member Name="entity_data_index">4</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">trigger_cutscene</Member>
+                        <Member Name="FunctionName">trigger_cutscene</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
         </Collection>
         <Collection Name="entity_group_types">
             <Class Type="EntityGroupData" Version="1">
@@ -516,6 +544,20 @@
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">open_dialog</Member>
                         <Member Name="FunctionName">open_dialog</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">false</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block_trigger_cutscene</Member>
+                <Member Name="entity_data_index">3</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">trigger_cutscene</Member>
+                        <Member Name="FunctionName">trigger_cutscene</Member>
                     </Class>
                 </Collection>
                 <Collection Name="attributes"/>

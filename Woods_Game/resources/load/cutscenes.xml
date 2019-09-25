@@ -1,0 +1,16 @@
+<root>
+    <SerializableClass Type="CutsceneList" Version="1" CutsceneListKey="all_cutscenes">
+        <Collection Name="cutscenes">
+            <Class Type="CutsceneScript" Version="1">
+                <Member Name="cutscene_key">test_cutscene_1</Member>
+                <Member Name="replayable">false</Member>
+                <Collection Name="blocks">
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="duration">200</Member>
+                        <Member Name="action_key"></Member>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+    </SerializableClass>
+</root>

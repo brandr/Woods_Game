@@ -16,6 +16,7 @@ Qualifier::Qualifier()
 	Register("int_val", &int_val);
 	Register("string_val", &string_val);
 	Register("trigger_status", &trigger_status);
+	Register("npc_key", &npc_key);
 }
 
 Qualifier::~Qualifier()
@@ -40,6 +41,8 @@ const bool Qualifier::evaluate(World * world, Level * current_level)
 		return this->day_of_week_evaluate();
 	case EVALUATOR_CURRENT_LEVEL:
 		return this->current_level_evaluate(world, current_level);
+	case EVALUATOR_NPC_PLACEMENT:
+		return this->npc_placement_evaluate(world, current_level);
 	default:
 		return false;
 	}
@@ -159,6 +162,18 @@ const bool Qualifier::current_level_evaluate(World * world, Level * level)
 		return level != NULL && level->get_filename() == this->string_val.value();
 	} else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
 		return level == NULL || level->get_filename() != this->string_val.value();
+	}
+	return false;
+}
+
+const bool Qualifier::npc_placement_evaluate(World * world, Level * level)
+{
+	const bool placement_matches = world->npc_is_on_node(this->npc_key.value(), this->string_val.value());
+	if (COMPARATOR_EQUALS == this->comparator.value()) {
+		return placement_matches;
+	}
+	else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+		return !placement_matches;
 	}
 	return false;
 }

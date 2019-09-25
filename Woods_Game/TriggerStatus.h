@@ -5,9 +5,11 @@
 
 // trigger keys
 #define TRIGGER_HAS_MET_NPC "has_met_npc"
+#define TRIGGER_HAS_VIEWED_CUTSCENE "has_viewed_cutscene"
 
 // trigger attributes
 #define TRIGGER_ATTR_NPC_KEY "npc_key"
+#define TRIGGER_ATTR_CUTSCENE_KEY "cutscene_key"
 
 #include "XMLSerialization.h"
 

@@ -670,15 +670,15 @@ ALLEGRO_BITMAP * Level::generate_cell_map_image(const int cell_width, const int 
 	return cell_image;
 }
 
-void Level::update_new_day(Player * player)
+void Level::update_new_day(World * world, Player * player)
 {
-	this->update_tiles_new_day(player);
+	this->update_tiles_new_day(world, player);
 	this->update_npcs_new_day();
 	this->reset_collide_buckets();
 	//TODO: what other object types need to be updated?
 }
 
-void Level::update_tiles_new_day(Player * player)
+void Level::update_tiles_new_day(World * world, Player * player)
 {
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
 	for (int y = 0; y < height; y++) {
@@ -688,9 +688,9 @@ void Level::update_tiles_new_day(Player * player)
 			if (b == NULL || b->is_empty()) {
 				continue;
 			}
-			if (b->update_new_day(player)) {
+			if (b->update_new_day(world, this, player)) {
 				if (b->needs_plant_day_update()) {
-					this->plant_day_update(b, x, y);
+					this->plant_day_update(world, b, x, y);
 				}
 			}
 		}
@@ -703,7 +703,7 @@ void Level::update_npcs_new_day()
 	//TODO: send NPCs to the correct starting locations
 }
 
-void Level::plant_day_update(Entity * plant, const int plant_tx, const int plant_ty)
+void Level::plant_day_update(World * world, Entity * plant, const int plant_tx, const int plant_ty)
 {
 	const int range = plant->get_plant_growth_spread_range();
 	if (range > 0) {

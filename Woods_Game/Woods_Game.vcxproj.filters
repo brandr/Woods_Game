@@ -430,6 +430,9 @@
     <ClInclude Include="AudioManager.h">
       <Filter>Audio\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CutsceneScript.h">
+      <Filter>Cutscenes\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -662,6 +665,9 @@
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Audio\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CutsceneScript.cpp">
+      <Filter>Cutscenes\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

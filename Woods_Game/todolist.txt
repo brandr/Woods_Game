@@ -6,33 +6,30 @@ Code Prioritization
 
 Last updated 9/21/2019 (target date: ~ Mar 2020)
 
-totals don't include ongoing stuff 
+Total: 72-105 days (~3-4 months)
 
-Total: 77-110 days (~3-4 months)
-
-Fix performance
-
-1. Audio
-	(10-15 days)
-2. Cutscenes
+1. Cutscenes
 	(15-20 days)
-3. NPC triggers/dialog/schedule
+2. Audio
 	(5-10 days)
-4. Loading screens/progress bars
+3. Inventory/item stuff
+	(5-10 days)
+4. NPC triggers/dialog/schedule
+	(5-10 days)
+5. Loading screens/progress bars
 	(3-5 days)
 
 (clean up todos and try to think of what's missing here)
 
-5. Animals/bugs
+6. Animals/bugs
 	(10-15 days)
-6. Encyclopedia
+7. Encyclopedia
 	(10-15 days)
-7. Animation/image code stuff
+8. Animation/image code stuff
 	(10-15 days)
-8. Menu/control stuff
+9. Menu/control stuff
 	(5-10 days)
-9. Inventory/item stuff
-	(5-10 days)
+
 
 (clean up todos and try to think of what's missing here)	
 
@@ -58,38 +55,51 @@ Ongoing tasks:
 4. come up with more content
 
 ---------------------------------------------------
+Cutscenes
+---------------------------------------------------
+
+make a test cutscene with player 2
+	- have both player and NPC walk to starting positions and assume starting anim directions/states if they aren't already
+	- what if the NPC walks to that spot after the player is already fully inside?
+		* either account for this so it can start the cutscene, or keep this possibilty in mind when writing cutscene dialog
+
+Ways cutscenes can start (try to combine into as few as possible from a code perspective)
+	- Talk to an NPC (they should probably have to be in a specific location-- ie on a specific part of their schedule)
+		# probably don't want it to be guaranteed, so tie it to a specific node in the dialog tree (though this can be the start if the cutscene should start right away)
+	- Waking up on a specific day (possibly do this on day 1)
+	- Time going past midnight
+
+Cutscene with Renaldo preaching about the neighorhood watch as a test
+
+How does music work during cutscenes?
+	- should probably be able to start in certain blocks
+
+Branching cutscenes based on previous triggers/dialogs
+	- Could model after dialogTrees or even directly use them to structure cutscenes
+
+---------------------------------------------------
 Audio
 ---------------------------------------------------
 
 Full documentation: https://www.allegro.cc/manual/5/audio.html
 
-al_play_sample(sample, 1.0, 0.0, 1.0,ALLEGRO_PLAYMODE_LOOP,NULL) args are:
-		# gain - relative volume, 1.0 is normal
-		# pan -  0.0 is centered, -1.0 is left, 1.0 is right, or ALLEGRO_AUDIO_PAN_NONE.
-		# speed - relative speed at which the sample is played; 1.0 is normal.
-		# loop - ALLEGRO_PLAYMODE_ONCE, ALLEGRO_PLAYMODE_LOOP, or ALLEGRO_PLAYMODE_BIDIR
-		# ret_id - if non-NULL the variable which this points to will be assigned an id representing the sample being played.
-			$ is there some way to take advantage of this?
-
-Replace all placeholder footstep sound files
-
 Different sound filenames for different footstep sound effects
 	* key by NPC + tile type (but not one-to-one, so NPCs can share some footstep sounds if they should sound exactly the same)
 
-Might want to change speed based on walking speed
-	* adjusting regular "speed" might not quite be what we want if it changes pitch-- would have to manage "duration" of looping sounds
+Replace all placeholder footstep sound files
 
 In addition to tiles influencing footstep sounds, probably want sounds from ferns/etc
+
+Dialog sounds (like in animal crossing)
 
 What kinds of things can cause music to start/stop/fade/add cues?
 	* probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
 	* do we want a MusicManager or some other structure in AudioManager that handles this?
 
-What kinds of things can cause sounds effects? 
-	* How should non-NPC sound effect sources be managed and fed to AudioManager? 
-	* How do we key things like NPCs to sound effects/files?
-
 What does al_reserve_samples() actually do? do I need it?
+
+Find a good composing program and make music
+	* The Eye of Pan has a special theme that is hidden inside other tracks
 
 Do I need to do this? vvv
 ----------------
@@ -100,17 +110,6 @@ typedef struct SFX {
 } SFX;
 When loading the sample, set max_simultaneous_count and create an array of that many ALLEGRO_SAMPLE_INSTANCE. Then when playing your SFX, loop through that array and play the sample instance if it is not currently playing.
 --------------------------
-
-Can set sample instances to loop with al_set_sample_instance_playmode()
-
-can stop audio from playing with al_stop_sample, al_stop_samples, al_stop_sample_instance, etc
-
-Find a good composing program
-
-Add music
-	* The Eye of Pan has a special theme that is hidden inside other tracks
-
-Dialog sounds (like in animal crossing)
 
 ---------------------------------------------------
 NPCs
@@ -147,11 +146,6 @@ AIState/NPC schedule
 Should NPC's relationship with player and other NPCs be modeled/ serialized?
 	- only necessary if it can't be represented efficiently using triggers
 
-Experiment with some basic cutscenes
-	- could have one with Renaldo preaching about the neighorhood watch as a test
-	- use this to figure out larger cutscene structure (notepad, figure out schema and implement)
-	- within cutscenes, allow for branching dialog, trigger checks partway through cutscenes to calculate what should happen, etc.
-
 NPC pathing
 	- why does NPC 1 sometimes walk against the wall upon starting a new day?
 		* I think I fixed this, so delete this todo if I don't see it anymore
@@ -170,10 +164,9 @@ Memory management/error handling
 ---------------------------------------------------
 
 As of the audio update, performance is much worse on large levels-- what could be causing this?
-	* audio?
-	* dialog stuff?
-	* map stuff? (map images not converted to video?)
-	* logging seems to make it much worse, but it's bad either way
+	* not drawing entity groups fixes this
+		# they might have some associated images that aren't getting converted into video bitmaps
+		# maybe we need to break down their images into subsections
 
 Document how to format serialized things like dialog trees so I don't forget
 	* take this into account when improving level editor

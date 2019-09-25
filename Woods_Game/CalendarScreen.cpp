@@ -255,7 +255,7 @@ void CalendarScreen::draw_confirm_dialog_ui(ALLEGRO_DISPLAY * display)
 void CalendarScreen::update()
 {
 	if (this->player != NULL && this->showing_dialog()) {
-		this->player->dialog_update();
+		this->player->dialog_update(this->world, this->level);
 	}
 }
 
@@ -424,4 +424,14 @@ void CalendarScreen::close_dialog()
 void CalendarScreen::set_player(Player * p)
 {
 	this->player = p;
+}
+
+void CalendarScreen::set_level(Level * l)
+{
+	this->level = l;
+}
+
+void CalendarScreen::set_world(World * w)
+{
+	this->world = w;
 }

@@ -8,7 +8,7 @@ const int go_to_level(
 	Player * player,
 	Entity * actor)
 {	
-	std::string level_key = action->get_binding("destination_level_key");
+	const std::string level_key = action->get_binding("destination_level_key");
 	if (!level_key.empty()) {
 		std::string x_str = action->get_binding("destination_level_pos_x");
 		std::string y_str = action->get_binding("destination_level_pos_y");
@@ -100,6 +100,20 @@ const int plant_day_update(
 	return 1;
 }
 
+const int trigger_cutscene(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string cutscene_key = action->get_binding("cutscene_key");
+		player->set_active_cutscene_key(cutscene_key);
+		return 1;
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
@@ -119,6 +133,8 @@ void InteractActionManager::initialize_functions()
 	this->function_map["load_selected_day"] = fcnPtr;
 	fcnPtr = plant_day_update;
 	this->function_map["plant_day_update"] = fcnPtr;
+	fcnPtr = trigger_cutscene;
+	this->function_map["trigger_cutscene"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()
@@ -132,32 +148,23 @@ InteractActionManager::~InteractActionManager()
 {
 }
 
-const bool InteractActionManager::run_action(InteractAction * action, Player * player) const
-{
-	const std::string action_key = action->get_function_name();
-	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr 
-		= this->function_map.at(action_key);
-	return fcnPtr(this, action, player, NULL);
-}
-
-const bool InteractActionManager::run_action(const std::string action_key, Player * player) const
-{
-	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
-		= this->function_map.at(action_key);
-	return fcnPtr(this, NULL, player, NULL);
-}
-
-const bool InteractActionManager::run_action(const std::string action_key, std::vector<ActionBinding*> bindings, Player * player) const
+const bool InteractActionManager::run_action(World * world, Level * level, const std::string action_key, std::vector<ActionBinding*> bindings, Player * player) const
 {
 	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
 		= this->function_map.at(action_key);
 	InteractAction * action = new InteractAction();
 	action->set_bindings(bindings);
+	if (!action->evaluate(world, level)) {
+		return false;
+	}
 	return fcnPtr(this, action, player, NULL);
 }
 
-const bool InteractActionManager::run_action(InteractAction * action, Player * player, Entity * actor) const
+const bool InteractActionManager::run_action(World * world, Level * level, InteractAction * action, Player * player, Entity * actor) const
 {
+	if (!action->evaluate(world, level)) {
+		return false;
+	}
 	const std::string action_key = action->get_function_name();
 	std::function<const int(const InteractActionManager*, InteractAction*, Player*, Entity*)> fcnPtr
 		= this->function_map.at(action_key);

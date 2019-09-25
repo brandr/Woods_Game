@@ -83,10 +83,10 @@ public:
 	void reset_for_reload();
 	void reload_tiles(Level &copy_level);
 	ALLEGRO_BITMAP * generate_cell_map_image(const int width, const int height, const int grid_x, const int grid_y);
-	void update_new_day(Player * player);
-	void update_tiles_new_day(Player * player);
+	void update_new_day(World * world, Player * player);
+	void update_tiles_new_day(World * world, Player * player);
 	void update_npcs_new_day();
-	void plant_day_update(Entity * plant, const int x, const int y);
+	void plant_day_update(World * world, Entity * plant, const int x, const int y);
 	void intialize_dimensions(const int standard_width, const int standard_height);
 	void initialize_empty();
 	void initialize_tiles();

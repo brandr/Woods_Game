@@ -104,8 +104,10 @@ struct EntitySound {
 	std::string filename;
 	bool is_playing = false;
 	int source_x = 0, source_y = 0;
+	int duration = 0;
+	int duration_counter = 0;
 	EntitySound();
-	EntitySound(const std::string filename);
+	EntitySound(const std::string filename, const int duration);
 };
 
 class GlobalTime;
@@ -137,7 +139,7 @@ protected:
 	std::map<std::string, EntityEffect> entity_effects;
 	std::map<std::string, EntitySound*> entity_sounds;
 
-	virtual void emit_sound(const std::string filename);
+	virtual void emit_sound(const std::string filename, const int duration);
 	virtual void stop_sound(const std::string filename);
 	virtual void clear_sounds();
 public:
@@ -162,9 +164,9 @@ public:
 	virtual void unmark_needs_plant_day_update();
 	virtual const bool needs_plant_day_update();
 	virtual const int get_plant_growth_spread_range();
-	virtual const bool update_new_day(Player * player);
-	virtual const bool contact_action(Player * player);
-	virtual const bool interact_action(World * world, GlobalTime * time, Player * player);
+	virtual const bool update_new_day(World * world, Level * level, Player * player);
+	virtual const bool contact_action(World * world, Level * level, Player * player);
+	virtual const bool interact_action(World * world, Level * level, GlobalTime * time, Player * player);
 	virtual void entity_break();
 	virtual void set_entity_data_index(int index);
 	virtual void set_entity_sheet_offset(int col, int row);

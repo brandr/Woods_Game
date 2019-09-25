@@ -296,6 +296,7 @@
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
     <ClInclude Include="Cutscene.h" />
+    <ClInclude Include="CutsceneScript.h" />
     <ClInclude Include="Dialog.h" />
     <ClInclude Include="DialogTree.h" />
     <ClInclude Include="DjikstraPath.h" />
@@ -376,6 +377,7 @@
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
     <ClCompile Include="Cutscene.cpp" />
+    <ClCompile Include="CutsceneScript.cpp" />
     <ClCompile Include="Dialog.cpp" />
     <ClCompile Include="DialogTree.cpp" />
     <ClCompile Include="DjikstraPath.cpp" />

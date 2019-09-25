@@ -38,6 +38,7 @@ struct CutsceneBlock {
 class Cutscene
 {
 private:
+	std::string cutscene_key = "";
 	bool timer_active = true;
 	int current_block_index = 0;
 	std::vector<std::unique_ptr<CutsceneBlock>> cutscene_blocks;
@@ -50,6 +51,7 @@ public:
 	void update();
 	void advance_block();
 	const std::vector<ALLEGRO_BITMAP *> get_filters(ALLEGRO_DISPLAY * display, const int width, const int height);
+	void add_block(CutsceneBlock * block);
 	void add_effect(const std::string effect_key, const int duration);
 	void add_action(const std::string action_key);
 	void add_action(const std::string action_key, const std::string effect_key);
@@ -57,6 +59,8 @@ public:
 	void add_global_time_update(const int day, const int time);
 	void add_advance_day_update(GlobalTime * global_time, const int wake_up_time);
 	void add_load_game_update(const int day, const int time);
+	void set_cutscene_key(const std::string key);
+	const std::string get_cutscene_key();
 	const bool get_is_finished();
 	const bool has_action();
 	const std::string get_active_action_key();

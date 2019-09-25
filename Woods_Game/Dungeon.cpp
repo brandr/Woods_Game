@@ -1,4 +1,5 @@
 #include "Dungeon.h"
+#include "World.h"
 
 Dungeon::Dungeon()
 {
@@ -127,10 +128,10 @@ void Dungeon::load_images(ImageLoader& loader)
 {
 }
 
-void Dungeon::update_new_day(Player * player)
+void Dungeon::update_new_day(World * world, Player * player)
 {
 	for (Level *level : this->level_list) {
-		level->update_new_day(player);
+		level->update_new_day(world, player);
 	}
 }
 

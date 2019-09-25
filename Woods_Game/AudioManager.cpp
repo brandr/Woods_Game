@@ -41,12 +41,12 @@ void AudioManager::initialize_audio()
 	al_set_mixer_playing(master_mixer, true);
 }
 
-ALLEGRO_SAMPLE_INSTANCE * AudioManager::get_sample_instance(const std::string filename, const int audio_type)
+AudioInstance * AudioManager::get_sample_instance(const std::string filename, const int audio_type)
 {
 	return this->get_sample_instance(filename, audio_type, "" + SOUND_KEY_DEFAULT);
 }
 
-ALLEGRO_SAMPLE_INSTANCE * AudioManager::get_sample_instance(const std::string filename, const int audio_type, const std::string sound_key)
+AudioInstance * AudioManager::get_sample_instance(const std::string filename, const int audio_type, const std::string sound_key)
 {
 	const std::pair<std::string, std::string> key_pair(filename, sound_key);
 	if (sample_instance_map.find(key_pair) == sample_instance_map.end()) {
@@ -78,7 +78,7 @@ void AudioManager::load_sample_instance(const std::string filename, const int au
 		if (sample != NULL) {
 			//TODO: do we need to key by audio type?
 			ALLEGRO_SAMPLE_INSTANCE * sample_instance = al_create_sample_instance(sample);
-			sample_instance_map[key_pair] = sample_instance;
+			sample_instance_map[key_pair] = new AudioInstance(sample_instance);
 			al_attach_sample_instance_to_mixer(sample_instance, mixer);
 		}
 	}
@@ -94,9 +94,9 @@ void AudioManager::play_sfx(const std::string filename, const std::string sound_
 	play_audio(filename, AUDIO_TYPE_SFX, sound_key);
 }
 
-void AudioManager::play_sfx(const std::string filename, const std::string sound_key, const float gain, const float pan)
+void AudioManager::play_sfx(const std::string filename, const std::string sound_key, const float gain, const float pan, const bool stop_if_playing)
 {
-	play_audio(filename, AUDIO_TYPE_SFX, sound_key, gain, pan);
+	play_audio(filename, AUDIO_TYPE_SFX, sound_key, gain, pan, stop_if_playing);
 }
 
 const bool AudioManager::sfx_exists(const std::string filename, const std::string sound_key)
@@ -106,7 +106,7 @@ const bool AudioManager::sfx_exists(const std::string filename, const std::strin
 
 const bool AudioManager::audio_exists(const std::string filename, const int audio_type, const std::string sound_key)
 {
-	ALLEGRO_SAMPLE_INSTANCE * instance = this->get_sample_instance(filename, audio_type, sound_key);
+	AudioInstance * instance = this->get_sample_instance(filename, audio_type, sound_key);
 	return instance != NULL;
 }
 
@@ -132,9 +132,8 @@ void AudioManager::play_audio(const std::string filename, const int audio_type)
 
 void AudioManager::play_audio(const std::string filename, const int audio_type, const std::string sound_key)
 {
-	//TODO: do we need to do anything special when restarting audio that is/was already playing?
-
-	ALLEGRO_SAMPLE_INSTANCE * sample_instance = AudioManager::get_instance().get_sample_instance(filename, audio_type, sound_key);
+	AudioInstance * audio_instance = AudioManager::get_instance().get_sample_instance(filename, audio_type, sound_key);
+	ALLEGRO_SAMPLE_INSTANCE * sample_instance = audio_instance->instance;
 
 	if (al_play_sample_instance(sample_instance)) {
 		// success
@@ -144,17 +143,30 @@ void AudioManager::play_audio(const std::string filename, const int audio_type, 
 	}
 }
 
-void AudioManager::play_audio(const std::string filename, const int audio_type, const std::string sound_key, const float gain, const float pan)
+void AudioManager::play_audio(const std::string filename, const int audio_type, const std::string sound_key, 
+	const float gain, const float pan, const bool stop_if_playing)
 {
-	ALLEGRO_SAMPLE_INSTANCE * sample_instance = AudioManager::get_instance().get_sample_instance(filename, audio_type, sound_key);
+	AudioInstance * audio_instance = AudioManager::get_instance().get_sample_instance(filename, audio_type, sound_key);
+	ALLEGRO_SAMPLE_INSTANCE * sample_instance = audio_instance->instance;
+
+	//TODO: incorporate duration? or do that elsewhere?
 	
 	al_set_sample_instance_gain(sample_instance, gain);
 	al_set_sample_instance_pan(sample_instance, pan);
 
+	// cut off the instance if it is still playing
+	if (stop_if_playing && al_get_sample_instance_playing(sample_instance)) {
+		al_stop_sample_instance(sample_instance);
+	}
+
 	if (al_play_sample_instance(sample_instance)) {
 		// success
-	}
-	else {
+	} else {
 		// failure
 	}
+}
+
+AudioInstance::AudioInstance(ALLEGRO_SAMPLE_INSTANCE * inst)
+{
+	this->instance = inst;
 }

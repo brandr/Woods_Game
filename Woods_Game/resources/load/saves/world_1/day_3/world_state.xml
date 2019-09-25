@@ -363,8 +363,8 @@
                 <Member Name="grid_y">10</Member>
             </Class>
             <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">10</Member>
-                <Member Name="grid_y">11</Member>
+                <Member Name="grid_x">11</Member>
+                <Member Name="grid_y">10</Member>
             </Class>
         </Collection>
     </SerializableClass>

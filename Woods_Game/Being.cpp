@@ -19,7 +19,7 @@ Being::~Being()
 
 void Being::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	collision_update(level, game_mode);
+	collision_update(world, level, game_mode);
 	movement_update(level, game_mode);
 	animation_update(game_mode);
 	Entity::update();
@@ -46,15 +46,26 @@ void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, c
 	// TODO: also include information about the being in forming the key
 
 	if (!AudioManager::get_instance().sfx_exists(footstep_filename, this->get_sound_key())) {
-		
 		footstep_filename = "entity_sounds/" + default_name;
 	}
-	if (this->anim_state == ANIM_STATE_WALKING) {
-		this->emit_sound(footstep_filename);
+
+	// this is how many pixels we travel per frame
+	const float speed = std::pow((float)std::pow(this->xvel, 2) + (float)std::pow(this->yvel, 2), 0.5f);
+	if (speed > 0.0f) {
+		const float step_px_size = (3.0f/4.0f) * TILE_SIZE; // TEMP. this is how many pixels a "step" should be
+		const int duration = (int)(step_px_size / speed); //TODO: get number of frames sound should last
+
+		if (this->anim_state == ANIM_STATE_WALKING) {
+			this->emit_sound(footstep_filename, duration);
+		}
+		else {
+			this->stop_sound(footstep_filename);
+		}
 	}
 	else {
 		this->stop_sound(footstep_filename);
 	}
+	
 }
 
 void Being::play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
@@ -269,7 +280,7 @@ const bool Being::adjust_movement(Level * level, std::vector<Entity*> interactab
 	return blocked;
 }
 
-void Being::collision_update(Level * level, const int game_mode)
+void Being::collision_update(World * world, Level * level, const int game_mode)
 {
 	std::vector<Entity*> interactables = level->get_colliding_interactables(this, *(this->get_rect_for_collision()), false);
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
@@ -289,12 +300,12 @@ void Being::collision_update(Level * level, const int game_mode)
 			get_y() - other->get_y())) {
 			Entity* e = other;
 			this->colliding_entities.push_back(e);
-			collide_with_entity(e);
+			collide_with_entity(world, level, e);
 		}
 	}
 }
 
-void Being::collide_with_entity(Entity * e)
+void Being::collide_with_entity(World * world, Level * level, Entity * e)
 {
 
 	if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_DAMAGE)) {

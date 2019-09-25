@@ -630,7 +630,7 @@ void World::update_new_day(Player * player, const std::string current_level_key)
 	const int size = dungeons.size();
 	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
-			dungeons[i]->update_new_day(player);
+			dungeons[i]->update_new_day(this, player);
 		}
 	}
 	this->update_npcs_new_day();
@@ -686,6 +686,25 @@ NPC * World::get_npc(const std::string npc_key)
 		}
 	}
 	return NULL;
+}
+
+const bool World::npc_is_on_node(const std::string npc_key, const std::string node_key)
+{
+	NPC * npc = this->get_npc(npc_key);
+	PathNode * node = this->find_path_node_with_key(node_key);
+	if (npc != NULL && node != NULL) {
+		Level * node_level = this->find_level_with_path_node_key(node_key);
+		if (node_level != NULL) {
+			const std::string npc_level_key = npc->get_current_level_key();
+			if (npc_level_key == node_level->get_filename()) {
+				Rect * npc_rect = npc->get_rect_for_collision();
+				Rect * node_rect = node->get_rect_for_collision();
+				const int x_dist = std::abs(npc_rect->x - node_rect->x), y_dist = std::abs(npc_rect->y - node_rect->y);
+				return x_dist < 2 && y_dist < 2;
+			}
+		}
+	}
+	return false;
 }
 
 void World::set_has_met_npc(const std::string npc_key)
@@ -787,6 +806,16 @@ const int World::get_default_level_height()
 void World::mark_grid_explored(const int grid_x, const int grid_y)
 {
 	this->world_state.mark_grid_explored(grid_x, grid_y);
+}
+
+void World::mark_cutscene_viewed(const std::string cutscene_key)
+{
+	this->world_state.mark_cutscene_viewed(cutscene_key);
+}
+
+const bool World::has_viewed_cutscene(const std::string cutscene_key)
+{
+	return this->world_state.has_viewed_cutscene(cutscene_key);
 }
 
 const std::set<std::pair<int, int>> World::explored_map()

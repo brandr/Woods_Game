@@ -24,7 +24,8 @@ enum EVALUATORS {
 	EVALUATOR_TIME = 3,
 	EVALUATOR_TRIGGER = 4,
 	EVALUATOR_DAY_OF_WEEK = 5,
-	EVALUATOR_CURRENT_LEVEL = 6
+	EVALUATOR_CURRENT_LEVEL = 6,
+	EVALUATOR_NPC_PLACEMENT = 7
 };
 
 class Level;
@@ -44,12 +45,15 @@ protected:
 	xmls::xInt int_val;
 	xmls::xString string_val;
 	GlobalTime * other_time;
+	xmls::xString npc_key;
+
 	virtual const bool and_evaluate(World * world, Level * level);
 	virtual const bool or_evaluate(World * world, Level * level);
 	virtual const bool time_evaluate();
 	virtual const bool trigger_evaluate(World * world);
 	virtual const bool day_of_week_evaluate();
 	virtual const bool current_level_evaluate(World * world, Level * level);
+	virtual const bool npc_placement_evaluate(World * world, Level * level);
 public:
 	Qualifier();
 	~Qualifier();
