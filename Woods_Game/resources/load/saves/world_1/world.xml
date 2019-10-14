@@ -310,11 +310,21 @@
                                                             <Member Name="option_text">Yes</Member>
                                                             <Member Name="next_page_index">1</Member>
                                                             <Member Name="option_action_key"/>
+                                                            <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                                                <Member Name="trigger_key"/>
+                                                                <Member Name="trigger_state"/>
+                                                                <Collection Name="trigger_attributes"/>
+                                                            </Class>
                                                         </Class>
                                                         <Class Type="DialogItemOption" Version="1">
                                                             <Member Name="option_text">No</Member>
                                                             <Member Name="next_page_index">2</Member>
                                                             <Member Name="option_action_key"/>
+                                                            <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                                                <Member Name="trigger_key"/>
+                                                                <Member Name="trigger_state"/>
+                                                                <Collection Name="trigger_attributes"/>
+                                                            </Class>
                                                         </Class>
                                                     </Collection>
                                                 </Class>
@@ -550,6 +560,12 @@
                         <Member Name="animation_frame_width">2</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">8</Member>
+                    </Class>
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">waving</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">16</Member>
                     </Class>
                 </Collection>
                 <Collection Name="additional_mask_data"/>

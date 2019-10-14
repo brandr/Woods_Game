@@ -241,8 +241,24 @@ std::string GameImage::get_anim_state_key(int anim_state)
 		return "walking";
 	case ANIM_STATE_SHEARING:
 		return "shearing";
+	case ANIM_STATE_WAVING:
+		return "waving";
 	}
 	return std::string();
+}
+
+const int GameImage::get_anim_state_index(const std::string key)
+{
+	if (key == "neutral") {
+		return ANIM_STATE_NEUTRAL;
+	} else if (key == "walking") {
+		return ANIM_STATE_WALKING;
+	} else if (key == "shearing") {
+		return ANIM_STATE_SHEARING;
+	} else if (key == "waving") {
+		return ANIM_STATE_WAVING;
+	}
+	return 0;
 }
 
 int GameImage::get_animation_row()
@@ -260,6 +276,16 @@ int GameImage::get_animation_direction()
 	case DIR_NEUTRAL: return ANIM_NEUTRAL;
 	}
 	return ANIM_NEUTRAL;
+}
+
+void GameImage::set_animation_index(const int index)
+{
+	this->anim_state = index;
+}
+
+void GameImage::set_animation_direction(const int dir)
+{
+	this->direction = dir;
 }
 
 Animation * GameImage::get_animation()

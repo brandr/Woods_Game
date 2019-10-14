@@ -24,7 +24,8 @@ enum SCREEN_FLAGS {
 };
 enum NUMBER_KEYS {NUM_0 = 27, NUM_1 = 28, NUM_2 = 29, NUM_3 = 30, NUM_4 = 31, 
 	NUM_5 = 32, NUM_6 = 33, NUM_7 = 34, NUM_8 = 35, NUM_9 = 36};
-enum FONT_KEYS {FONT_HOTBAR, FONT_DIALOG, FONT_CLOCK, FONT_CALENDAR_DAYS, FONT_CALENDAR_MONTH, FONT_TABS, FONT_LOCATION_LABEL
+enum FONT_KEYS {FONT_HOTBAR, FONT_DIALOG, FONT_CLOCK, FONT_CALENDAR_DAYS, FONT_CALENDAR_MONTH, 
+	FONT_TABS, FONT_LOCATION_LABEL, FONT_ITEM_LABEL, FONT_ITEM_DESCRIPTION, FONT_MONEY
 };
 
 // font colors
@@ -90,6 +91,7 @@ public:
 	virtual void update_mouse_position(const int x, const int y);
 	virtual void confirm_selection();
 	virtual void select();
+	virtual void secondary_select();
 	virtual void process_number_input(int num);
 	virtual void interact_action();
 	virtual void use_item_action();

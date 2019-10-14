@@ -433,6 +433,18 @@
     <ClInclude Include="CutsceneScript.h">
       <Filter>Cutscenes\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemBase.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestItem.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QuestData.h">
+      <Filter>Quests\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Quest.h">
+      <Filter>Quests\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -668,6 +680,18 @@
     </ClCompile>
     <ClCompile Include="CutsceneScript.cpp">
       <Filter>Cutscenes\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemBase.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestItem.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QuestData.cpp">
+      <Filter>Quests\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Quest.cpp">
+      <Filter>Quests\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

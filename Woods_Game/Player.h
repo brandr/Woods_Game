@@ -42,15 +42,17 @@ private:
 	bool interacting = false;
 	Inventory inventory;
 	int current_action = ACTION_NONE;
-	Dialog * open_dialog;
+	Dialog * open_dialog = NULL;
 	Cutscene * active_cutscene;
 	std::string active_cutscene_key = "";
+	bool should_close_dialog = false;
 	bool should_open_calendar = false;
 protected:
 	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	virtual void play_sounds_for_entity(Entity* e);
 	virtual const float calculate_gain_for_sound(EntitySound * sound);
 	virtual const float calculate_pan_for_sound(EntitySound * sound);
+	virtual void update_animation_dir();
 public:
 	Player();
 	virtual ~Player();
@@ -80,7 +82,7 @@ public:
 	const bool get_should_open_calendar();
 	//cutscenes
 	const std::vector<ALLEGRO_BITMAP*> get_cutscene_filters(ALLEGRO_DISPLAY * display, const int width, const int height);
-	void cutscene_update();
+	void cutscene_update(World * world, Level * level);
 	void end_active_cutscene();
 	void set_active_cutscene_key(const std::string key);
 	const std::string get_active_cutscene_key();

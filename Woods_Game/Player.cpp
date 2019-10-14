@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "Level.h"
 #include "TriggerStatus.h"
+#include "World.h"
+
 #include <iostream>
 #include <algorithm>
 
@@ -42,6 +44,23 @@ const float Player::calculate_pan_for_sound(EntitySound * sound)
 		return 0.0;
 	}
 	return dx/dist;
+}
+
+void Player::update_animation_dir()
+{
+	if (this->xvel > 0) {
+		if (this->xvel >= std::abs(this->yvel)) direction = DIR_RIGHT;
+		else if (this->yvel > 0) direction = DIR_DOWN;
+		else direction = DIR_UP;
+	}
+	else {
+		if (std::abs(this->xvel) > 0 && std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
+		else if (this->yvel > 0) direction = DIR_DOWN;
+		else if (this->yvel < 0) direction = DIR_UP;
+	}
+	if (std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) {
+		anim_state = ANIM_STATE_WALKING;
+	}
 }
 
 Player::Player()
@@ -355,11 +374,20 @@ void Player::dialog_update(World * world, Level * level)
 {
 	if (this->open_dialog) {
 		const std::string action_key = this->open_dialog->get_active_action_key();
+		TriggerStatus * trigger_status = this->open_dialog->get_active_trigger_status();
+		if (trigger_status != NULL) {
+			world->copy_trigger_status(trigger_status);
+			this->open_dialog->set_active_trigger_status(NULL);
+		}
 		if (action_key.length() > 0) {
 			const InteractActionManager &manager = InteractActionManager::get_instance();
 			manager.run_action(world, level, action_key, this->open_dialog->get_action_bindings(), this);
 		}  else {
 			this->open_dialog->update();
+			if (this->should_close_dialog) {
+				this->close_dialog();
+				this->should_close_dialog = false;
+			}
 		}
 	}
 }
@@ -401,11 +429,11 @@ const std::vector<ALLEGRO_BITMAP*> Player::get_cutscene_filters(ALLEGRO_DISPLAY 
 	return filters;
 }
 
-void Player::cutscene_update()
+void Player::cutscene_update(World * world, Level * level)
 {
 	if (this->has_active_cutscene()) {
 		if (!this->active_cutscene->has_action()) {
-			this->active_cutscene->update();	
+			this->active_cutscene->update(world, level);	
 		}
 		if (!this->active_cutscene->has_action() && this->active_cutscene->get_is_finished()) {
 			this->end_active_cutscene();
@@ -707,7 +735,8 @@ void Player::advance_dialog()
 	if (this->open_dialog) {
 		this->open_dialog->advance_dialog();
 		if (!this->open_dialog->has_current_page()) {
-			this->close_dialog();
+			this->should_close_dialog = true;
+			//this->close_dialog();
 		}
 	}
 }

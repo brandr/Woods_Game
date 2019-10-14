@@ -14,6 +14,7 @@ class Inventory : public xmls::Serializable
 {
 private:
 	int hotbar_index = 0;
+	xmls::xFloat money;
 	xmls::Collection<Item> inventory_items;
 public:
 	Inventory();
@@ -31,6 +32,8 @@ public:
 	Item *get_item(const int x, const int y);
 	Item *get_hotbar_item(const int index);
 	int get_hotbar_index();
+	const float get_money();
+	const std::string money_display_text();
 };
 
 #endif

@@ -1,5 +1,7 @@
 #include "Cutscene.h"
 #include "ImageLoader.h"
+#include "Level.h"
+#include "World.h"
 
 const bool Cutscene::has_current_cutscene_block()
 {
@@ -15,16 +17,21 @@ Cutscene::~Cutscene()
 	this->cutscene_blocks.clear();
 }
 
-void Cutscene::update()
+void Cutscene::update(World * world, Level * level)
 {
 	if (!this->action_flag) {
 		if (this->has_current_cutscene_block()) {
 			this->cutscene_blocks[this->current_block_index]->update(this->timer_active);
 			if (this->cutscene_blocks[this->current_block_index]->is_finished()) {
+				//TODO: process triggers for the block
 				if (this->cutscene_blocks[this->current_block_index]->process_action()) {
 					this->action_flag = true;
+				} else if (!this->update_trigger_statuses 
+					&& this->cutscene_blocks[this->current_block_index]->block_triggers.size() > 0) {
+					this->update_trigger_statuses = true;
 				} else {
-					this->current_block_index++;
+					this->update_trigger_statuses = false;
+					this->advance_block(world, level);
 				}
 			}
 		} else {
@@ -33,11 +40,15 @@ void Cutscene::update()
 	}
 }
 
-void Cutscene::advance_block()
+void Cutscene::advance_block(World * world, Level * level)
 {
+	int next_block_index = -1;
+	if (this->has_current_cutscene_block()) {
+		next_block_index = this->cutscene_blocks[this->current_block_index]->get_next_block_index(world, level);
+	}
 	this->action_flag = false;
 	this->is_finished = false;
-	this->current_block_index++;
+	this->current_block_index = next_block_index >= 0 ? next_block_index : current_block_index + 1;
 }
 
 const std::vector<ALLEGRO_BITMAP*> Cutscene::get_filters(ALLEGRO_DISPLAY * display, const int width, const int height)
@@ -57,7 +68,7 @@ const std::vector<ALLEGRO_BITMAP*> Cutscene::get_filters(ALLEGRO_DISPLAY * displ
 
 void Cutscene::add_block(CutsceneBlock * block)
 {
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	this->cutscene_blocks[block->block_index] = block;
 }
 
 void Cutscene::add_effect(const std::string effect_key, const int duration)
@@ -65,7 +76,8 @@ void Cutscene::add_effect(const std::string effect_key, const int duration)
 	CutsceneBlock * block = new CutsceneBlock();
 	block->effect_key = effect_key;
 	block->duration = duration;
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	block->block_index = this->cutscene_blocks.size(); // this works if we are incrementing by 1 each time
+	this->add_block(block);
 }
 
 void Cutscene::add_action(const std::string action_key)
@@ -81,7 +93,8 @@ void Cutscene::add_action(const std::string action_key, const std::string effect
 	if (effect_key != "") {
 		block->effect_key = effect_key;
 	}
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block);
 }
 
 void Cutscene::add_global_time_update(const int day, const int time)
@@ -91,7 +104,8 @@ void Cutscene::add_global_time_update(const int day, const int time)
 	block->global_time = new GlobalTime(day, time);
 	block->duration = 1;
 	block->effect_key = EFFECT_DISPLAY_BLACK;
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block);
 }
 
 void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_up_time)
@@ -100,9 +114,10 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 	block->action_key = ACTION_UPDATE_NEW_DAY;
 	block->duration = 1;
 	block->effect_key = EFFECT_DISPLAY_BLACK;
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block)); // do this here if we're updating async
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block); // do this here if we're updating async
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
-	//this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block)); // do this here if we're not updating async
+	//this->add_block(block); // do this here if we're not updating async
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
@@ -117,7 +132,8 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	block->duration = 1;
 	block->effect_key = EFFECT_DISPLAY_BLACK;
 	block->global_time = new GlobalTime(day, time);
-	this->cutscene_blocks.push_back(std::unique_ptr<CutsceneBlock>(block));
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block);
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	this->add_global_time_update(day, time);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
@@ -146,6 +162,16 @@ void CutsceneBlock::update(const bool update_timer)
 	if (update_timer) {
 		this->timer++;
 	}
+}
+
+const int CutsceneBlock::get_next_block_index(World * world, Level * level)
+{
+	for (CutsceneBranch cb : this->cutscene_branches) {
+		if (cb.qualifies(world, level)) {
+			return cb.next_block_index;
+		}
+	}
+	return this->next_block_index;
 }
 
 const std::vector<ALLEGRO_BITMAP*> CutsceneBlock::get_filters(ALLEGRO_DISPLAY * display, const int width, const int height)
@@ -195,6 +221,7 @@ const bool CutsceneBlock::is_finished()
 const bool CutsceneBlock::process_action()
 {
 	if (this->action_key.length() > 0) {
+		// save/load actions
 		if (this->action_key == ACTION_UPDATE_GLOBAL_TIME) {
 			return true;
 		} else if (this->action_key == ACTION_SAVE_GAME) {
@@ -205,9 +232,19 @@ const bool CutsceneBlock::process_action()
 			return true;
 		} else if (this->action_key == ACTION_AWAIT_LOAD) {
 			return true;
+		} // agent actions
+		else if (this->action_key == ACTION_WALK_AGENTS) {
+			return true;
+		} else if (this->action_key == ACTION_DIALOG) {
+			return true;
 		}
 	}
 	return false;
+}
+
+void CutsceneBlock::set_has_opened_dialog(const bool value)
+{
+	this->has_opened_dialog = value;
 }
 
 void Cutscene::add_effect_fade_block(const int duration, const int end_alpha)
@@ -238,4 +275,103 @@ GlobalTime * Cutscene::get_active_global_time()
 		return this->cutscene_blocks[this->current_block_index]->global_time;
 	}
 	return NULL;
+}
+
+std::vector<CutsceneTile> Cutscene::get_current_block_cutscene_tiles()
+{
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->cutscene_tiles;
+	}
+	return std::vector<CutsceneTile>();
+}
+
+std::vector<CutsceneBranch> Cutscene::get_current_block_cutscene_branches()
+{
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->cutscene_branches;
+	}
+	return std::vector<CutsceneBranch>();
+}
+
+Dialog * Cutscene::get_active_dialog()
+{
+	//TODO: populate the dialog when creating the cutscene
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->dialog;
+	}
+	return NULL;
+}
+
+void Cutscene::set_has_opened_dialog(const bool value)
+{
+	if (this->has_current_cutscene_block()) {
+		this->cutscene_blocks[this->current_block_index]->set_has_opened_dialog(value);
+	}
+}
+
+const bool Cutscene::has_opened_dialog()
+{
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->has_opened_dialog;
+	}
+	return false;
+}
+
+const bool Cutscene::should_update_trigger_statuses()
+{
+	return this->update_trigger_statuses;
+}
+
+std::vector<TriggerStatus*> Cutscene::trigger_statuses()
+{
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->block_triggers;
+	}
+	return std::vector<TriggerStatus*>();
+}
+
+void Cutscene::process_music()
+{
+	if (this->has_current_cutscene_block()) {
+		const std::string music_key = this->cutscene_blocks[this->current_block_index]->music_key;
+		if (!this->cutscene_blocks[this->current_block_index]->has_processed_music
+			&& music_key != "") {
+			AudioManager::get_instance().play_music(music_key);
+		}
+	}
+}
+
+std::vector<CutsceneAgentAnimation> Cutscene::get_current_block_agent_animations()
+{
+	if (this->has_current_cutscene_block()) {
+		return this->cutscene_blocks[this->current_block_index]->agent_animations;
+	}
+	return std::vector<CutsceneAgentAnimation>();
+}
+
+CutsceneTile::CutsceneTile(const std::string agent, const int x, const int y, const int dir)
+{
+	this->agent_key = agent;
+	this->tile_x = x, this->tile_y = y, this->direction = dir;
+}
+
+CutsceneBranch::CutsceneBranch(const int index, std::vector<Qualifier*> quals)
+{
+	this->next_block_index = index;
+	this->qualifiers = quals;
+}
+
+const bool CutsceneBranch::qualifies(World * world, Level * level)
+{
+	for (Qualifier * q : this->qualifiers) {
+		if (!q->evaluate(world, level)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+CutsceneAgentAnimation::CutsceneAgentAnimation(const std::string agent, const std::string anim, const int dir)
+{
+	this->agent_key = agent, this->animation_key = anim, this->direction = dir;
 }

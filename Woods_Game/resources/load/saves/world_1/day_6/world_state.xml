@@ -338,7 +338,7 @@
         <Collection Name="trigger_statuses">
             <Class Type="TriggerStatus" Version="1">
                 <Member Name="trigger_key">has_met_npc</Member>
-                <Member Name="trigger_state">1</Member>
+                <Member Name="trigger_state">0</Member>
                 <Collection Name="trigger_attributes">
                     <Class Type="TriggerAttribute" Version="1">
                         <Member Name="attribute_key">npc_key</Member>
@@ -354,7 +354,31 @@
                         <Member Name="attribute_key">npc_key</Member>
                         <Member Name="attribute_value">stranger_2</Member>
                     </Class>
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">npc_key</Member>
+                        <Member Name="attribute_value">stranger_2</Member>
+                    </Class>
                 </Collection>
+            </Class>
+            <Class Type="TriggerStatus" Version="1">
+                <Member Name="trigger_key">has_viewed_cutscene</Member>
+                <Member Name="trigger_state">1</Member>
+                <Collection Name="trigger_attributes">
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">cutscene_key</Member>
+                        <Member Name="attribute_value">test_cutscene_1</Member>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="explored_cells">
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">10</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">11</Member>
+                <Member Name="grid_y">10</Member>
             </Class>
         </Collection>
     </SerializableClass>

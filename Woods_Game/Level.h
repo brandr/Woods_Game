@@ -106,6 +106,7 @@ public:
 	void save_to_xml();
 	void unload_content();
 	void update(World * world, GlobalTime * time, const int game_mode);
+	void cutscene_animation_update();
 	void draw(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);

@@ -21,7 +21,7 @@ void Being::update(World * world, Level * level, GlobalTime * time, const int ga
 {
 	collision_update(world, level, game_mode);
 	movement_update(level, game_mode);
-	animation_update(game_mode);
+	//animation_update(game_mode);
 	Entity::update();
 	emit_sound_update(world, level, time, game_mode);
 	play_sound_update(world, level, time, game_mode);
@@ -52,7 +52,7 @@ void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, c
 	// this is how many pixels we travel per frame
 	const float speed = std::pow((float)std::pow(this->xvel, 2) + (float)std::pow(this->yvel, 2), 0.5f);
 	if (speed > 0.0f) {
-		const float step_px_size = (3.0f/4.0f) * TILE_SIZE; // TEMP. this is how many pixels a "step" should be
+		const float step_px_size = (2.0f/3.0f) * TILE_SIZE; // TEMP. this is how many pixels a "step" should be
 		const int duration = (int)(step_px_size / speed); //TODO: get number of frames sound should last
 
 		if (this->anim_state == ANIM_STATE_WALKING) {
@@ -85,6 +85,39 @@ void Being::set_yvel(int vel)
 
 void Being::animation_update(const int game_mode)
 {
+	GameImage::update();
+}
+
+const bool Being::cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty)
+{
+	Tile * t = level->get_tile(tx, ty);
+	this->anim_state = ANIM_STATE_WALKING;
+	Rect * r = this->get_rect_for_collision();
+	const float x_dist = t->get_x() - r->x, y_dist = t->get_y() - r->y;
+	if (x_dist == 0.0f && y_dist == 0.0f) {
+		this->anim_state = ANIM_STATE_NEUTRAL;
+		return true;
+	} else if (x_dist == 0.0f) {
+		if (this->base_walk_speed.value() >= std::abs(y_dist)) {
+			this->set_position(this->get_x(), this->get_y() + y_dist);
+			return false;
+		}
+		//TODO: should walk speed come in as an argument? should we path?
+		this->xvel = 0;
+		this->yvel = this->base_walk_speed.value() * (y_dist / std::abs(y_dist));
+	} else {
+		if (this->base_walk_speed.value() >= std::abs(x_dist)) {
+			this->set_position(this->get_x() + x_dist, this->get_y());
+			return false;
+		}
+		this->yvel = 0;
+		//TODO: should walk speed come in as an argument? should we path?
+		this->xvel = this->base_walk_speed.value() * (x_dist / std::abs(x_dist));
+		
+	}
+	this->update_animation_dir();
+	this->movement_update_top_down(level);
+	return false;
 }
 
 void Being::movement_update(Level * level, const int game_mode)
@@ -342,6 +375,11 @@ const bool Being::on_ground(std::vector<Entity*> interactables) {
 const bool Being::empty_at(Rect collide_rect, Level * level)
 {
 	return this->empty_at(collide_rect, level, false);
+}
+
+void Being::update_animation_dir()
+{
+	//override in subclasses
 }
 
 const bool Being::empty_at(Rect collide_rect, Level * level, const bool ignore_moving_obstacles)

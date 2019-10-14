@@ -250,10 +250,16 @@ DialogItemOption::DialogItemOption()
 	Register("option_text", &option_text);
 	Register("next_page_index", &next_page_index);
 	Register("option_action_key", &option_action_key);
+	Register("trigger_status", &trigger_status);
 }
 
 DialogItemOption::~DialogItemOption()
 {
+}
+
+const bool DialogItemOption::has_trigger_status()
+{
+	return !this->trigger_status.is_empty();
 }
 
 DialogItemPage::DialogItemPage()

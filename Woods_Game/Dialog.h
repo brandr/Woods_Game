@@ -18,16 +18,20 @@
 #include <allegro5/display.h>
 #include <allegro5/allegro_font.h>
 #include <algorithm>
+
 #include "FileManager.h"
 #include "InteractAction.h"
+#include "TriggerStatus.h"
 
 struct DialogLine {
 	std::string text;
 	std::string option_action_key;
 	int option_page_num = -1;
+	TriggerStatus * trigger_status;
 	const bool has_option();
 	const bool has_option_action();
 	const bool has_option_page();
+	const bool has_option_trigger_status();
 };
 
 struct DialogPage {
@@ -38,6 +42,7 @@ struct DialogPage {
 	const std::vector<std::string> get_text_lines(const int num_characters);
 	const std::string option_action_key(const int index);
 	const int option_next_page_num(const int index);
+	TriggerStatus * trigger_status(const int index);
 	const bool has_option(const int index);
 	const bool has_options();
 	const int options_count();
@@ -53,6 +58,7 @@ private:
 	int page_num = 0;
 	int selected_option_index = 0;
 	std::string active_action_key = "";
+	TriggerStatus * active_trigger_status = NULL;
 	bool should_scroll_text = true;
 	int character_counter = 0;
 	const int current_num_characters();
@@ -71,6 +77,8 @@ public:
 	void parse_text(const std::string text);
 	void parse_dialog(DialogItem * dialog_item);
 	const std::string get_active_action_key();
+	TriggerStatus * get_active_trigger_status();
+	void set_active_trigger_status(TriggerStatus * value);
 	void decrement_option();
 	void increment_option();
 	void set_should_scroll_text(const bool value);

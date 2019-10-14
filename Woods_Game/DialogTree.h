@@ -3,6 +3,7 @@
 
 #include "Dialog.h"
 #include "Qualifier.h"
+#include "TriggerStatus.h"
 #include "XMLSerialization.h"
 
 #include <stdlib.h>     /* srand, rand */
@@ -12,8 +13,10 @@ struct DialogItemOption : public xmls::Serializable
 	xmls::xString option_text;
 	xmls::xInt next_page_index;
 	xmls::xString option_action_key;
+	TriggerStatus trigger_status;
 	DialogItemOption();
 	~DialogItemOption();
+	const bool has_trigger_status();
 };
 
 struct DialogItemPage : public xmls::Serializable{

@@ -51,6 +51,7 @@
 #include "InteractActionManager.h"
 #include "LoadingData.h"
 #include "LocationMarker.h"
+#include "QuestData.h"
 #include "boost/filesystem.hpp"
 
 
@@ -84,6 +85,8 @@ private:
 	static void *load_func_advance_day(ALLEGRO_THREAD *thr, void *arg);
 	static void *load_func_save_game(ALLEGRO_THREAD *thr, void *arg);
 	static void *load_func_load_from_save(ALLEGRO_THREAD *thr, void *arg);
+
+	void walk_agents_for_cutscene(Cutscene * cutscene);
 public:
 	Level* current_level;
 	Player* player;
@@ -104,6 +107,7 @@ public:
 	Level * get_level_with_key(const std::string level_key);
 	std::vector<LocationMarker *> get_current_dungeon_location_markers();
 	Player* get_player();
+	QuestData* get_quest_data();
 	void unload_content();
 	void unload_level_content();
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
@@ -127,6 +131,7 @@ public:
 	void increment_dialog_option();
 	// cutscene
 	void process_cutscene(Cutscene * cutscene);
+	void cutscene_animation_update();
 	// map
 	const std::pair<int, int> current_player_location_for_map();
 	const std::set<std::pair<int, int>> explored_map();

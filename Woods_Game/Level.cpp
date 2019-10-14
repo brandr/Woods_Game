@@ -1104,6 +1104,15 @@ void Level::update(World * world, GlobalTime * time, const int game_mode)
 	}
 }
 
+void Level::cutscene_animation_update()
+{
+	for (Being * b : this->beings) {
+		if (b != NULL) {
+			b->animation_update(TOP_DOWN);
+		}
+	}
+}
+
 void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
 	const int max_layer_index = this->tiled_image_layers.size();

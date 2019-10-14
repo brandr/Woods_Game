@@ -1,0 +1,46 @@
+<root>
+    <SerializableClass Type="QuestData" Version="1" WorldKey="world_1">
+        <Collection Name="quest_items">
+            <Class Type="QuestItem" Version="1">
+                <Member Name="item_key">0</Member>
+                <Member Name="item_description">This lighter will be important to the \nstory.</Member>
+                <Member Name="item_name">lighter</Member>
+                <Member Name="item_display_name">Lighter</Member>
+                <Member Name="inventory_pos_x">0</Member>
+                <Member Name="inventory_pos_y">0</Member>
+                <Member Name="is_obtained">true</Member>
+                <Collection Name="item_attributes"/>
+            </Class>
+            <Class Type="QuestItem" Version="1">
+                <Member Name="item_key">1</Member>
+                <Member Name="item_description">This lighter will be important to the \nstory and is red.</Member>
+                <Member Name="item_name">red_lighter</Member>
+                <Member Name="item_display_name">Red Lighter</Member>
+                <Member Name="inventory_pos_x">1</Member>
+                <Member Name="inventory_pos_y">0</Member>
+                <Member Name="is_obtained">true</Member>
+                <Collection Name="item_attributes"/>
+            </Class>
+            <Class Type="QuestItem" Version="1">
+                <Member Name="item_key">2</Member>
+                <Member Name="item_description">This lighter will be important to the \nstory and is green.</Member>
+                <Member Name="item_name">green_lighter</Member>
+                <Member Name="item_display_name">Green Lighter</Member>
+                <Member Name="inventory_pos_x">0</Member>
+                <Member Name="inventory_pos_y">1</Member>
+                <Member Name="is_obtained">true</Member>
+                <Collection Name="item_attributes"/>
+            </Class>
+            <Class Type="QuestItem" Version="1">
+                <Member Name="item_key">3</Member>
+                <Member Name="item_description">This lighter will be important to the \nstory and is yellow.</Member>
+                <Member Name="item_name">yellow_lighter</Member>
+                <Member Name="item_display_name">Yellow Lighter</Member>
+                <Member Name="inventory_pos_x">1</Member>
+                <Member Name="inventory_pos_y">1</Member>
+                <Member Name="is_obtained">false</Member>
+                <Collection Name="item_attributes"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+</root>

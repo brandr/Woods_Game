@@ -3,6 +3,7 @@
 Inventory::Inventory()
 {
 	setClassName("Inventory");
+	Register("money", &money);
 	Register("inventory_items", &inventory_items);
 }
 
@@ -124,6 +125,19 @@ Item * Inventory::get_item(const int x, const int y)
 int Inventory::get_hotbar_index()
 {
 	return hotbar_index;
+}
+
+const float Inventory::get_money()
+{
+	return this->money.value();
+}
+
+const std::string Inventory::money_display_text()
+{
+	std::stringstream ss;
+	ss.imbue(std::locale(""));
+	ss << std::showbase << std::put_money(this->get_money());
+	return ss.str();
 }
 
 

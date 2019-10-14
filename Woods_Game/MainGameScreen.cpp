@@ -185,6 +185,12 @@ void input_select(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
+void input_secondary_select(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.screen_receiving_input().secondary_select();
+	}
+}
+
 //TODO: consider doing this to main game screen when paused to avoid that glitch that can happen
 void move_joystick_axis(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
@@ -307,6 +313,10 @@ void MainGameScreen::set_default_controls()
 
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_Q), &input_tab_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_W), &input_tab_right);
+
+		// secondary select
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_X), &input_secondary_select);
+
 		// controller
 			// select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
@@ -316,6 +326,8 @@ void MainGameScreen::set_default_controls()
 
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_LEFT_SHOULDER), &input_tab_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_RIGHT_SHOULDER), &input_tab_right);
+			// secondary select
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_Y), &input_secondary_select);
 			// resume
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
 
@@ -496,6 +508,7 @@ void MainGameScreen::load_content()
 	pause_screen.load_content();
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
+	inventory_screen.set_quest_data(game_image_manager.get_quest_data());
 	inventory_screen.set_world_key(game_image_manager.get_world_key());
 	inventory_screen.set_dungeon_key(game_image_manager.get_current_dungeon_key());
 	this->load_location_markers();
@@ -659,9 +672,15 @@ void MainGameScreen::dialog_update()
 	Player * player = game_image_manager.get_player();
 	World * world = this->game_image_manager.get_world();
 	player->dialog_update(world, world->get_current_level());
+	if (player->has_active_cutscene()) {
+		this->game_image_manager.cutscene_animation_update();
+	}
 	if (!player->has_open_dialog()) {
-		//TODO: may want to trigger a different game mode if the dialog leads to another one
-		this->resume_game();
+		if (player->has_active_cutscene()) {
+			this->game_image_manager.set_game_mode(CUTSCENE);
+		} else {
+			this->resume_game();
+		}
 	}
 }
 
@@ -673,8 +692,9 @@ void MainGameScreen::inventory_update()
 void MainGameScreen::cutscene_update()
 {
 	Player * player = game_image_manager.get_player();
-	player->cutscene_update();
+	player->cutscene_update(game_image_manager.get_world(), game_image_manager.current_level);
 	game_image_manager.process_cutscene(player->get_active_cutscene());
+	game_image_manager.cutscene_animation_update();
 	if (!player->has_active_cutscene()) {
 		//TODO: may want to trigger a different game mode if the cutscene leads to another one
 		this->resume_game();
@@ -784,7 +804,7 @@ void MainGameScreen::draw_ui_paused(ALLEGRO_DISPLAY* display)
 void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
 {
 	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
-	if (dialog) {
+	if (dialog != NULL) {
 		const int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width())) / 2;
 		const int y = 10;
 		al_draw_bitmap(dialog_backdrop_full_width(), x, y, 0);

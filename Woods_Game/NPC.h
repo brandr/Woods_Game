@@ -47,7 +47,7 @@ public:
 	const std::string get_current_spawn_key();
 	virtual const bool get_obeys_tile_rules();
 	Dialog * choose_dialog(World * world, GlobalTime * time, Player * player);
-	virtual const bool interact_action(World * world, GlobalTime * time, Player * player);
+	virtual const bool interact_action(World * world, Level * level, GlobalTime * time, Player * player);
 	const std::string get_default_dialog_text();
 	void set_current_level_key(const std::string level_key);
 	const std::string get_current_level_key();

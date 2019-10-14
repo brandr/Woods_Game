@@ -32,7 +32,8 @@ protected:
 	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	const bool on_ground(std::vector<Entity*>);
 	const bool empty_at(Rect collide_rect, Level * level);
-	
+	virtual void update_animation_dir();
+
 	const bool empty_at(Rect, std::vector<Entity*>);
 	const float get_speed_multiplier(TileSet * tileset, std::vector<Tile*> tiles);
 	std::vector<Tile *> get_colliding_tiles(TileSet * tileset, std::vector<Tile*> tiles);
@@ -44,6 +45,7 @@ public:
 	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
+	virtual const bool cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty);
 	void set_xvel(int);
 	void set_yvel(int);
 	const bool precise_empty_at(std::vector<Entity*>, const int, const int);

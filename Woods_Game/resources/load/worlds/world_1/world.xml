@@ -374,6 +374,12 @@
                 		<Member Name="animation_frame_height">5</Member>
                 		<Member Name="animation_frame_duration">8</Member>
             		</Class>
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">waving</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">16</Member>
+                    </Class>
         		</Collection>
         		<Member Name="base_walk_speed">1.0</Member>
         		<Member Name="start_level_key">start_neighborhood</Member>

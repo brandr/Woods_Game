@@ -114,8 +114,11 @@ public:
 	mask_t* get_mask();
 	std::string get_anim_state_key();
 	static std::string get_anim_state_key(int key);
+	static const int get_anim_state_index(const std::string key);
 	virtual int get_animation_row();
 	int get_animation_direction();
+	void set_animation_index(const int index);
+	void set_animation_direction(const int dir);
 	Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();

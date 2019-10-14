@@ -59,6 +59,9 @@ void Dialog::add_line(const std::string line_text, const int page_num, const int
 	if (option != NULL) {
 		page->lines[line_num]->option_action_key = option->option_action_key.value();
 		page->lines[line_num]->option_page_num = option->next_page_index.value();
+		if (option->has_trigger_status()) {
+			page->lines[line_num]->trigger_status = &(option->trigger_status);
+		}
 	} else if (option_action_key != "") {
 		page->lines[line_num]->option_action_key = option_action_key;
 	}
@@ -144,6 +147,15 @@ const std::string Dialog::get_active_action_key()
 	return this->active_action_key;
 }
 
+TriggerStatus * Dialog::get_active_trigger_status() {
+	return this->active_trigger_status;
+}
+
+void Dialog::set_active_trigger_status(TriggerStatus * value)
+{
+	this->active_trigger_status = value;
+}
+
 void Dialog::decrement_option()
 {
 	DialogPage * page = this->page_map[this->page_num];
@@ -215,14 +227,22 @@ void Dialog::advance_dialog()
 		}
 	} else {
 		int next_page_num = -1;
+		bool should_advance = true;
 		DialogPage * page = this->current_page();
 		if (page != NULL && page->has_options()) {
 			next_page_num = page->option_next_page_num(this->selected_option_index);
 			const std::string action_key = page->option_action_key(this->selected_option_index);
 			if (action_key.length() > 0) {
 				this->active_action_key = action_key;
-				return;
+				should_advance = false;
 			}
+			TriggerStatus * trigger_status = page->trigger_status(this->selected_option_index);
+			if (trigger_status != NULL) {
+				this->active_trigger_status = trigger_status;
+			}
+		}
+		if (!should_advance) {
+			return;
 		}
 		if (next_page_num < 0) {
 			next_page_num = page->next_page_number;
@@ -295,6 +315,21 @@ const int DialogPage::option_next_page_num(const int index)
 	return -1;
 }
 
+TriggerStatus * DialogPage::trigger_status(const int index)
+{
+	const int line_count = this->lines.size();
+	int option_index = 0;
+	for (int i = 0; i < line_count; i++) {
+		if (this->lines[i]->has_option()) {
+			if (this->lines[i]->has_option_trigger_status() && option_index == index) {
+				return this->lines[i]->trigger_status;
+			}
+			option_index++;
+		}
+	}
+	return NULL;
+}
+
 const bool DialogPage::has_option(const int index)
 {
 	return index >= 0 && index < this->lines.size() && this->lines[index]->has_option();
@@ -325,7 +360,7 @@ const int DialogPage::options_count()
 
 const bool DialogLine::has_option()
 {
-	return this->has_option_action() || this->has_option_page();
+	return this->has_option_action() || this->has_option_page() || this->has_option_trigger_status();
 }
 
 const bool DialogLine::has_option_action()
@@ -336,4 +371,9 @@ const bool DialogLine::has_option_action()
 const bool DialogLine::has_option_page()
 {
 	return this->option_page_num >= 0;
+}
+
+const bool DialogLine::has_option_trigger_status()
+{
+	return this->trigger_status != NULL && !this->trigger_status->is_empty();
 }

@@ -6,6 +6,7 @@ TriggerStatus::TriggerStatus()
 	Register("trigger_key", &trigger_key);
 	Register("trigger_state", &trigger_state);
 	Register("trigger_attributes", &trigger_attributes);
+	this->trigger_key = "";
 	//TODO: bindings
 }
 
@@ -39,6 +40,19 @@ void TriggerStatus::set_trigger_state(const int state)
 	this->trigger_state = state;
 }
 
+const bool TriggerStatus::is_empty()
+{
+	return this->trigger_key.value().empty();
+}
+
+void TriggerStatus::copy_attributes(TriggerStatus * other_status)
+{
+	std::vector<TriggerAttribute * > other_attributes = other_status->get_attributes();
+	for (TriggerAttribute * ta : other_attributes) {
+		this->set_attribute(ta->attribute_key.value(), ta->attribute_value.value());
+	}
+}
+
 const bool TriggerStatus::has_attribute(const std::string attr_key)
 {
 	const int size = this->trigger_attributes.size();
@@ -61,6 +75,16 @@ const std::string TriggerStatus::get_attribute(const std::string attr_key)
 		}
 	}
 	return "";
+}
+
+std::vector<TriggerAttribute*> TriggerStatus::get_attributes()
+{
+	std::vector<TriggerAttribute*> attributes;
+	const int size = this->trigger_attributes.size();
+	for (int i = 0; i < size; i++) {
+		attributes.push_back(this->trigger_attributes.getItem(i));
+	}
+	return attributes;
 }
 
 void TriggerStatus::set_attribute(const std::string attr_key, const std::string attr_value)

@@ -38,6 +38,18 @@ ALLEGRO_BITMAP * InventoryScreen::item_drag_selection()
 	return ImageLoader::get_instance().get_image("ui/item_selection_1");
 }
 
+ALLEGRO_BITMAP * InventoryScreen::item_label_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/item_label_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_description_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/item_description_backdrop");
+}
+
+// map
+
 ALLEGRO_BITMAP * InventoryScreen::map_frame()
 {
 	return ImageLoader::get_instance().get_image("ui/map_frame");
@@ -68,6 +80,8 @@ ALLEGRO_BITMAP * InventoryScreen::map_fog()
 	return ImageLoader::get_instance().get_image("ui/map_fog");
 }
 
+// tabs
+
 const std::string InventoryScreen::label_for_tab(const int index)
 {
 	switch (index) {
@@ -80,6 +94,11 @@ const std::string InventoryScreen::label_for_tab(const int index)
 	default:
 		return "";
 	}
+}
+
+void InventoryScreen::reset_tab_mode()
+{
+	this->tab_mode = TAB_MODE_DEFAULT;
 }
 
 void InventoryScreen::items_tab_menu_up()
@@ -145,7 +164,21 @@ void InventoryScreen::items_tab_select()
 	}
 }
 
-// TODO: did I do modulo correctly for these? (try scrolling left from the start)
+void InventoryScreen::items_tab_secondary_select()
+{
+	if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
+		this->tab_mode = TAB_MODE_DEFAULT;
+		return;
+	}
+	if (this->dragging_item() != NULL) {
+		return;
+	}
+	Item * item = this->selected_item();
+	if (item == NULL || item->is_empty()) {
+		return;
+	}
+	this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+}
 
 void InventoryScreen::map_tab_menu_up()
 {
@@ -175,6 +208,68 @@ void InventoryScreen::map_tab_menu_right()
 	}
 }
 
+void InventoryScreen::journal_tab_menu_up()
+{
+	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	const int x = quest_selection.first;
+	const int num_rows = x < QUEST_INVENTORY_COLS ? QUEST_INVENTORY_ROWS : journal_entry_rows;
+	const int y = quest_selection.second == 0 ? num_rows - 1 : quest_selection.second - 1;
+	quest_selection = std::pair<int, int>(x, y);
+}
+
+void InventoryScreen::journal_tab_menu_down()
+{
+	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	const int x = quest_selection.first;
+	const int num_rows = x < QUEST_INVENTORY_COLS ? QUEST_INVENTORY_ROWS : journal_entry_rows;
+	const int y = quest_selection.second == num_rows - 1 ? 0 : quest_selection.second + 1;
+	quest_selection = std::pair<int, int>(x, y);
+}
+
+void InventoryScreen::journal_tab_menu_left()
+{
+	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	int x = quest_selection.first == 0 ? QUEST_INVENTORY_COLS : quest_selection.first - 1;
+	int y = 0;
+	if (x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
+		y = std::min(journal_entry_rows, quest_selection.second);
+	} else if (x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
+		y = std::min(QUEST_INVENTORY_ROWS - 1, quest_selection.second);
+	} else {
+		y = quest_selection.second;
+	}
+	quest_selection = std::pair<int, int>(x, y);
+}
+
+void InventoryScreen::journal_tab_menu_right()
+{
+	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	int x = quest_selection.first == QUEST_INVENTORY_COLS ? 0 : quest_selection.first + 1;
+	int y = 0;
+	if (x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
+		y = std::min(journal_entry_rows, quest_selection.second);
+	}
+	else if (x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
+		y = std::min(QUEST_INVENTORY_ROWS - 1, quest_selection.second);
+	} else {
+		y = quest_selection.second;
+	}
+	quest_selection = std::pair<int, int>(x, y);
+}
+
+void InventoryScreen::journal_tab_secondary_select()
+{
+	if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
+		this->tab_mode = TAB_MODE_DEFAULT;
+		return;
+	}
+	QuestItem * qi = this->selected_quest_item();
+	if (qi == NULL || qi->is_empty() || !qi->get_is_obtained()) {
+		return;
+	}
+	this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+}
+
 InventoryScreen::InventoryScreen()
 {
 }
@@ -195,6 +290,8 @@ void InventoryScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/item_box_1_dark");
 	ImageLoader::get_instance().load_image("ui/item_selection_1");
+	ImageLoader::get_instance().load_image("ui/item_label_backdrop");
+	ImageLoader::get_instance().load_image("ui/item_description_backdrop");	
 	// map
 	ImageLoader::get_instance().load_image("ui/map_frame");
 	ImageLoader::get_instance().load_image("ui/map_current_location_icon");
@@ -210,6 +307,9 @@ void InventoryScreen::load_fonts()
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 	font_map[FONT_TABS] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
 	font_map[FONT_LOCATION_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
+	font_map[FONT_ITEM_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
+	font_map[FONT_ITEM_DESCRIPTION] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 18, NULL);
+	font_map[FONT_MONEY] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
@@ -222,12 +322,20 @@ void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 	case INVENTORY_TAB_ITEMS:
 		draw_inventory(display);
 		draw_hotbar(display);
+		draw_item_label(display);
+		draw_money(display);
+		if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
+			draw_item_description(display);
+		}
 		break;
 	case INVENTORY_TAB_MAP:
 		draw_map(display);
 		break;
 	case INVENTORY_TAB_JOURNAL:
-		//TODO
+		draw_journal(display);
+		if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
+			draw_quest_item_description(display);
+		}
 		break;
 	default:
 		break;
@@ -289,7 +397,7 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 	const int box_width = al_get_bitmap_width(item_box_hotbar());
 	const int box_height = al_get_bitmap_height(item_box_hotbar());
 	const int hotbar_index = inventory->get_hotbar_index();
-	const float y = (height + al_get_bitmap_height(inventory_backdrop()))/2 - box_height - 36;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop()))/2 - box_height - 100;
 	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size) / 2 + i*box_width;
@@ -309,6 +417,61 @@ void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
 		const float drag_x = (width - box_width*size) / 2 + inventory_selection.first*box_width;
 		dragging_item()->draw(display, drag_x , y);
 	}
+}
+
+void InventoryScreen::draw_item_label(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int box_width = al_get_bitmap_width(item_label_backdrop());
+	const int box_height = al_get_bitmap_height(item_label_backdrop());
+	const float x = (width - box_width) / 2;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 26;
+	al_draw_bitmap(item_label_backdrop(), x, y, 0);
+	Item * item = this->selected_item();
+	if (item != NULL) {
+		ALLEGRO_FONT * font = this->font_map[FONT_ITEM_LABEL];
+		const float text_width = al_get_text_width(font , item->get_item_display_name().c_str());
+		al_draw_text(font, al_map_rgb(0, 0, 0), x + (box_width - text_width) / 2.0f, y + 12, 0, item->get_item_display_name().c_str());
+	}
+}
+
+void InventoryScreen::draw_item_description(ALLEGRO_DISPLAY * display)
+{
+	const int x = (al_get_display_width(display) - al_get_bitmap_width(item_description_backdrop())) / 2;
+	const int y = (al_get_display_height(display) - al_get_bitmap_height(item_description_backdrop())) / 2;
+	al_draw_bitmap(item_description_backdrop(), x, y, 0);
+	Item * item = this->selected_item();
+	if (item == NULL || item->is_empty()) {
+		return;
+	}
+	const std::string description = item->get_item_description();
+	FileManager fm;
+	ALLEGRO_FONT * font = this->font_map[FONT_ITEM_DESCRIPTION];
+	std::vector<std::string> description_lines = fm.string_to_parts(description, "\\n");
+	const int size = description_lines.size();
+	for (int i = 0; i < size; i++) {
+		const std::string line = description_lines[i];
+		if (line.empty()) {
+			continue;
+		}
+		al_draw_text(font, al_map_rgb(0, 0, 0), x + 40, y + 28 + i * al_get_font_line_height(font), 0, line.c_str());
+	}
+}
+
+void InventoryScreen::draw_money(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+	const std::string money_text = this->inventory->money_display_text();
+	const float text_width = al_get_text_width(this->font_map[FONT_MONEY], money_text.c_str());
+	const float text_height = al_get_font_line_height(this->font_map[FONT_MONEY]);
+	al_draw_text(this->font_map[FONT_MONEY], al_map_rgb(0, 0, 0), 
+		x_off + back_w - text_width - 20, y_off + back_h - text_height - 20, 0, money_text.c_str());
 }
 
 void InventoryScreen::draw_map(ALLEGRO_DISPLAY * display)
@@ -384,6 +547,71 @@ void InventoryScreen::draw_map(ALLEGRO_DISPLAY * display)
 	al_draw_text(font_map[FONT_LOCATION_LABEL], al_map_rgb(0, 0, 0), l_frame_x + 8, l_frame_y + 4, 0, location_text.c_str());
 }
 
+void InventoryScreen::draw_journal(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+	const int quest_items_off_x = 16, quest_items_off_y = 16;
+	const int x_pad = 4, y_pad = 4;
+
+	ALLEGRO_BITMAP * item_label = item_label_backdrop();
+	const int label_width = (al_get_bitmap_width(item_label));
+	const int label_x = x_off + (back_w / 4) - label_width/2; // in the middle of the left half
+	const int label_y = y_off + back_h - al_get_bitmap_height(item_label) - 16;
+	al_draw_bitmap(item_label_backdrop(), label_x, label_y, 0);
+
+	std::vector<QuestItem *> quest_items = this->quest_data->get_quest_items();
+	for (QuestItem * qi : quest_items) {
+		if (qi->get_is_obtained()) {
+			const int qi_x = qi->get_inventory_pos_x(), qi_y = qi->get_inventory_pos_y();
+			const int x = x_off + quest_items_off_x + qi_x * (TILE_SIZE + x_pad);
+			const int y = y_off + quest_items_off_y + qi_y * (TILE_SIZE + y_pad);
+			qi->draw(display, x, y);
+			if (qi_x == quest_selection.first && qi_y == quest_selection.second) {
+				// draw item name
+				ALLEGRO_FONT * font = this->font_map[FONT_ITEM_LABEL];
+				const float text_width = al_get_text_width(font, qi->get_item_display_name().c_str());
+				al_draw_text(font, al_map_rgb(0, 0, 0), label_x + (label_width - text_width) / 2.0f, label_y + 12, 0, qi->get_item_display_name().c_str());
+			}
+		}
+	}
+	const bool is_quest_item = this->quest_selection.first < QUEST_INVENTORY_COLS;
+	// TODO: different x and y for !is_quest_item
+	const int select_x = x_off + quest_items_off_x + this->quest_selection.first * (TILE_SIZE + x_pad);
+	const int select_y = y_off + quest_items_off_y + this->quest_selection.second * (TILE_SIZE + y_pad);
+	
+	ALLEGRO_BITMAP * select_bitmap = is_quest_item ? this->item_drag_selection() : this->item_drag_selection(); // TODO: different bitmap for journal entries
+	al_draw_bitmap(item_drag_selection(), select_x, select_y, 0); //TODO: might want a different bitmap here
+	//TODO: draw other journal related stuff
+}
+
+void InventoryScreen::draw_quest_item_description(ALLEGRO_DISPLAY * display)
+{
+	const int x = (al_get_display_width(display) - al_get_bitmap_width(item_description_backdrop())) / 2;
+	const int y = (al_get_display_height(display) - al_get_bitmap_height(item_description_backdrop())) / 2;
+	al_draw_bitmap(item_description_backdrop(), x, y, 0);
+	QuestItem * item = this->selected_quest_item();
+	if (item == NULL || item->is_empty() || !item->get_is_obtained()) {
+		return;
+	}
+	const std::string description = item->get_item_description();
+	FileManager fm;
+	ALLEGRO_FONT * font = this->font_map[FONT_ITEM_DESCRIPTION];
+	std::vector<std::string> description_lines = fm.string_to_parts(description, "\\n");
+	const int size = description_lines.size();
+	for (int i = 0; i < size; i++) {
+		const std::string line = description_lines[i];
+		if (line.empty()) {
+			continue;
+		}
+		al_draw_text(font, al_map_rgb(0, 0, 0), x + 40, y + 28 + i * al_get_font_line_height(font), 0, line.c_str());
+	}
+}
+
 void InventoryScreen::update()
 {
 	GameScreen::update();
@@ -394,18 +622,25 @@ void InventoryScreen::update()
 
 void InventoryScreen::reset()
 {
-	dragging_selection = std::pair<int, int>(-1, -1);
+	this->dragging_selection = std::pair<int, int>(-1, -1);
+	this->reset_tab_mode();
 }
 
 void InventoryScreen::menu_up()
 {
-	//TODO: other select options
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		this->items_tab_menu_up();
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->items_tab_menu_up();
+		}
 		break;
 	case INVENTORY_TAB_MAP:
 		this->map_tab_menu_up();
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->journal_tab_menu_up();
+		}
 		break;
 	default:
 		break;
@@ -414,13 +649,19 @@ void InventoryScreen::menu_up()
 
 void InventoryScreen::menu_down()
 {
-	//TODO: other select options
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		this->items_tab_menu_down();
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->items_tab_menu_down();
+		}
 		break;
 	case INVENTORY_TAB_MAP:
 		this->map_tab_menu_down();
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->journal_tab_menu_down();
+		}
 		break;
 	default:
 		break;
@@ -429,13 +670,19 @@ void InventoryScreen::menu_down()
 
 void InventoryScreen::menu_left()
 {
-	//TODO: other select options
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		this->items_tab_menu_left();
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->items_tab_menu_left();
+		}
 		break;
 	case INVENTORY_TAB_MAP:
 		this->map_tab_menu_left();
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->journal_tab_menu_left();
+		}
 		break;
 	default:
 		break;
@@ -444,13 +691,19 @@ void InventoryScreen::menu_left()
 
 void InventoryScreen::menu_right()
 {
-	//TODO: other select options
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		this->items_tab_menu_right();
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->items_tab_menu_right();
+		}
 		break;
 	case INVENTORY_TAB_MAP:
 		this->map_tab_menu_right();
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		if (this->tab_mode == TAB_MODE_DEFAULT) {
+			this->journal_tab_menu_right();
+		}
 		break;
 	default:
 		break;
@@ -464,11 +717,13 @@ void InventoryScreen::tab_left()
 	} else {
 		this->tab_index = this->tab_index - 1;
 	}
+	this->reset_tab_mode();
 }
 
 void InventoryScreen::tab_right()
 {
 	this->tab_index = (this->tab_index + 1) % NUM_INVENTORY_TABS;
+	this->reset_tab_mode();
 }
 
 void InventoryScreen::select()
@@ -476,7 +731,37 @@ void InventoryScreen::select()
 	//TODO: other select options
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		this->items_tab_select();
+		switch (this->tab_mode) {
+		case TAB_MODE_DEFAULT:
+			this->items_tab_select();
+			break;
+		case TAB_MODE_DISPLAY_DESCRIPTION:
+			this->tab_mode = TAB_MODE_DEFAULT;
+			break;
+		default:
+			break;
+		}
+		break;
+	case INVENTORY_TAB_MAP:
+		//TODO: display location descriptions?
+		break;
+	default:
+		break;
+	}
+}
+
+void InventoryScreen::secondary_select()
+{
+	//TODO: other select options
+	switch (this->tab_index) {
+	case INVENTORY_TAB_ITEMS:
+		this->items_tab_secondary_select();
+		break;
+	case INVENTORY_TAB_MAP:
+		//TODO: location description?
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		this->journal_tab_secondary_select();
 		break;
 	default:
 		break;
@@ -487,6 +772,11 @@ void InventoryScreen::set_inventory(Inventory * inventory)
 {
 	this->inventory = inventory;
 	inventory_selection = std::pair<int, int>(inventory->get_hotbar_index(), -1);
+}
+
+void InventoryScreen::set_quest_data(QuestData * data)
+{
+	this->quest_data = data;
 }
 
 bool InventoryScreen::selecting_internal_inventory()
@@ -514,6 +804,11 @@ Item * InventoryScreen::dragging_item()
 	}
 	if (drag_x < 0) return NULL;
 	return inventory->get_item(drag_x, drag_y);
+}
+
+QuestItem * InventoryScreen::selected_quest_item()
+{
+	return this->quest_data->get_quest_item(this->quest_selection.first, this->quest_selection.second);
 }
 
 void InventoryScreen::set_world_key(const std::string value)

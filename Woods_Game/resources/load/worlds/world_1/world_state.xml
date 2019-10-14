@@ -23,24 +23,41 @@
         		</Collection>
         	</Class>
         </Collection>
+        <Collection Name="quests" Version="1">
+        	<Class Type="Quest" Version="1">
+        		<Member Name="quest_key">quest_1</Member>
+        		<Member Name="quest_name">Test Quest</Member>
+        		<Member Name="current_page_index">-1</Member>
+        		<Collection Name="pages" Version="1">
+        			<Class Type="QuestPage" Version="1">
+        				<Member Name="page_index">0</Member>
+        				<Member Name="quest_state">1</Member>
+        				<Member Name="summary">You must complete this quest.</Member>
+        			</Class>
+        		</Collection>
+        	</Class>
+        </Collection>
         <Collection Name="explored_cells">
         </Collection>
         <Class Type="Player" Version="1" Name="player">
-		<Member Name="spawn_key">player_spawner_room</Member>
-		<Member Name="start_pos_x">10</Member>
-		<Member Name="start_pos_y">10</Member>
-		<Member Name="animation_spritesheet_key">player_spritesheet_1</Member>
-		<Member Name="center_offset_x">34</Member>
-		<Member Name="center_offset_y">58</Member>
-		<Member Name="spritesheet_frame_width">64</Member>
-		<Member Name="spritesheet_frame_height">64</Member>
-		<Member Name="base_walk_speed">5</Member>
-		<Member Name="jump_speed">30</Member>
-		<Class Name="inventory" Type="Inventory" Version="1">
-			<Collection Name="inventory_items">
+			<Member Name="spawn_key">player_spawner_room</Member>
+			<Member Name="start_pos_x">10</Member>
+			<Member Name="start_pos_y">10</Member>
+			<Member Name="animation_spritesheet_key">player_spritesheet_1</Member>
+			<Member Name="center_offset_x">34</Member>
+			<Member Name="center_offset_y">58</Member>
+			<Member Name="spritesheet_frame_width">64</Member>
+			<Member Name="spritesheet_frame_height">64</Member>
+			<Member Name="base_walk_speed">5</Member>
+			<Member Name="jump_speed">30</Member>
+			<Class Name="inventory" Type="Inventory" Version="1">
+				<Member Name="money">5.00</Member>
+				<Collection Name="inventory_items">
 				<Class Type="Item" Version="1">
 					<Member Name="item_key">0</Member>
 					<Member Name="item_name">shears</Member>
+					<Member Name="item_display_name">Shears</Member>
+					<Member Name="item_description">Garden shears for cutting plants.\nUse with caution.</Member>
 					<Member Name="inventory_pos_x">0</Member>
 					<Member Name="inventory_pos_y">-1</Member>
 					<Collection Name="item_attributes">
@@ -58,6 +75,8 @@
 				<Class Type="Item" Version="1">
 					<Member Name="item_key">1</Member>
 					<Member Name="item_name">mallet</Member>
+					<Member Name="item_display_name">Mallet</Member>
+					<Member Name="item_description">A heavy hammer for smashing rocks.\nThis might not end up in the game.</Member>
 					<Member Name="inventory_pos_x">2</Member>
 					<Member Name="inventory_pos_y">-1</Member>
 					<Collection Name="item_attributes">
@@ -252,9 +271,9 @@
 					<Member Name="inventory_pos_x">9</Member>
 					<Member Name="inventory_pos_y">2</Member>
 				</Class>
-       	 	</Collection>
-		</Class>
-		<Collection Name="animation_data">
+       	 		</Collection>
+			</Class>
+			<Collection Name="animation_data">
             <Class Type="AnimationData" Version="1">
                 <Member Name="animation_key">neutral</Member>
                 <Member Name="animation_frame_width">3</Member>
@@ -273,8 +292,8 @@
                 <Member Name="animation_frame_height">5</Member>
                 <Member Name="animation_frame_duration">4</Member>
             </Class>
-        </Collection>
-        <Collection Name="additional_mask_data">
+        	</Collection>
+        	<Collection Name="additional_mask_data">
             <Class Type="MaskData" Version="1">
                 <Member Name="mask_key">slicing</Member>
                 <Member Name="mask_width">32</Member>

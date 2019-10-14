@@ -417,6 +417,14 @@ void World::reload_world_state(const std::string world_state_path)
 	filemanager.load_xml_content(&(this->world_state), world_state_path, "SerializableClass", "WorldKey", this->get_world_key());
 }
 
+void World::reload_quest_data(const std::string filepath)
+{
+	FileManager filemanager;
+	this->quest_data.reset();
+	filemanager.load_xml_content(&(this->quest_data), filepath, "SerializableClass", "WorldKey", this->get_world_key());
+	this->quest_data.load_content_from_attributes();
+}
+
 void World::load_npcs()
 {
 	const int npc_count = this->npcs.size();
@@ -557,10 +565,9 @@ void World::save_game(World * world, GlobalTime * global_time)
 			file_manager.replace_xml_content(dungeon_path, "SerializableClass", "LevelKey", level->get_filename(), level_xml);
 		}
 	}
+	// world state
 	const std::string world_state_xml = world->get_world_state()->toXML();
 	const std::string day_save_file_path = day_save_file_dir + "/" + "world_state";
-	//TODO: where to get the initial worldstate from?
-	//TODO: load worldstate into world upon loading level since it is no longer registered as an attribute
 	std::map<std::string, std::string> ws_attributes;
 	ws_attributes["Type"] = "WorldState";
 	ws_attributes["Version"] = "1";
@@ -568,6 +575,16 @@ void World::save_game(World * world, GlobalTime * global_time)
 	file_manager.create_xml_file(day_save_file_path);
 	file_manager.save_xml_content(day_save_file_path, "SerializableClass", ws_attributes);
 	file_manager.replace_xml_content(day_save_file_path, "SerializableClass", "WorldKey", save_file_name, world_state_xml);
+	// quest data
+	const std::string quest_data_xml = world->get_quest_data()->toXML();
+	const std::string quest_data_file_path = "resources/load/saves/" + save_file_name + "/" + "quest_data";
+	std::map<std::string, std::string> qd_attributes;
+	qd_attributes["Type"] = "QuestData";
+	qd_attributes["Version"] = "1";
+	qd_attributes["WorldKey"] = save_file_name;
+	file_manager.create_xml_file(quest_data_file_path);
+	file_manager.save_xml_content(quest_data_file_path, "SerializableClass", qd_attributes);
+	file_manager.replace_xml_content(quest_data_file_path, "SerializableClass", "WorldKey", save_file_name, quest_data_xml);
 }
 
 // updates all NPCs, even if they aren't on the current level
@@ -712,6 +729,11 @@ void World::set_has_met_npc(const std::string npc_key)
 	this->world_state.set_has_met_npc(npc_key);
 }
 
+void World::copy_trigger_status(TriggerStatus * status)
+{
+	this->world_state.copy_trigger_status(status);
+}
+
 Dungeon* World::get_current_dungeon()
 {
 	return this->get_dungeon(this->current_dungeon_key.value());
@@ -786,6 +808,11 @@ void World::set_current_day(const int day)
 WorldState * World::get_world_state()
 {
 	return &world_state;
+}
+
+QuestData * World::get_quest_data()
+{
+	return &(this->quest_data);
 }
 
 TriggerStatus * World::matching_trigger_status(TriggerStatus * status)

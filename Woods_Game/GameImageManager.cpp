@@ -63,6 +63,8 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.generate_map_images();
 	const std::string initial_state_filename = new_game_path + "world_state";
 	this->world.reload_world_state(initial_state_filename);
+	const std::string initial_quest_data_filename = new_game_path + "quest_data";
+	this->world.reload_quest_data(initial_quest_data_filename);
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
@@ -87,6 +89,8 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->world.generate_map_images();
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/world_state";
 	this->world.reload_world_state(world_state_path);
+	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
+	this->world.reload_quest_data(quest_data_path);
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -109,6 +113,8 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->world.reload_dungeons(dungeons_path);
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/world_state";
 	this->world.reload_world_state(world_state_path);
+	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
+	this->world.reload_quest_data(quest_data_path);
 	this->load_player();
 	this->world.recalculate_npc_paths();
 	this->save_game();
@@ -208,7 +214,6 @@ Cutscene * GameImageManager::generate_cutscene(CutsceneScript * script)
 	if (!cutscene_key.empty()) {
 		scene->set_cutscene_key(script->get_cutscene_key());
 		this->world.mark_cutscene_viewed(cutscene_key);
-		//TODO: elsewhere, if a cutscene shouldn't play more than once, don't play it if it's viewed
 	}
 	
 	std::vector<CutsceneScriptBlock *> script_blocks = script->get_blocks();
@@ -223,9 +228,18 @@ Cutscene * GameImageManager::generate_cutscene(CutsceneScript * script)
 CutsceneBlock * GameImageManager::generate_cutscene_block(CutsceneScriptBlock * script_block)
 {
 	CutsceneBlock * block = new CutsceneBlock();
+	block->block_index = script_block->get_block_index();
+	block->next_block_index = script_block->get_next_block_index();
 	block->duration = script_block->get_duration();
 	block->action_key = script_block->get_action_key();
-	//TODO: use stuff from the script to figure out action keys, durations, etc
+	block->effect_key = script_block->get_effect_key();
+	block->music_key = script_block->get_music_key();
+	block->cutscene_tiles = script_block->get_cutscene_tiles();
+	block->cutscene_branches = script_block->get_cutscene_branches();
+	block->block_triggers = script_block->get_block_triggers();
+	block->agent_animations = script_block->get_agent_animations();
+	block->dialog = script_block->get_dialog();
+	//TODO: use stuff from the script to set attributes of block
 	return block;
 }
 
@@ -346,6 +360,8 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 	data->world->reload_dungeons(dungeons_path);
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(data->global_time->get_day()) + "/world_state";
 	data->world->reload_world_state(world_state_path);
+	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
+	data->world->reload_quest_data(quest_data_path);
 	data->world->update_reload_day(data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
@@ -354,9 +370,41 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 	return NULL;
 }
 
+void GameImageManager::walk_agents_for_cutscene(Cutscene * cutscene)
+{
+	bool all_have_reached_dest = true;
+	std::vector<CutsceneTile> cutscene_tiles = cutscene->get_current_block_cutscene_tiles();
+	for (CutsceneTile ct : cutscene_tiles) {
+		Being * agent = NULL;
+		if (CUTSCENE_AGENT_PLAYER == ct.agent_key) {
+			agent = this->player;
+		} else {
+			agent = this->get_npc(ct.agent_key);
+		}
+		if (agent != NULL) {
+			if (!agent->cutscene_walk_towards_tile_dest(this->current_level, ct.tile_x, ct.tile_y)) {
+				all_have_reached_dest = false;
+			}
+			else {
+				agent->set_animation_direction(ct.direction);
+			}
+		} else {
+			//TODO: error handling
+		}
+	}
+	if (all_have_reached_dest) {
+		cutscene->advance_block(&(this->world), this->current_level);
+	}
+}
+
 Player * GameImageManager::get_player()
 {
 	return player;
+}
+
+QuestData * GameImageManager::get_quest_data()
+{
+	return this->world.get_quest_data();
 }
 
 void GameImageManager::unload_content()
@@ -649,56 +697,110 @@ void GameImageManager::increment_dialog_option()
 
 void GameImageManager::process_cutscene(Cutscene * cutscene)
 {
-	if (cutscene != NULL && cutscene->has_action()) {
-		const std::string action_key = cutscene->get_active_action_key();
-		if (action_key == ACTION_AWAIT_LOAD) {
-			if (this->thread_data.ready) {
+	if (cutscene != NULL) {
+		if (cutscene->has_action()) {
+			const std::string action_key = cutscene->get_active_action_key();
+			if (action_key == ACTION_AWAIT_LOAD) {
+				if (this->thread_data.ready) {
+					al_lock_mutex(this->thread_data.mutex);
+					cutscene->advance_block(&(this->world), this->current_level);
+					al_unlock_mutex(this->thread_data.mutex);
+				}
+			}
+			else if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
+				GlobalTime * updated_time = cutscene->get_active_global_time();
+				if (updated_time != NULL) {
+					this->current_global_time->copy(updated_time);
+					cutscene->advance_block(&(this->world), this->current_level);
+				}
+			}
+			else if (action_key == ACTION_SAVE_GAME) {
+				if (this->loading_thread != NULL) {
+					al_destroy_thread(this->loading_thread);
+				}
 				al_lock_mutex(this->thread_data.mutex);
-				cutscene->advance_block();
+				this->thread_data.global_time = this->current_global_time;
 				al_unlock_mutex(this->thread_data.mutex);
+				this->loading_thread = al_create_thread(load_func_save_game, &(this->thread_data));
+				al_start_thread(this->loading_thread);
+				cutscene->advance_block(&(this->world), this->current_level);
 			}
-		} else if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
-			GlobalTime * updated_time = cutscene->get_active_global_time();
-			if (updated_time != NULL) {
-				this->current_global_time->copy(updated_time);
-				cutscene->advance_block();
+			else if (action_key == ACTION_LOAD_GAME) {
+				if (this->loading_thread != NULL) {
+					al_destroy_thread(this->loading_thread);
+				}
+				GlobalTime * updated_time = cutscene->get_active_global_time();
+				this->thread_data.current_level_key = this->current_level->get_filename();
+				this->thread_data.global_time = updated_time;
+				this->loading_thread = al_create_thread(load_func_load_from_save, &(this->thread_data));
+				al_start_thread(this->loading_thread);
+				cutscene->advance_block(&(this->world), this->current_level);
 			}
-		} else if (action_key == ACTION_SAVE_GAME) {
-			if (this->loading_thread != NULL) {
-				al_destroy_thread(this->loading_thread);
+			else if (action_key == ACTION_UPDATE_NEW_DAY) {
+				//TODO: doing this asnyc is ideal, but if we do that we need to fix the slowdown
+				if (this->loading_thread != NULL) {
+					al_destroy_thread(this->loading_thread);
+				}
+				this->thread_data.current_level_key = this->current_level->get_filename();
+				this->loading_thread = al_create_thread(load_func_advance_day, &(this->thread_data));
+				al_start_thread(this->loading_thread);
+
+				//temp (non-async)
+				//this->world.update_new_day(this->player, this->current_level->get_filename());
+				//this->world.recalculate_npc_paths();
+				//temp
+				cutscene->advance_block(&(this->world), this->current_level);
 			}
-			al_lock_mutex(this->thread_data.mutex);
-			this->thread_data.global_time = this->current_global_time;
-			al_unlock_mutex(this->thread_data.mutex);
-			this->loading_thread = al_create_thread(load_func_save_game, &(this->thread_data));
-			al_start_thread(this->loading_thread);
-			cutscene->advance_block();
-		} else if (action_key == ACTION_LOAD_GAME) {
-			if (this->loading_thread != NULL) {
-				al_destroy_thread(this->loading_thread);
+			// other actions
+			else if (action_key == ACTION_WALK_AGENTS) {
+				this->walk_agents_for_cutscene(cutscene);
 			}
-			GlobalTime * updated_time = cutscene->get_active_global_time();
-			this->thread_data.current_level_key = this->current_level->get_filename();
-			this->thread_data.global_time = updated_time;
-			this->loading_thread = al_create_thread(load_func_load_from_save, &(this->thread_data));
-			al_start_thread(this->loading_thread);
-			cutscene->advance_block();
-		} else if (action_key == ACTION_UPDATE_NEW_DAY) {
-			//TODO: doing this asnyc is ideal, but if we do that we need to fix the slowdown
-			if (this->loading_thread != NULL) {
-				al_destroy_thread(this->loading_thread);
+			else if (action_key == ACTION_DIALOG) {
+				if (cutscene->has_opened_dialog()) {
+					cutscene->advance_block(&(this->world), this->current_level);
+				}
+				else if (!player->has_open_dialog()) {
+					Dialog * dialog = cutscene->get_active_dialog();
+					player->set_open_dialog(dialog);
+					this->set_game_mode(MAIN_GAME_DIALOG);
+					cutscene->set_has_opened_dialog(true);
+				}
 			}
-			this->thread_data.current_level_key = this->current_level->get_filename();
-			this->loading_thread = al_create_thread(load_func_advance_day, &(this->thread_data));
-			al_start_thread(this->loading_thread);
-			
-			//temp (non-async)
-			//this->world.update_new_day(this->player, this->current_level->get_filename());
-			//this->world.recalculate_npc_paths();
-			//temp
-			cutscene->advance_block();
+		}
+		if (cutscene->should_update_trigger_statuses()) {
+			std::vector<TriggerStatus *> statuses = cutscene->trigger_statuses();
+			for (TriggerStatus * status : statuses) {
+				this->world.copy_trigger_status(status);
+			}
+		}
+		cutscene->process_music();
+	}
+}
+
+void GameImageManager::cutscene_animation_update()
+{
+	Player * player = this->get_player();
+	Cutscene * cutscene = player->get_active_cutscene();
+	if (cutscene != NULL) {
+		std::vector<CutsceneAgentAnimation> agent_animations = cutscene->get_current_block_agent_animations();
+		for (CutsceneAgentAnimation ct : agent_animations) {
+			Being * agent = NULL;
+			if (CUTSCENE_AGENT_PLAYER == ct.agent_key) {
+				agent = this->player;
+			}
+			else {
+				agent = this->get_npc(ct.agent_key);
+			}
+			if (agent != NULL) {
+				const int anim_index = GameImage::get_anim_state_index(ct.animation_key);
+				agent->set_animation_index(anim_index);
+				agent->set_animation_direction(ct.direction);
+			} else {
+				//TODO: error handling
+			}
 		}
 	}
+	this->current_level->cutscene_animation_update();
 }
 
 const std::pair<int, int> GameImageManager::current_player_location_for_map()

@@ -4,44 +4,49 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 9/21/2019 (target date: ~ Mar 2020)
+Last updated 10/12/2019
 
-Total: 72-105 days (~3-4 months)
+Target date for main code to be done: ~ Mar 2020
+Target date for all code/assets/levels to be done: ~ Aug 2020
 
-1. Cutscenes
+Total: 67-95 days (~2-3 months)
+
+1. Inventory/item/money stuff
 	(15-20 days)
-2. Audio
+2. Encyclopedia/journal
+	(10-15 days)
+3. Animals/bugs
+	(10-15 days)
+4. Dialog/schedule
 	(5-10 days)
-3. Inventory/item stuff
-	(5-10 days)
-4. NPC triggers/dialog/schedule
-	(5-10 days)
-5. Loading screens/progress bars
-	(3-5 days)
 
+(should get here around December 2019) 
 (clean up todos and try to think of what's missing here)
 
-6. Animals/bugs
+5. Audio
+	(5-10 days)
+6. Animation/image code stuff
 	(10-15 days)
-7. Encyclopedia
-	(10-15 days)
-8. Animation/image code stuff
-	(10-15 days)
-9. Menu/control stuff
+7. Menu/control stuff
 	(5-10 days)
 
-
+(should get here around January 2020) 
 (clean up todos and try to think of what's missing here)	
 
-10. Figure out how to force end of day (otherwise saving gets weird after midnight)
+8. Loading screens/progress bars
+	(3-5 days)
+9. Figure out how to force end of day (otherwise saving gets weird after midnight)
 	(2-5 days)
-11. Wake-up time (alarm clock?)
+10. Wake-up time (alarm clock?)
 	(2-5 days)
-12. Stamina/resource management
+11. Stamina/resource management
 	(5-10 days)
 
+(should get here around Feburary 2020) 
 (clean up todos and try to think of what's missing here)	
 
+12. Miscellaneous code stuff (break out into specific todos after getting here)
+	(???)
 13. Level Editor improvements
 	(???)
 14. Content!
@@ -55,40 +60,66 @@ Ongoing tasks:
 4. come up with more content
 
 ---------------------------------------------------
-Cutscenes
+Encyclopedia/Journal
 ---------------------------------------------------
 
-make a test cutscene with player 2
-	- have both player and NPC walk to starting positions and assume starting anim directions/states if they aren't already
-	- what if the NPC walks to that spot after the player is already fully inside?
-		* either account for this so it can start the cutscene, or keep this possibilty in mind when writing cutscene dialog
+Allow dialogs to activate trigger statuses/quests (just need to serialize the trigger status/quest-related struct in that part of the dialog I think) 
+	and/or allow trigger statuses or other serialized structs to "begin" quests by taking a quest key and a quest page index.
+	- The latter is probably the easiest way to advance quests
 
-Ways cutscenes can start (try to combine into as few as possible from a code perspective)
-	- Talk to an NPC (they should probably have to be in a specific location-- ie on a specific part of their schedule)
-		# probably don't want it to be guaranteed, so tie it to a specific node in the dialog tree (though this can be the start if the cutscene should start right away)
-	- Waking up on a specific day (possibly do this on day 1)
-	- Time going past midnight
+Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
+	* might even use real information about some of these things (like latin name)
 
-Cutscene with Renaldo preaching about the neighorhood watch as a test
+Journal stores quests
 
-How does music work during cutscenes?
-	- should probably be able to start in certain blocks
+---------------------------------------------------
+Inventory/items
+---------------------------------------------------
 
-Branching cutscenes based on previous triggers/dialogs
-	- Could model after dialogTrees or even directly use them to structure cutscenes
+Implement ways to add/remove items (and money) to the inventory
+	* example: receive from/give to NPC
+
+Allow storing items in a chest
+
+Some items should not be possible to drop, only to store (i.e. tools, though tools don't travel back in time)
+
+Implement "pickup-able" items, like seeds from ferns
+	* should probably be rare, and shouldn't need a lot of them
+	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
+	* Make sure these disappear properly from level when they should (maybe on a timer or after leaving level?)
+
+Consider implementing a "cooking" system
+
+Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+	* first make sure I actually want the mallet in the game (balance)
+
+Add a shovel and allow the player to dig up items
+	* implement picking up items off the ground first
+
+---------------------------------------------------
+Animals
+---------------------------------------------------
+
+Add animals
+	* might be a good time to start on encyclopedia
+	* keep track of which animals live in the area and let them move between levels, like NPCs
+	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
+	* maybe some animal types are set to only appear n days into the game
+	* add bugs too (possibly first, they might be easier and make more sense to interact with)
+		# some bugs might be under rocks
+	* Animals might not travel between levels, and will be generated from templates, 
+		rather than than 1 to 1 serialized data <-> game object relationship
 
 ---------------------------------------------------
 Audio
 ---------------------------------------------------
 
-Full documentation: https://www.allegro.cc/manual/5/audio.html
+Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
 
 Different sound filenames for different footstep sound effects
 	* key by NPC + tile type (but not one-to-one, so NPCs can share some footstep sounds if they should sound exactly the same)
 
-Replace all placeholder footstep sound files
-
-In addition to tiles influencing footstep sounds, probably want sounds from ferns/etc
+In addition to tiles influencing footstep sounds, probably want sounds from ferns, swinging shears (and using items in general), etc
 
 Dialog sounds (like in animal crossing)
 
@@ -96,20 +127,14 @@ What kinds of things can cause music to start/stop/fade/add cues?
 	* probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
 	* do we want a MusicManager or some other structure in AudioManager that handles this?
 
-What does al_reserve_samples() actually do? do I need it?
+Would probably work better to base footstep sfx cycles on the animation speed of the walking animation, since this is a more reliable way to get num footsteps
+	* probably almost always safe to assume that a footstep is half of the frame duration of the animation
+	* this will work well with changing frame durations with walk speed (probably want to do this first)
+
+Replace all placeholder footstep sound files
 
 Find a good composing program and make music
 	* The Eye of Pan has a special theme that is hidden inside other tracks
-
-Do I need to do this? vvv
-----------------
-typedef struct SFX {
-   ALLEGRO_SAMPLE *samp;
-   ALLEGRO_SAMPLE_INSTANCE **inst;
-   int max_simultaneous_count;
-} SFX;
-When loading the sample, set max_simultaneous_count and create an array of that many ALLEGRO_SAMPLE_INSTANCE. Then when playing your SFX, loop through that array and play the sample instance if it is not currently playing.
---------------------------
 
 ---------------------------------------------------
 NPCs
@@ -118,10 +143,10 @@ NPCs
 Dialog 
 	- schedule should feed dialog (say different things depending on what NPC is doing)
 		* not a direct connection, but some flag set by schedule, which feeds dialog qualifiers
-		* pretty sure Qualifier methods need to be refactored to take the NPC as an argument for this to work
+		* pretty sure Qualifier methods need to be refactored to take the NPC as an argument for this to work 
+			(unless it can be handled purely through triggers, or we can get the npc via world)
 	- might need to add action keys for dialogs (not just dialog options)
 		* think about whether this is actually necessary before implementing
-		* could also be good to have special serialized stuff for updating triggers and other serializable world state things and/or npc attributes
 	- may need serializable DialogItem/DialogGroup/DialogItemOption/etc action bindings at some point
 		* see Dialog.action_bindings-- we would pass the serialized bindings here
 	- portrait image
@@ -216,6 +241,21 @@ Tiled Images
 	* no room to put it on tileset tab-- need to reorganize it
 		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
 
+
+---------------------------------------------------
+Cutscenes
+---------------------------------------------------
+
+Ways cutscenes can start (try to combine into as few as possible from a code perspective)
+	- Talk to an NPC (they should probably have to be in a specific location-- ie on a specific part of their schedule)
+		# probably don't want it to be guaranteed, so tie it to a specific node in the dialog tree 
+		(though this can be the start if the cutscene should start right away)
+	- Waking up on a specific day (possibly do this on day 1)
+	- Time going past midnight
+
+Cutscene with Renaldo preaching about the neighorhood watch
+	- this is important as a more ambitious test of cutscenes-- if this can be done cleanly, it means cutscene code is sufficient
+
 ---------------------------------------------------
 Procedural generation
 ---------------------------------------------------
@@ -259,7 +299,7 @@ Consider changing thorn behavior
 	* Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
 
 Consider giving blocks optional masks
-	* this means we use the block's image if there's no mask filepath
+	* "optional" means we use the block's image if there's no mask filepath
 
 ---------------------------------------------------
 Animation/image code
@@ -289,46 +329,6 @@ Figure out how to scale object/ui sizes with resolution
 
 Make custom mouse cursor
 	* at this point probably go through UI/controls and add mouse controls where appropriate
-
----------------------------------------------------
-Animals
----------------------------------------------------
-
-Add animals
-	* might be a good time to start on encyclopedia
-	* keep track of which animals live in the area and let them move between levels, like NPCs
-	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
-	* maybe some animal types are set to only appear n days into the game
-	* add bugs too (possibly first, they might be easier and make more sense to interact with)
-		# some bugs might be under rocks
-	* Animals might not travel between levels, and will be generated from templates, 
-		rather than than 1 to 1 serialized data <-> game object relationship
-
----------------------------------------------------
-Inventory/items
----------------------------------------------------
-
-Implement ways to add items to the inventory
-	* example: receive from NPC
-	* also need ways to remove items
-
-Item descriptions/names
-
-Possibly store items in a chest or something
-
-Implement "pickup-able" items, like seeds from ferns
-	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
-	* probably need to make general "plant" behavior (growing, spreading, etc.) as part of this
-	* Make sure these disappear properly from level-- do not store them in xml collections as there is no need
-
-Allow harvesting plants
-	* consider implementing a "cooking" system
-
-Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
-	* first make sure I actually want the mallet in the game (balance)
-
-Add a shovel and allow the player to dig up items
-	* implement picking up items off the ground first
 
 ---------------------------------------------------
 Day/night cycle
@@ -383,17 +383,12 @@ Nicer looking menus
 Controls
 ---------------------------------------------------
 
+Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
+
 Make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
 	*might need to do this for mouse too, need to test
-
----------------------------------------------------
-Encyclopedia
----------------------------------------------------
-
-Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
-	* might even use real information about some of these things (like latin name)
 
 ---------------------------------------------------
 Long term
@@ -404,3 +399,5 @@ Hire a sprite artist
 Compose music
 
 Look up how to get on steam ahead of time
+
+When balancing money, adjust for inflation for 1987

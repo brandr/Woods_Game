@@ -34,6 +34,7 @@ WorldState::WorldState()
 	Register("world_key", &world_key);
 	Register("trigger_statuses", &trigger_statuses);
 	Register("explored_cells", &explored_cells);
+	Register("quests", &quests);
 	Register("player", &player);
 }
 
@@ -46,6 +47,7 @@ void WorldState::reset()
 {
 	this->trigger_statuses.Clear();
 	this->explored_cells.Clear();
+	this->quests.Clear();
 }
 
 Player * WorldState::get_player()
@@ -84,6 +86,18 @@ TriggerStatus * WorldState::matching_trigger_status(TriggerStatus * other_status
 		}
 	}
 	return NULL;
+}
+
+void WorldState::copy_trigger_status(TriggerStatus * other_status)
+{
+	TriggerStatus * status = this->matching_trigger_status(other_status);
+	if (status == NULL) {
+		status = this->create_trigger_status(other_status->get_trigger_key());
+		this->trigger_statuses.addItem(status);
+	}
+	status->set_trigger_state(other_status->get_trigger_state());
+	status->copy_attributes(other_status);
+	//status->Copy(other_status); //TODO: make sure this does what we want (may be better to copy attributes individually)
 }
 
 void WorldState::set_has_met_npc(const std::string npc_key)

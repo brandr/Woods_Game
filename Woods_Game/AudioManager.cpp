@@ -86,7 +86,12 @@ void AudioManager::load_sample_instance(const std::string filename, const int au
 
 void AudioManager::play_music(const std::string filename)
 {
-	play_audio(filename, AUDIO_TYPE_MUSIC);
+	if (filename == NO_MUSIC) {
+		stop_all_music();
+	} else {
+		play_audio(filename, AUDIO_TYPE_MUSIC);
+		active_music_tracks.insert(filename);
+	}
 }
 
 void AudioManager::play_sfx(const std::string filename, const std::string sound_key)
@@ -108,6 +113,16 @@ const bool AudioManager::audio_exists(const std::string filename, const int audi
 {
 	AudioInstance * instance = this->get_sample_instance(filename, audio_type, sound_key);
 	return instance != NULL;
+}
+
+void AudioManager::stop_all_music()
+{
+	for (std::string filename : active_music_tracks) {
+		AudioInstance * music_instance = get_sample_instance(filename, AUDIO_TYPE_MUSIC);
+		//TODO: is it necessary to do anything else such as reset the track to the start?
+		al_stop_sample_instance(music_instance->instance);
+	}
+	active_music_tracks.clear();
 }
 
 void AudioManager::set_master_gain(const float gain)

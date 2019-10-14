@@ -209,6 +209,10 @@ void GameScreen::select()
 {
 }
 
+void GameScreen::secondary_select()
+{
+}
+
 void GameScreen::process_number_input(int num)
 {
 }

@@ -9,6 +9,8 @@
 #include "GlobalTime.h"
 #include "NPC.h"
 #include "PathNode.h"
+#include "QuestData.h"
+#include "TriggerStatus.h"
 #include "WorldState.h"
 #include "XMLSerialization.h"
 #include "FileManager.h"
@@ -36,7 +38,8 @@ private:
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
 
-	WorldState world_state; //not serialzed in world because it's day-specific
+	WorldState world_state; // not serialzed in world because it's day-specific
+	QuestData quest_data;   // not serialized in world because we load it from a separate file
 
 	std::map<std::string, PathNodeDjikstraPath *> node_djikstra_path_map;
 	std::map<std::string, TileDjikstraPath *> tile_djikstra_path_map;
@@ -66,6 +69,7 @@ public:
 	void load_dungeons(const std::string filepath);
 	void reload_dungeons(const std::string dungeons_path);
 	void reload_world_state(const std::string world_state_path);
+	void reload_quest_data(const std::string filepath);
 	void load_npcs();
 	void recalculate_npc_paths();
 	void load_player();
@@ -85,6 +89,7 @@ public:
 	NPC * get_npc(const std::string npc_key);
 	const bool npc_is_on_node(const std::string npc_key, const std::string node_key);
 	void set_has_met_npc(const std::string npc_key);
+	void copy_trigger_status(TriggerStatus * status);
 	Dungeon* get_current_dungeon();
 	Level* get_current_level();
 	Level * extract_current_level(Player * player, const std::string previous_level_key);
@@ -104,6 +109,7 @@ public:
 	const int get_current_day();
 	void set_current_day(const int day);
 	WorldState * get_world_state();
+	QuestData * get_quest_data();
 	TriggerStatus * matching_trigger_status(TriggerStatus * status);
 	const int get_default_level_width();
 	const int get_default_level_height();

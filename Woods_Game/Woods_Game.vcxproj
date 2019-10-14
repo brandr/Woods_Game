@@ -322,6 +322,7 @@
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
+    <ClInclude Include="ItemBase.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEditorDataManager.h" />
     <ClInclude Include="LevelEditorGrid.h" />
@@ -346,6 +347,9 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PPCD.h" />
     <ClInclude Include="Qualifier.h" />
+    <ClInclude Include="Quest.h" />
+    <ClInclude Include="QuestData.h" />
+    <ClInclude Include="QuestItem.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScreenManager.h" />
     <ClInclude Include="Spawner.h" />
@@ -402,6 +406,7 @@
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />
+    <ClCompile Include="ItemBase.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelEditorDataManager.cpp" />
     <ClCompile Include="LevelEditorGrid.cpp" />
@@ -427,6 +432,9 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PPCD.cpp" />
     <ClCompile Include="Qualifier.cpp" />
+    <ClCompile Include="Quest.cpp" />
+    <ClCompile Include="QuestData.cpp" />
+    <ClCompile Include="QuestItem.cpp" />
     <ClCompile Include="ScreenManager.cpp" />
     <ClCompile Include="Spawner.cpp" />
     <ClCompile Include="SpriteSheetAnimation.cpp" />

@@ -33,7 +33,6 @@ protected:
 	void face_other_update(
 		Level * level, GlobalTime * time);
 	void walk_update();
-	void update_animation_dir();
 	void failed_pathing_update();
 	void push_others_update(Level * level);
 	void walk_to_next_level_update(Level * level);
@@ -52,6 +51,7 @@ public:
 	AIBeing();
 	~AIBeing();
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual void update_animation_dir();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void draw_adjacent_rect(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void draw_destinations(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);

@@ -132,7 +132,7 @@ Dialog * NPC::choose_dialog(World * world, GlobalTime * time, Player * player)
 	return dialog;
 }
 
-const bool NPC::interact_action(World * world, GlobalTime * time, Player * player)
+const bool NPC::interact_action(World * world, Level * level, GlobalTime * time, Player * player)
 {
 	//TODO: take into account time of day, previous interactions, weather, etc.
 	Dialog * dialog = this->choose_dialog(world, time, player);

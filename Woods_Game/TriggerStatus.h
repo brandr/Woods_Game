@@ -23,7 +23,7 @@ struct TriggerAttribute : public xmls::Serializable {
 class TriggerStatus : public xmls::Serializable
 {
 private:
-	xmls::xString trigger_key;
+	xmls::xString trigger_key = "";
 	xmls::xInt trigger_state;
 	xmls::Collection<TriggerAttribute> trigger_attributes;
 public:
@@ -33,8 +33,11 @@ public:
 	const std::string get_trigger_key();
 	const int get_trigger_state();
 	void set_trigger_state(const int state);
+	const bool is_empty();
+	void copy_attributes(TriggerStatus * other_status);
 	const bool has_attribute(const std::string attr_key);
 	const std::string get_attribute(const std::string attr_key);
+	std::vector<TriggerAttribute *> get_attributes();
 	void set_attribute(const std::string attr_key, const std::string attr_value);
 };
 
