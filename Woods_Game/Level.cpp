@@ -1072,7 +1072,7 @@ void Level::unload_content()
 	}
 	this->tile_rows.Clear();
 	this->entity_groups.Clear();
-	beings.clear(); //TODO: why do we sometimes get an exception around here when closing the window?
+	//beings.clear(); //TODO: why do we sometimes get an exception around here when closing the window?
 }
 
 void Level::update(World * world, GlobalTime * time, const int game_mode)

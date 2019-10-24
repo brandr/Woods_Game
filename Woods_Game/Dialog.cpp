@@ -26,6 +26,14 @@ DialogPage * Dialog::current_page()
 	return this->has_current_page() ? this->page_map[this->page_num] : NULL;
 }
 
+void Dialog::set_quest_updates_for_page(const int page_num, std::vector<QuestUpdate*> quest_updates)
+{
+	if (this->page_map.find(page_num) == this->page_map.end()) {
+		this->page_map[page_num] = new DialogPage();
+	}
+	this->page_map[page_num]->set_quest_updates(quest_updates);
+}
+
 Dialog::Dialog()
 {
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
@@ -45,11 +53,15 @@ void Dialog::update()
 	}
 }
 
-void Dialog::add_line(const std::string line_text, const int page_num, const int next_page_num, const int line_num, const std::string option_action_key, DialogItemOption * option)
+void Dialog::add_line(const std::string line_text, const int page_num, const int next_page_num, const int line_num, const std::string option_action_key, 
+	std::vector<InteractAction *> page_actions, DialogItemOption * option)
 {
 	if (this->page_map.find(page_num) == this->page_map.end()) {
 		this->page_map[page_num] = new DialogPage();
 		this->page_map[page_num]->next_page_number = next_page_num;
+	}
+	if (!page_actions.empty()) {
+		this->page_map[page_num]->dialog_actions = page_actions;
 	}
 	DialogPage * page = this->page_map[page_num];
 	while (line_num >= page->lines.size()) {
@@ -96,7 +108,7 @@ void Dialog::parse_text(const std::string text)
 					line_text = manager.parse_tags(option, option_text_token)[0];
 					option_action_key = manager.parse_tags(option, option_action_token)[0];
 				}
-				this->add_line(line_text, page_index, -1, line_index, option_action_key, NULL);
+				this->add_line(line_text, page_index, -1, line_index, option_action_key, std::vector<InteractAction*>(), NULL);
 				line_index++;
 				empty_page = false;
 			}
@@ -122,13 +134,14 @@ void Dialog::parse_dialog(DialogItem * dialog_item)
 		DialogItemPage * page = pages[p];
 		const int page_index = page->get_page_number();
 		const int next_page_index = page->next_page_index.value();
+		std::vector<InteractAction *> page_actions = page->get_dialog_actions();
 		const std::vector<std::string> lines = manager.parse_tags(page->dialog_text.value(), line_token);
 		const int line_count = lines.size();
 		for (int l = 0; l < line_count; l++) {
 			const std::string line = lines[l];
 			if (line.size() > 0) {
 				std::string line_text = line;
-				this->add_line(line_text, page_index, next_page_index, line_index, "", NULL);
+				this->add_line(line_text, page_index, next_page_index, line_index, "", page_actions, NULL);
 				line_index++;
 			}
 		}
@@ -136,9 +149,11 @@ void Dialog::parse_dialog(DialogItem * dialog_item)
 		const int option_size = options.size();
 		for (int i = 0; i < option_size; i++) {
 			DialogItemOption * dio = options[i];
-			this->add_line(dio->option_text.value(), page_index, next_page_index, line_index, "", dio);
+			this->add_line(dio->option_text.value(), page_index, next_page_index, line_index, "", page_actions, dio);
 			line_index++;
 		}
+		std::vector<QuestUpdate *> quest_updates = page->get_quest_updates();
+		this->set_quest_updates_for_page(page_index, quest_updates);
 	}
 }
 
@@ -147,7 +162,28 @@ const std::string Dialog::get_active_action_key()
 	return this->active_action_key;
 }
 
+void Dialog::set_active_action_key(const std::string action_key)
+{
+	this->active_action_key = action_key;
+}
+
+std::vector<InteractAction *> Dialog::get_active_actions() {
+
+	return this->active_actions;
+}
+
+void Dialog::clear_active_actions()
+{
+	this->active_actions.clear();
+}
+
+void Dialog::add_active_action(InteractAction * action)
+{
+	this->active_actions.push_back(action);
+}
+
 TriggerStatus * Dialog::get_active_trigger_status() {
+
 	return this->active_trigger_status;
 }
 
@@ -187,6 +223,17 @@ void Dialog::set_action_bindings(std::vector<ActionBinding*> bindings)
 std::vector<ActionBinding*> Dialog::get_action_bindings()
 {
 	return this->action_bindings;
+}
+
+std::vector<QuestUpdate*> Dialog::get_pending_quest_updates()
+{
+	return this->pending_quest_updates;
+}
+
+void Dialog::unset_pending_quest_updates()
+{
+	// don't use clear() because I think that deletes the objects the pointers point to
+	this->pending_quest_updates = std::vector<QuestUpdate *>();
 }
 
 void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off)
@@ -229,16 +276,28 @@ void Dialog::advance_dialog()
 		int next_page_num = -1;
 		bool should_advance = true;
 		DialogPage * page = this->current_page();
-		if (page != NULL && page->has_options()) {
-			next_page_num = page->option_next_page_num(this->selected_option_index);
-			const std::string action_key = page->option_action_key(this->selected_option_index);
-			if (action_key.length() > 0) {
-				this->active_action_key = action_key;
-				should_advance = false;
+		if (page != NULL) {
+			if (page->has_options()) {
+				next_page_num = page->option_next_page_num(this->selected_option_index);
+				const std::string action_key = page->option_action_key(this->selected_option_index);
+				if (action_key.length() > 0) {
+					this->active_action_key = action_key;
+					should_advance = false;
+				}
+				TriggerStatus * trigger_status = page->trigger_status(this->selected_option_index);
+				if (trigger_status != NULL) {
+					this->active_trigger_status = trigger_status;
+				}
 			}
-			TriggerStatus * trigger_status = page->trigger_status(this->selected_option_index);
-			if (trigger_status != NULL) {
-				this->active_trigger_status = trigger_status;
+			if (page->has_quest_updates()) {
+				std::vector<QuestUpdate *> updates = page->quest_updates;
+				this->pending_quest_updates = updates;
+			}
+			if (!page->dialog_actions.empty()) {
+				this->active_actions = page->dialog_actions;
+				//this->active_action_key = page->dialog_action->get_interact_action_key();
+				//this->active_action = page->dialog_action;
+				page->dialog_actions.clear();
 			}
 		}
 		if (!should_advance) {
@@ -356,6 +415,17 @@ const int DialogPage::options_count()
 		}
 	}
 	return count;
+}
+
+const bool DialogPage::has_quest_updates()
+{
+	return this->quest_updates.size() > 0;
+}
+
+void DialogPage::set_quest_updates(std::vector<QuestUpdate*> updates)
+{
+	this->quest_updates.clear();
+	this->quest_updates = updates;
 }
 
 const bool DialogLine::has_option()

@@ -36,7 +36,8 @@ enum GAME_MODES{
 	MAIN_GAME_DIALOG, 
 	CUTSCENE,
 	CALENDAR,
-	TITLE_SCREEN
+	TITLE_SCREEN,
+	EXCHANGE_INVENTORY
 };
 
 enum TYPES{PLAYER, BLOCK, GAME_IMAGE, ENTITY_GROUP};
@@ -57,6 +58,7 @@ public:
 	static constexpr const char* E_ATTR_CONTACT_DAMAGE = "contact_damage";
 	static constexpr const char* E_ATTR_KNOCKBACK = "knockback";
 	static constexpr const char* E_ATTR_SHEARABLE = "shearable";
+	static constexpr const char* E_ATTR_PLANT_GATHER_ITEM_KEY = "plant_gather_item_key";
 		// plant growth attributes
 	static constexpr const char* E_ATTR_PLANT_GROWTH_CURRENT_AGE = "plant_growth_current_age";			// plant's current age in days
 	static constexpr const char* E_ATTR_PLANT_GROWTH_MATURE_AGE = "plant_growth_mature_age";			// age before plant uses its "mature" sprite and can spread

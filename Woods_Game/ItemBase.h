@@ -24,6 +24,7 @@ protected:
 	xmls::xString item_description;
 	xmls::xInt inventory_pos_x;
 	xmls::xInt inventory_pos_y;
+	xmls::xBool may_be_discarded = false;
 	xmls::Collection<ItemAttribute> item_attributes;
 	
 	virtual const std::string image_path_prefix();
@@ -44,6 +45,7 @@ public:
 	virtual void set_item_attributes(std::vector<ItemAttribute*> attributes);
 	virtual const xmls::Collection<ItemAttribute> get_item_attributes();
 	virtual const std::vector<ItemAttribute*> get_item_attributes_vec();
+	virtual const std::vector<ItemAttribute*> get_item_attributes_vec_copy();
 	virtual const int get_item_attribute(const std::string attr_key);
 	virtual const bool is_empty();
 	virtual const int get_inventory_pos_x();

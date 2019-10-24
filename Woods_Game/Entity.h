@@ -7,6 +7,7 @@
 #include "GameImage.h"         // for GameImage
 #include "InteractAction.h"
 #include "InteractActionManager.h"
+#include "Item.h"
 #include "map"                 // for map
 #include "utility"             // for pair, swap
 #include "vector"              // for vector
@@ -16,8 +17,6 @@
 #include <filesystem>
 #include <iostream>
 #include "XMLSerialization.h"
-
-
 
 struct EntitySpawnTileRule : xmls::Serializable {
 	xmls::xInt tile_type_index;
@@ -62,6 +61,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
 	xmls::Collection<InteractAction> load_day_actions;
+	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::xBool solid = false;
 	xmls::xBool visible = true;
@@ -76,6 +76,7 @@ struct EntityData : public xmls::Serializable {
 	std::vector<std::pair<std::string, std::string>> get_block_contact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_interact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_load_day_action_data();
+	std::vector<ItemDrop *> get_item_drops();
 	const std::vector<EntitySpawnTileRule *> get_block_spawn_tile_rules();
 	bool is_empty();
 	std::string get_entity_data_key();
@@ -111,6 +112,8 @@ struct EntitySound {
 };
 
 class GlobalTime;
+class Item;
+class ItemManager;
 class Player;
 class Level;
 class World;
@@ -124,6 +127,7 @@ protected:
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
 	xmls::Collection<InteractAction> load_day_actions;
+	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;
@@ -176,6 +180,7 @@ public:
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void set_item_drops(std::vector<ItemDrop*> item_drops);
 	virtual void set_spawn_tile_rules(const std::vector<EntitySpawnTileRule *> rules);
 	virtual void set_starting_pos(int x, int y);
 	virtual int get_entity_starting_pos_x();
@@ -194,5 +199,7 @@ public:
 	//sounds
 	virtual const std::string get_sound_key();
 	virtual std::vector<EntitySound*> get_active_entity_sounds();
+	//items
+	virtual Item * get_plant_gather_item();
 };
 #endif

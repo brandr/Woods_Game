@@ -14,6 +14,7 @@ Block::Block()
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
 	this->Register("LoadDayActions", &load_day_actions);
+	this->Register("ItemDrops", &item_drops);
 	this->Register("SpawnTileRules", &spawn_tile_rules);
 	this->entity_data_index = -1;
 }
@@ -32,6 +33,7 @@ Block::Block(int x, int y)
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
 	this->Register("LoadDayActions", &load_day_actions);
+	this->Register("ItemDrops", &item_drops);
 	this->Register("SpawnTileRules", &spawn_tile_rules);
 	this->entity_data_index = -1;
 	this->rect.x = x;

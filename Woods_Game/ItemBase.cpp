@@ -99,6 +99,17 @@ const std::vector<ItemAttribute*> ItemBase::get_item_attributes_vec()
 	return attributes;
 }
 
+const std::vector<ItemAttribute*> ItemBase::get_item_attributes_vec_copy()
+{
+	std::vector<ItemAttribute*> attributes;
+	const int size = this->item_attributes.size();
+	for (int i = 0; i < size; i++) {
+		ItemAttribute * attr = this->item_attributes.getItem(i);
+		attributes.push_back(new ItemAttribute(attr->attribute_key.value(), attr->attribute_value.value()));
+	}
+	return attributes;
+}
+
 const int ItemBase::get_item_attribute(const std::string attr_key)
 {
 	const int size = this->item_attributes.size();

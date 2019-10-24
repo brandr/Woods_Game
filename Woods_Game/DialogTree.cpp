@@ -269,6 +269,9 @@ DialogItemPage::DialogItemPage()
 	Register("page_number", &page_number);
 	Register("next_page_index", &next_page_index);
 	Register("options", &options);
+	Register("quest_updates", &quest_updates);
+	Register("dialog_actions", &dialog_actions);
+	//Register("dialog_action", &dialog_action); 
 }
 
 DialogItemPage::~DialogItemPage()
@@ -293,4 +296,24 @@ std::vector<DialogItemOption*> DialogItemPage::get_options()
 		dialog_options.push_back(this->options.getItem(i));
 	}
 	return dialog_options;
+}
+
+std::vector<QuestUpdate*> DialogItemPage::get_quest_updates()
+{
+	std::vector<QuestUpdate*> updates;
+	const int size = this->quest_updates.size();
+	for (int i = 0; i < size; i++) {
+		updates.push_back(this->quest_updates.getItem(i));
+	}
+	return updates;
+}
+
+std::vector<InteractAction*> DialogItemPage::get_dialog_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = this->dialog_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->dialog_actions.getItem(i));
+	}
+	return actions;
 }

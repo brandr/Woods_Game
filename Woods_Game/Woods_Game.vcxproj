@@ -308,6 +308,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityEffect.h" />
     <ClInclude Include="EntityGroup.h" />
+    <ClInclude Include="ExchangeInventoryScreen.h" />
     <ClInclude Include="FileDialogManager.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="GameImage.h" />
@@ -323,6 +324,7 @@
     <ClInclude Include="InventoryScreen.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemBase.h" />
+    <ClInclude Include="ItemManager.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEditorDataManager.h" />
     <ClInclude Include="LevelEditorGrid.h" />
@@ -392,6 +394,7 @@
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityEffect.cpp" />
     <ClCompile Include="EntityGroup.cpp" />
+    <ClCompile Include="ExchangeInventoryScreen.cpp" />
     <ClCompile Include="FileDialogManager.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="GameImage.cpp" />
@@ -407,6 +410,7 @@
     <ClCompile Include="InventoryScreen.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemBase.cpp" />
+    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelEditorDataManager.cpp" />
     <ClCompile Include="LevelEditorGrid.cpp" />

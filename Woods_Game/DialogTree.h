@@ -3,6 +3,7 @@
 
 #include "Dialog.h"
 #include "Qualifier.h"
+#include "Quest.h"
 #include "TriggerStatus.h"
 #include "XMLSerialization.h"
 
@@ -24,11 +25,15 @@ struct DialogItemPage : public xmls::Serializable{
 	xmls::xInt page_number;
 	xmls::xInt next_page_index;
 	xmls::Collection<DialogItemOption> options;
+	xmls::Collection<QuestUpdate> quest_updates;
+	xmls::Collection<InteractAction> dialog_actions;
 	DialogItemPage();
 	~DialogItemPage();
 	const bool has_text();
 	const int get_page_number();
 	std::vector<DialogItemOption *> get_options();
+	std::vector<QuestUpdate*> get_quest_updates();
+	std::vector<InteractAction *> get_dialog_actions();
 };
 
 struct DialogItem : public xmls::Serializable

@@ -127,6 +127,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 		= tileset->get_block_contact_action_data(block_index);
 	const std::vector<std::pair<std::string, std::string>> load_day_action_data
 		= tileset->get_block_load_day_action_data(block_index);
+	const std::vector<ItemDrop *> item_drops = tileset->get_block_item_drops(block_index);
 	const std::vector<EntitySpawnTileRule *> spawn_tile_rules
 		= tileset->get_block_spawn_tile_rules(block_index);
 
@@ -143,6 +144,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_interact_actions(interact_action_data);
 	this->block.set_contact_actions(contact_action_data);	
 	this->block.set_load_day_actions(load_day_action_data);
+	this->block.set_item_drops(item_drops);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);
 	//TODO: don't load any images here
 	this->block.load_entity_effects(tileset->get_tile_sheet_filename(), tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));

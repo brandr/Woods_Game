@@ -310,6 +310,10 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &input_menu_up);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
 
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_Q), &input_tab_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_W), &input_tab_right);
@@ -323,6 +327,10 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
 
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_LEFT_SHOULDER), &input_tab_left);
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_RIGHT_SHOULDER), &input_tab_right);
@@ -330,6 +338,7 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_Y), &input_secondary_select);
 			// resume
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);	
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);
 
 	// dialog controls
 		// keyboard
@@ -363,16 +372,20 @@ void MainGameScreen::set_mappable_controls()
 	this->map_keyboard_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_keyboard_control_action(TOP_DOWN, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
+	this->map_keyboard_control_action(EXCHANGE_INVENTORY, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
+	this->map_keyboard_control_action(EXCHANGE_INVENTORY, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "pause", &resume);
 	this->map_keyboard_control_action(TOP_DOWN, "pause", &pause);
 	this->map_keyboard_control_action(TOP_DOWN, "hotbar_left", &hotbar_left);	
 	this->map_keyboard_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_keyboard_control_action(EXCHANGE_INVENTORY, "menu_select", &input_select);
 	this->map_keyboard_control_action(CALENDAR, "menu_select", &input_select);
 	this->map_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_keyboard_control_action(EXCHANGE_INVENTORY, "menu_cancel", &resume);
 	this->map_keyboard_control_action(CALENDAR, "menu_cancel", &resume);
 	this->map_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 	// controller
@@ -380,16 +393,20 @@ void MainGameScreen::set_mappable_controls()
 	this->map_controller_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_controller_control_action(TOP_DOWN, "open_inventory", &open_inventory);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
+	this->map_controller_control_action(EXCHANGE_INVENTORY, "open_inventory", &open_inventory);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
+	this->map_controller_control_action(EXCHANGE_INVENTORY, "pause", &resume);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "pause", &resume);
 	this->map_controller_control_action(TOP_DOWN, "pause", &pause);
 	this->map_controller_control_action(TOP_DOWN, "hotbar_left", &hotbar_left);
 	this->map_controller_control_action(TOP_DOWN, "hotbar_right", &hotbar_right);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_select", &input_confirm_selection);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_select", &input_select);
+	this->map_controller_control_action(EXCHANGE_INVENTORY, "menu_select", &input_select);
 	this->map_controller_control_action(CALENDAR, "menu_select", &input_select);
 	this->map_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel", &menu_cancel);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel", &resume);
+	this->map_controller_control_action(EXCHANGE_INVENTORY, "menu_cancel", &resume);
 	this->map_controller_control_action(CALENDAR, "menu_cancel", &resume);
 	this->map_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance", &advance_dialog);
 }
@@ -412,6 +429,7 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_keyboard_control_action(CALENDAR, "menu_select");
 	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_keyboard_control_action(EXCHANGE_INVENTORY, "menu_cancel");
 	this->unmap_keyboard_control_action(CALENDAR, "menu_cancel");
 	this->unmap_keyboard_control_action(MAIN_GAME_DIALOG, "dialog_advance");
 	// controller
@@ -429,6 +447,7 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_controller_control_action(CALENDAR, "menu_select");
 	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "menu_cancel");
+	this->unmap_controller_control_action(EXCHANGE_INVENTORY, "menu_cancel");
 	this->unmap_controller_control_action(CALENDAR, "menu_cancel");
 	this->unmap_controller_control_action(MAIN_GAME_DIALOG, "dialog_advance");
 }
@@ -509,6 +528,9 @@ void MainGameScreen::load_content()
 	inventory_screen.load_content();
 	inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
 	inventory_screen.set_quest_data(game_image_manager.get_quest_data());
+	inventory_screen.set_active_quests(game_image_manager.get_active_quests());
+	inventory_screen.set_failed_quests(game_image_manager.get_failed_quests());
+	inventory_screen.set_completed_quests(game_image_manager.get_completed_quests());
 	inventory_screen.set_world_key(game_image_manager.get_world_key());
 	inventory_screen.set_dungeon_key(game_image_manager.get_current_dungeon_key());
 	this->load_location_markers();
@@ -534,6 +556,7 @@ void MainGameScreen::load_fonts()
 	// this is where we load fonts for the pause screen
 	this->pause_screen.load_menus();
 	this->inventory_screen.load_fonts();
+	this->exchange_inventory_screen.load_fonts();
 	this->calendar_screen.load_fonts();
 
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
@@ -591,6 +614,7 @@ void MainGameScreen::unload_content()
 	game_image_manager.unload_content();
 	pause_screen.unload_content();
 	inventory_screen.unload_content();
+	exchange_inventory_screen.unload_content();
 	GameScreen::unload_content();
 	
 	//TODO: unload everything that was loaded in
@@ -633,6 +657,9 @@ void MainGameScreen::update()
 			break;
 		case MAIN_GAME_INVENTORY:
 			inventory_update();
+			break;
+		case EXCHANGE_INVENTORY:
+			exchange_inventory_update();
 			break;
 		case CUTSCENE:
 			cutscene_update();
@@ -679,6 +706,7 @@ void MainGameScreen::dialog_update()
 		if (player->has_active_cutscene()) {
 			this->game_image_manager.set_game_mode(CUTSCENE);
 		} else {
+			this->game_image_manager.update_quests();
 			this->resume_game();
 		}
 	}
@@ -687,6 +715,22 @@ void MainGameScreen::dialog_update()
 void MainGameScreen::inventory_update()
 {
 	this->inventory_screen.update();
+}
+
+void MainGameScreen::exchange_inventory_update()
+{
+	if (this->exchange_inventory_screen.has_inventory() && this->exchange_inventory_screen.has_exchange_inventory()) {
+		this->exchange_inventory_screen.update();
+	} else {
+		Inventory& inv = this->game_image_manager.get_player()->get_inventory();
+		Inventory * exchange_inv = this->game_image_manager.get_exchange_inventory();
+		this->exchange_inventory_screen.set_inventory(&inv);
+		if (exchange_inv == NULL) {
+			this->resume_game();
+		} else {
+			this->exchange_inventory_screen.set_exchange_inventory(exchange_inv);
+		}
+	}
 }
 
 void MainGameScreen::cutscene_update()
@@ -730,6 +774,9 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 	case MAIN_GAME_INVENTORY:
 		draw_ui_inventory(display);
 		break;
+	case EXCHANGE_INVENTORY:
+		draw_ui_exchange_inventory(display);
+		break;
 	case CALENDAR:
 		draw_ui_calendar(display);
 		break;
@@ -745,6 +792,13 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_ui_inventory(ALLEGRO_DISPLAY * display)
 {
 	inventory_screen.draw(display);
+}
+
+void MainGameScreen::draw_ui_exchange_inventory(ALLEGRO_DISPLAY * display)
+{
+	if (exchange_inventory_screen.has_inventory()) {
+		exchange_inventory_screen.draw(display);
+	}
 }
 
 void MainGameScreen::draw_ui_calendar(ALLEGRO_DISPLAY * display)
@@ -844,6 +898,8 @@ GameScreen & MainGameScreen::screen_receiving_input()
 			return pause_screen;
 		case MAIN_GAME_INVENTORY:
 			return inventory_screen;
+		case EXCHANGE_INVENTORY:
+			return exchange_inventory_screen;
 		case CALENDAR:
 			return calendar_screen;
 		default:
@@ -883,6 +939,11 @@ void MainGameScreen::resume_game()
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.reset();
 		break;
+	case EXCHANGE_INVENTORY:
+		//TODO: do we need to reset anything else here?
+		exchange_inventory_screen.reset();
+		game_image_manager.get_player()->set_exchange_inventory_key("");
+		break;
 	case CALENDAR:
 		if (calendar_screen.showing_dialog()) {
 			calendar_screen.close_dialog();
@@ -896,6 +957,7 @@ void MainGameScreen::resume_game()
 	clear_input();
 	game_image_manager.resume();
 	game_image_manager.set_game_mode(TOP_DOWN);	
+	game_image_manager.update_quests();
 	reset_controls();
 }
 
@@ -913,6 +975,9 @@ void MainGameScreen::menu_up()
 		break;
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_up();
+		break;
+	case EXCHANGE_INVENTORY:
+		exchange_inventory_screen.menu_up();
 		break;
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.decrement_dialog_option();
@@ -932,6 +997,9 @@ void MainGameScreen::menu_down()
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_down();
 		break;
+	case EXCHANGE_INVENTORY:
+		exchange_inventory_screen.menu_down();
+		break;
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.increment_dialog_option();
 		break;
@@ -949,6 +1017,9 @@ void MainGameScreen::menu_left()
 		break;
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.menu_left();
+		break;
+	case EXCHANGE_INVENTORY:
+		exchange_inventory_screen.menu_left();
 		break;
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.decrement_dialog_option();
@@ -971,6 +1042,9 @@ void MainGameScreen::menu_right()
 	case MAIN_GAME_DIALOG:
 		this->game_image_manager.increment_dialog_option();
 		break;
+	case EXCHANGE_INVENTORY:
+		exchange_inventory_screen.menu_right();
+		break;
 	case CALENDAR:
 		this->calendar_screen.menu_right();
 		break;
@@ -992,12 +1066,16 @@ void MainGameScreen::select()
 	case MAIN_GAME_INVENTORY:
 		inventory_screen.select();
 		break;
+	case EXCHANGE_INVENTORY:
+		exchange_inventory_screen.select();
+		break;
 	case CALENDAR:
 		calendar_screen.select();
 		break;
 	}
 }
 
+//TODO: use this in a lot of other UI, like inventory screen
 void MainGameScreen::process_mouse_click_left(const int x, const int y)
 {
 	switch (get_game_mode()) {
@@ -1082,11 +1160,19 @@ void MainGameScreen::open_inventory_action()
 		case TOP_DOWN:
 			game_image_manager.set_game_mode(MAIN_GAME_INVENTORY);
 			current_location = game_image_manager.current_player_location_for_map();
+			this->inventory_screen.set_inventory(&(game_image_manager.get_player()->get_inventory()));
 			this->inventory_screen.set_current_location(current_location.first, current_location.second);
 			this->load_location_markers();
-			//TODO: any action necessary when we open the inventory screen
+			this->inventory_screen.set_quest_data(game_image_manager.get_quest_data());
+			this->inventory_screen.set_active_quests(game_image_manager.get_active_quests());
+			this->inventory_screen.set_failed_quests(game_image_manager.get_failed_quests());
+			this->inventory_screen.set_completed_quests(game_image_manager.get_completed_quests());
 			break;
 		case MAIN_GAME_INVENTORY:
+			resume_game();
+			game_image_manager.set_game_mode(TOP_DOWN);
+			break;
+		case EXCHANGE_INVENTORY:
 			resume_game();
 			game_image_manager.set_game_mode(TOP_DOWN);
 			break;

@@ -25,10 +25,14 @@ enum EVALUATORS {
 	EVALUATOR_TRIGGER = 4,
 	EVALUATOR_DAY_OF_WEEK = 5,
 	EVALUATOR_CURRENT_LEVEL = 6,
-	EVALUATOR_NPC_PLACEMENT = 7
+	EVALUATOR_NPC_PLACEMENT = 7,
+	EVALUATOR_HAS_ITEM = 8,
+	EVALUATOR_QUEST_STATE = 9,
+	EVALUATOR_INVENTORY_FULL = 10
 };
 
 class Level;
+class Quest;
 class World;
 class Qualifier : public xmls::Serializable
 {
@@ -54,6 +58,9 @@ protected:
 	virtual const bool day_of_week_evaluate();
 	virtual const bool current_level_evaluate(World * world, Level * level);
 	virtual const bool npc_placement_evaluate(World * world, Level * level);
+	virtual const bool has_item_evaluate(World * world, Level * level);
+	virtual const bool quest_state_evaluate(World * world, Level * level);
+	virtual const bool inventory_full_evaluate(World * world, Level * level);
 public:
 	Qualifier();
 	~Qualifier();

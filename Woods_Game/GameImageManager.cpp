@@ -65,6 +65,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.reload_world_state(initial_state_filename);
 	const std::string initial_quest_data_filename = new_game_path + "quest_data";
 	this->world.reload_quest_data(initial_quest_data_filename);
+	this->load_item_templates();
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
@@ -91,6 +92,7 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->world.reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
 	this->world.reload_quest_data(quest_data_path);
+	this->load_item_templates();
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -115,6 +117,7 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->world.reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
 	this->world.reload_quest_data(quest_data_path);
+	this->load_item_templates();
 	this->load_player();
 	this->world.recalculate_npc_paths();
 	this->save_game();
@@ -201,6 +204,11 @@ void GameImageManager::load_all_cutscenes()
 	//TODO: any other loading necessary for cutscenes
 }
 
+void GameImageManager::load_item_templates()
+{
+	ItemManager::get_instance().load_item_templates();
+}
+
 CutsceneScript * GameImageManager::get_cutscene_script(const std::string cutscene_key)
 {
 	return this->cutscene_list.get_cutscene_script(cutscene_key);
@@ -239,7 +247,6 @@ CutsceneBlock * GameImageManager::generate_cutscene_block(CutsceneScriptBlock * 
 	block->block_triggers = script_block->get_block_triggers();
 	block->agent_animations = script_block->get_agent_animations();
 	block->dialog = script_block->get_dialog();
-	//TODO: use stuff from the script to set attributes of block
 	return block;
 }
 
@@ -266,6 +273,7 @@ const bool GameImageManager::player_update(std::map<int, bool> input_map, std::m
 			return false;
 		}
 		this->player_exploration_update();
+		this->player_exchange_inventory_update();
 		player->update_input(input_map, joystick_map, game_mode);
 	}
 	return true;
@@ -287,12 +295,22 @@ void GameImageManager::check_player_cutscene(Player * player)
 
 void GameImageManager::player_exploration_update()
 {
-	if (this->player) {
+	if (this->player != NULL) {
 		const std::pair<int, int> current_pixel_loc = this->current_player_location_for_map();
 		if (current_pixel_loc.first >= 0 && current_pixel_loc.second >= 0) {
 			const int default_w = this->world.get_default_level_width(), default_h = this->world.get_default_level_height();
 			const int explore_grid_x = current_pixel_loc.first / default_w, explore_grid_y = current_pixel_loc.second / default_h;
 			this->world.mark_grid_explored(explore_grid_x, explore_grid_y);
+		}
+	}
+}
+
+void GameImageManager::player_exchange_inventory_update()
+{
+	if (this->player != NULL) {
+		const std::string inv_key = player->get_exchange_inventory_key();
+		if (!inv_key.empty()) {
+			this->game_mode = EXCHANGE_INVENTORY;
 		}
 	}
 }
@@ -402,9 +420,38 @@ Player * GameImageManager::get_player()
 	return player;
 }
 
+Inventory * GameImageManager::get_exchange_inventory()
+{
+	const std::string inv_key = this->player->get_exchange_inventory_key();
+	if (!inv_key.empty()) {
+		return this->world.get_inventory_for_key(inv_key, true);
+	}
+	return NULL;
+}
+
+void GameImageManager::update_quests()
+{
+	this->world.update_quests();
+}
+
 QuestData * GameImageManager::get_quest_data()
 {
 	return this->world.get_quest_data();
+}
+
+std::vector<Quest*> GameImageManager::get_active_quests()
+{
+	return this->world.get_active_quests();
+}
+
+std::vector<Quest*> GameImageManager::get_failed_quests()
+{
+	return this->world.get_failed_quests();
+}
+
+std::vector<Quest*> GameImageManager::get_completed_quests()
+{
+	return this->world.get_completed_quests();
 }
 
 void GameImageManager::unload_content()
@@ -705,6 +752,7 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 					al_lock_mutex(this->thread_data.mutex);
 					cutscene->advance_block(&(this->world), this->current_level);
 					al_unlock_mutex(this->thread_data.mutex);
+					this->load_player();
 				}
 			}
 			else if (action_key == ACTION_UPDATE_GLOBAL_TIME) {
@@ -737,7 +785,6 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 				cutscene->advance_block(&(this->world), this->current_level);
 			}
 			else if (action_key == ACTION_UPDATE_NEW_DAY) {
-				//TODO: doing this asnyc is ideal, but if we do that we need to fix the slowdown
 				if (this->loading_thread != NULL) {
 					al_destroy_thread(this->loading_thread);
 				}
@@ -818,6 +865,3 @@ const std::set<std::pair<int, int>> GameImageManager::explored_map()
 {
 	return this->world.explored_map();
 }
-
-
-

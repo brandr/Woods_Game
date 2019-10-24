@@ -14,6 +14,7 @@ public:
 	QuestItem();
 	~QuestItem();
 	const bool get_is_obtained();
+	void set_is_obtained(const bool value);
 };
 
 #endif

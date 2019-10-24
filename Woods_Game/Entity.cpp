@@ -1,5 +1,7 @@
 #include "Entity.h"
 #include "GlobalTime.h"
+#include "Item.h"
+#include "ItemManager.h"
 #include "Player.h"
 #include "Level.h"
 #include "World.h"
@@ -312,6 +314,14 @@ void Entity::set_load_day_actions(const std::vector<std::pair<std::string, std::
 	}
 }
 
+void Entity::set_item_drops(std::vector<ItemDrop*> item_drops)
+{
+	this->item_drops.Clear();
+	for (ItemDrop * id : item_drops) {
+		this->item_drops.addItem(id);
+	}
+}
+
 void Entity::set_spawn_tile_rules(const std::vector<EntitySpawnTileRule*> rules)
 {
 	this->spawn_tile_rules.Clear();
@@ -450,6 +460,15 @@ std::vector<EntitySound*> Entity::get_active_entity_sounds()
 	return active_sounds;
 }
 
+Item * Entity::get_plant_gather_item()
+{
+	const int item_key = this->get_entity_attribute(E_ATTR_PLANT_GATHER_ITEM_KEY);
+	if (item_key >= 0) {
+		return ItemManager::get_instance().create_item(item_key);
+	}
+	return NULL;
+}
+
 // EntityData
 
 EntityData::EntityData()
@@ -461,6 +480,7 @@ EntityData::EntityData()
 	Register("interact_actions", &interact_actions);
 	Register("contact_actions", &contact_actions);
 	Register("load_day_actions", &load_day_actions);
+	Register("item_drops", &item_drops);
 	Register("spawn_tile_rules", &spawn_tile_rules);
 	Register("attributes", &attributes);
 	Register("components", &components);
@@ -555,6 +575,20 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_
 			this->load_day_actions.getItem(i)->get_function_name()));
 	}
 	return data;
+}
+
+std::vector<ItemDrop*> EntityData::get_item_drops()
+{
+	std::vector<ItemDrop*> drops;
+	const int size = this->item_drops.size();
+	for (int i = 0; i < size; i++) {
+		ItemDrop * id1 = this->item_drops.getItem(i);
+		ItemDrop * id2 = new ItemDrop();
+		id2->item_key = id1->item_key.value();
+		id2->drop_rate = id2->drop_rate.value();
+		drops.push_back(id2);
+	}
+	return drops;
 }
 
 const std::vector<EntitySpawnTileRule *> EntityData::get_block_spawn_tile_rules()

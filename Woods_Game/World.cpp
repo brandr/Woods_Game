@@ -810,6 +810,15 @@ WorldState * World::get_world_state()
 	return &world_state;
 }
 
+void World::update_quests()
+{
+	Level * level = this->get_current_level();
+	std::vector<Quest *> all_quests = this->world_state.get_quests();
+	for (Quest * q : all_quests) {
+		q->update(this, level);
+	}
+}
+
 QuestData * World::get_quest_data()
 {
 	return &(this->quest_data);
@@ -849,4 +858,43 @@ const std::set<std::pair<int, int>> World::explored_map()
 {
 	//TODO: does this need to take current dungeon into account? or do we never switch dungeons within a single world?
 	return this->world_state.explored_map();
+}
+
+Inventory * World::get_inventory_for_key(const std::string inv_key, const bool create_if_missing)
+{
+	Inventory * inv = NULL;
+	if (!inv_key.empty()) {
+		return this->world_state.get_inventory_for_key(inv_key, create_if_missing);
+	}
+	return inv;
+}
+
+void World::process_quest_update(QuestUpdate * quest_update)
+{
+	this->world_state.process_quest_update(quest_update);
+}
+
+std::vector<Quest*> World::get_active_quests()
+{
+	return this->world_state.get_active_quests();
+}
+
+std::vector<Quest*> World::get_failed_quests()
+{
+	return this->world_state.get_failed_quests();
+}
+
+std::vector<Quest*> World::get_completed_quests()
+{
+	return this->world_state.get_completed_quests();
+}
+
+Quest * World::quest_for_key(const std::string quest_key)
+{
+	return this->world_state.quest_with_key(quest_key);
+}
+
+void World::set_has_quest_item(const std::string item_key, const bool has_item)
+{
+	this->quest_data.set_has_quest_item(item_key, has_item);
 }

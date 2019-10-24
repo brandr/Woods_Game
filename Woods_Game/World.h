@@ -10,6 +10,7 @@
 #include "NPC.h"
 #include "PathNode.h"
 #include "QuestData.h"
+#include "Quest.h"
 #include "TriggerStatus.h"
 #include "WorldState.h"
 #include "XMLSerialization.h"
@@ -109,7 +110,6 @@ public:
 	const int get_current_day();
 	void set_current_day(const int day);
 	WorldState * get_world_state();
-	QuestData * get_quest_data();
 	TriggerStatus * matching_trigger_status(TriggerStatus * status);
 	const int get_default_level_width();
 	const int get_default_level_height();
@@ -117,6 +117,17 @@ public:
 	void mark_cutscene_viewed(const std::string cutscene_key);
 	const bool has_viewed_cutscene(const std::string cutscene_key);
 	const std::set<std::pair<int, int>> explored_map();
+	// inventory
+	Inventory * get_inventory_for_key(const std::string inv_key, const bool create_if_missing);
+	// quests
+	void update_quests();
+	QuestData * get_quest_data();
+	void process_quest_update(QuestUpdate *quest_update);
+	std::vector<Quest *> get_active_quests();
+	std::vector<Quest *> get_failed_quests();
+	std::vector<Quest *> get_completed_quests();
+	Quest * quest_for_key(const std::string quest_key);
+	void set_has_quest_item(const std::string item_key, const bool has_item);
 };
 
 #endif

@@ -1,4 +1,5 @@
 #include "Qualifier.h"
+#include "Quest.h"
 #include "Level.h"
 #include "World.h"
 
@@ -43,6 +44,12 @@ const bool Qualifier::evaluate(World * world, Level * current_level)
 		return this->current_level_evaluate(world, current_level);
 	case EVALUATOR_NPC_PLACEMENT:
 		return this->npc_placement_evaluate(world, current_level);
+	case EVALUATOR_HAS_ITEM:
+		return this->has_item_evaluate(world, current_level);
+	case EVALUATOR_QUEST_STATE:
+		return this->quest_state_evaluate(world, current_level);
+	case EVALUATOR_INVENTORY_FULL:
+		return this->inventory_full_evaluate(world, current_level);
 	default:
 		return false;
 	}
@@ -174,6 +181,56 @@ const bool Qualifier::npc_placement_evaluate(World * world, Level * level)
 	}
 	else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
 		return !placement_matches;
+	}
+	return false;
+}
+
+const bool Qualifier::has_item_evaluate(World * world, Level * level)
+{
+	const int item_key = this->int_val.value();
+	Player * player = world->get_player();
+	if (player != NULL && item_key >= 0) {
+		const bool has_item = player->has_item_with_key(item_key);
+		if (COMPARATOR_EQUALS == this->comparator.value()) {
+			return has_item;
+		}
+		else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+			return !has_item;
+		}
+	}
+	return false;
+}
+
+const bool Qualifier::quest_state_evaluate(World * world, Level * level)
+{
+	const std::string quest_key = this->string_val.value();
+	const int quest_state = this->int_val.value();
+	if (!quest_key.empty() && quest_state >= 0) {
+		Quest * quest = world->quest_for_key(quest_key);
+		if (quest != NULL) {
+			const bool matches_state = quest->get_quest_state() == quest_state;
+			if (COMPARATOR_EQUALS == this->comparator.value()) {
+				return matches_state;
+			}
+			else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+				return !matches_state;
+			}
+		}
+	}
+	return false;
+}
+
+const bool Qualifier::inventory_full_evaluate(World * world, Level * level)
+{
+	Player * player = world->get_player();
+	if (player != NULL) {
+		const bool inventory_full = player->get_inventory().is_full();
+		if (COMPARATOR_EQUALS == this->comparator.value()) {
+			return inventory_full;
+		}
+		else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+			return !inventory_full;
+		}
 	}
 	return false;
 }

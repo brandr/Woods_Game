@@ -201,6 +201,132 @@
                                             </Class>
                                         </Collection>
                                     </Class>
+                                    <Class Type="DialogTreeNode" Version="1">
+                                        <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                        <Collection Name="dialog_items">
+                                                <Class Type="DialogItem" Version="1">
+                                                    <Member Name="conversation_index">0</Member>
+                                                    <Collection Name="pages">
+                                                        <Class Type="DialogItemPage" Version="1">
+                                                            <Member Name="dialog_text">[l]Thanks for the mushroom.[/l][l]Here, have $10.[/l]</Member>
+                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Collection Name="quest_updates">
+                                                                <Class Type="QuestUpdates" Version="1">
+                                                                    <Member Name="quest_key">give_stranger_1_mushroom</Member>
+                                                                    <Member Name="page_num">3</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                            <Collection Name="dialog_actions">
+                                                                <Class Type="InteractAction" Version="1">
+                                                                    <Member Name="InteractActionKey">remove_item</Member>
+                                                                    <Member Name="FunctionName">remove_item</Member>
+                                                                    <Collection Name="Bindings">
+                                                                        <Class Type="ActionBinding" Version="1">
+                                                                            <Member Name="BindingKey">item_key</Member>
+                                                                            <Member Name="BindingValue">2</Member>
+                                                                        </Class>
+                                                                    </Collection>
+                                                                </Class>
+                                                                <Class Type="InteractAction" Version="1">
+                                                                    <Member Name="InteractActionKey">adjust_player_money</Member>
+                                                                    <Member Name="FunctionName">adjust_player_money</Member>
+                                                                    <Collection Name="Bindings">
+                                                                        <Class Type="ActionBinding" Version="1">
+                                                                            <Member Name="BindingKey">money_amount</Member>
+                                                                            <Member Name="BindingValue">10</Member>
+                                                                        </Class>
+                                                                    </Collection>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="priority">100</Member>
+                                        </Class>
+                                        <Collection Name="qualifiers">
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">8</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">2</Member>
+                                                <Member Name="string_val"></Member>
+                                            </Class>
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">9</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">1</Member>
+                                                <Member Name="string_val">give_stranger_1_mushroom</Member>
+                                            </Class>
+                                        </Collection>
+                                    </Class>
+                                    <Class Type="DialogTreeNode" Version="1">
+                                        <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                        <Collection Name="dialog_items">
+                                                <Class Type="DialogItem" Version="1">
+                                                    <Member Name="conversation_index">0</Member>
+                                                    <Collection Name="pages">
+                                                        <Class Type="DialogItemPage" Version="1">
+                                                            <Member Name="dialog_text">[l]Here, deliver this letter.[/l]</Member>
+                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Collection Name="quest_updates">
+                                                                <Class Type="QuestUpdates" Version="1">
+                                                                    <Member Name="quest_key">deliver_letter</Member>
+                                                                    <Member Name="page_num">1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                            <Collection Name="dialog_actions">
+                                                                <Class Type="InteractAction" Version="1">
+                                                                <Member Name="InteractActionKey">add_item</Member>
+                                                                <Member Name="FunctionName">add_item</Member>
+                                                                <Collection Name="Bindings">
+                                                                    <Class Type="ActionBinding" Version="1">
+                                                                        <Member Name="BindingKey">item_key</Member>
+                                                                        <Member Name="BindingValue">3</Member>
+                                                                    </Class>
+                                                                </Collection>
+                                                            </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="priority">90</Member>
+                                        </Class>
+                                        <Collection Name="qualifiers">
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">1</Member>
+                                                <Member Name="evaluator">10</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">2</Member>
+                                                <Member Name="string_val"></Member>
+                                            </Class>
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">9</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">1</Member>
+                                                <Member Name="string_val">deliver_letter</Member>
+                                            </Class>
+                                        </Collection>
+                                    </Class>
                                 </Collection>
                                 <Collection Name="qualifiers">
                                     <Class Type="Qualifier" Version="1">
@@ -236,6 +362,36 @@
                                                     <Member Name="dialog_text">[l]I am a stranger.[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Collection Name="quest_updates">
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">meet_stranger_2</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">avoid_stranger_2</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">give_stranger_1_mushroom</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">deliver_letter</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">quest_5</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">quest_6</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                        <Class Type="QuestUpdates" Version="1">
+                                                            <Member Name="quest_key">quest_7</Member>
+                                                            <Member Name="page_num">0</Member>
+                                                        </Class>
+                                                    </Collection>
                                                 </Class>
                                             </Collection>
                                         </Class>
@@ -270,9 +426,25 @@
                                                     </Collection>
                                                 </Class>
                                                 <Class Type="DialogItemPage" Version="1">
-                                                    <Member Name="dialog_text">[l]Too bad, it's not implemented.[/l]</Member>
+                                                    <Member Name="dialog_text">[l]Here you go.[/l]</Member>
                                                     <Member Name="page_number">1</Member>
                                                     <Member Name="next_page_index">-2</Member>
+                                                    <Collection Name="dialog_actions">
+                                                        <Class Type="InteractAction" Version="1">
+                                                         <Member Name="InteractActionKey">set_has_quest_item</Member>
+                                                        <Member Name="FunctionName">set_has_quest_item</Member>
+                                                        <Collection Name="Bindings">
+                                                            <Class Type="ActionBinding" Version="1">
+                                                                <Member Name="BindingKey">quest_item_key</Member>
+                                                                <Member Name="BindingValue">yellow_lighter</Member>
+                                                            </Class>
+                                                            <Class Type="ActionBinding" Version="1">
+                                                                <Member Name="BindingKey">has_quest_item</Member>
+                                                                <Member Name="BindingValue">1</Member>
+                                                            </Class>
+                                                        </Collection>
+                                                    </Class>
+                                                    </Collection>
                                                 </Class>
                                                 <Class Type="DialogItemPage" Version="1">
                                                     <Member Name="dialog_text">[l]Don't say I didn't warn you.[/l]</Member>
@@ -391,17 +563,207 @@
                         <Member Name="dialog_text"></Member>
                         <Collection Name="child_nodes">
                             <Class Type="DialogTreeNode" Version="1">
+                                <Member Name="dialog_text"></Member>
+                                <Collection Name="child_nodes">
+                                    <Class Type="DialogTreeNode" Version="1">
+                                        <Member Name="dialog_text"></Member>
+                                        <Collection Name="child_nodes">
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[l]You are not a stranger and it is monday.[/l]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">15</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                    <Class Type="Qualifier" Version="1">
+                                                        <Member Name="comparator">0</Member>
+                                                        <Member Name="evaluator">5</Member>
+                                                        <Member Name="month">-1</Member>
+                                                        <Member Name="day">-1</Member>
+                                                        <Member Name="hour">-1</Member>
+                                                        <Member Name="minute">-1</Member>
+                                                        <Member Name="day_of_week">1</Member>
+                                                        <Member Name="int_val"></Member>
+                                                        <Member Name="string_val"></Member>
+                                                    </Class>
+                                                </Collection>
+                                            </Class>
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[l]You are not a stranger.[/l]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">10</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                </Collection>
+                                            </Class>
+                                            <Class Type="DialogTreeNode" Version="1">
+                                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                                    <Collection Name="dialog_items">
+                                                        <Class Type="DialogItem" Version="1">
+                                                            <Member Name="conversation_index">0</Member>
+                                                            <Collection Name="pages">
+                                                                <Class Type="DialogItemPage" Version="1">
+                                                                    <Member Name="dialog_text">[p][l]You are not a stranger. Or are you?[/l][/p]</Member>
+                                                                    <Member Name="next_page_index">-1</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                    <Member Name="priority">10</Member>
+                                                </Class>
+                                                <Collection Name="qualifiers">
+                                                </Collection>
+                                            </Class>
+                                        </Collection>
+                                        <Collection Name="qualifiers">
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">1</Member>
+                                                <Member Name="evaluator">6</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val"></Member>
+                                                <Member Name="string_val">stranger_house</Member>
+                                            </Class>
+                                        </Collection>
+                                    </Class>
+                                    <Class Type="DialogTreeNode" Version="1">
+                                        <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                        <Collection Name="dialog_items">
+                                                <Class Type="DialogItem" Version="1">
+                                                    <Member Name="conversation_index">0</Member>
+                                                    <Collection Name="pages">
+                                                        <Class Type="DialogItemPage" Version="1">
+                                                            <Member Name="dialog_text">[l]You are not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
+                                                            <Member Name="next_page_index">-1</Member>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="priority">20</Member>
+                                        </Class>
+                                        <Collection Name="qualifiers">
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">6</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">-1</Member>
+                                                <Member Name="string_val">stranger_house</Member>
+                                            </Class>
+                                        </Collection>
+                                    </Class>
+                                    <Class Type="DialogTreeNode" Version="1">
+                                        <Class Type="DialogGroup" Name="dialog_group" Version="1">
+                                        <Collection Name="dialog_items">
+                                                <Class Type="DialogItem" Version="1">
+                                                    <Member Name="conversation_index">0</Member>
+                                                    <Collection Name="pages">
+                                                        <Class Type="DialogItemPage" Version="1">
+                                                            <Member Name="dialog_text">[l]Thanks for the letter.[/l]</Member>
+                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Collection Name="quest_updates">
+                                                                <Class Type="QuestUpdates" Version="1">
+                                                                    <Member Name="quest_key">deliver_letter</Member>
+                                                                    <Member Name="page_num">2</Member>
+                                                                </Class>
+                                                            </Collection>
+                                                            <Collection Name="dialog_actions">
+                                                                <Class Type="InteractAction" Version="1">
+                                                                <Member Name="InteractActionKey">remove_item</Member>
+                                                                <Member Name="FunctionName">remove_item</Member>
+                                                                <Collection Name="Bindings">
+                                                                    <Class Type="ActionBinding" Version="1">
+                                                                        <Member Name="BindingKey">item_key</Member>
+                                                                        <Member Name="BindingValue">3</Member>
+                                                                    </Class>
+                                                                </Collection>
+                                                                </Class>
+                                                            </Collection>
+                                                        </Class>
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="priority">90</Member>
+                                        </Class>
+                                    </Class>
+                                </Collection>
+                                <Collection Name="qualifiers">
+                                    <Class Type="Qualifier" Version="1">
+                                        <Member Name="comparator">0</Member>
+                                        <Member Name="evaluator">4</Member>
+                                        <Member Name="month">-1</Member>
+                                        <Member Name="day">-1</Member>
+                                        <Member Name="hour">-1</Member>
+                                        <Member Name="minute">-1</Member>
+                                        <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
+                                        <Class Type="TriggerStatus" Name="trigger_status" Version="1">
+                                            <Member Name="trigger_key">has_met_npc</Member>
+                                            <Member Name="trigger_state">1</Member>
+                                            <Collection Name="trigger_attributes">
+                                                <Class Type="TriggerAttribute" Version="1">
+                                                    <Member Name="attribute_key">npc_key</Member>
+                                                    <Member Name="attribute_value">stranger_2</Member>
+                                                 </Class>
+                                            </Collection>
+                                         </Class>
+                                    </Class>
+                                </Collection>
+                            </Class>
+                            <Class Type="DialogTreeNode" Version="1">
                                 <Class Type="DialogGroup" Name="dialog_group" Version="1">
                                     <Collection Name="dialog_items">
                                         <Class Type="DialogItem" Version="1">
-                                            <Member Name="dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
                                             <Member Name="conversation_index">0</Member>
+                                            <Collection Name="pages">
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]You are a stranger.[/l]</Member>
+                                                    <Member Name="page_number">0</Member>
+                                                    <Member Name="next_page_index">-1</Member>
+                                                    <Collection Name="quest_updates">
+                                                    </Collection>
+                                                </Class>
+                                            </Collection>
+                                        </Class>
+                                        <Class Type="DialogItem" Version="1">
+                                            <Member Name="conversation_index">1</Member>
+                                            <Collection Name="pages">
+                                                <Class Type="DialogItemPage" Version="1">
+                                                    <Member Name="dialog_text">[l]You are still a stranger.[/l]</Member>
+                                                    <Member Name="page_number">0</Member>
+                                                    <Member Name="next_page_index">-1</Member>
+                                                </Class>
+                                            </Collection>
                                         </Class>
                                     </Collection>
                                     <Member Name="priority">10</Member>
                                 </Class>
-                                <Collection Name="child_nodes">
-                                </Collection>
                                 <Collection Name="qualifiers">
                                     <Class Type="Qualifier" Version="1">
                                         <Member Name="comparator">1</Member>
@@ -428,49 +790,8 @@
                             </Class>
                         </Collection>
                     </Class>
-                    <Class Type="DialogTreeNode" Name="root_node" Version="1">
-                        <Member Name="dialog_text"></Member>
-                        <Collection Name="child_nodes">
-                            <Class Type="DialogTreeNode" Version="1">
-                                <Class Type="DialogGroup" Name="dialog_group" Version="1">
-                                    <Collection Name="dialog_items">
-                                        <Class Type="DialogItem" Version="1">
-                                            <Member Name="dialog_text">[p][l]You are not a stranger.[/l][/p]</Member>
-                                            <Member Name="conversation_index">0</Member>
-                                        </Class>
-                                    </Collection>
-                                    <Member Name="priority">10</Member>
-                                </Class>
-                                <Collection Name="child_nodes">
-                                </Collection>
-                                <Collection Name="qualifiers">
-                                    <Class Type="Qualifier" Version="1">
-                                        <Member Name="comparator">0</Member>
-                                        <Member Name="evaluator">4</Member>
-                                        <Member Name="month">-1</Member>
-                                        <Member Name="day">-1</Member>
-                                        <Member Name="hour">-1</Member>
-                                        <Member Name="minute">-1</Member>
-                                        <Member Name="day_of_week">-1</Member>
-                                        <Member Name="int_val"></Member>
-                                        <Member Name="string_val"></Member>
-                                        <Class Type="TriggerStatus" Name="trigger_status" Version="1">
-                                            <Member Name="trigger_key">has_met_npc</Member>
-                                            <Member Name="trigger_state">1</Member>
-                                            <Collection Name="trigger_attributes">
-                                                <Class Type="TriggerAttribute" Version="1">
-                                                    <Member Name="attribute_key">npc_key</Member>
-                                                    <Member Name="attribute_value">stranger_2</Member>
-                                                 </Class>
-                                            </Collection>
-                                         </Class>
-                                    </Class>
-                                </Collection>
-                            </Class>
-                        </Collection>
-                    </Class>
                 </Class>
-        		<Member Name="default_dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
+                <Member Name="default_dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
 			</Class>
 		</Collection>
 	</SerializableClass>

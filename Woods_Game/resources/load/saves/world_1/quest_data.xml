@@ -42,5 +42,6 @@
                 <Collection Name="item_attributes"/>
             </Class>
         </Collection>
+        <Collection Name="quests"/>
     </SerializableClass>
 </root>

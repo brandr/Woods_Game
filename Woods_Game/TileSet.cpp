@@ -352,6 +352,16 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_load_d
 	return this->block_types.getItem(index)->get_block_load_day_action_data();
 }
 
+std::vector<ItemDrop*> TileSet::get_block_item_drops(const int index)
+{
+	std::vector<ItemDrop*> item_drops;
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
+		return item_drops;
+	}
+	return this->block_types.getItem(index)->get_item_drops();
+}
+
 const std::vector<EntitySpawnTileRule *> TileSet::get_block_spawn_tile_rules(const int index)
 {
 	std::vector<EntitySpawnTileRule *> data;

@@ -4,18 +4,18 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 10/12/2019
+Last updated 10/20/2019
 
 Target date for main code to be done: ~ Mar 2020
 Target date for all code/assets/levels to be done: ~ Aug 2020
 
 Total: 67-95 days (~2-3 months)
 
-1. Inventory/item/money stuff
+1. item stuff
 	(15-20 days)
-2. Encyclopedia/journal
+2. Encyclopedia
 	(10-15 days)
-3. Animals/bugs
+3. Animals/bugs (or however these work)
 	(10-15 days)
 4. Dialog/schedule
 	(5-10 days)
@@ -60,35 +60,26 @@ Ongoing tasks:
 4. come up with more content
 
 ---------------------------------------------------
-Encyclopedia/Journal
+Inventory/items/money
 ---------------------------------------------------
 
-Allow dialogs to activate trigger statuses/quests (just need to serialize the trigger status/quest-related struct in that part of the dialog I think) 
-	and/or allow trigger statuses or other serialized structs to "begin" quests by taking a quest key and a quest page index.
-	- The latter is probably the easiest way to advance quests
-
-Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
-	* might even use real information about some of these things (like latin name)
-
-Journal stores quests
-
----------------------------------------------------
-Inventory/items
----------------------------------------------------
-
-Implement ways to add/remove items (and money) to the inventory
-	* example: receive from/give to NPC
-
-Allow storing items in a chest
-
-Some items should not be possible to drop, only to store (i.e. tools, though tools don't travel back in time)
-
-Implement "pickup-able" items, like seeds from ferns
+Implement "pickup-able" items, like seeds/leaves from ferns
+	* currently have ItemDrops -- need to roll when breaking
+		# entity.entity_break() (or set pending thing?)
+	* drops need to "fall"/"fly" to the ground after spawning
+	* probably need secondary icons for every item that can appear this way
+	* these should be beings since those are entities with physics, and they contain items (but aren't serialized)
 	* should probably be rare, and shouldn't need a lot of them
-	* Should probably be a % drop chance rolled on breaking plant so player can't savescum
 	* Make sure these disappear properly from level when they should (maybe on a timer or after leaving level?)
 
-Consider implementing a "cooking" system
+-- (stop here for now, also done with quests for now so go to encyclopedia/bugs) --
+
+Should we allow "tossing" items onto the ground, or is trash enough?
+
+Make an item shop (or at least someone who sells things)
+	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
+
+Consider implementing a "cooking"/"crafting" system
 
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
@@ -97,8 +88,36 @@ Add a shovel and allow the player to dig up items
 	* implement picking up items off the ground first
 
 ---------------------------------------------------
-Animals
+Quests
 ---------------------------------------------------
+
+How does sequence breaking work? (i.e., finish a quest before even starting it)
+	# could use the already existing qualifiers on QuestUpdates
+
+Might want giving non-quest items for quests to require that you have them 
+	in your active slot like stardew valley (or there's an actual "give button")
+	* colud just do ("do you want to give me x?" and yes option gives)
+
+Have anything that can possibly update quests 
+	(giving items, cutscenes, having dialogs, etc) call GameImagemanager.Update_quests()
+
+Probably want some brief, unobtrusive notification when a quest is updated
+	* this should not be a dialog, because it would be annoying to have to click through
+
+---------------------------------------------------
+Encyclopedia/Journal
+---------------------------------------------------
+
+Make an encyclopedia tab on inventory screen
+
+Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
+	* might even use real information about some of these things (like latin name)
+
+---------------------------------------------------
+Animals/Bugs
+---------------------------------------------------
+
+Might want to classify differently since some animals should also be catchable (like frogs)
 
 Add animals
 	* might be a good time to start on encyclopedia
@@ -145,10 +164,6 @@ Dialog
 		* not a direct connection, but some flag set by schedule, which feeds dialog qualifiers
 		* pretty sure Qualifier methods need to be refactored to take the NPC as an argument for this to work 
 			(unless it can be handled purely through triggers, or we can get the npc via world)
-	- might need to add action keys for dialogs (not just dialog options)
-		* think about whether this is actually necessary before implementing
-	- may need serializable DialogItem/DialogGroup/DialogItemOption/etc action bindings at some point
-		* see Dialog.action_bindings-- we would pass the serialized bindings here
 	- portrait image
 	- should you be unable to talk to the same NPC too many times a day like in stardew?
 		* probably need a lot more actual gameplay to answer this question
@@ -161,25 +176,18 @@ AIState/NPC schedule
 		* this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
 		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- use schedule logic to determine NPC spawn locations
-		* not necessary if NPCs all sleep at least as late as the latest that the player wakes up, or if there are only a small number of possible wake-up times
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
 	- maybe have some npcs alter schedule if the player spots them in certain situations, so you have to be stealthy
 		* how to communicate stealth mechanics to the player?
-		* would also cancel pathing
 		* could have a vision radius that adjusts gradually based on time of day/light level
 
 Should NPC's relationship with player and other NPCs be modeled/ serialized?
 	- only necessary if it can't be represented efficiently using triggers
 
 NPC pathing
-	- why does NPC 1 sometimes walk against the wall upon starting a new day?
-		* I think I fixed this, so delete this todo if I don't see it anymore
-		* can probably repro by going to sleep at a specific time (I think reset on new day doesn't fix state properly
 	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
 	- can end up on top of an npc and get temporarily stuck if you go into a building right as they're at the exit
 		* probably want to fix by having you appear just past them
-	- there is still slowdown (in some cases)
-		* check comments in tile pathing
 	- Set a debug launch argument to control whether test rect bitmaps appear
 		* Manage the bitmaps through ImageLoader
 		* instead of launch argument, could add console commands (this applies to FPS display too)
@@ -191,18 +199,12 @@ Memory management/error handling
 As of the audio update, performance is much worse on large levels-- what could be causing this?
 	* not drawing entity groups fixes this
 		# they might have some associated images that aren't getting converted into video bitmaps
-		# maybe we need to break down their images into subsections
+		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
 
 Document how to format serialized things like dialog trees so I don't forget
 	* take this into account when improving level editor
 
 Test large world with lots of NPCs so I know ahead of time if I need to fix performance issues
-
-Fix performance issues
-	* look into the font for the FPS counter since it's created right at the beginning
-		# also font for title screen? (might need to destroy)
-
-When debugging performance, check for al_create_bitmap and al_load_font references to make sure we aren't using memory bitmaps after startup
 
 Asynchronous loading screen
 	* https://www.allegro.cc/forums/thread/615021
@@ -217,14 +219,8 @@ If necessary, could make it so we asynchronously load only adjacent levels to th
 Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
 	* remember to re-save levels in the editor after making this change or any others like it
 	* this same strategy could apply to a lot of serializable objects
-	* in addition to serializable values, we can probably get rid of others as well
-
-One possible problem might be in Tile.replace_block(). At some point, we create new interactActions, contactActions, etc., so make sure the old ones are getting properly deleted.
-	* can probably store these actions more globally (or do we already do this?)
 
 Fix build warnings
-
-If the tree bitmaps are ever a problem, could refactor image storage so we break large bitmaps into 64x64 subsections
 
 ---------------------------------------------------
 Level editor
@@ -240,7 +236,6 @@ What to use tileset tab for?
 Tiled Images
 	* no room to put it on tileset tab-- need to reorganize it
 		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
-
 
 ---------------------------------------------------
 Cutscenes
@@ -269,6 +264,12 @@ Check NPC pathing when generating and in new day update (in former case, keep re
 How to place special objects/arrangements of objects that won't always be in the same spot?
 	* example: crashed car
 
+Make a "PlantType" class or something similar and have EntityTypes point to it with a "plant type key" or something similar if they are plants
+	* might not even need a plant type key-- could just use entity key
+	* When generating ferns, copy over this data in Plant methods rather than checking a bunch of entity attributes
+	* Can still store the entity attributes though, because it's nice to have blocks all be the same class
+	* probably only need to do this if plants become more complicated
+
 ---------------------------------------------------
 Bug fixes
 ---------------------------------------------------
@@ -282,8 +283,6 @@ Exception when going to a level that doesn't exist
 ---------------------------------------------------
 Art/content
 ---------------------------------------------------
-
-Draw Aleepee and Renaldo
 
 Draw the leaves for the large tree sprite
 	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
@@ -368,7 +367,7 @@ Contact with thorns should cost stamina (look for a "damage" attribute that I al
 Menus
 ---------------------------------------------------
 
-Fix the way we load game from title screen-- need to select a specific day (and should probably display the current day in menu)
+Fix the way we load game from title screen-- need to select (did I mean "display"?) a specific day (and should probably display the current day in menu)
 	* save current day in global xml that exists outside the day folders?
 
 Need to make a "restore defaults" (or something similar) button for video configurations
@@ -383,6 +382,8 @@ Nicer looking menus
 Controls
 ---------------------------------------------------
 
+Allow exiting from calendar screen (I think there's a button for it but it doesn't get mapped or something)
+
 Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
 
 Make it so the game can detect when a controller is plugged in and update properly
@@ -395,8 +396,6 @@ Long term
 ---------------------------------------------------
 
 Hire a sprite artist
-
-Compose music
 
 Look up how to get on steam ahead of time
 

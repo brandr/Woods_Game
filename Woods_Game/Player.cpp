@@ -6,6 +6,16 @@
 #include <iostream>
 #include <algorithm>
 
+void Player::quest_item_update(World * world, Level * level, GlobalTime * time)
+{
+	for (auto const &it : this->pending_quest_item_updates) {
+		const std::string quest_item_key = it.first;
+		const bool has_item = it.second;
+		world->set_has_quest_item(quest_item_key, has_item);
+	}
+	this->clear_pending_quest_item_updates();
+}
+
 void Player::collide_with_entity(World * world, Level * level, Entity * e)
 {
 	Being::collide_with_entity(world, level, e);
@@ -106,6 +116,11 @@ void Player::reset_entity_flags()
 	set_entity_attribute(E_ATTR_HIT_OTHER, 0);
 }
 
+void Player::reset_serialized_data()
+{
+	this->inventory.reset();
+}
+
 void Player::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
 	const std::pair<int, int> level_dimensions = level->get_dimensions();
@@ -126,6 +141,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 	if (this->interacting) {
 		this->interact_update(world, level, time);
 	}
+	this->quest_item_update(world, level, time);
 	clear_input();
 }
 
@@ -372,17 +388,35 @@ const int Player::wake_up_time()
 
 void Player::dialog_update(World * world, Level * level)
 {
-	if (this->open_dialog) {
+	if (this->open_dialog != NULL) {
 		const std::string action_key = this->open_dialog->get_active_action_key();
+		std::vector<InteractAction *> actions = this->open_dialog->get_active_actions();
 		TriggerStatus * trigger_status = this->open_dialog->get_active_trigger_status();
 		if (trigger_status != NULL) {
 			world->copy_trigger_status(trigger_status);
 			this->open_dialog->set_active_trigger_status(NULL);
 		}
-		if (action_key.length() > 0) {
-			const InteractActionManager &manager = InteractActionManager::get_instance();
+		std::vector<QuestUpdate *> quest_updates = this->open_dialog->get_pending_quest_updates();
+		if (!quest_updates.empty()) {
+			for (QuestUpdate * qu : quest_updates) {
+				world->process_quest_update(qu);
+			}
+			this->open_dialog->unset_pending_quest_updates();
+		}
+		const InteractActionManager &manager = InteractActionManager::get_instance();
+		if (!actions.empty()) {
+			for (InteractAction * ia : actions) {
+				manager.run_action(world, level, ia, this, NULL);
+			}
+			this->open_dialog->clear_active_actions();
+			this->open_dialog->set_active_action_key("");
+		} else if (action_key.length() > 0) {
 			manager.run_action(world, level, action_key, this->open_dialog->get_action_bindings(), this);
+			if (this->open_dialog != NULL) {
+				this->open_dialog->set_active_action_key("");
+			}
 		}  else {
+			// no actions
 			this->open_dialog->update();
 			if (this->should_close_dialog) {
 				this->close_dialog();
@@ -688,6 +722,30 @@ void Player::use_selected_item()
 	}
 }
 
+const bool Player::has_item_with_key(const int item_key)
+{
+	return this->inventory.has_item_with_key(item_key);
+}
+
+Item * Player::get_item_with_key(const int item_key)
+{
+	return this->inventory.get_item_with_key(item_key);
+}
+
+void Player::remove_item_with_key(const int item_key)
+{
+	this->inventory.remove_item_with_key(item_key);
+}
+
+void Player::add_item_with_key(const int item_key)
+{
+	if (!this->inventory.is_full()) {
+		Item * item = ItemManager::get_instance().create_item(item_key);
+		this->inventory.add_item(item);
+		//TODO: sound effect (probably serialized in the item)
+	}
+}
+
 void Player::hotbar_index_left()
 {
 	if (current_action != ACTION_NONE) return;
@@ -730,13 +788,27 @@ Inventory& Player::get_inventory()
 	return inventory;
 }
 
+void Player::set_exchange_inventory_key(const std::string inventory_key)
+{
+	this->exchange_inventory_key = inventory_key;
+}
+
+const std::string Player::get_exchange_inventory_key()
+{
+	return this->exchange_inventory_key;
+}
+
+void Player::adjust_money(const float adjust_amount)
+{
+	this->inventory.adjust_money(adjust_amount);
+}
+
 void Player::advance_dialog()
 {
 	if (this->open_dialog) {
 		this->open_dialog->advance_dialog();
 		if (!this->open_dialog->has_current_page()) {
 			this->should_close_dialog = true;
-			//this->close_dialog();
 		}
 	}
 }
@@ -802,6 +874,28 @@ void Player::clear_pending_triggers()
 void Player::set_has_met_npc(const std::string npc_key)
 {
 	this->pending_trigger_updates[SET_HAS_MET_NPC] = npc_key;
+}
+
+const bool Player::gather_plant(Entity * plant)
+{
+	if (!this->inventory.is_full()) {
+		plant->set_entity_attribute(GameImage::E_ATTR_BROKEN, 1);
+		Item * plant_item = plant->get_plant_gather_item();
+		this->inventory.add_item(plant_item);
+		//TODO: sound effect (probably serialized in the plant)
+		return true;
+	}
+	return false;
+}
+
+void Player::add_pending_quest_item_update(const std::string quest_item_key, const bool has_item)
+{
+	this->pending_quest_item_updates[quest_item_key] = has_item;
+}
+
+void Player::clear_pending_quest_item_updates()
+{
+	this->pending_quest_item_updates.clear();
 }
 
 //TODO: need to check for no next level in the given direction

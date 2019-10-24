@@ -114,6 +114,109 @@ const int trigger_cutscene(
 	return 0;
 }
 
+const int gather_plant(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (actor != NULL && player != NULL) {
+		if (player->gather_plant(actor)) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+const int remove_item(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string item_key = action->get_binding("item_key");
+		if (!item_key.empty()) {
+			const int item_key_int = ::atoi(item_key.c_str());
+			if (player->has_item_with_key(item_key_int)) {
+				player->remove_item_with_key(item_key_int);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+const int add_item(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string item_key = action->get_binding("item_key");
+		if (!item_key.empty()) {
+			const int item_key_int = ::atoi(item_key.c_str());
+			if (!player->get_inventory().is_full()) {
+				player->add_item_with_key(item_key_int);
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
+const int set_has_quest_item(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string quest_item_key = action->get_binding("quest_item_key");
+		const std::string has_item = action->get_binding("has_quest_item");
+		if (!quest_item_key.empty() && !has_item.empty()) {
+			const int has_flag = ::atoi(has_item.c_str());
+			player->add_pending_quest_item_update(quest_item_key, has_flag);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+const int adjust_player_money(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string money_amount_str = action->get_binding("money_amount");
+		if (!money_amount_str.empty()) {
+			const float money_amount = ::atof(money_amount_str.c_str());
+			player->adjust_money(money_amount);
+			return 1;
+		}
+	}
+	return 0;
+}
+
+const int exchange_inventory(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string inventory_key = action->get_binding("inventory_key");
+		if (!inventory_key.empty()) {
+			player->set_exchange_inventory_key(inventory_key);
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
@@ -135,6 +238,18 @@ void InteractActionManager::initialize_functions()
 	this->function_map["plant_day_update"] = fcnPtr;
 	fcnPtr = trigger_cutscene;
 	this->function_map["trigger_cutscene"] = fcnPtr;
+	fcnPtr = gather_plant;
+	this->function_map["gather_plant"] = fcnPtr;
+	fcnPtr = remove_item;
+	this->function_map["remove_item"] = fcnPtr;
+	fcnPtr = add_item;
+	this->function_map["add_item"] = fcnPtr;
+	fcnPtr = set_has_quest_item;
+	this->function_map["set_has_quest_item"] = fcnPtr;
+	fcnPtr = adjust_player_money;
+	this->function_map["adjust_player_money"] = fcnPtr;
+	fcnPtr = exchange_inventory;
+	this->function_map["exchange_inventory"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()

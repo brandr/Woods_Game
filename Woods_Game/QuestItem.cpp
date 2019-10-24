@@ -25,3 +25,8 @@ const bool QuestItem::get_is_obtained()
 {
 	return this->is_obtained.value();
 }
+
+void QuestItem::set_is_obtained(const bool value)
+{
+	this->is_obtained = value;
+}

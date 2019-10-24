@@ -6,6 +6,11 @@ ALLEGRO_BITMAP * InventoryScreen::inventory_backdrop()
 	return ImageLoader::get_instance().get_image("ui/inventory_backdrop");
 }
 
+ALLEGRO_BITMAP * InventoryScreen::inventory_backdrop_large()
+{
+	return ImageLoader::get_instance().get_image("ui/inventory_backdrop_large");
+}
+
 ALLEGRO_BITMAP * InventoryScreen::inventory_tab_selected()
 {
 	return ImageLoader::get_instance().get_image("ui/inventory_tab_selected");
@@ -31,6 +36,16 @@ ALLEGRO_BITMAP * InventoryScreen::item_box_selected()
 ALLEGRO_BITMAP * InventoryScreen::item_box_inventory()
 {
 	return ImageLoader::get_instance().get_image("ui/item_box_1_dark");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_box_trash()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1_trash");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::item_box_trash_dark()
+{
+	return ImageLoader::get_instance().get_image("ui/item_box_1_trash_dark");
 }
 
 ALLEGRO_BITMAP * InventoryScreen::item_drag_selection()
@@ -80,6 +95,41 @@ ALLEGRO_BITMAP * InventoryScreen::map_fog()
 	return ImageLoader::get_instance().get_image("ui/map_fog");
 }
 
+ALLEGRO_BITMAP * InventoryScreen::quest_pane_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_pane_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_label_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_label_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_label_backdrop_completed()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_label_backdrop_completed");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_label_backdrop_failed()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_label_backdrop_failed");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_label_selection()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_label_selection");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_scroll_up_arrow()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_scroll_up_arrow");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::quest_scroll_down_arrow()
+{
+	return ImageLoader::get_instance().get_image("ui/quest_scroll_down_arrow");
+}
+
 // tabs
 
 const std::string InventoryScreen::label_for_tab(const int index)
@@ -101,11 +151,41 @@ void InventoryScreen::reset_tab_mode()
 	this->tab_mode = TAB_MODE_DEFAULT;
 }
 
+const int InventoryScreen::num_inventory_rows()
+{
+	return INVENTORY_ROWS;
+}
+
+const int InventoryScreen::num_inventory_cols()
+{
+	return INVENTORY_COLS;
+}
+
+const bool InventoryScreen::allow_trash()
+{
+	return true;
+}
+
+const bool InventoryScreen::is_selecting_trash()
+{
+	return this->allow_trash() && inventory_selection.second == -2 && inventory_selection.first == 0;
+}
+
 void InventoryScreen::items_tab_menu_up()
 {
-	const int rows = inventory->get_inventory_items().size();
+	const int rows = this->num_inventory_rows(); 
 	const int x = inventory_selection.first;
-	const int y = inventory_selection.second == -1 ? rows - 1 : inventory_selection.second - 1;
+	const int min_y = this->allow_trash() && x == 0 ? -2 : -1;
+	int y = 0;
+	if (inventory_selection.second == -2) {
+		y = -1;
+	} else if (inventory_selection.second == -1) {
+		y = rows - 1;
+	} else if (inventory_selection.second == 0) {
+		y = this->allow_trash() && x == 0 ? -2 : -1;
+	} else {
+		y = inventory_selection.second - 1;
+	}
 	inventory_selection = std::pair<int, int>(x, y);
 	if (y == -1) {
 		inventory->set_hotbar_index(x);
@@ -114,9 +194,19 @@ void InventoryScreen::items_tab_menu_up()
 
 void InventoryScreen::items_tab_menu_down()
 {
-	const int rows = inventory->get_inventory_items().size();
+	
+	const int rows = this->num_inventory_rows();
 	const int x = inventory_selection.first;
-	const int y = inventory_selection.second == rows - 1 ? -1 : inventory_selection.second + 1;
+	int y = 0;
+	if (inventory_selection.second == rows - 1) {
+		y = -1;
+	} else if (inventory_selection.second == -2) {
+		y = 0;
+	} else if (inventory_selection.second == -1) {
+		y = this->allow_trash() && x == 0 ? -2 : 0;
+	} else {
+		y = inventory_selection.second + 1;
+	}
 	inventory_selection = std::pair<int, int>(x, y);
 	if (y == -1) {
 		inventory->set_hotbar_index(x);
@@ -125,9 +215,12 @@ void InventoryScreen::items_tab_menu_down()
 
 void InventoryScreen::items_tab_menu_left()
 {
-	const int cols = inventory->get_inventory_items()[0].size();
-	int x = inventory_selection.first == 0 ? cols - 1 : inventory_selection.first - 1;
+	if (this->is_selecting_trash()) {
+		return;
+	}
+	const int cols = this->num_inventory_cols();
 	const int y = inventory_selection.second;
+	const int x = inventory_selection.first == 0 ? cols - 1 : inventory_selection.first - 1;
 	inventory_selection = std::pair<int, int>(x, y);
 	if (y == -1) {
 		inventory->hotbar_index_left();
@@ -136,9 +229,12 @@ void InventoryScreen::items_tab_menu_left()
 
 void InventoryScreen::items_tab_menu_right()
 {
-	const int cols = inventory->get_inventory_items()[0].size();
-	const int x = inventory_selection.first == cols - 1 ? 0 : inventory_selection.first + 1;
+	if (this->is_selecting_trash()) {
+		return;
+	}
+	const int cols = this->num_inventory_cols();
 	const int y = inventory_selection.second;
+	const int x = inventory_selection.first == cols - 1 ? 0 : inventory_selection.first + 1;
 	inventory_selection = std::pair<int, int>(x, y);
 	if (y == -1) {
 		inventory->hotbar_index_right();
@@ -147,6 +243,12 @@ void InventoryScreen::items_tab_menu_right()
 
 void InventoryScreen::items_tab_select()
 {
+	if (this->is_selecting_trash()) {
+		if (dragging_item() != NULL && !dragging_item()->is_empty() && dragging_item()->get_may_be_discarded()) {
+			this->inventory->remove_item_with_key(dragging_item()->get_item_key());
+		}
+		return;
+	}
 	Item* item = selected_item();
 	if (dragging_item() != NULL) {
 		if (item == NULL) {
@@ -159,7 +261,7 @@ void InventoryScreen::items_tab_select()
 			dragging_selection = std::pair<int, int>(-1, -1);
 		}
 	} else {
-		if (item == NULL) return;
+		if (item == NULL || item->is_empty()) return;
 		dragging_selection = std::pair<int, int>(inventory_selection.first, inventory_selection.second);
 	}
 }
@@ -208,32 +310,64 @@ void InventoryScreen::map_tab_menu_right()
 	}
 }
 
+std::vector<Quest*> InventoryScreen::quests_for_display()
+{
+	std::vector<Quest*> quests;
+	quests.insert(quests.end(), this->active_quests.begin(), this->active_quests.end());
+	quests.insert(quests.end(), this->failed_quests.begin(), this->failed_quests.end());
+	quests.insert(quests.end(), this->completed_quests.begin(), this->completed_quests.end());
+	return quests;
+}
+
+const int InventoryScreen::num_quest_rows()
+{
+	return this->quests_for_display().size();
+}
+
+void InventoryScreen::adjust_quest_scroll()
+{
+	if (this->num_quest_rows() == 0 || this->quest_selection.first < QUEST_INVENTORY_COLS) {
+		return;
+	}
+	const int quest_y = this->quest_selection.second;
+	if (quest_y < this->quest_scroll_offset) {
+		this->quest_scroll_offset = quest_y;
+	} else if (quest_y - 5 >= this->quest_scroll_offset) {
+		this->quest_scroll_offset = quest_y - 4;
+	}
+}
+
 void InventoryScreen::journal_tab_menu_up()
 {
-	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	const int journal_entry_rows = this->num_quest_rows();
 	const int x = quest_selection.first;
-	const int num_rows = x < QUEST_INVENTORY_COLS ? QUEST_INVENTORY_ROWS : journal_entry_rows;
+	const bool is_quests = x == QUEST_INVENTORY_COLS;
+	const int num_rows = !is_quests ? QUEST_INVENTORY_ROWS : journal_entry_rows;
 	const int y = quest_selection.second == 0 ? num_rows - 1 : quest_selection.second - 1;
 	quest_selection = std::pair<int, int>(x, y);
+	this->adjust_quest_scroll();
 }
 
 void InventoryScreen::journal_tab_menu_down()
 {
-	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
+	const int journal_entry_rows = this->num_quest_rows();
 	const int x = quest_selection.first;
-	const int num_rows = x < QUEST_INVENTORY_COLS ? QUEST_INVENTORY_ROWS : journal_entry_rows;
+	const bool is_quests = x == QUEST_INVENTORY_COLS;
+	const int num_rows = !is_quests ? QUEST_INVENTORY_ROWS : journal_entry_rows;
 	const int y = quest_selection.second == num_rows - 1 ? 0 : quest_selection.second + 1;
 	quest_selection = std::pair<int, int>(x, y);
+	this->adjust_quest_scroll();
 }
 
 void InventoryScreen::journal_tab_menu_left()
 {
-	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
-	int x = quest_selection.first == 0 ? QUEST_INVENTORY_COLS : quest_selection.first - 1;
+	const int journal_entry_rows = this->num_quest_rows();
+	const int max_cols = journal_entry_rows > 0 ? QUEST_INVENTORY_COLS : QUEST_INVENTORY_COLS - 1;
+	int x = quest_selection.first == 0 ? max_cols : quest_selection.first - 1;
 	int y = 0;
-	if (x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
-		y = std::min(journal_entry_rows, quest_selection.second);
-	} else if (x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
+	if (journal_entry_rows > 0 && x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
+		y = std::min(journal_entry_rows - 1, quest_selection.second);
+	} else if (journal_entry_rows > 0 && x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
 		y = std::min(QUEST_INVENTORY_ROWS - 1, quest_selection.second);
 	} else {
 		y = quest_selection.second;
@@ -243,13 +377,14 @@ void InventoryScreen::journal_tab_menu_left()
 
 void InventoryScreen::journal_tab_menu_right()
 {
-	const int journal_entry_rows = 6; // TODO: what is the other part of the journal called? are these "quests"? How many rows are there?
-	int x = quest_selection.first == QUEST_INVENTORY_COLS ? 0 : quest_selection.first + 1;
+	const int journal_entry_rows = this->num_quest_rows();
+	const int max_cols = journal_entry_rows > 0 ? QUEST_INVENTORY_COLS : QUEST_INVENTORY_COLS - 1;
+	int x = quest_selection.first == max_cols ? 0 : quest_selection.first + 1;
 	int y = 0;
-	if (x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
-		y = std::min(journal_entry_rows, quest_selection.second);
+	if (journal_entry_rows > 0 && x == QUEST_INVENTORY_COLS) { // we went from quests to journal entries
+		y = std::min(journal_entry_rows - 1, quest_selection.second);
 	}
-	else if (x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
+	else if (journal_entry_rows > 0 && x == QUEST_INVENTORY_COLS - 1) { // we went from journal entries to quests
 		y = std::min(QUEST_INVENTORY_ROWS - 1, quest_selection.second);
 	} else {
 		y = quest_selection.second;
@@ -264,10 +399,13 @@ void InventoryScreen::journal_tab_secondary_select()
 		return;
 	}
 	QuestItem * qi = this->selected_quest_item();
-	if (qi == NULL || qi->is_empty() || !qi->get_is_obtained()) {
-		return;
+	if (qi != NULL && !qi->is_empty() && qi->get_is_obtained()) {
+		this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
 	}
-	this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+	Quest * q = this->selected_quest();
+	if (q != NULL) {
+		this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+	}
 }
 
 InventoryScreen::InventoryScreen()
@@ -283,12 +421,15 @@ void InventoryScreen::load_content()
 {
 	// load images
 	ImageLoader::get_instance().load_image("ui/inventory_backdrop");
+	ImageLoader::get_instance().load_image("ui/inventory_backdrop_large");
 	ImageLoader::get_instance().load_image("ui/inventory_tab_selected");
 	ImageLoader::get_instance().load_image("ui/inventory_tab_deselected");
 	// items
 	ImageLoader::get_instance().load_image("ui/item_box_1");
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/item_box_1_dark");
+	ImageLoader::get_instance().load_image("ui/item_box_1_trash");
+	ImageLoader::get_instance().load_image("ui/item_box_1_trash_dark");
 	ImageLoader::get_instance().load_image("ui/item_selection_1");
 	ImageLoader::get_instance().load_image("ui/item_label_backdrop");
 	ImageLoader::get_instance().load_image("ui/item_description_backdrop");	
@@ -299,6 +440,14 @@ void InventoryScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/map_selection_icon");
 	ImageLoader::get_instance().load_image("ui/map_location_label_frame");
 	ImageLoader::get_instance().load_image("ui/map_fog");
+	// journal
+	ImageLoader::get_instance().load_image("ui/quest_pane_backdrop");
+	ImageLoader::get_instance().load_image("ui/quest_label_backdrop");
+	ImageLoader::get_instance().load_image("ui/quest_label_backdrop_completed");
+	ImageLoader::get_instance().load_image("ui/quest_label_backdrop_failed");
+	ImageLoader::get_instance().load_image("ui/quest_label_selection");
+	ImageLoader::get_instance().load_image("ui/quest_scroll_up_arrow");
+	ImageLoader::get_instance().load_image("ui/quest_scroll_down_arrow");
 }
 
 void InventoryScreen::load_fonts()
@@ -310,6 +459,7 @@ void InventoryScreen::load_fonts()
 	font_map[FONT_ITEM_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 	font_map[FONT_ITEM_DESCRIPTION] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 18, NULL);
 	font_map[FONT_MONEY] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
+	font_map[FONT_QUEST_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
@@ -320,12 +470,16 @@ void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 	this->draw_tab_selection(display);
 	switch (this->tab_index) {
 	case INVENTORY_TAB_ITEMS:
-		draw_inventory(display);
-		draw_hotbar(display);
+		draw_inventory(display, this->inventory, 0, 0, this->inventory_selection.first, this->inventory_selection.second,
+			this->dragging_selection.first, this->dragging_selection.second);
+		draw_hotbar(display, this->inventory, 0, 0);
 		draw_item_label(display);
 		draw_money(display);
 		if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
 			draw_item_description(display);
+		}
+		if (this->allow_trash()) {
+			draw_trash(display);
 		}
 		break;
 	case INVENTORY_TAB_MAP:
@@ -334,7 +488,7 @@ void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 	case INVENTORY_TAB_JOURNAL:
 		draw_journal(display);
 		if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
-			draw_quest_item_description(display);
+			draw_quest_description(display);
 		}
 		break;
 	default:
@@ -356,9 +510,11 @@ void InventoryScreen::draw_tab_selection(ALLEGRO_DISPLAY * display)
 	}
 }
 
-void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
+void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display, Inventory * draw_inv, const int x_off, const int y_off, 
+	const int select_x, const int select_y,
+	const int drag_x, const int drag_y)
 {
-	const std::vector<std::vector<Item*>> inventory_items = inventory->get_inventory_items();
+	const std::vector<std::vector<Item*>> inventory_items = draw_inv->get_inventory_items();
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(item_box_hotbar());
@@ -366,56 +522,57 @@ void InventoryScreen::draw_inventory(ALLEGRO_DISPLAY * display)
 	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
 	const int rows = inventory_items.size();
 	const int cols = inventory_items[0].size();
+	const std::pair<int, int> selection(select_x, select_y);
 	for (int row = 0; row < rows; row++) {
 		const float y = (height - backdrop_height)/2.0  + box_height*row + 32.0;
 		for (int col = 0; col < cols; col++) {
 			const float x = (width - box_width*cols) / 2.0 + col*box_width;
-			if (col == inventory_selection.first && row == inventory_selection.second) {
-				al_draw_bitmap(item_box_selected(), x, y, 0);
+			if (col == selection.first && row == selection.second) {
+				al_draw_bitmap(item_box_selected(), x_off + x, y_off + y, 0);
 			} else {
-				al_draw_bitmap(item_box_inventory(), x, y, 0);
+				al_draw_bitmap(item_box_inventory(), x_off + x, y_off + y, 0);
 			}
-			Item* item = inventory->get_item(col, row);
-			if (item && !(dragging_selection.first == col && dragging_selection.second == row))
-				item->draw(display, x, y);
-			if (col == dragging_selection.first && row == dragging_selection.second) {
-				al_draw_bitmap(item_drag_selection(), x, y, 0);
+			Item* item = draw_inv->get_item(col, row);
+			if (item && !(drag_x == col && drag_y == row))
+				item->draw(display, x_off + x, y_off + y);
+			if (col == drag_x && row == drag_y) {
+				al_draw_bitmap(item_drag_selection(), x_off + x, y_off + y, 0);
 			}
 		}
 	}
 	if (selecting_internal_inventory() && dragging_item()) {
-		const float drag_x = (width - box_width*cols) / 2 + inventory_selection.first*box_width;
-		const float drag_y = (height - backdrop_height) / 2 + box_height*inventory_selection.second + 32;
-		dragging_item()->draw(display, drag_x, drag_y);
+		const float drag_x = (width - box_width*cols) / 2 + select_x*box_width;
+		const float drag_y = (height - backdrop_height) / 2 + box_height*select_y + 32;
+		dragging_item()->draw(display, x_off + drag_x, y_off + drag_y);
 	}
 }
 
-void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
+void InventoryScreen::draw_hotbar(ALLEGRO_DISPLAY * display, Inventory * draw_inv, const int x_off, const int y_off)
 {
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
 	const int box_width = al_get_bitmap_width(item_box_hotbar());
 	const int box_height = al_get_bitmap_height(item_box_hotbar());
-	const int hotbar_index = inventory->get_hotbar_index();
+	const int hotbar_index = draw_inv->get_hotbar_index();
 	const float y = (height + al_get_bitmap_height(inventory_backdrop()))/2 - box_height - 100;
 	const int size = HOTBAR_SIZE;
 	for (int i = 0; i < size; i++) {
 		const float x = (width - box_width*size) / 2 + i*box_width;
-		if (!selecting_internal_inventory() && i == hotbar_index) {
-			al_draw_bitmap(item_box_selected(), x, y, 0);
+		if (this->inventory_selection.second == -1 && i == hotbar_index) {
+			al_draw_bitmap(item_box_selected(), x_off + x, y_off + y, 0);
 		} else {
-			al_draw_bitmap(item_box_hotbar(), x, y, 0);
+			al_draw_bitmap(item_box_hotbar(), x_off + x, y_off + y, 0);
 		}
-		if (i == dragging_selection.first && dragging_selection.second < 0) {
-			al_draw_bitmap(item_drag_selection(), x, y, 0);
+		if (!this->is_selecting_trash() && i == dragging_selection.first && dragging_selection.second < 0) {
+			al_draw_bitmap(item_drag_selection(), x_off + x, y_off + y, 0);
 		}
-		Item* item = inventory->get_hotbar_item(i);
+		Item* item = draw_inv->get_hotbar_item(i);
 		if (item && !(dragging_selection.first == i && dragging_selection.second < 0)) 
-			item->draw(display, x, y);
+			item->draw(display, x_off + x, y_off + y);
 	}
-	if (!selecting_internal_inventory() && dragging_item()) {
+	if (this->inventory_selection.second == -1 && dragging_item()) {
 		const float drag_x = (width - box_width*size) / 2 + inventory_selection.first*box_width;
-		dragging_item()->draw(display, drag_x , y);
+		dragging_item()->draw(display, x_off + drag_x , y_off + y);
 	}
 }
 
@@ -472,6 +629,26 @@ void InventoryScreen::draw_money(ALLEGRO_DISPLAY * display)
 	const float text_height = al_get_font_line_height(this->font_map[FONT_MONEY]);
 	al_draw_text(this->font_map[FONT_MONEY], al_map_rgb(0, 0, 0), 
 		x_off + back_w - text_width - 20, y_off + back_h - text_height - 20, 0, money_text.c_str());
+}
+
+void InventoryScreen::draw_trash(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int back_width = al_get_bitmap_width(inventory_backdrop());
+	const int back_height = al_get_bitmap_height(inventory_backdrop());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int size = HOTBAR_SIZE;
+
+	const float x = (width - box_width * size) / 2;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 28;
+	ALLEGRO_BITMAP * trash_box = this->is_selecting_trash() ? item_box_trash() : item_box_trash_dark();
+	al_draw_bitmap(trash_box, x, y, 0);
+
+	if (this->is_selecting_trash() && dragging_item()) {
+		dragging_item()->draw(display, x, y);
+	}
 }
 
 void InventoryScreen::draw_map(ALLEGRO_DISPLAY * display)
@@ -579,36 +756,90 @@ void InventoryScreen::draw_journal(ALLEGRO_DISPLAY * display)
 			}
 		}
 	}
+
+	// draw quests
+
+	const int quest_pane_x = x_off + back_w / 2 + 24, quest_pane_y = y_off + 24;
+
+	al_draw_bitmap(this->quest_pane_backdrop(), quest_pane_x , quest_pane_y , 0);
+
+	const int qx = quest_pane_x + 16;
+	const int quest_entry_height = 63; 
+	const int quest_count = this->quests_for_display().size();
+	const int draw_quest_rows = std::min(quest_count, 5);
+	std::vector<Quest *> quests = this->quests_for_display();
+	for (int i = 0; i < draw_quest_rows; i++) {
+		Quest * q = quests[i + this->quest_scroll_offset];
+		const int qy = quest_pane_y + 16 + (i * quest_entry_height);
+		ALLEGRO_BITMAP * label_backdrop = NULL;
+		if (q->is_completed()) {
+			label_backdrop = this->quest_label_backdrop_completed();
+		}
+		else if (q->is_failed()) {
+			label_backdrop = this->quest_label_backdrop_failed();
+		}
+		else {
+			label_backdrop = this->quest_label_backdrop();
+		}
+		al_draw_bitmap(label_backdrop, qx, qy, 0);
+		al_draw_text(this->font_map[FONT_QUEST_LABEL], al_map_rgb(0, 0, 0), qx + 16, qy + 10, 0, q->get_quest_name().c_str());
+	}
+
 	const bool is_quest_item = this->quest_selection.first < QUEST_INVENTORY_COLS;
-	// TODO: different x and y for !is_quest_item
-	const int select_x = x_off + quest_items_off_x + this->quest_selection.first * (TILE_SIZE + x_pad);
-	const int select_y = y_off + quest_items_off_y + this->quest_selection.second * (TILE_SIZE + y_pad);
+
+	const int select_x = is_quest_item ? 
+		x_off + quest_items_off_x + this->quest_selection.first * (TILE_SIZE + x_pad)
+		: quest_pane_x + 16;
+	const int select_y = is_quest_item ? 
+		y_off + quest_items_off_y + this->quest_selection.second * (TILE_SIZE + y_pad)
+		: quest_pane_y + 16 + (this->quest_selection.second - this->quest_scroll_offset) * quest_entry_height;
 	
-	ALLEGRO_BITMAP * select_bitmap = is_quest_item ? this->item_drag_selection() : this->item_drag_selection(); // TODO: different bitmap for journal entries
-	al_draw_bitmap(item_drag_selection(), select_x, select_y, 0); //TODO: might want a different bitmap here
-	//TODO: draw other journal related stuff
+	ALLEGRO_BITMAP * select_bitmap = is_quest_item ? this->item_drag_selection() : this->quest_label_selection();
+	al_draw_bitmap(select_bitmap, select_x, select_y, 0);
+
+	const bool is_hiding_quests_up = this->quest_scroll_offset > 0;
+	const bool is_hiding_quests_down = this->quest_scroll_offset + 5 < this->quests_for_display().size();
+	if (is_hiding_quests_up) {
+		al_draw_bitmap(quest_scroll_up_arrow(), quest_pane_x + 16 + al_get_bitmap_width(quest_label_backdrop()) + 6, quest_pane_y + 16, 0);
+	}
+	if (is_hiding_quests_down) {
+		al_draw_bitmap(quest_scroll_down_arrow(), quest_pane_x + 16 + al_get_bitmap_width(quest_label_backdrop()) + 6, 
+			quest_pane_y + al_get_bitmap_height(this->quest_pane_backdrop()) - al_get_bitmap_height(quest_scroll_down_arrow()) - 16, 0);
+	}
 }
 
-void InventoryScreen::draw_quest_item_description(ALLEGRO_DISPLAY * display)
+void InventoryScreen::draw_quest_description(ALLEGRO_DISPLAY * display)
 {
+	FileManager fm;
+	ALLEGRO_FONT * font = this->font_map[FONT_ITEM_DESCRIPTION];
 	const int x = (al_get_display_width(display) - al_get_bitmap_width(item_description_backdrop())) / 2;
 	const int y = (al_get_display_height(display) - al_get_bitmap_height(item_description_backdrop())) / 2;
 	al_draw_bitmap(item_description_backdrop(), x, y, 0);
-	QuestItem * item = this->selected_quest_item();
-	if (item == NULL || item->is_empty() || !item->get_is_obtained()) {
-		return;
-	}
-	const std::string description = item->get_item_description();
-	FileManager fm;
-	ALLEGRO_FONT * font = this->font_map[FONT_ITEM_DESCRIPTION];
-	std::vector<std::string> description_lines = fm.string_to_parts(description, "\\n");
-	const int size = description_lines.size();
-	for (int i = 0; i < size; i++) {
-		const std::string line = description_lines[i];
-		if (line.empty()) {
-			continue;
+	Quest * quest = this->selected_quest();
+	if (quest != NULL) {
+		const std::string description = quest->get_quest_summary();
+		std::vector<std::string> description_lines = fm.string_to_parts(description, "\\n");
+		const int size = description_lines.size();
+		for (int i = 0; i < size; i++) {
+			const std::string line = description_lines[i];
+			if (line.empty()) {
+				continue;
+			}
+			al_draw_text(font, al_map_rgb(0, 0, 0), x + 40, y + 28 + i * al_get_font_line_height(font), 0, line.c_str());
 		}
-		al_draw_text(font, al_map_rgb(0, 0, 0), x + 40, y + 28 + i * al_get_font_line_height(font), 0, line.c_str());
+	}
+	QuestItem * item = this->selected_quest_item();
+	if (item != NULL && !item->is_empty() && item->get_is_obtained()) {
+		const std::string description = item->get_item_description();
+		std::vector<std::string> description_lines = fm.string_to_parts(description, "\\n");
+		const int size = description_lines.size();
+		for (int i = 0; i < size; i++) {
+			const std::string line = description_lines[i];
+			if (line.empty()) {
+				continue;
+			}
+			al_draw_text(font, al_map_rgb(0, 0, 0), x + 40, y + 28 + i * al_get_font_line_height(font), 0, line.c_str());
+		}
 	}
 }
 
@@ -624,6 +855,8 @@ void InventoryScreen::reset()
 {
 	this->dragging_selection = std::pair<int, int>(-1, -1);
 	this->reset_tab_mode();
+	this->quest_selection = std::pair<int, int>(0, 0); //easy way to keep from having weird bugs when there are no quests left
+	this->quest_scroll_offset = 0;
 }
 
 void InventoryScreen::menu_up()
@@ -774,15 +1007,38 @@ void InventoryScreen::set_inventory(Inventory * inventory)
 	inventory_selection = std::pair<int, int>(inventory->get_hotbar_index(), -1);
 }
 
+const bool InventoryScreen::has_inventory()
+{
+	return this->inventory != NULL;
+}
+
 void InventoryScreen::set_quest_data(QuestData * data)
 {
 	this->quest_data = data;
 }
 
-bool InventoryScreen::selecting_internal_inventory()
+void InventoryScreen::set_active_quests(std::vector<Quest*> quests)
 {
-	const int inv_rows = inventory->get_inventory_items().size();
-	const int inv_cols = inventory->get_inventory_items()[0].size();
+	this->active_quests = quests;
+}
+
+void InventoryScreen::set_failed_quests(std::vector<Quest*> quests)
+{
+	this->failed_quests = quests;
+}
+
+void InventoryScreen::set_completed_quests(std::vector<Quest*> quests)
+{
+	this->completed_quests = quests;
+}
+
+const bool InventoryScreen::selecting_internal_inventory()
+{
+	if (!this->has_inventory()) {
+		return false;
+	}
+	const int inv_rows = this->num_inventory_rows();
+	const int inv_cols = this->num_inventory_cols();
 	const int inv_select_x = inventory_selection.first, inv_select_y = inventory_selection.second;
 	return inv_select_x >= 0 && inv_select_y >= 0 && inv_select_x < inv_cols && inv_select_y < inv_rows;
 }
@@ -809,6 +1065,15 @@ Item * InventoryScreen::dragging_item()
 QuestItem * InventoryScreen::selected_quest_item()
 {
 	return this->quest_data->get_quest_item(this->quest_selection.first, this->quest_selection.second);
+}
+
+Quest * InventoryScreen::selected_quest()
+{
+	if (this->quest_selection.first < QUEST_INVENTORY_COLS) {
+		return NULL;
+	}
+	return this->quest_selection.second >= 0 && this->quest_selection.second < this->quests_for_display().size() ?
+	this->quests_for_display()[this->quest_selection.second] : NULL;
 }
 
 void InventoryScreen::set_world_key(const std::string value)

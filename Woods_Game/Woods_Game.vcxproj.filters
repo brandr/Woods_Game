@@ -445,6 +445,10 @@
     <ClInclude Include="Quest.h">
       <Filter>Quests\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ItemManager.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExchangeInventoryScreen.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -693,6 +697,10 @@
     <ClCompile Include="Quest.cpp">
       <Filter>Quests\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ItemManager.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExchangeInventoryScreen.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

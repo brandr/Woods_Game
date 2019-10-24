@@ -12,6 +12,7 @@
 #include "allegro5/bitmap_draw.h"  // for al_draw_bitmap
 #include "FileManager.h"           // for FileManager
 #include "ImageLoader.h"
+#include "ItemManager.h"
 #include "SpriteSheetAnimation.h"  // for SpriteSheetAnimation
 #include "stdlib.h"                // for atoi
 #include "vcruntime_new.h"         // for operator delete, operator new
@@ -37,6 +38,7 @@ private:
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
 	std::map<std::string, std::string> pending_trigger_updates;
+	std::map<std::string, bool> pending_quest_item_updates;
 	std::string destination_level_key_override = "";
 	std::pair<int, int> destination_level_pos_override = std::pair<int,int>(-1,-1);
 	bool interacting = false;
@@ -45,8 +47,10 @@ private:
 	Dialog * open_dialog = NULL;
 	Cutscene * active_cutscene;
 	std::string active_cutscene_key = "";
+	std::string exchange_inventory_key = "";
 	bool should_close_dialog = false;
 	bool should_open_calendar = false;
+	void quest_item_update(World * world, Level * level, GlobalTime * time);
 protected:
 	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	virtual void play_sounds_for_entity(Entity* e);
@@ -59,6 +63,7 @@ public:
 	virtual int get_type();
 	virtual void load_content_from_attributes();
 	void reset_entity_flags();
+	void reset_serialized_data();
 	virtual void update(World * world, Level * level, GlobalTime *time, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
 	void update_top_down(Level * level);
@@ -108,7 +113,12 @@ public:
 	void reset_exit_level();
 	void set_exit_level_flag(bool);
 	bool get_exit_level_flag();
+	// items
 	void use_selected_item();
+	const bool has_item_with_key(const int item_key);
+	Item * get_item_with_key(const int item_key);
+	void remove_item_with_key(const int item_key);
+	void add_item_with_key(const int item_key);
 	void hotbar_index_left();
 	void hotbar_index_right();
 	void interact();
@@ -116,6 +126,11 @@ public:
 	int get_current_action();
 	Item *get_selected_item();
 	Inventory &get_inventory();
+	void set_exchange_inventory_key(const std::string inventory_key);
+	const std::string get_exchange_inventory_key();
+	// money
+	void adjust_money(const float adjust_amount);
+	// dialog
 	void advance_dialog();
 	Dialog * get_open_dialog();
 	void set_open_dialog(Dialog * dialog);
@@ -128,6 +143,11 @@ public:
 	const std::map<std::string, std::string> get_pending_trigger_updates();
 	void clear_pending_triggers();
 	void set_has_met_npc(const std::string npc_key);
+	// plants
+	const bool gather_plant(Entity * plant);
+	// quests
+	void add_pending_quest_item_update(const std::string quest_item_key, const bool has_item);
+	void clear_pending_quest_item_updates();
 };
 
 #endif

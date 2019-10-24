@@ -1,12 +1,22 @@
 #include "QuestData.h"
 
-//TODO: load quest data from its own file and save to that file when saving game
-		// can probably maintain active quest data in gameimagemanager or world -- just don't serialize it
+Quest * QuestData::quest_with_key(const std::string quest_key)
+{
+	const int size = this->quests.size();
+	for (int i = 0; i < size; i++) {
+		Quest * q = this->quests.getItem(i);
+		if (quest_key == q->get_quest_key()) {
+			return q;
+		}
+	}
+	return NULL;
+}
+
 QuestData::QuestData()
 {
 	setClassName("QuestData");
 	Register("quest_items", &quest_items);
-	//TODO: quest items
+	Register("quests", &quests);
 }
 
 
@@ -46,4 +56,40 @@ QuestItem * QuestData::get_quest_item(const int inv_x, const int inv_y)
 		}
 	}
 	return NULL;
+}
+
+void QuestData::set_has_quest_item(const std::string item_key, const bool has_item)
+{
+	const int size = this->quest_items.size();
+	for (int i = 0; i < size; i++) {
+		QuestItem * qi = this->quest_items.getItem(i);
+		if (item_key == qi->get_item_name()) {
+			qi->set_is_obtained(has_item);
+			return;
+		}
+	}
+}
+
+std::vector<Quest*> QuestData::get_quests()
+{
+	std::vector<Quest*> quests_vec;
+	const int size = this->quests.size();
+	for (int i = 0; i < size; i++) {
+		quests_vec.push_back(this->quests.getItem(i));
+	}
+	return quests_vec;
+}
+
+// TODO: how to sort?
+std::vector<Quest*> QuestData::get_active_quests()
+{
+	std::vector<Quest*> quests_vec;
+	const int size = this->quests.size();
+	for (int i = 0; i < size; i++) {
+		Quest * q = this->quests.getItem(i);
+		if (q->is_active()) {
+			quests_vec.push_back(q);
+		}
+	}
+	return quests_vec;
 }

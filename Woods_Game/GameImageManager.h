@@ -49,8 +49,10 @@
 #include "Cutscene.h"
 #include "CutsceneScript.h"
 #include "InteractActionManager.h"
+#include "ItemManager.h"
 #include "LoadingData.h"
 #include "LocationMarker.h"
+#include "Quest.h"
 #include "QuestData.h"
 #include "boost/filesystem.hpp"
 
@@ -69,12 +71,14 @@ private:
 	void load_player();
 	void load_player_from_xml(std::string filepath, std::string player_key);
 	void load_all_cutscenes();
+	void load_item_templates();
 	CutsceneScript * get_cutscene_script(const std::string cutscene_key);
 	Cutscene * generate_cutscene(CutsceneScript * script);
 	CutsceneBlock * generate_cutscene_block(CutsceneScriptBlock * block);
 	const bool player_update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void check_player_cutscene(Player * player);
 	void player_exploration_update();
+	void player_exchange_inventory_update();
 	void pending_trigger_update();
 	NPC * get_npc(const std::string npc_key);
 
@@ -107,7 +111,12 @@ public:
 	Level * get_level_with_key(const std::string level_key);
 	std::vector<LocationMarker *> get_current_dungeon_location_markers();
 	Player* get_player();
+	Inventory * get_exchange_inventory();
+	void update_quests();
 	QuestData* get_quest_data();
+	std::vector<Quest *> get_active_quests();
+	std::vector<Quest *> get_failed_quests();
+	std::vector<Quest *> get_completed_quests();
 	void unload_content();
 	void unload_level_content();
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);
