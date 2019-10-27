@@ -1,4 +1,5 @@
 #include "Item.h"
+#include "ImageLoader.h"
 
 Item::Item()
 {

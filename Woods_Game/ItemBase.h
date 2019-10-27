@@ -1,8 +1,6 @@
 #ifndef ITEM_BASE_H
 #define ITEM_BASE_H
 
-#include "ImageLoader.h"
-
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
 #include "allegro5/allegro5.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY

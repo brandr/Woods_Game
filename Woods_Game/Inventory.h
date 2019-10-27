@@ -4,7 +4,11 @@
 #include "Item.h"
 #include "vector"  // for vector
 #include <memory>  // for allocator
+#include <algorithm>
+#include <iomanip>
 #include <iostream>
+#include <string>
+#include <sstream>
 #include "XMLSerialization.h"
 
 const static int HOTBAR_SIZE = 10;

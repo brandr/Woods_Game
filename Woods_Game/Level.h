@@ -11,6 +11,7 @@
 #include "vector"              // for vector
 #include "xstring"             // for string
 #include "EntityGroup.h"
+#include "ItemPickup.h"
 #include "LevelGenData.h"
 #include "LocationMarker.h"
 #include "XMLSerialization.h"
@@ -46,6 +47,7 @@ private:
 	xmls::Collection<TiledImageLayer> tiled_image_layers;
 	LevelGenData gen_data;
 	std::vector<Being*> beings;
+	std::vector<ItemPickup*> item_pickups; //TODO
 	xmls::xInt grid_x;
 	xmls::xInt grid_y;
 	xmls::xInt grid_width;
@@ -111,6 +113,8 @@ public:
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);
 	void add_being(Being *b);
+	void add_item_pickup(ItemPickup *ip);
+	void remove_item_pickup(ItemPickup *ip);
 	void remove_player();
 	void remove_being(Being *b);
 	void remove_beings(const int type);

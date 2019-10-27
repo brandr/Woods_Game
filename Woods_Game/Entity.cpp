@@ -2,6 +2,7 @@
 #include "GlobalTime.h"
 #include "Item.h"
 #include "ItemManager.h"
+#include "ItemPickup.h"
 #include "Player.h"
 #include "Level.h"
 #include "World.h"
@@ -55,6 +56,47 @@ void Entity::clear_sounds()
 		EntitySound * sound = it.second;
 		sound->is_playing = false;
 	}
+}
+
+void Entity::drop_items(Level * level, Player * player)
+{
+	
+	const int size = this->item_drops.size();
+	for (int i = 0; i < size; i++) {
+		ItemDrop * id = this->item_drops.getItem(i);
+		srand(std::time(NULL) + i);
+		bool should_drop = false;
+		const float rate = id->drop_rate.value();
+		if (rate == 1.0f) {
+			should_drop = true;
+		} else if (rate > 0.0f) {
+			const int roll = rand() % 100;
+			if (((float)roll) / 100.0f < rate) {
+				should_drop = true;
+			}
+		}
+		if (should_drop) {
+			this->drop_item(level, player, id);
+		}
+	}
+}
+
+void Entity::drop_item(Level * level, Player * player, ItemDrop * drop)
+{
+	ItemPickup * pickup = this->spawn_item_pickup(level, drop);
+	pickup->bounce_from_entity(player, 4);
+	level->add_item_pickup(pickup);
+}
+
+ItemPickup * Entity::spawn_item_pickup(Level * level, ItemDrop * drop)
+{
+	//TODO: should pos be offset? (might need to make sure it doesn't spawn directly on top of the player)
+	//			might need a timer so we don't pickup immediately
+	//TODO: velocity should be away from the player
+	std::pair<int, int> center = this->get_center();
+	const int pickup_x = center.first, pickup_y = center.second;
+	ItemPickup * pickup = new ItemPickup(drop->item_key.value(), pickup_x, pickup_y);
+	return pickup;
 }
 
 Entity::Entity()
@@ -236,13 +278,14 @@ const bool Entity::interact_action(World * world, Level * level, GlobalTime * ti
 	return interacted;
 }
 
-void Entity::entity_break()
+void Entity::entity_break(Level * level, Player * player)
 {
 	set_entity_attribute(E_ATTR_CURRENT_DURABILITY, 0);
 	set_entity_attribute(E_ATTR_BROKEN, 1);
 	auto it = entity_effects.find("break");
 	if (it == entity_effects.end()) return;
 	entity_effects["break"].set_effect_active(true);
+	this->drop_items(level, player);
 }
 
 void Entity::set_entity_data_index(int index)
@@ -405,13 +448,13 @@ int Entity::get_entity_sheet_row()
 	return this->entity_sheet_row.value();
 }
 
-void Entity::take_durability_damage(const int damage)
+void Entity::take_durability_damage(Level * level, Player * player, const int damage)
 {
 	if (!has_entity_attribute(E_ATTR_DURABILITY)) return;
 	if (!has_entity_attribute(E_ATTR_CURRENT_DURABILITY)) set_entity_attribute(E_ATTR_CURRENT_DURABILITY, get_entity_attribute(E_ATTR_DURABILITY));
 	const int current_durability = get_entity_attribute(E_ATTR_CURRENT_DURABILITY);
 	if (current_durability - damage <= 0) {
-		entity_break();
+		entity_break(level, player);
 		return;
 	}
 	set_entity_attribute(E_ATTR_CURRENT_DURABILITY, current_durability - damage);
@@ -585,7 +628,7 @@ std::vector<ItemDrop*> EntityData::get_item_drops()
 		ItemDrop * id1 = this->item_drops.getItem(i);
 		ItemDrop * id2 = new ItemDrop();
 		id2->item_key = id1->item_key.value();
-		id2->drop_rate = id2->drop_rate.value();
+		id2->drop_rate = id1->drop_rate.value();
 		drops.push_back(id2);
 	}
 	return drops;

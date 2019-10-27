@@ -16,10 +16,29 @@ void Player::quest_item_update(World * world, Level * level, GlobalTime * time)
 	this->clear_pending_quest_item_updates();
 }
 
+void Player::collect_item_pickup(World * world, Level * level, ItemPickup * pickup)
+{
+	if (this->inventory.is_full()) {
+		//TODO: something to indicate we're full?
+		return;
+	}
+	else {
+		Item * item = pickup->get_pickup_item();
+		if (item != NULL) {
+			this->inventory.add_item(item);
+			level->remove_item_pickup(pickup);
+		}
+	}
+}
+//TODO: probably need pickups in the set of items we check for (see level)
 void Player::collide_with_entity(World * world, Level * level, Entity * e)
 {
 	Being::collide_with_entity(world, level, e);
 	e->contact_action(world, level, this);
+	if (e->get_type() == ITEM_PICKUP) {
+		this->collect_item_pickup(world, level, (ItemPickup *) e);
+		this->colliding_entities.clear();
+	}
 }
 
 void Player::play_sounds_for_entity(Entity * e)
@@ -219,7 +238,7 @@ void Player::update_top_down(Level * level)
 		anim_state = ANIM_STATE_WALKING;
 	}
 }
-
+/*
 void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	//this->sound_update(); //TODO: move this if necessary
@@ -272,7 +291,7 @@ void Player::update_top_down(std::vector<Entity*> interactables, std::vector<Til
 	}
 	anim_state = ANIM_STATE_WALKING;
 }
-
+*/
 void Player::update_input(std::map<int, bool> input_map, std::map<int, std::pair<float, float>> joystick_map, int game_mode)
 {
 	auto it = joystick_map.find(LEFT_STICK);
@@ -544,13 +563,13 @@ void Player::shear_update(Level * level)
 				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 				Item *shears = get_selected_item();
 				const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
-				e->take_durability_damage(shear_power);
+				e->take_durability_damage(level, this, shear_power);
 				return;
 			}
 		}
 	}
 }
-
+/*
 void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
 {
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
@@ -592,13 +611,13 @@ void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*>
 					set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 					Item *shears = get_selected_item();
 					const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
-					e->take_durability_damage(shear_power);
+					e->take_durability_damage(NULL, shear_power);
 					return;
 				}
 			}
 	}
 }
-
+*/
 void Player::sleep_in_bed(GlobalTime * current_time)
 {
 	Cutscene * cutscene = new Cutscene();

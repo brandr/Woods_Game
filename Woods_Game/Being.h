@@ -25,7 +25,6 @@ protected:
 
 	void movement_update(Level * level, const int game_mode);
 	void movement_update_top_down(Level * level);
-	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
 	void collision_update(World * world, Level * level, const int game_mode);
 	const bool adjust_movement(Level * level, float xoff, float yoff, const bool snap);
 	const bool adjust_movement(Level * level, std::vector<Entity*> collide_entities, float xoff, float yoff, const bool snap, const bool push_others);
@@ -45,6 +44,7 @@ public:
 	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
+	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
 	virtual const bool cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty);
 	void set_xvel(int);
 	void set_yvel(int);
@@ -53,6 +53,7 @@ public:
 	virtual const bool get_should_push_others();
 	virtual const bool set_should_push_others(const bool value);
 	virtual void push_back(Level * level, const float xvel, const float yvel);
+	virtual void bounce_from_entity(Entity * entity, const int knockback);
 };
 
 #endif

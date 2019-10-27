@@ -448,7 +448,12 @@
     <ClInclude Include="ItemManager.h">
       <Filter>Items\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ExchangeInventoryScreen.h" />
+    <ClInclude Include="ExchangeInventoryScreen.h">
+      <Filter>Screens\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ItemPickup.h">
+      <Filter>Items\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -700,7 +705,12 @@
     <ClCompile Include="ItemManager.cpp">
       <Filter>Items\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ExchangeInventoryScreen.cpp" />
+    <ClCompile Include="ExchangeInventoryScreen.cpp">
+      <Filter>Screens\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ItemPickup.cpp">
+      <Filter>Items\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

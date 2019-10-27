@@ -1,4 +1,5 @@
 #include "ItemBase.h"
+#include "ImageLoader.h"
 
 const std::string ItemBase::image_path_prefix()
 {

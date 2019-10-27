@@ -403,6 +403,16 @@ void Being::push_back(Level* level, const float adj_xvel, const float adj_yvel)
 	this->collide_rect.x += adj_xvel, this->collide_rect.y += adj_yvel;
 }
 
+void Being::bounce_from_entity(Entity * entity, const int knockback)
+{
+	const std::pair<float, float> p1 = this->get_rect_center();
+	const std::pair<float, float> p2 = entity->get_rect_center();
+	std::pair<float, float> bounce_vec = std::pair<float, float>(p1.first - p2.first, p1.second - p2.second);
+	float mag = std::pow(std::pow(bounce_vec.first, 2.0) + std::pow(bounce_vec.second, 2), 0.5);
+	xvel = (bounce_vec.first / mag)*knockback, yvel = (bounce_vec.second / mag)*knockback;
+	counters[BOUNCE] = knockback * 2;
+}
+
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
 		if (e && e != this && e->is_solid() && e->intersects_area(r)) {

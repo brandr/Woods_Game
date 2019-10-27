@@ -325,6 +325,7 @@
     <ClInclude Include="Item.h" />
     <ClInclude Include="ItemBase.h" />
     <ClInclude Include="ItemManager.h" />
+    <ClInclude Include="ItemPickup.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="LevelEditorDataManager.h" />
     <ClInclude Include="LevelEditorGrid.h" />
@@ -411,6 +412,7 @@
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="ItemBase.cpp" />
     <ClCompile Include="ItemManager.cpp" />
+    <ClCompile Include="ItemPickup.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="LevelEditorDataManager.cpp" />
     <ClCompile Include="LevelEditorGrid.cpp" />

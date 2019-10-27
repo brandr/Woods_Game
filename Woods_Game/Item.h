@@ -11,7 +11,6 @@
 #include "xstring"             // for string
 #include <memory>              // for allocator
 #include "XMLSerialization.h"
-#include "ImageLoader.h"
 
 enum ITEM_KEYS{ITEM_SHEARS = 0, ITEM_MALLET = 1};
 

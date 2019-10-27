@@ -9,47 +9,45 @@ Last updated 10/20/2019
 Target date for main code to be done: ~ Mar 2020
 Target date for all code/assets/levels to be done: ~ Aug 2020
 
-Total: 67-95 days (~2-3 months)
+Total: 52-75 days (~2-3 months)
 
-1. item stuff
-	(15-20 days)
-2. Encyclopedia
+1. Encyclopedia
 	(10-15 days)
-3. Animals/bugs (or however these work)
+2. Animals/bugs (or however these work)
 	(10-15 days)
-4. Dialog/schedule
+3. Dialog/schedule
 	(5-10 days)
 
 (should get here around December 2019) 
 (clean up todos and try to think of what's missing here)
 
-5. Audio
+4. Audio
 	(5-10 days)
-6. Animation/image code stuff
+5. Animation/image code stuff
 	(10-15 days)
-7. Menu/control stuff
+6. Menu/control stuff
 	(5-10 days)
 
 (should get here around January 2020) 
 (clean up todos and try to think of what's missing here)	
 
-8. Loading screens/progress bars
+7. Loading screens/progress bars
 	(3-5 days)
-9. Figure out how to force end of day (otherwise saving gets weird after midnight)
+8. Figure out how to force end of day (otherwise saving gets weird after midnight)
 	(2-5 days)
-10. Wake-up time (alarm clock?)
+9. Wake-up time (alarm clock?)
 	(2-5 days)
-11. Stamina/resource management
+10. Stamina/resource management
 	(5-10 days)
 
 (should get here around Feburary 2020) 
 (clean up todos and try to think of what's missing here)	
 
-12. Miscellaneous code stuff (break out into specific todos after getting here)
+11. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-13. Level Editor improvements
+12. Level Editor improvements
 	(???)
-14. Content!
+13. Content!
 	(???)
 
 Ongoing tasks:
@@ -63,16 +61,7 @@ Ongoing tasks:
 Inventory/items/money
 ---------------------------------------------------
 
-Implement "pickup-able" items, like seeds/leaves from ferns
-	* currently have ItemDrops -- need to roll when breaking
-		# entity.entity_break() (or set pending thing?)
-	* drops need to "fall"/"fly" to the ground after spawning
-	* probably need secondary icons for every item that can appear this way
-	* these should be beings since those are entities with physics, and they contain items (but aren't serialized)
-	* should probably be rare, and shouldn't need a lot of them
-	* Make sure these disappear properly from level when they should (maybe on a timer or after leaving level?)
-
--- (stop here for now, also done with quests for now so go to encyclopedia/bugs) --
+Make sure ItemPickups disappear properly from level when they should (maybe on a timer or after leaving level?)
 
 Should we allow "tossing" items onto the ground, or is trash enough?
 

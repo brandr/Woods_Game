@@ -675,6 +675,7 @@ void Level::update_new_day(World * world, Player * player)
 	this->update_tiles_new_day(world, player);
 	this->update_npcs_new_day();
 	this->reset_collide_buckets();
+	this->item_pickups.clear();
 	//TODO: what other object types need to be updated?
 }
 
@@ -1080,16 +1081,23 @@ void Level::update(World * world, GlobalTime * time, const int game_mode)
 	std::pair<int, int> dimensions = get_dimensions();
 	const int b_size = beings.size();
 	for (int i = 0; i < b_size; i++) {
-		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it above.
+		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it elsewhere.
 							// NPCs and other being are updated no matter what level they're on
 			
-			if (beings[i]->get_type() == PLAYER) {
+			if (beings[i]->get_type() == PLAYER ) {
 				std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
 				beings[i]->update(world, this, time, game_mode);
-			}
+			} 
 		} else {
 			// TODO: better error handling
 			std::cout << "NULL BEING" << std::endl;
+		}
+	}
+	const int ip_size = this->item_pickups.size();
+	for (ItemPickup * ip : this->item_pickups) {
+		if (ip != NULL) {
+			std::vector<Tile*> tiles = get_nearby_tiles(ip);
+			ip->update(world, this, time, game_mode);
 		}
 	}
 	const int height = tile_rows.size();
@@ -1158,6 +1166,11 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	for (Being * b : this->beings) {
 		draw_entities.push_back(b);
 	}
+	// item pickups
+	for (ItemPickup * ip : this->item_pickups) {
+		draw_entities.push_back(ip);
+	}
+
 	// miscellaneous entities: layer 20
 	std::sort(draw_entities.begin(), draw_entities.end(), game_image_center_comparison());
 	int size = draw_entities.size();
@@ -1187,6 +1200,23 @@ void Level::add_edge_to_tile(Tile * tile, const int edge_row, const int dir_key,
 void Level::add_being(Being * b)
 {
 	beings.push_back(b);
+}
+
+void Level::add_item_pickup(ItemPickup * ip)
+{
+	this->item_pickups.push_back(ip);
+}
+
+void Level::remove_item_pickup(ItemPickup * ip)
+{
+	const int size = item_pickups.size();
+	for (int i = size - 1; i >= 0; i--) {
+		if (item_pickups[i] == ip) {
+			delete ip;
+			item_pickups.erase(std::remove(item_pickups.begin(), item_pickups.end(), item_pickups[i]), item_pickups.end());
+			return;
+		}
+	}
 }
 
 void Level::remove_player()
@@ -1277,6 +1307,12 @@ std::vector<Entity*> Level::get_colliding_interactables(Entity * entity, Rect co
 			if (b && b != entity && b->is_solid() && b->intersects_area(collide_rect)) {
 				interactables.push_back(b);
 			}
+		}
+		
+	}
+	if (entity->get_type() == PLAYER){
+		for (ItemPickup * ip : this->item_pickups) {
+			interactables.push_back(ip);
 		}
 	}
 	return interactables;

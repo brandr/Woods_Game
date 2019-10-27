@@ -16,6 +16,7 @@
 #include <memory>              // for allocator
 #include <filesystem>
 #include <iostream>
+#include <stdlib.h>     /* srand, rand */
 #include "XMLSerialization.h"
 
 struct EntitySpawnTileRule : xmls::Serializable {
@@ -112,8 +113,9 @@ struct EntitySound {
 };
 
 class GlobalTime;
-class Item;
-class ItemManager;
+//class Item;
+//class ItemManager;
+class ItemPickup;
 class Player;
 class Level;
 class World;
@@ -146,6 +148,10 @@ protected:
 	virtual void emit_sound(const std::string filename, const int duration);
 	virtual void stop_sound(const std::string filename);
 	virtual void clear_sounds();
+
+	virtual void drop_items(Level * level, Player * player);
+	virtual void drop_item(Level * level, Player * player, ItemDrop * drop);
+	virtual ItemPickup * spawn_item_pickup(Level * level, ItemDrop * drop);
 public:
 	Entity();
 	~Entity();
@@ -171,7 +177,7 @@ public:
 	virtual const bool update_new_day(World * world, Level * level, Player * player);
 	virtual const bool contact_action(World * world, Level * level, Player * player);
 	virtual const bool interact_action(World * world, Level * level, GlobalTime * time, Player * player);
-	virtual void entity_break();
+	virtual void entity_break(Level * level, Player * player);
 	virtual void set_entity_data_index(int index);
 	virtual void set_entity_sheet_offset(int col, int row);
 	virtual void set_entity_attributes(std::map<std::string, int> attributes);
@@ -192,7 +198,7 @@ public:
 	virtual bool has_entity_attribute(std::string attribute);
 	virtual int get_entity_sheet_col();
 	virtual int get_entity_sheet_row();
-	virtual void take_durability_damage(const int damage);
+	virtual void take_durability_damage(Level * level, Player * player, const int damage);
 	static std::vector<std::string> get_entity_effect_names();
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
