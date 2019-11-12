@@ -295,6 +295,8 @@
     <ClInclude Include="Configurations.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="ControlsMenuManager.h" />
+    <ClInclude Include="Critter.h" />
+    <ClInclude Include="CritterManager.h" />
     <ClInclude Include="Cutscene.h" />
     <ClInclude Include="CutsceneScript.h" />
     <ClInclude Include="Dialog.h" />
@@ -305,6 +307,7 @@
     <ClInclude Include="DungeonData.h" />
     <ClInclude Include="DungeonEditorLayout.h" />
     <ClInclude Include="EditorActionListener.h" />
+    <ClInclude Include="Encyclopedia.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="EntityEffect.h" />
     <ClInclude Include="EntityGroup.h" />
@@ -383,6 +386,8 @@
     <ClCompile Include="Configurations.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="ControlsMenuManager.cpp" />
+    <ClCompile Include="Critter.cpp" />
+    <ClCompile Include="CritterManager.cpp" />
     <ClCompile Include="Cutscene.cpp" />
     <ClCompile Include="CutsceneScript.cpp" />
     <ClCompile Include="Dialog.cpp" />
@@ -392,6 +397,7 @@
     <ClCompile Include="DungeonData.cpp" />
     <ClCompile Include="DungeonEditorLayout.cpp" />
     <ClCompile Include="EditorActionListener.cpp" />
+    <ClCompile Include="Encyclopedia.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="EntityEffect.cpp" />
     <ClCompile Include="EntityGroup.cpp" />

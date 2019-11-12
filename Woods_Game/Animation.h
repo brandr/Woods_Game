@@ -11,8 +11,6 @@ enum ANIMATION_STATES { ANIM_STATE_NEUTRAL = 0, ANIM_STATE_WALKING = 1, ANIM_STA
 enum AXES { HORIZONTAL, VERTICAL };
 
 static const int DEFAULT_EFFECT_FRAME_DURATION = 4;
-//const static std::string EFFECT_BREAK = "break";
-//std::vector<std::string> ENTITY_EFFECT_NAMES{ EFFECT_BREAK };
 
 struct Rect {
 	float x, y, width, height;

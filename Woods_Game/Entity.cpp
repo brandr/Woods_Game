@@ -90,9 +90,6 @@ void Entity::drop_item(Level * level, Player * player, ItemDrop * drop)
 
 ItemPickup * Entity::spawn_item_pickup(Level * level, ItemDrop * drop)
 {
-	//TODO: should pos be offset? (might need to make sure it doesn't spawn directly on top of the player)
-	//			might need a timer so we don't pickup immediately
-	//TODO: velocity should be away from the player
 	std::pair<int, int> center = this->get_center();
 	const int pickup_x = center.first, pickup_y = center.second;
 	ItemPickup * pickup = new ItemPickup(drop->item_key.value(), pickup_x, pickup_y);

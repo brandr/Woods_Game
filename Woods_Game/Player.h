@@ -5,6 +5,7 @@
 
 #include "AudioManager.h"
 #include "Being.h"
+#include "Critter.h"
 #include "Cutscene.h"
 #include "Dialog.h"
 #include "GlobalTime.h"
@@ -23,7 +24,7 @@
 
 enum MAIN_GAME_INPUTS { INPUT_UP, INPUT_DOWN, INPUT_LEFT, INPUT_RIGHT, INPUT_PAUSE };
 enum PLAYER_MOVES{MOVE_UP, MOVE_DOWN, MOVE_LEFT, MOVE_RIGHT};
-enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR};
+enum ACTION_KEYS{ACTION_NONE, ACTION_SHEAR, ACTION_SWING};
 
 class Level;
 class Player :
@@ -52,6 +53,8 @@ private:
 	bool should_open_calendar = false;
 	void quest_item_update(World * world, Level * level, GlobalTime * time);
 	void collect_item_pickup(World * world, Level * level, ItemPickup * pickup);
+	const bool can_swing_at_entity(Entity * e, const std::string swing_key);
+	void catch_critter(World* world, Level * level, Critter * critter);
 protected:
 	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	virtual void play_sounds_for_entity(Entity* e);
@@ -67,8 +70,7 @@ public:
 	void reset_serialized_data();
 	virtual void update(World * world, Level * level, GlobalTime *time, const int game_mode);
 	void update_side_scrolling(std::vector<Entity*>, std::pair<int, int>);
-	void update_top_down(Level * level);
-	//void update_top_down(std::vector<Entity*>, std::vector<Tile*>, std::pair<int, int>);
+	void update_top_down(World * world, Level * level);
 	void update_input(std::map<int, bool>, std::map<int, std::pair<float,float>>, int);
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
@@ -95,7 +97,7 @@ public:
 	//interact
 	const bool interact(World * world, Level * level, GlobalTime * time, Entity* e);
 	void shear_update(Level * level);
-	//void shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions);
+	void swing_update(World * world, Level * level, const std::string swing_key);
 	void sleep_in_bed(GlobalTime * current_time);
 	void load_game_for_day(const int day);
 	float get_walk_speed();
@@ -124,6 +126,7 @@ public:
 	void hotbar_index_right();
 	void interact();
 	void use_shears();
+	void swing_item(const std::string swing_key);
 	int get_current_action();
 	Item *get_selected_item();
 	Inventory &get_inventory();

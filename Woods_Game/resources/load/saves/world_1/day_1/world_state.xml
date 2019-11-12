@@ -22,6 +22,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded">false</Member>
                         <Member Name="item_description">Garden shears for cutting plants.\nUse with caution.</Member>
+                        <Member Name="swing_key">shearing</Member>
                         <Member Name="item_name">shears</Member>
                         <Member Name="item_display_name">Shears</Member>
                         <Collection Name="item_attributes">
@@ -37,6 +38,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -47,6 +49,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded">false</Member>
                         <Member Name="item_description">A heavy hammer for smashing rocks.\nThis might not end up in the game.</Member>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name">mallet</Member>
                         <Member Name="item_display_name">Mallet</Member>
                         <Collection Name="item_attributes">
@@ -57,13 +60,14 @@
                         </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_key">5</Member>
                         <Member Name="inventory_pos_x">3</Member>
                         <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
+                        <Member Name="may_be_discarded">false</Member>
+                        <Member Name="item_description">Catch bugs and other small critters.</Member>
+                        <Member Name="swing_key">netting</Member>
+                        <Member Name="item_name">bug_net</Member>
+                        <Member Name="item_display_name">Bug Net</Member>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -72,6 +76,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -82,6 +87,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -92,6 +98,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -102,6 +109,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -112,6 +120,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -122,6 +131,7 @@
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -132,6 +142,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -142,6 +153,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -152,6 +164,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -162,6 +175,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -172,6 +186,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -182,6 +197,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -192,6 +208,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -202,6 +219,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -212,6 +230,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -222,6 +241,7 @@
                         <Member Name="inventory_pos_y">0</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -232,6 +252,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -242,6 +263,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -252,6 +274,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -262,6 +285,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -272,6 +296,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -282,6 +307,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -292,6 +318,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -302,6 +329,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -312,6 +340,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -322,6 +351,7 @@
                         <Member Name="inventory_pos_y">1</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -332,6 +362,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -342,6 +373,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -352,6 +384,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -362,6 +395,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -372,6 +406,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -382,6 +417,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -392,6 +428,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -402,6 +439,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -412,6 +450,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -422,6 +461,7 @@
                         <Member Name="inventory_pos_y">2</Member>
                         <Member Name="may_be_discarded"/>
                         <Member Name="item_description"/>
+                        <Member Name="swing_key"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
                         <Collection Name="item_attributes"/>
@@ -450,7 +490,13 @@
             </Collection>
             <Collection Name="additional_mask_data">
                 <Class Type="MaskData" Version="1">
-                    <Member Name="mask_key">slicing</Member>
+                    <Member Name="mask_key">shearing</Member>
+                    <Member Name="mask_width">32</Member>
+                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">netting</Member>
                     <Member Name="mask_width">32</Member>
                     <Member Name="mask_height">32</Member>
                     <Member Name="mask_frame_count">5</Member>

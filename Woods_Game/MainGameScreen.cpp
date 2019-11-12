@@ -534,6 +534,7 @@ void MainGameScreen::load_content()
 	inventory_screen.set_world_key(game_image_manager.get_world_key());
 	inventory_screen.set_dungeon_key(game_image_manager.get_current_dungeon_key());
 	this->load_location_markers();
+	inventory_screen.set_encyclopedia(game_image_manager.get_encyclopedia());
 	calendar_screen.load_content();
 
 	GlobalTime * global_time = game_image_manager.get_current_global_time();
@@ -1167,6 +1168,7 @@ void MainGameScreen::open_inventory_action()
 			this->inventory_screen.set_active_quests(game_image_manager.get_active_quests());
 			this->inventory_screen.set_failed_quests(game_image_manager.get_failed_quests());
 			this->inventory_screen.set_completed_quests(game_image_manager.get_completed_quests());
+			this->inventory_screen.set_encyclopedia(game_image_manager.get_encyclopedia());
 			break;
 		case MAIN_GAME_INVENTORY:
 			resume_game();

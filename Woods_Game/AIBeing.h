@@ -27,15 +27,15 @@ protected:
 
 	int failed_pathing_tally = 0;
 	void ai_timer_update();
-	void request_pathing_update(World * world, Level * level, GlobalTime * time);
-	void destination_update(
+	virtual void request_pathing_update(World * world, Level * level, GlobalTime * time);
+	virtual void destination_update(
 		Level * level, GlobalTime * time);
-	void face_other_update(
+	virtual void face_other_update(
 		Level * level, GlobalTime * time);
-	void walk_update();
-	void failed_pathing_update();
-	void push_others_update(Level * level);
-	void walk_to_next_level_update(Level * level);
+	virtual void walk_update();
+	virtual void failed_pathing_update();
+	virtual void push_others_update(Level * level);
+	virtual void walk_to_next_level_update(Level * level);
 	const std::pair<int, int> find_closest_open_tile_pos(
 		Level * level,
 		const std::pair<int, int> destination);

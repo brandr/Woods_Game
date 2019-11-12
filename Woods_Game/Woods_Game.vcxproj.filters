@@ -191,6 +191,24 @@
     <Filter Include="Audio\Source Files">
       <UniqueIdentifier>{f3d02c3f-cef1-4c3c-b008-0dab0947b600}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Critters">
+      <UniqueIdentifier>{5dc5eda9-4092-4e7d-87ff-2ef9b37f019b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Critters\Header Files">
+      <UniqueIdentifier>{f3f8199b-09ee-4a80-9779-89b4d032b017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Critters\Source Files">
+      <UniqueIdentifier>{cd92421b-2f05-40d7-9482-e3b40843af26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encyclopedia">
+      <UniqueIdentifier>{5d0a0461-d34a-465f-9666-ad7cc23eac44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encyclopedia\Header Files">
+      <UniqueIdentifier>{2261fb30-cf05-4677-afcb-f1a0f0cb129c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Encyclopedia\Source Files">
+      <UniqueIdentifier>{26c8c182-ae51-42aa-a255-6e4718674318}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -454,6 +472,15 @@
     <ClInclude Include="ItemPickup.h">
       <Filter>Items\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Critter.h">
+      <Filter>Critters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CritterManager.h">
+      <Filter>Critters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Encyclopedia.h">
+      <Filter>Encyclopedia\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -710,6 +737,15 @@
     </ClCompile>
     <ClCompile Include="ItemPickup.cpp">
       <Filter>Items\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Critter.cpp">
+      <Filter>Critters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CritterManager.cpp">
+      <Filter>Critters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Encyclopedia.cpp">
+      <Filter>Encyclopedia\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -65,7 +65,10 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.reload_world_state(initial_state_filename);
 	const std::string initial_quest_data_filename = new_game_path + "quest_data";
 	this->world.reload_quest_data(initial_quest_data_filename);
+	const std::string encyclopedia_path = new_game_path + "encyclopedia";
+	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
+	this->load_critter_templates();
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
@@ -92,7 +95,10 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->world.reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
 	this->world.reload_quest_data(quest_data_path);
+	const std::string encyclopedia_path = "resources/load/saves/" + world_key + "/encyclopedia";
+	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
+	this->load_critter_templates();
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -117,7 +123,10 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->world.reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
 	this->world.reload_quest_data(quest_data_path);
+	const std::string encyclopedia_path = "resources/load/saves/" + world_key + "/encyclopedia";
+	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
+	this->load_critter_templates();
 	this->load_player();
 	this->world.recalculate_npc_paths();
 	this->save_game();
@@ -183,6 +192,9 @@ void GameImageManager::load_player()
 	player->load_additional_masks_from_attributes("player");
 	this->current_level = this->world.extract_current_level(player, "");
 	this->current_level->add_being(player);
+	//temp
+	this->current_level->add_critter_with_key("ant");
+	//temp
 }
 
 void GameImageManager::load_player_from_xml(std::string filepath, std::string player_key)
@@ -207,6 +219,11 @@ void GameImageManager::load_all_cutscenes()
 void GameImageManager::load_item_templates()
 {
 	ItemManager::get_instance().load_item_templates();
+}
+
+void GameImageManager::load_critter_templates()
+{
+	CritterManager::get_instance().load_critter_templates();
 }
 
 CutsceneScript * GameImageManager::get_cutscene_script(const std::string cutscene_key)
@@ -380,6 +397,8 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 	data->world->reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
 	data->world->reload_quest_data(quest_data_path);
+	const std::string encyclopedia_path = "resources/load/saves/" + world_key + "/encyclopedia";
+	data->world->reload_encyclopedia(encyclopedia_path);
 	data->world->update_reload_day(data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
@@ -452,6 +471,11 @@ std::vector<Quest*> GameImageManager::get_failed_quests()
 std::vector<Quest*> GameImageManager::get_completed_quests()
 {
 	return this->world.get_completed_quests();
+}
+
+Encyclopedia * GameImageManager::get_encyclopedia()
+{
+	return this->world.get_encyclopedia();
 }
 
 void GameImageManager::unload_content()

@@ -23,6 +23,7 @@ protected:
 	xmls::xInt inventory_pos_x;
 	xmls::xInt inventory_pos_y;
 	xmls::xBool may_be_discarded = false;
+	xmls::xString swing_key;
 	xmls::Collection<ItemAttribute> item_attributes;
 	
 	virtual const std::string image_path_prefix();

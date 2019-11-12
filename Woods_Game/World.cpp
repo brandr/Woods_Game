@@ -425,6 +425,14 @@ void World::reload_quest_data(const std::string filepath)
 	this->quest_data.load_content_from_attributes();
 }
 
+void World::reload_encyclopedia(const std::string filepath)
+{
+	FileManager filemanager;
+	this->encyclopedia.reset();
+	filemanager.load_xml_content(&(this->encyclopedia), filepath, "SerializableClass", "WorldKey", this->get_world_key());
+	this->encyclopedia.load_content_from_attributes();
+}
+
 void World::load_npcs()
 {
 	const int npc_count = this->npcs.size();
@@ -897,4 +905,25 @@ Quest * World::quest_for_key(const std::string quest_key)
 void World::set_has_quest_item(const std::string item_key, const bool has_item)
 {
 	this->quest_data.set_has_quest_item(item_key, has_item);
+}
+
+Encyclopedia * World::get_encyclopedia()
+{
+	return &(this->encyclopedia);
+}
+
+void World::update_encyclopedia_for_critter(Critter * critter, const int entry_state)
+{
+	const std::string critter_key = critter->get_critter_key();
+	
+	const std::string category_name = CritterManager::get_instance().get_encyclopedia_category_name(critter_key);
+	const std::string entry_name = CritterManager::get_instance().get_encyclopedia_entry_name(critter_key);
+	if (category_name != "" && entry_name != "") {
+		this->encyclopedia.update_entry_state(category_name, entry_name, entry_state);
+	}
+	
+	//TODO: update number caught
+	//TODO: more information the more we catch?
+	//TODO: probably want this to be agnostic to seeing large animals vs catch small ones, so check whether the critter is catchable
+	//			(I think I need to add a new serialized binding for this)
 }

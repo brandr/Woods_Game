@@ -1,10 +1,13 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "Critter.h"
+#include "CritterManager.h"
 #include "DjikstraPath.h"
 #include "DjiktraPathData.h"
 #include "Dungeon.h"
 #include "DungeonData.h"
+#include "Encyclopedia.h"
 #include "FileManager.h"
 #include "GlobalTime.h"
 #include "NPC.h"
@@ -39,8 +42,9 @@ private:
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
 
-	WorldState world_state; // not serialzed in world because it's day-specific
-	QuestData quest_data;   // not serialized in world because we load it from a separate file
+	WorldState world_state;		// not serialzed in world because it's day-specific
+	QuestData quest_data;		// not serialized in world because we load it from a separate file
+	Encyclopedia encyclopedia;	// not serialized in world because we load it from a separate file
 
 	std::map<std::string, PathNodeDjikstraPath *> node_djikstra_path_map;
 	std::map<std::string, TileDjikstraPath *> tile_djikstra_path_map;
@@ -71,6 +75,7 @@ public:
 	void reload_dungeons(const std::string dungeons_path);
 	void reload_world_state(const std::string world_state_path);
 	void reload_quest_data(const std::string filepath);
+	void reload_encyclopedia(const std::string filepath);
 	void load_npcs();
 	void recalculate_npc_paths();
 	void load_player();
@@ -128,6 +133,9 @@ public:
 	std::vector<Quest *> get_completed_quests();
 	Quest * quest_for_key(const std::string quest_key);
 	void set_has_quest_item(const std::string item_key, const bool has_item);
+	// encyclopedia
+	Encyclopedia * get_encyclopedia();
+	void update_encyclopedia_for_critter(Critter * critter, const int entry_state);
 };
 
 #endif

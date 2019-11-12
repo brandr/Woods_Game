@@ -224,10 +224,9 @@ void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 		al_set_target_bitmap(this->test_rect_bitmap);
 		al_clear_to_color(al_map_rgba(0, 0, 100, 100));
 		al_set_target_bitmap(al_get_backbuffer(display));
-
+		
 	}
 	al_draw_bitmap(this->test_rect_bitmap, collide_rect->x + x_offset, collide_rect->y + y_offset, 0);
-
 	//TEMP
 	Entity::draw(display, x_offset, y_offset);
 }

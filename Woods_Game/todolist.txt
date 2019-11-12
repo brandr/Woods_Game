@@ -4,18 +4,16 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 10/20/2019
+Last updated 10/27/2019
 
 Target date for main code to be done: ~ Mar 2020
 Target date for all code/assets/levels to be done: ~ Aug 2020
 
-Total: 52-75 days (~2-3 months)
+Total: 42-60 days (~1-2 months)
 
-1. Encyclopedia
+1. Critters
 	(10-15 days)
-2. Animals/bugs (or however these work)
-	(10-15 days)
-3. Dialog/schedule
+2. Dialog/schedule
 	(5-10 days)
 
 (should get here around December 2019) 
@@ -58,65 +56,65 @@ Ongoing tasks:
 4. come up with more content
 
 ---------------------------------------------------
-Inventory/items/money
+Critters
 ---------------------------------------------------
 
-Make sure ItemPickups disappear properly from level when they should (maybe on a timer or after leaving level?)
+When do new critters spawn? Entering level, new day, on timer, etc.
 
-Should we allow "tossing" items onto the ground, or is trash enough?
+Maybe some critter types are set to only appear n days into the game
 
-Make an item shop (or at least someone who sells things)
-	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
+Make basic AI
+	* better/more generalized wandering (maybe randomize time spent walking/stopping within some range to look a bit more like an ant's movement)
+	* some critters should flee if player gets close
 
-Consider implementing a "cooking"/"crafting" system
+Make ant footsteps quieter (and see if critter footsteps need to be managed differently)
 
-Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
-	* first make sure I actually want the mallet in the game (balance)
+New swinging animation for bug net/ different mask/offsets
+	* make sure catch bugs makes visual sense
 
-Add a shovel and allow the player to dig up items
-	* implement picking up items off the ground first
+Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
+	* this will make no sense visually when they're really high up, so make them disappear if they go too high
 
----------------------------------------------------
-Quests
----------------------------------------------------
+Might want to classify differently since some animals should also be catchable (like frogs)
 
-How does sequence breaking work? (i.e., finish a quest before even starting it)
-	# could use the already existing qualifiers on QuestUpdates
+How are large animals different from other critters? (I think they just can't be caught in nets and should have different ai)
 
-Might want giving non-quest items for quests to require that you have them 
-	in your active slot like stardew valley (or there's an actual "give button")
-	* colud just do ("do you want to give me x?" and yes option gives)
-
-Have anything that can possibly update quests 
-	(giving items, cutscenes, having dialogs, etc) call GameImagemanager.Update_quests()
-
-Probably want some brief, unobtrusive notification when a quest is updated
-	* this should not be a dialog, because it would be annoying to have to click through
+Some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
 
 ---------------------------------------------------
 Encyclopedia/Journal
 ---------------------------------------------------
 
-Make an encyclopedia tab on inventory screen
+How to see/discover plants? (seeing should work the same for everything that has an encyclpedia entry)
 
-Make an "encyclopedia"-like feature that allows the player to keep track of animals seen, bugs caught, rare items found, plants found, etc.
-	* might even use real information about some of these things (like latin name)
+Could track NPCs in encyclopedia
+
+What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
+
+Add latin name, num caught, and other info to display
 
 ---------------------------------------------------
-Animals/Bugs
+Inventory/items/money
 ---------------------------------------------------
 
-Might want to classify differently since some animals should also be catchable (like frogs)
+Make sure ItemPickups disappear properly from level when they should (maybe on a timer or after leaving level?)
 
-Add animals
-	* might be a good time to start on encyclopedia
-	* keep track of which animals live in the area and let them move between levels, like NPCs
-	* new animals appear over time, probably don't need to have animals breed because the new ones will just show up from the player's perspective
-	* maybe some animal types are set to only appear n days into the game
-	* add bugs too (possibly first, they might be easier and make more sense to interact with)
-		# some bugs might be under rocks
-	* Animals might not travel between levels, and will be generated from templates, 
-		rather than than 1 to 1 serialized data <-> game object relationship
+Make an item shop (or at least someone who sells things)
+	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
+
+Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+	* first make sure I actually want the mallet in the game (balance)
+
+---------------------------------------------------
+Quests
+---------------------------------------------------
+
+Might want giving non-quest items for quests to require that you have them 
+	in your active slot like stardew valley (or there's an actual "give button")
+	* could just do ("do you want to give me x?" and yes option gives)
+
+Probably want some brief, unobtrusive notification when a quest is updated
+	* this should not be a dialog, because it would be annoying to have to click through
 
 ---------------------------------------------------
 Audio
@@ -141,8 +139,7 @@ Would probably work better to base footstep sfx cycles on the animation speed of
 
 Replace all placeholder footstep sound files
 
-Find a good composing program and make music
-	* The Eye of Pan has a special theme that is hidden inside other tracks
+The Eye of Pan has a special theme that is hidden inside other tracks
 
 ---------------------------------------------------
 NPCs
@@ -166,12 +163,6 @@ AIState/NPC schedule
 		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- use schedule logic to determine NPC spawn locations
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
-	- maybe have some npcs alter schedule if the player spots them in certain situations, so you have to be stealthy
-		* how to communicate stealth mechanics to the player?
-		* could have a vision radius that adjusts gradually based on time of day/light level
-
-Should NPC's relationship with player and other NPCs be modeled/ serialized?
-	- only necessary if it can't be represented efficiently using triggers
 
 NPC pathing
 	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
@@ -185,13 +176,12 @@ NPC pathing
 Memory management/error handling
 ---------------------------------------------------
 
-As of the audio update, performance is much worse on large levels-- what could be causing this?
-	* not drawing entity groups fixes this
+Performance is much worse on large levels-- what could be causing this?
+	* not drawing entity groups fixes this (test extensively to make sure of this)
 		# they might have some associated images that aren't getting converted into video bitmaps
 		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
 
 Document how to format serialized things like dialog trees so I don't forget
-	* take this into account when improving level editor
 
 Test large world with lots of NPCs so I know ahead of time if I need to fix performance issues
 
@@ -219,13 +209,6 @@ Fix bug where XML attributes can get saved twice after editing via ctrl-click
 
 Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
 
-What to use tileset tab for?
-	* ideally could add new object types, edit global values, etc
-
-Tiled Images
-	* no room to put it on tileset tab-- need to reorganize it
-		# first, firue out what I actually want to use that tab for (currently only used to select tileset)
-
 ---------------------------------------------------
 Cutscenes
 ---------------------------------------------------
@@ -236,9 +219,6 @@ Ways cutscenes can start (try to combine into as few as possible from a code per
 		(though this can be the start if the cutscene should start right away)
 	- Waking up on a specific day (possibly do this on day 1)
 	- Time going past midnight
-
-Cutscene with Renaldo preaching about the neighorhood watch
-	- this is important as a more ambitious test of cutscenes-- if this can be done cleanly, it means cutscene code is sufficient
 
 ---------------------------------------------------
 Procedural generation
@@ -283,11 +263,9 @@ Draw the symbols for the Eye of Pan and the Eye of Gabriel
 Physics
 ---------------------------------------------------
 
-Consider changing thorn behavior
-	* Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
+Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
 
-Consider giving blocks optional masks
-	* "optional" means we use the block's image if there's no mask filepath
+Consider giving blocks optional masks (we use the block's image if there's no mask filepath)
 
 ---------------------------------------------------
 Animation/image code
@@ -301,7 +279,6 @@ IDEA: different walk animations for different speed ranges (1.0 - 2.0, 2.0 - 3.0
 Make some more "brush" tile types that are much slower than grass so there's more of a point to staying on the trail
 	* give them "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
 		# this could be used for wading through shallow water
-	* later, consider allowing trails to be carved through these (should be slow/tedious/stamina intensive so the player can't just make trails all day on day 1)
 
 IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
 
@@ -309,14 +286,8 @@ Buildings
 	* need door animation? (no other blocks are animated, might need to be a new thing)
 	* stairs? (good test of building mechanics, similar to going outside)
 		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-	* can use tiledImages and invisible blocks to make furniture, sink, etc
-	* make roofs
-
-Figure out how to scale object/ui sizes with resolution
-	* might not be worth the effort
 
 Make custom mouse cursor
-	* at this point probably go through UI/controls and add mouse controls where appropriate
 
 ---------------------------------------------------
 Day/night cycle

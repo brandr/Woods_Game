@@ -1084,7 +1084,7 @@ void Level::update(World * world, GlobalTime * time, const int game_mode)
 		if (beings[i]) {	// note that the player's update is called here, so we don't need to call it elsewhere.
 							// NPCs and other being are updated no matter what level they're on
 			
-			if (beings[i]->get_type() == PLAYER ) {
+			if (beings[i]->get_type() == PLAYER || beings[i]->get_type() == CRITTER) {
 				std::vector<Tile*> tiles = get_nearby_tiles(beings[i]);
 				beings[i]->update(world, this, time, game_mode);
 			} 
@@ -1674,6 +1674,40 @@ void Level::add_npc_at_spawner(NPC * npc, const std::string spawn_key)
 		npc->cancel_current_pathing(0);
 		this->add_being(npc);
 	}
+}
+
+void Level::add_critter(Critter * critter, const float x_pos, const float y_pos)
+{
+	this->add_being(critter);
+	critter->set_position(x_pos, y_pos);
+}
+
+void Level::add_critter_with_key(const std::string critter_key)
+{
+	Critter * critter = CritterManager::get_instance().create_critter(critter_key);
+	const int t_width = this->get_width() / TILE_SIZE, t_height = this->get_height() / TILE_SIZE;
+	float x_pos = -1.0f, y_pos = -1.0f;
+	const int num_tries = 50;
+	const float check_width = std::max(TILE_SIZE, (int) critter->get_width());
+	const float check_height = std::max(TILE_SIZE, (int) critter->get_height());
+	srand(std::time(NULL));
+	for (int i = 0; i < num_tries; i++) {
+		const int tx = rand() % t_width, ty = rand() % t_height;
+		//TODO: other valid spawn checks? (like allowed tile type
+		if (critter->empty_at(Rect(tx * TILE_SIZE, ty * TILE_SIZE, check_width, check_height), this, false)) {
+			x_pos = tx * TILE_SIZE, y_pos = ty * TILE_SIZE;
+			break;
+		}
+	}
+	if (x_pos < 0.0f || y_pos < 0.0f) {
+		//TODO: error handling
+	} else {
+		this->add_critter(critter, x_pos, y_pos);
+	}
+	
+	//TODO: where to call this method? (start of day, entering a room, etc.)
+	// how to choose critters from the library? how many critters to spawn
+	//TODO: check other being-related methods like removing, update, etc
 }
 
 EntityGroup * Level::create_entity_group(std::string filename_start, int index, std::pair<int, int> ss_pos, std::pair<int, int> pos)

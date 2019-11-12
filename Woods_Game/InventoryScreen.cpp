@@ -130,6 +130,26 @@ ALLEGRO_BITMAP * InventoryScreen::quest_scroll_down_arrow()
 	return ImageLoader::get_instance().get_image("ui/quest_scroll_down_arrow");
 }
 
+ALLEGRO_BITMAP * InventoryScreen::encyclopedia_pane_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/encyclopedia_pane_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::encyclopedia_label_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/encyclopedia_label_backdrop");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::encyclopedia_label_selection()
+{
+	return ImageLoader::get_instance().get_image("ui/encyclopedia_label_selection");
+}
+
+ALLEGRO_BITMAP * InventoryScreen::encyclopedia_entry_image_frame()
+{
+	return ImageLoader::get_instance().get_image("ui/encyclopedia_entry_image_frame");
+}
+
 // tabs
 
 const std::string InventoryScreen::label_for_tab(const int index)
@@ -141,6 +161,8 @@ const std::string InventoryScreen::label_for_tab(const int index)
 		return "Map";
 	case INVENTORY_TAB_JOURNAL:
 		return "Journal";
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		return "Encyclopedia";
 	default:
 		return "";
 	}
@@ -408,6 +430,80 @@ void InventoryScreen::journal_tab_secondary_select()
 	}
 }
 
+const int InventoryScreen::encyclopedia_rows_for_display()
+{
+	if (this->selected_encyclopedia_category.empty()) {
+		return this->encyclopedia->num_categories();
+	} else {
+		return this->encyclopedia->num_entries_for_category(this->selected_encyclopedia_category);
+	}
+	return 0;
+}
+
+const std::string InventoryScreen::encyclopedia_label_text(const int index)
+{
+	if (this->selected_encyclopedia_category.empty()) {
+		return this->encyclopedia->category_display_name(index);
+	} else {
+		return this->encyclopedia->entry_display_name(this->selected_encyclopedia_category, index);
+	}
+	return "";
+}
+
+void InventoryScreen::adjust_encyclopedia_scroll()
+{
+	if (this->encyclopedia_selection < this->encyclopedia_scroll_offset) {
+		this->encyclopedia_scroll_offset = this->encyclopedia_selection;
+	} else if (this->encyclopedia_selection - 5 >= this->encyclopedia_scroll_offset) {
+		this->encyclopedia_scroll_offset = this->encyclopedia_selection - 4;
+	}
+}
+
+const bool InventoryScreen::should_show_encyclopedia_entry()
+{
+	if (this->tab_index == INVENTORY_TAB_ENCYCLOPEDIA && !this->selected_encyclopedia_category.empty()) {
+		return !this->encyclopedia->entry_display_name(this->selected_encyclopedia_category, this->encyclopedia_selection).empty();
+	}
+	return false;
+}
+
+void InventoryScreen::encyclopedia_tab_menu_up()
+{
+	const int num_rows = this->encyclopedia_rows_for_display();
+	encyclopedia_selection = encyclopedia_selection == 0 ? num_rows - 1 : encyclopedia_selection - 1;
+	this->adjust_encyclopedia_scroll();
+}
+
+void InventoryScreen::encyclopedia_tab_menu_down()
+{
+	const int num_rows = this->encyclopedia_rows_for_display();
+	encyclopedia_selection = encyclopedia_selection < num_rows - 1 ? encyclopedia_selection + 1 : 0;
+	this->adjust_encyclopedia_scroll();
+}
+
+void InventoryScreen::encyclopedia_tab_menu_left()
+{
+	this->selected_encyclopedia_category = "";
+	this->encyclopedia_selection = std::min(this->encyclopedia_rows_for_display() - 1, this->encyclopedia_selection);
+	this->adjust_encyclopedia_scroll();
+}
+
+void InventoryScreen::encyclopedia_tab_menu_right()
+{
+	if (this->selected_encyclopedia_category.empty()) {
+		this->selected_encyclopedia_category = this->encyclopedia->category_name(this->encyclopedia_selection);
+	}
+	this->encyclopedia_selection = std::min(this->encyclopedia_rows_for_display() - 1, this->encyclopedia_selection);
+	this->adjust_encyclopedia_scroll();
+}
+
+void InventoryScreen::encyclopedia_tab_select()
+{
+	if (this->selected_encyclopedia_category.empty()) {
+		this->encyclopedia_tab_menu_right();
+	}
+}
+
 InventoryScreen::InventoryScreen()
 {
 }
@@ -448,18 +544,26 @@ void InventoryScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/quest_label_selection");
 	ImageLoader::get_instance().load_image("ui/quest_scroll_up_arrow");
 	ImageLoader::get_instance().load_image("ui/quest_scroll_down_arrow");
+	// encyclopedia
+	ImageLoader::get_instance().load_image("ui/encyclopedia_pane_backdrop");
+	ImageLoader::get_instance().load_image("ui/encyclopedia_label_backdrop");
+	ImageLoader::get_instance().load_image("ui/encyclopedia_label_selection");
+	ImageLoader::get_instance().load_image("ui/encyclopedia_entry_image_frame");
+	
 }
 
 void InventoryScreen::load_fonts()
 {
 	font_map[FONT_HOTBAR] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
 	font_map[FONT_DIALOG] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 12, NULL);
-	font_map[FONT_TABS] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
+	font_map[FONT_TABS] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 16, NULL);
 	font_map[FONT_LOCATION_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 20, NULL);
 	font_map[FONT_ITEM_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
 	font_map[FONT_ITEM_DESCRIPTION] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 18, NULL);
 	font_map[FONT_MONEY] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 28, NULL);
 	font_map[FONT_QUEST_LABEL] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
+	font_map[FONT_ENCYCLOPEDIA_ENTRY_NAME] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 24, NULL);
+	font_map[FONT_ENCYCLOPEDIA_ENTRY_DESCRIPTION] = al_load_font("resources/fonts/OpenSans-Regular.ttf", 16, NULL);
 }
 
 void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
@@ -490,6 +594,9 @@ void InventoryScreen::draw(ALLEGRO_DISPLAY * display)
 		if (this->tab_mode == TAB_MODE_DISPLAY_DESCRIPTION) {
 			draw_quest_description(display);
 		}
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		draw_encyclopedia(display);
 		break;
 	default:
 		break;
@@ -843,6 +950,91 @@ void InventoryScreen::draw_quest_description(ALLEGRO_DISPLAY * display)
 	}
 }
 
+void InventoryScreen::draw_encyclopedia(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+
+	ALLEGRO_BITMAP * item_label = item_label_backdrop();
+	const int label_width = (al_get_bitmap_width(item_label));
+	const int label_x = x_off + (back_w / 4) - label_width / 2; // in the middle of the left half
+	const int label_y = y_off + back_h - al_get_bitmap_height(item_label) - 16;
+
+	// draw selection
+
+	const int encyclopedia_pane_x = x_off + back_w / 2 + 24, encyclopedia_pane_y = y_off + 24;
+
+	al_draw_bitmap(this->encyclopedia_pane_backdrop(), encyclopedia_pane_x, encyclopedia_pane_y, 0);
+
+	const int ex = encyclopedia_pane_x + 16;
+	const int encyclopedia_entry_height = 63;
+	const int encyclopedia_row_count = this->encyclopedia_rows_for_display();
+	const int draw_rows = std::min(encyclopedia_row_count, 5);
+	for (int i = 0; i < draw_rows; i++) {
+		const int ey = encyclopedia_pane_y + 16 + (i * encyclopedia_entry_height);
+		ALLEGRO_BITMAP * label_backdrop = this->encyclopedia_label_backdrop();
+		al_draw_bitmap(label_backdrop, ex, ey, 0);
+		const std::string label_text = this->encyclopedia_label_text(i);
+		al_draw_text(this->font_map[FONT_QUEST_LABEL], al_map_rgb(0, 0, 0), ex + 16, ey + 10, 0, label_text.c_str());
+	}
+
+	const int select_x = encyclopedia_pane_x + 16;
+	const int select_y = encyclopedia_pane_y + 16 
+		+ (this->encyclopedia_selection - this->encyclopedia_scroll_offset) * encyclopedia_entry_height;
+
+	ALLEGRO_BITMAP * select_bitmap = this->encyclopedia_label_selection();
+	al_draw_bitmap(select_bitmap, select_x, select_y, 0);
+
+	const bool is_hiding_up = this->encyclopedia_scroll_offset > 0;
+	const bool is_hiding_down = this->encyclopedia_scroll_offset + 5 < encyclopedia_row_count;
+	if (is_hiding_up) {
+		al_draw_bitmap(quest_scroll_up_arrow(), encyclopedia_pane_x + 16 + al_get_bitmap_width(encyclopedia_label_backdrop()) + 6, encyclopedia_pane_y + 16, 0);
+	}
+	if (is_hiding_down) {
+		al_draw_bitmap(quest_scroll_down_arrow(), encyclopedia_pane_x + 16 + al_get_bitmap_width(encyclopedia_label_backdrop()) + 6,
+			encyclopedia_pane_y + al_get_bitmap_height(this->encyclopedia_pane_backdrop()) - al_get_bitmap_height(quest_scroll_down_arrow()) - 16, 0);
+	}
+	if (this->should_show_encyclopedia_entry()) {
+		this->draw_encyclopedia_entry(display);
+	}
+}
+
+void InventoryScreen::draw_encyclopedia_entry(ALLEGRO_DISPLAY * display)
+{
+	const int width = al_get_display_width(display);
+	const int height = al_get_display_height(display);
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+	const float adj_x_off = x_off + 24, adj_y_off = y_off + 24;
+
+	// entry image
+	al_draw_bitmap(this->encyclopedia_entry_image_frame(), adj_x_off, adj_y_off , 0);
+	ALLEGRO_BITMAP * entry_image = this->encyclopedia->get_entry_bitmap(this->selected_encyclopedia_category, this->encyclopedia_selection);
+	al_draw_bitmap(entry_image, adj_x_off + 4, adj_y_off + 4, 0);
+
+	// entry name
+	const float entry_name_x = adj_x_off + al_get_bitmap_width(this->encyclopedia_entry_image_frame()) + 12, entry_name_y = adj_y_off + 4;
+	const std::string entry_name = this->encyclopedia->entry_display_name(this->selected_encyclopedia_category, this->encyclopedia_selection);
+	al_draw_text(this->font_map[FONT_ENCYCLOPEDIA_ENTRY_NAME], al_map_rgb(0, 0, 0), entry_name_x, entry_name_y, 0, entry_name.c_str());
+	
+
+	// entry description
+	const float desc_line_height = 22; //temp
+	const float entry_desc_x = adj_x_off + 4, entry_desc_y = adj_y_off + al_get_bitmap_height(this->encyclopedia_entry_image_frame()) + 12;
+	const std::vector<std::string> entry_desc_lines = this->encyclopedia->get_entry_description_lines(this->selected_encyclopedia_category, this->encyclopedia_selection);
+	const int line_count = entry_desc_lines.size();
+	for (int i = 0; i < line_count; i++) {
+		al_draw_text(this->font_map[FONT_ENCYCLOPEDIA_ENTRY_DESCRIPTION], al_map_rgb(0, 0, 0), entry_desc_x, entry_desc_y + (i * desc_line_height), 0, entry_desc_lines[i].c_str());
+	}
+	//TODO: latin name? num caught?
+}
+
 void InventoryScreen::update()
 {
 	GameScreen::update();
@@ -875,6 +1067,9 @@ void InventoryScreen::menu_up()
 			this->journal_tab_menu_up();
 		}
 		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_menu_up();
+		break;
 	default:
 		break;
 	}
@@ -895,6 +1090,9 @@ void InventoryScreen::menu_down()
 		if (this->tab_mode == TAB_MODE_DEFAULT) {
 			this->journal_tab_menu_down();
 		}
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_menu_down();
 		break;
 	default:
 		break;
@@ -917,6 +1115,9 @@ void InventoryScreen::menu_left()
 			this->journal_tab_menu_left();
 		}
 		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_menu_left();
+		break;
 	default:
 		break;
 	}
@@ -937,6 +1138,9 @@ void InventoryScreen::menu_right()
 		if (this->tab_mode == TAB_MODE_DEFAULT) {
 			this->journal_tab_menu_right();
 		}
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_menu_right();
 		break;
 	default:
 		break;
@@ -977,6 +1181,9 @@ void InventoryScreen::select()
 		break;
 	case INVENTORY_TAB_MAP:
 		//TODO: display location descriptions?
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_select();
 		break;
 	default:
 		break;
@@ -1030,6 +1237,11 @@ void InventoryScreen::set_failed_quests(std::vector<Quest*> quests)
 void InventoryScreen::set_completed_quests(std::vector<Quest*> quests)
 {
 	this->completed_quests = quests;
+}
+
+void InventoryScreen::set_encyclopedia(Encyclopedia * e)
+{
+	this->encyclopedia = e;
 }
 
 const bool InventoryScreen::selecting_internal_inventory()

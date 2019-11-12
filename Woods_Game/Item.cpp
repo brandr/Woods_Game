@@ -9,6 +9,7 @@ Item::Item()
 	Register("inventory_pos_y", &inventory_pos_y);
 	Register("may_be_discarded", &may_be_discarded);
 	Register("item_description", &item_description);
+	Register("swing_key", &swing_key);
 	Register("item_name", &item_name);
 	Register("item_display_name", &item_display_name);
 	Register("item_attributes", &item_attributes);
@@ -27,6 +28,7 @@ Item::Item(Item * copy)
 	Register("inventory_pos_y", &inventory_pos_y);
 	Register("may_be_discarded", &may_be_discarded);
 	Register("item_description", &item_description);
+	Register("swing_key", &swing_key);
 	Register("item_name", &item_name);
 	Register("item_display_name", &item_display_name);
 	Register("item_attributes", &item_attributes);
@@ -36,6 +38,7 @@ Item::Item(Item * copy)
 	this->item_description = copy->get_item_description();
 	this->item_key = copy->get_item_key();	
 	this->may_be_discarded = copy->get_may_be_discarded();
+	this->swing_key = copy->get_swing_key();
 	set_item_attributes(copy->get_item_attributes());
 }
 
@@ -66,6 +69,7 @@ void Item::swap_with_item(Item * other)
 	const std::string display_name1 = this->get_item_display_name(), display_name2 = other->get_item_display_name();
 	const std::string desc1 = this->get_item_description(), desc2 = other->get_item_description();
 	const bool discard1 = this->get_may_be_discarded(), discard2 = other->get_may_be_discarded();
+	const std::string swing1 = this->get_swing_key(), swing2 = other->get_swing_key();
 	const int xpos1 = this->get_inventory_pos_x(), xpos2 = other->get_inventory_pos_x();
 	const int ypos1 = this->get_inventory_pos_y(), ypos2 = other->get_inventory_pos_y();
 	const std::vector<ItemAttribute*> attr1 = this->get_item_attributes_vec_copy(),
@@ -78,6 +82,7 @@ void Item::swap_with_item(Item * other)
 	this->item_display_name = display_name2, other->item_display_name = display_name1;
 	this->item_description = desc2, other->item_description = desc1;
 	this->may_be_discarded = discard2, other->may_be_discarded = discard1;
+	this->swing_key = swing2, other->swing_key = swing1;
 	this->set_item_attributes(attr2);
 	other->set_item_attributes(attr1);
 	this->load_content_from_attributes();
@@ -94,6 +99,7 @@ void Item::copy_to_item(Item * other)
 	other->item_description = this->get_item_description();
 	other->item_display_name = this->get_item_display_name();
 	other->may_be_discarded = this->get_may_be_discarded();
+	other->swing_key = this->get_swing_key();
 	other->set_item_attributes(this->get_item_attributes_vec_copy());
 	other->load_content_from_attributes();
 }
@@ -112,6 +118,11 @@ bool Item::at_inventory_pos(int x, int y)
 const bool Item::get_may_be_discarded()
 {
 	return this->may_be_discarded.value();
+}
+
+const std::string Item::get_swing_key()
+{
+	return this->swing_key.value();
 }
 
 ItemAttribute::ItemAttribute()

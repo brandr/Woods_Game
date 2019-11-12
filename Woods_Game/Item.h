@@ -37,6 +37,7 @@ public:
 	void set_inventory_pos(int x, int y);
 	bool at_inventory_pos(int x, int y);
 	const bool get_may_be_discarded();
+	const std::string get_swing_key();
 };
 
 #endif

@@ -580,7 +580,7 @@ void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_
 void AIBeing::draw_destinations(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
 	if (this->path_bitmap == NULL) {
-		this->path_bitmap = al_create_bitmap(TILE_SIZE, TILE_SIZE);
+		this->path_bitmap = al_create_bitmap(this->get_rect_for_collision()->width, this->get_rect_for_collision()->height);
 		al_set_target_bitmap(this->path_bitmap);
 		al_clear_to_color(al_map_rgba(0, 100, 0, 100));
 		al_set_target_bitmap(al_get_backbuffer(display));

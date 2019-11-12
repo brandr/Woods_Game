@@ -54,6 +54,8 @@
 #include "LocationMarker.h"
 #include "Quest.h"
 #include "QuestData.h"
+#include "CritterManager.h"
+#include "Encyclopedia.h"
 #include "boost/filesystem.hpp"
 
 
@@ -72,6 +74,7 @@ private:
 	void load_player_from_xml(std::string filepath, std::string player_key);
 	void load_all_cutscenes();
 	void load_item_templates();
+	void load_critter_templates();
 	CutsceneScript * get_cutscene_script(const std::string cutscene_key);
 	Cutscene * generate_cutscene(CutsceneScript * script);
 	CutsceneBlock * generate_cutscene_block(CutsceneScriptBlock * block);
@@ -117,6 +120,7 @@ public:
 	std::vector<Quest *> get_active_quests();
 	std::vector<Quest *> get_failed_quests();
 	std::vector<Quest *> get_completed_quests();
+	Encyclopedia * get_encyclopedia();
 	void unload_content();
 	void unload_level_content();
 	void update(std::map<int, bool>, std::map<int, std::pair<float, float>>);

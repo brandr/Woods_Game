@@ -30,6 +30,29 @@ void Player::collect_item_pickup(World * world, Level * level, ItemPickup * pick
 		}
 	}
 }
+const bool Player::can_swing_at_entity(Entity * e, const std::string swing_key)
+{
+	if (e == NULL || swing_key.empty()) {
+		return false;
+	}
+	if (swing_key == "shearing") {
+		return e->has_entity_attribute(E_ATTR_SHEARABLE);
+	}
+	if (swing_key == "netting") {
+		if (e->get_type() == CRITTER) {
+			return ((Critter *)e)->can_be_netted();
+		}
+	}
+	return false;
+}
+
+void Player::catch_critter(World * world, Level * level, Critter * critter)
+{
+	//TODO: add item?
+	world->update_encyclopedia_for_critter(critter, ENTRY_KNOWN);
+	level->remove_being(critter);
+}
+
 //TODO: probably need pickups in the set of items we check for (see level)
 void Player::collide_with_entity(World * world, Level * level, Entity * e)
 {
@@ -149,7 +172,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 	case SIDE_SCROLLING:
 		break;
 	case TOP_DOWN:
-		update_top_down(level);
+		update_top_down(world, level);
 		break;
 	case MAIN_GAME_DIALOG:
 		dialog_update(world, level);
@@ -189,14 +212,17 @@ void Player::update_side_scrolling(std::vector<Entity*> interactables, std::pair
 	*/
 }
 
-void Player::update_top_down(Level * level)
+void Player::update_top_down(World * world, Level * level)
 {
 	if (counters[BOUNCE]) return;
 	if (counters[SWING]) {
 		switch (current_action) {
-		case(ACTION_SHEAR):
-			shear_update(level);
-			break;
+			//case(ACTION_SHEAR):
+			//	shear_update(level);
+			//	break;
+			case(ACTION_SWING):
+				swing_update(world, level, this->get_selected_item()->get_swing_key());
+				break;
 		}
 		return;
 	}
@@ -522,8 +548,6 @@ void Player::shear_update(Level * level)
 {
 	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	//TODO: get nearby shearables from level 
-	//(might not be able to just be the ones in the same bucket, because what if we're shearing across buckets)
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
 	const int t_size = nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
@@ -532,8 +556,7 @@ void Player::shear_update(Level * level)
 	}
 	const int size = interactables.size();
 
-	// TODO: define mask prefix ("player") more generally
-	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction); // additional_masks[std::pair<std::string, int>("slicing", direction)];
+	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction);
 	float x_off = 0, y_off = 0;
 	switch (direction) {
 	case DIR_NEUTRAL:
@@ -569,55 +592,63 @@ void Player::shear_update(Level * level)
 		}
 	}
 }
-/*
-void Player::shear_update(std::vector<Entity*> interactables, std::vector<Tile*> nearby_tiles, std::pair<int, int> level_dimensions)
+void Player::swing_update(World * world, Level * level, const std::string swing_key)
 {
+	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
 	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
 	const int t_size = nearby_tiles.size();
-	for(int i = 0; i < t_size; i++){
+	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i]->get_block();
 		if (b) interactables.push_back(b);
 	}
 	const int size = interactables.size();
-	
-	// TODO: define mask prefix ("player") more generally
-	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction); // additional_masks[std::pair<std::string, int>("slicing", direction)];
+
+	mask_t *swing_mask = this->get_additional_mask(swing_key, "player", direction);
 	float x_off = 0, y_off = 0;
-	switch(direction){
-		case DIR_NEUTRAL:
-			x_off = 16, y_off = 52;
-			break;
-		case DIR_UP:
-			x_off = 16, y_off = 8;
-			break;
-		case DIR_DOWN:
-			x_off = 16, y_off = 52;
-			break;
-		case DIR_LEFT:
-			x_off = -8, y_off = 16;
-			break;
-		case DIR_RIGHT:
-			x_off = 40, y_off = 16;
-			break;
+	//TODO: change these offsets based on swung item type? or not necessary?
+	switch (direction) {
+	case DIR_NEUTRAL:
+		x_off = 16, y_off = 52;
+		break;
+	case DIR_UP:
+		x_off = 16, y_off = 8;
+		break;
+	case DIR_DOWN:
+		x_off = 16, y_off = 52;
+		break;
+	case DIR_LEFT:
+		x_off = -8, y_off = 16;
+		break;
+	case DIR_RIGHT:
+		x_off = 40, y_off = 16;
+		break;
 	}
 
 	for (int i = 0; i < size; i++) {
-		if (interactables[i]->get_mask() && Mask_Collide(shear_mask, interactables[i]->get_mask(),
+		if (interactables[i]->get_mask() && Mask_Collide(swing_mask, interactables[i]->get_mask(),
 			get_x() + x_off - interactables[i]->get_x(),
 			get_y() + y_off - interactables[i]->get_y())) {
-				Entity* e = interactables[i];
-				if (e->has_entity_attribute(E_ATTR_SHEARABLE) 
-					&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
-					set_entity_attribute(E_ATTR_HIT_OTHER, 1);
-					Item *shears = get_selected_item();
-					const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
-					e->take_durability_damage(NULL, shear_power);
-					return;
+			Entity* e = interactables[i];
+			//TODO: more general than shearing
+			if (this->can_swing_at_entity(e, swing_key)
+				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
+				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
+				Item *swung_item = get_selected_item();
+				//TODO: more general
+				if (swing_key == "shearing") {
+					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);
+					e->take_durability_damage(level, this, shear_power);
+				} else if (swing_key == "netting" && e->get_type() == CRITTER) {
+					Critter * c = (Critter*)e;
+					this->catch_critter(world, level, c);
 				}
+				return;
 			}
+		}
 	}
 }
-*/
+
 void Player::sleep_in_bed(GlobalTime * current_time)
 {
 	Cutscene * cutscene = new Cutscene();
@@ -625,13 +656,10 @@ void Player::sleep_in_bed(GlobalTime * current_time)
 	this->active_cutscene = cutscene;
 }
 
-//TODO: do this async
 void Player::load_game_for_day(const int day)
 {
 	Cutscene * cutscene = new Cutscene();
-	//cutscene->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	cutscene->add_load_game_update(day, this->wake_up_time());
-	//cutscene->add_effect(EFFECT_DISPLAY_BLACK, 60);
 	this->active_cutscene = cutscene;
 }
 
@@ -731,13 +759,15 @@ void Player::use_selected_item()
 {
 	if (current_action != ACTION_NONE) return;
 	if (counters[BOUNCE] || counters[SWING]) return;
+	//TODO: more general
+	//TODO: might want "use key" in additon/instead of swing key
 	Item *item = inventory.get_selected_hotbar_item();
 	if (item) {
-		switch (item->get_item_key()) {
-		case ITEM_SHEARS:
-			use_shears();
-			break;
+		const std::string swing_key = item->get_swing_key();
+		if (!swing_key.empty()) {
+			this->swing_item(swing_key);
 		}
+		//TODO: other uses besides swinging
 	}
 }
 
@@ -782,12 +812,23 @@ void Player::interact()
 	this->interacting = true;
 }
 
+//TODO: generalize a bit more for swinging animation
 void Player::use_shears()
 {
 	xvel = 0, yvel = 0;
 	counters[SWING] = 19; //TEMP. This is done to match up with the animation length.
 	anim_state = ANIM_STATE_SHEARING;
 	current_action = ACTION_SHEAR;
+	get_animation()->reset();
+	ss_animation->reset();
+}
+
+void Player::swing_item(const std::string swing_key)
+{
+	xvel = 0, yvel = 0;
+	counters[SWING] = 19; //TEMP. This is done to match up with the animation length, but should get from anim length instead
+	anim_state = ANIM_STATE_SHEARING; //TEMP
+	current_action = ACTION_SWING;
 	get_animation()->reset();
 	ss_animation->reset();
 }

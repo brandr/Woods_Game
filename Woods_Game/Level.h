@@ -5,6 +5,7 @@
 #include "TileSet.h"
 #include "GameImage.h"
 #include "Being.h"
+#include "Critter.h"
 #include "NPC.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
 #include "utility"             // for pair
@@ -145,6 +146,8 @@ public:
 	const bool has_spawner_for_key(const std::string spawn_key);
 	Spawner * spawner_for_key(const std::string spawn_key);
 	void add_npc_at_spawner(NPC * npc, const std::string spawn_key);
+	void add_critter(Critter * critter, const float x_pos, const float y_pos);
+	void add_critter_with_key(const std::string critter_key);
 	void add_path_node(const int path_node_index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
 	PathNode * create_path_node(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
 	const bool has_path_node_for_key(const std::string node_key);

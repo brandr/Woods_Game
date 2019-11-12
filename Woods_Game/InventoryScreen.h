@@ -1,11 +1,12 @@
 #ifndef INVENTORYSCREEN_H
 #define INVENTORYSCREEN_H
 
-#define NUM_INVENTORY_TABS 3
+#define NUM_INVENTORY_TABS 4
 #define MAP_CURRENT_LOCATION_BLINK_TIME 40
 #define QUEST_INVENTORY_COLS 5
 #define QUEST_INVENTORY_ROWS 4
 
+#include "Encyclopedia.h"
 #include "Inventory.h"
 #include "GameScreen.h"
 #include "ImageLoader.h"
@@ -20,7 +21,8 @@
 enum INVENTORY_SCREEN_TABS {
 	INVENTORY_TAB_ITEMS,
 	INVENTORY_TAB_MAP,
-	INVENTORY_TAB_JOURNAL
+	INVENTORY_TAB_JOURNAL,
+	INVENTORY_TAB_ENCYCLOPEDIA
 };
 
 enum TAB_MODES {
@@ -69,6 +71,12 @@ protected:
 	ALLEGRO_BITMAP * quest_label_selection();
 	ALLEGRO_BITMAP * quest_scroll_up_arrow();
 	ALLEGRO_BITMAP * quest_scroll_down_arrow();
+
+	// encyclopedia tab
+	ALLEGRO_BITMAP * encyclopedia_pane_backdrop();
+	ALLEGRO_BITMAP * encyclopedia_label_backdrop();
+	ALLEGRO_BITMAP * encyclopedia_label_selection();
+	ALLEGRO_BITMAP * encyclopedia_entry_image_frame();
 
 	const std::string label_for_tab(const int index);
 	void reset_tab_mode();
@@ -128,6 +136,24 @@ protected:
 	void journal_tab_menu_left();
 	void journal_tab_menu_right();
 	void journal_tab_secondary_select();
+
+	// encyclopedia
+
+	Encyclopedia * encyclopedia;
+	std::string selected_encyclopedia_category = "";
+	int encyclopedia_selection = 0;
+	int encyclopedia_scroll_offset = 0;
+
+	const int encyclopedia_rows_for_display();
+	const std::string encyclopedia_label_text(const int index);
+	void adjust_encyclopedia_scroll();
+	const bool should_show_encyclopedia_entry();
+
+	void encyclopedia_tab_menu_up();
+	void encyclopedia_tab_menu_down();
+	void encyclopedia_tab_menu_left();
+	void encyclopedia_tab_menu_right();
+	void encyclopedia_tab_select();
 	
 
 public:
@@ -155,6 +181,10 @@ public:
 	void draw_journal(ALLEGRO_DISPLAY *display);
 	void draw_quest_description(ALLEGRO_DISPLAY *display);
 
+	// encyclopedia
+	void draw_encyclopedia(ALLEGRO_DISPLAY *display);
+	void draw_encyclopedia_entry(ALLEGRO_DISPLAY *display);
+
 	virtual void update();
 	virtual void reset();
 	virtual void menu_up();
@@ -171,6 +201,7 @@ public:
 	void set_active_quests(std::vector<Quest *> quests);
 	void set_failed_quests(std::vector<Quest *> quests);
 	void set_completed_quests(std::vector<Quest *> quests);
+	void set_encyclopedia(Encyclopedia * encyclopedia);
 	virtual const bool selecting_internal_inventory();
 	virtual Item* selected_item();
 	virtual Item* dragging_item();
