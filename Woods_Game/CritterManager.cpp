@@ -29,13 +29,13 @@ void CritterManager::load_critter_templates()
 	const std::vector<CritterTemplate *> critter_templates = this->critter_library.get_critter_templates();
 }
 
-Critter * CritterManager::create_critter(const std::string critter_key)
+Critter * CritterManager::create_critter(const std::string critter_key, const int index)
 {
 	Critter * critter = NULL;
 	std::vector<CritterTemplate *> all_templates = this->critter_library.get_critter_templates();
 	for (CritterTemplate * ct : all_templates) {
 		if (critter_key == ct->get_critter_key()) {
-			critter = new Critter(ct);
+			critter = new Critter(ct, index);
 			break;
 		}
 	}
@@ -52,6 +52,17 @@ const std::string CritterManager::get_encyclopedia_entry_name(const std::string 
 {
 	CritterTemplate * ct = this->get_critter_template(critter_key);
 	return ct != NULL ? ct->get_encyclopedia_entry_name() : "";
+}
+
+Dialog * CritterManager::get_critter_catch_dialog(const std::string critter_key)
+{
+	std::vector<CritterTemplate *> all_templates = this->critter_library.get_critter_templates();
+	for (CritterTemplate * ct : all_templates) {
+		if (critter_key == ct->get_critter_key()) {
+			return ct->get_catch_dialog();
+		}
+	}
+	return NULL;
 }
 
 CritterLibrary::CritterLibrary()

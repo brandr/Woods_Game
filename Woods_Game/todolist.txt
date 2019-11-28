@@ -9,7 +9,7 @@ Last updated 10/27/2019
 Target date for main code to be done: ~ Mar 2020
 Target date for all code/assets/levels to be done: ~ Aug 2020
 
-Total: 42-60 days (~1-2 months)
+Total: 42-75 days (~2-3 months)
 
 1. Critters
 	(10-15 days)
@@ -19,33 +19,33 @@ Total: 42-60 days (~1-2 months)
 (should get here around December 2019) 
 (clean up todos and try to think of what's missing here)
 
-4. Audio
+3. Audio
 	(5-10 days)
-5. Animation/image code stuff
+4. Animation/image code stuff
 	(10-15 days)
-6. Menu/control stuff
+5. Menu/control stuff
 	(5-10 days)
 
 (should get here around January 2020) 
 (clean up todos and try to think of what's missing here)	
 
-7. Loading screens/progress bars
+6. Loading screens/progress bars
 	(3-5 days)
-8. Figure out how to force end of day (otherwise saving gets weird after midnight)
+7. Figure out how to force end of day (otherwise saving gets weird after midnight)
 	(2-5 days)
-9. Wake-up time (alarm clock?)
+8. Wake-up time (alarm clock?)
 	(2-5 days)
-10. Stamina/resource management
+9. Stamina/resource management
 	(5-10 days)
 
 (should get here around Feburary 2020) 
 (clean up todos and try to think of what's missing here)	
 
-11. Miscellaneous code stuff (break out into specific todos after getting here)
+10. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-12. Level Editor improvements
+11. Level Editor improvements
 	(???)
-13. Content!
+12. Content!
 	(???)
 
 Ongoing tasks:
@@ -59,39 +59,45 @@ Ongoing tasks:
 Critters
 ---------------------------------------------------
 
-When do new critters spawn? Entering level, new day, on timer, etc.
+In dialog saying you caught a critter, show encyclopedia pic (or should it be a separate image?)
+	* this can just be a normal dialog portrait, so add it once that's implemented
 
-Maybe some critter types are set to only appear n days into the game
+Make ant footsteps quieter (and figure out how to manage critter footsteps)
 
-Make basic AI
-	* better/more generalized wandering (maybe randomize time spent walking/stopping within some range to look a bit more like an ant's movement)
+Accurate swing animation
+	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
+		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
+		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
+			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
+
+Basic AI
+	* better/more generalized wandering
+	* wandering in its own method-- what can critters do besides wander?
 	* some critters should flee if player gets close
+		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
+		# sneak up on NPCs?
 
-Make ant footsteps quieter (and see if critter footsteps need to be managed differently)
+Make other critters and large animals
 
-New swinging animation for bug net/ different mask/offsets
-	* make sure catch bugs makes visual sense
-
-Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
-	* this will make no sense visually when they're really high up, so make them disappear if they go too high
-
-Might want to classify differently since some animals should also be catchable (like frogs)
-
-How are large animals different from other critters? (I think they just can't be caught in nets and should have different ai)
-
-Some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
+Critter spawning/biomes
+	* when do critters despawn?
+	* incorporate level size when calculating spawn chance/max critters to spawn for biome
+	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
+	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
 
 ---------------------------------------------------
 Encyclopedia/Journal
 ---------------------------------------------------
 
-How to see/discover plants? (seeing should work the same for everything that has an encyclpedia entry)
+What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
 
 Could track NPCs in encyclopedia
 
-What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
-
 Add latin name, num caught, and other info to display
+
+Write up entire encyclopedia in text document before making it into xml
+
+Might need to make "seeing" more performance-friendly
 
 ---------------------------------------------------
 Inventory/items/money
@@ -257,7 +263,6 @@ Draw the leaves for the large tree sprite
 	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
 
 Draw the symbols for the Eye of Pan and the Eye of Gabriel
-	* could also do "hand" instead of "eye" but I like eye better currently
 
 ---------------------------------------------------
 Physics
@@ -296,7 +301,7 @@ Day/night cycle
 Day/night cycle
 	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
 		* how to handle areas with their own lighting like lamps?
-	- What happens in terms of date/saving if the player stays up past midnight? (with the current system, that means the date is never late)
+	- What happens in terms of date/saving if the player stays up past midnight? (could also prevent them staying up till some late time like 11 PM)
 		* Should player pass out, get a game over, etc if they're up too late?
 	- calculate "time to wake up" somehow rather than just making it constant
 		* alarm clock upgrade/item?
@@ -333,10 +338,6 @@ Fix the way we load game from title screen-- need to select (did I mean "display
 Need to make a "restore defaults" (or something similar) button for video configurations
 
 Allow changing text speed in options
-
-On inventory screen, change tabs by clicking on them (maybe arrow-selected up to them too)
-
-Nicer looking menus
 
 ---------------------------------------------------
 Controls

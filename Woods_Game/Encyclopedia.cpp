@@ -60,6 +60,15 @@ void Encyclopedia::update_entry_state(const std::string category_name, const std
 	}
 }
 
+const int Encyclopedia::get_entry_state(const std::string category_key, const std::string entry_key)
+{
+	EncyclopediaCategory * ec = this->get_category(category_key);
+	if (ec != NULL) {
+		return ec->get_entry_state(entry_key);
+	}
+	return 0;
+}
+
 ALLEGRO_BITMAP * Encyclopedia::get_entry_bitmap(const std::string category_key, const int entry_index)
 {
 	EncyclopediaCategory * ec = this->get_category(category_key);
@@ -137,6 +146,18 @@ EncyclopediaEntry * EncyclopediaCategory::get_entry(const int index)
 	return NULL;
 }
 
+EncyclopediaEntry * EncyclopediaCategory::get_entry(const std::string name)
+{
+	const int size = this->entries.size();
+	for (int i = 0; i < size; i++) {
+		EncyclopediaEntry * ee = this->entries.getItem(i);
+		if (name == ee->get_entry_name()) {
+			return ee;
+		}
+	}
+	return NULL;
+}
+
 EncyclopediaCategory::EncyclopediaCategory()
 {
 	setClassName("EncyclopediaCategory");
@@ -210,6 +231,15 @@ const std::vector<std::string> EncyclopediaCategory::get_entry_description_lines
 		return ee->get_entry_description_lines();
 	}
 	return std::vector<std::string>();
+}
+
+const int EncyclopediaCategory::get_entry_state(const std::string entry_name)
+{
+	EncyclopediaEntry * ee = this->get_entry(entry_name);
+	if (ee != NULL) {
+		return ee->get_entry_state();
+	}
+	return 0;
 }
 
 EncyclopediaEntry::EncyclopediaEntry()

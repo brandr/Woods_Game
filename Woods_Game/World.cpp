@@ -645,7 +645,7 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 	}
 }
 
-void World::update_new_day(Player * player, const std::string current_level_key)
+void World::update_new_day(GlobalTime * time, Player * player, const std::string current_level_key)
 {
 	this->clear_all_beings();
 	//TODO: make sure we do this in a way where the player doesn't jump suddenly
@@ -659,9 +659,10 @@ void World::update_new_day(Player * player, const std::string current_level_key)
 		}
 	}
 	this->update_npcs_new_day();
+	this->spawn_critters(time);
 }
 
-void World::update_reload_day(Player * player, const std::string current_level_key)
+void World::update_reload_day(GlobalTime * time, Player * player, const std::string current_level_key)
 {
 	this->clear_all_beings();
 	//TODO: make sure we do this in a way where the player doesn't jump suddenly
@@ -669,6 +670,7 @@ void World::update_reload_day(Player * player, const std::string current_level_k
 	Level * current_level = this->extract_current_level(player, current_level_key);
 	current_level->add_being(player);
 	this->update_npcs_new_day();
+	this->spawn_critters(time);
 }
 
 void World::update_npcs_new_day()
@@ -688,6 +690,26 @@ void World::update_npcs_new_day()
 		npc->cancel_current_pathing(0);
 	}
 	//TODO: other NPC updates that should happen at the beginning of the day
+}
+
+void World::spawn_critters(GlobalTime * time)
+{
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
+		if (dungeons[i]) {
+			dungeons[i]->spawn_critters(this, time);
+		}
+	}
+}
+
+void World::player_visible_entities_update(Level * level)
+{
+	std::vector<Entity *> visible_entities = level->player_visible_entities();
+	for (Entity * e : visible_entities) {
+		if (e->has_visibility_actions(level)) {
+			e->update_visibility(this, level);
+		}
+	}
 }
 
 void World::add_dungeon(Dungeon *dungeon)
@@ -912,6 +934,13 @@ Encyclopedia * World::get_encyclopedia()
 	return &(this->encyclopedia);
 }
 
+void World::update_encyclopedia_state(const std::string category_name, const std::string entry_name, const int entry_state)
+{
+	if (category_name != "" && entry_name != "") {
+		this->encyclopedia.update_entry_state(category_name, entry_name, entry_state);
+	}
+}
+
 void World::update_encyclopedia_for_critter(Critter * critter, const int entry_state)
 {
 	const std::string critter_key = critter->get_critter_key();
@@ -926,4 +955,24 @@ void World::update_encyclopedia_for_critter(Critter * critter, const int entry_s
 	//TODO: more information the more we catch?
 	//TODO: probably want this to be agnostic to seeing large animals vs catch small ones, so check whether the critter is catchable
 	//			(I think I need to add a new serialized binding for this)
+}
+
+const int World::encyclopedia_state_for_critter(Critter * critter)
+{
+	const std::string critter_key = critter->get_critter_key();
+
+	const std::string category_name = CritterManager::get_instance().get_encyclopedia_category_name(critter_key);
+	const std::string entry_name = CritterManager::get_instance().get_encyclopedia_entry_name(critter_key);
+	if (category_name != "" && entry_name != "") {
+		return this->encyclopedia.get_entry_state(category_name, entry_name);
+	}
+	return 0;
+}
+
+const int World::get_encyclopedia_state(const std::string category_name, const std::string entry_name)
+{
+	if (category_name != "" && entry_name != "") {
+		return this->encyclopedia.get_entry_state(category_name, entry_name);
+	}
+	return 0;
 }

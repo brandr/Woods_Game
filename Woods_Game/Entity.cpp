@@ -257,6 +257,11 @@ const bool Entity::contact_action(World * world, Level * level, Player * player)
 			interacted = true;
 		}
 	}
+	const std::string ee_category = this->encyclopedia_category_name(level);
+	const std::string ee_name = this->encyclopedia_entry_name(level);
+	if (!ee_category.empty() && !ee_name.empty()) {
+		world->update_encyclopedia_state(ee_category, ee_name, ENTRY_KNOWN);
+	}
 	return interacted;
 }
 
@@ -283,6 +288,38 @@ void Entity::entity_break(Level * level, Player * player)
 	if (it == entity_effects.end()) return;
 	entity_effects["break"].set_effect_active(true);
 	this->drop_items(level, player);
+}
+
+void Entity::update_visibility(World * world, Level * level)
+{
+	const std::string ee_name = this->encyclopedia_entry_name(level);
+	const std::string ee_category = this->encyclopedia_category_name(level);
+	if (!ee_name.empty() && !ee_category.empty()) {
+		const int state = world->get_encyclopedia_state(ee_category, ee_name);
+		if (state == ENTRY_UNDISCOVERED) {
+			world->update_encyclopedia_state(ee_category, ee_name, ENTRY_SEEN);
+		}
+	}
+}
+
+const bool Entity::has_visibility_actions(Level * level)
+{
+	if (!this->encyclopedia_entry_name(level).empty() && !this->encyclopedia_category_name(level).empty()) {
+		return true;
+	}
+	return false;
+}
+
+const std::string Entity::encyclopedia_entry_name(Level * level)
+{
+	TileSet * tileset = level->get_tileset();
+	return tileset->encyclopedia_entry_name_for_entity(this);
+}
+
+const std::string Entity::encyclopedia_category_name(Level * level)
+{
+	TileSet * tileset = level->get_tileset();
+	return tileset->encyclopedia_category_for_entity(this);
 }
 
 void Entity::set_entity_data_index(int index)
@@ -534,6 +571,8 @@ EntityData::EntityData()
 	Register("center_offset_y", &center_offset_y);
 	Register("solid", &solid);
 	Register("visible", &visible);
+	Register("encyclopedia_category_key", &encyclopedia_category_key);
+	Register("encyclopedia_entry_key", &encyclopedia_entry_key);
 	solid = false;
 	visible = true;
 }
@@ -575,7 +614,7 @@ void EntityData::set_center_offset(std::pair<int, int> offset)
 void EntityData::set_components(std::vector<EntityComponentData*> components)
 {
 	this->components.Clear();
-	const int size = components.size();
+	const int size = (int)components.size();
 	for (int i = 0; i < size; i++) {
 		this->components.addItem(components[i]);
 	}
@@ -584,7 +623,7 @@ void EntityData::set_components(std::vector<EntityComponentData*> components)
 std::vector<std::pair<std::string, std::string>> EntityData::get_block_contact_action_data()
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	const int size = this->contact_actions.size();
+	const int size = (int)this->contact_actions.size();
 	for (int i = 0; i < size; i++) {
 		data.push_back(std::pair<std::string, std::string>(
 			this->contact_actions.getItem(i)->get_interact_action_key(),
@@ -596,7 +635,7 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_contact_a
 std::vector<std::pair<std::string, std::string>> EntityData::get_block_interact_action_data()
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	const int size = this->interact_actions.size();
+	const int size = (int)this->interact_actions.size();
 	for (int i = 0; i < size; i++) {
 		data.push_back(std::pair<std::string, std::string>(
 			this->interact_actions.getItem(i)->get_interact_action_key(),
@@ -608,7 +647,7 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_interact_
 std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_action_data()
 {
 	std::vector<std::pair<std::string, std::string>> data;
-	const int size = this->load_day_actions.size();
+	const int size = (int) this->load_day_actions.size();
 	for (int i = 0; i < size; i++) {
 		data.push_back(std::pair<std::string, std::string>(
 			this->load_day_actions.getItem(i)->get_interact_action_key(),
@@ -620,7 +659,7 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_
 std::vector<ItemDrop*> EntityData::get_item_drops()
 {
 	std::vector<ItemDrop*> drops;
-	const int size = this->item_drops.size();
+	const int size = (int)this->item_drops.size();
 	for (int i = 0; i < size; i++) {
 		ItemDrop * id1 = this->item_drops.getItem(i);
 		ItemDrop * id2 = new ItemDrop();
@@ -634,7 +673,7 @@ std::vector<ItemDrop*> EntityData::get_item_drops()
 const std::vector<EntitySpawnTileRule *> EntityData::get_block_spawn_tile_rules()
 {
 	std::vector<EntitySpawnTileRule *> data;
-	const int size = this->spawn_tile_rules.size();
+	const int size = (int)this->spawn_tile_rules.size();
 	for (int i = 0; i < size; i++) {
 		data.push_back(this->spawn_tile_rules.getItem(i));
 	}
@@ -674,7 +713,7 @@ std::pair<int, int> EntityData::get_center_offset()
 std::vector<EntityComponentData*> EntityData::get_components()
 {
 	std::vector<EntityComponentData*> components;
-	const int size = this->components.size();
+	const int size = (int)this->components.size();
 	for (int i = 0; i < size; i++) {
 		EntityComponentData *comp = this->components.getItem(i);
 		components.push_back(comp);
@@ -684,7 +723,7 @@ std::vector<EntityComponentData*> EntityData::get_components()
 
 const bool EntityData::has_entity_attribute(const std::string attr_key)
 {
-	const int size = this->attributes.size();
+	const int size = (int)this->attributes.size();
 	for (int i = 0; i < size; i++) {
 		EntityAttribute *attr = this->attributes.getItem(i);
 		if (attr->attribute_key.value() == attr_key) {
@@ -696,7 +735,7 @@ const bool EntityData::has_entity_attribute(const std::string attr_key)
 
 int EntityData::get_entity_attribute(const std::string attr_key)
 {
-	const int size = this->attributes.size();
+	const int size = (int)this->attributes.size();
 	for (int i = 0; i < size; i++) {
 		EntityAttribute *attr = this->attributes.getItem(i);
 		if (attr->attribute_key.value() == attr_key) {
@@ -759,7 +798,7 @@ EntityComponentData::EntityComponentData(std::string name, std::vector<std::stri
 void EntityComponentData::set_attributes(std::vector<std::string> attributes)
 {
 	this->attributes.Clear();
-	const int size = attributes.size();
+	const int size = (int)attributes.size();
 	for (int i = 0; i < size; i++) {
 		EntityComponentAttribute *attr = new EntityComponentAttribute(attributes[i]);
 		this->attributes.addItem(attr);
@@ -775,7 +814,7 @@ std::vector<std::string> EntityComponentData::get_attributes()
 {
 
 	std::vector<std::string> attributes;
-	const int size = this->attributes.size();
+	const int size = (int)this->attributes.size();
 	for (int i = 0; i < size; i++) {
 		attributes.push_back(this->attributes.getItem(i)->name.value());
 	}

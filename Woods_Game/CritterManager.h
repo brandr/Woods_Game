@@ -2,6 +2,7 @@
 #define CRITTER_MANAGER_H
 
 #include "Critter.h"
+#include "Dialog.h"
 
 struct CritterLibrary : public xmls::Serializable {
 	xmls::Collection<CritterTemplate> critter_templates;
@@ -21,9 +22,10 @@ public:
 	static CritterManager& get_instance();
 	~CritterManager();
 	void load_critter_templates();
-	Critter * create_critter(const std::string critter_key);
+	Critter * create_critter(const std::string critter_key, const int index);
 	const std::string get_encyclopedia_category_name(const std::string critter_key);
 	const std::string get_encyclopedia_entry_name(const std::string critter_key);
+	Dialog * get_critter_catch_dialog(const std::string critter_key);
 };
 
 #endif

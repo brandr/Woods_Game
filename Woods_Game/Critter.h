@@ -2,12 +2,15 @@
 #define CRITTER_H
 
 #include "AIBeing.h"
+#include "Dialog.h"
+#include "DialogTree.h"
+#include "Encyclopedia.h"
 #include "SpritesheetAnimation.h"
 
 #include "XMLSerialization.h"
 
 // A critter is an animal or bug.
-// Critters are not serialized directly because they can spawn at random, but we should serialize critter templates
+// Critters are not serialized directly because they can spawn at random, but we serialize critter templates.
 
 struct CritterTemplate : public xmls::Serializable {
 	xmls::xString critter_key;
@@ -19,6 +22,7 @@ struct CritterTemplate : public xmls::Serializable {
 	xmls::xBool solid;
 	xmls::xFloat base_speed;
 	xmls::Collection<AnimationData> animation_data;
+	DialogItem catch_dialog_item;
 	CritterTemplate();
 	~CritterTemplate();
 	const std::string get_critter_key();
@@ -32,13 +36,16 @@ struct CritterTemplate : public xmls::Serializable {
 	const int get_collide_height();
 	const bool get_solid();
 	const float get_base_speed();
+	Dialog * get_catch_dialog();
 };
 
 class Level;
+class World;
 class Critter : public AIBeing
 {
 private:
 	std::string critter_key;
+	int level_critter_index = 0; // to ensure == distinguishes between critters
 protected:
 	virtual void mark_destination_reached(const std::string dest_key);
 	virtual void request_pathing_update(World * world, Level * level, GlobalTime * time);
@@ -46,12 +53,14 @@ protected:
 	virtual void walk_to_next_level_update(Level * level);
 public:
 	Critter();
-	Critter(CritterTemplate * critter_template);
+	Critter(CritterTemplate * critter_template, const int index);
 	~Critter();
 	virtual int get_type();
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	const std::string get_critter_key();
 	const bool can_be_netted();
+	virtual void update_visibility(World * world, Level * level);
+	virtual const bool has_visibility_actions(Level * level);
 	
 };
 

@@ -103,7 +103,7 @@ public:
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int,int> position);
 	virtual void load_mask(std::string base_filename);
 	virtual void load_additional_masks_from_attributes(std::string prefix);
-	virtual mask_t* get_additional_mask(const std::string mask_key, const std::string prefix, const int row);
+	virtual mask_t* get_additional_mask(const std::string mask_key, const std::string prefix, const int row, const int col);
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();

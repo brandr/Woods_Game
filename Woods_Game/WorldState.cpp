@@ -210,7 +210,7 @@ void WorldState::process_quest_update(QuestUpdate * quest_update)
 
 Quest * WorldState::quest_with_key(const std::string quest_key)
 {
-	const int size = this->quests.size();
+	const int size = (int) this->quests.size();
 	for (int i = 0; i < size; i++) {
 		Quest * q = this->quests.getItem(i);
 		if (quest_key == q->get_quest_key()) {
@@ -224,7 +224,7 @@ Quest * WorldState::quest_with_key(const std::string quest_key)
 std::vector<Quest*> WorldState::get_active_quests()
 {
 	std::vector<Quest*> quests_vec;
-	const int size = this->quests.size();
+	const int size = (int) this->quests.size();
 	for (int i = 0; i < size; i++) {
 		Quest * q = this->quests.getItem(i);
 		if (q->is_active()) {
@@ -237,7 +237,7 @@ std::vector<Quest*> WorldState::get_active_quests()
 std::vector<Quest*> WorldState::get_failed_quests()
 {
 	std::vector<Quest*> quests_vec;
-	const int size = this->quests.size();
+	const int size = (int)this->quests.size();
 	for (int i = 0; i < size; i++) {
 		Quest * q = this->quests.getItem(i);
 		if (q->is_failed()) {
@@ -250,7 +250,7 @@ std::vector<Quest*> WorldState::get_failed_quests()
 std::vector<Quest*> WorldState::get_completed_quests()
 {
 	std::vector<Quest*> quests_vec;
-	const int size = this->quests.size();
+	const int size = (int) this->quests.size();
 	for (int i = 0; i < size; i++) {
 		Quest * q = this->quests.getItem(i);
 		if (q->is_completed()) {

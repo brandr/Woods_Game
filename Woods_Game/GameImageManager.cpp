@@ -69,6 +69,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
 	this->load_critter_templates();
+	this->world.spawn_critters(this->get_current_global_time());
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
@@ -99,6 +100,7 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
 	this->load_critter_templates();
+	this->world.spawn_critters(this->get_current_global_time());
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -192,9 +194,6 @@ void GameImageManager::load_player()
 	player->load_additional_masks_from_attributes("player");
 	this->current_level = this->world.extract_current_level(player, "");
 	this->current_level->add_being(player);
-	//temp
-	this->current_level->add_critter_with_key("ant");
-	//temp
 }
 
 void GameImageManager::load_player_from_xml(std::string filepath, std::string player_key)
@@ -361,7 +360,7 @@ void * GameImageManager::load_func_advance_day(ALLEGRO_THREAD * thr, void * arg)
 	LoadingData *data = (LoadingData *)arg;
 	al_lock_mutex(data->mutex);
 	data->ready = false;
-	data->world->update_new_day(data->player, data->current_level_key);
+	data->world->update_new_day(data->global_time, data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
 	al_broadcast_cond(data->cond);
@@ -399,7 +398,7 @@ void * GameImageManager::load_func_load_from_save(ALLEGRO_THREAD * thr, void * a
 	data->world->reload_quest_data(quest_data_path);
 	const std::string encyclopedia_path = "resources/load/saves/" + world_key + "/encyclopedia";
 	data->world->reload_encyclopedia(encyclopedia_path);
-	data->world->update_reload_day(data->player, data->current_level_key);
+	data->world->update_reload_day(data->global_time, data->player, data->current_level_key);
 	data->world->recalculate_npc_paths();
 	data->ready = true;
 	al_broadcast_cond(data->cond);

@@ -91,17 +91,22 @@ void GameImage::load_additional_masks_from_attributes(std::string prefix)
 		int mask_width = mask_data->mask_width.value();
 		int mask_height = mask_data->mask_height.value();
 		const std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
+		ImageLoader::get_instance().load_image(filename);
+		ALLEGRO_BITMAP * full_mask_image = ImageLoader::get_instance().get_image(filename);
+		const int num_cols = al_get_bitmap_width(full_mask_image) / mask_width;
 		const int frame_count = mask_data->mask_frame_count.value();
 		std::pair<int, int> frame_dimensions(mask_width, mask_height);
-		for (int row = 0; row < frame_count; row++) {
-			Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
-			const std::string rect_string = ImageLoader::get_instance().rect_to_string(sub);
-			ImageLoader::get_instance().load_mask(filename, rect_string, false);
+		for (int col = 0; col < num_cols; col++) {
+			for (int row = 0; row < frame_count; row++) {
+				Rect sub(frame_dimensions.first * col, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
+				const std::string rect_string = ImageLoader::get_instance().rect_to_string(sub);
+				ImageLoader::get_instance().load_mask(filename, rect_string, false);
+			}
 		}
 	}
 }
 
-mask_t * GameImage::get_additional_mask(const std::string mask_key, const std::string prefix, const int row)
+mask_t * GameImage::get_additional_mask(const std::string mask_key, const std::string prefix, const int row, const int col)
 {
 	const int additional_mask_count = this->additional_mask_data.size();
 	for (int i = 0; i < additional_mask_count; i++) {
@@ -114,7 +119,7 @@ mask_t * GameImage::get_additional_mask(const std::string mask_key, const std::s
 		const int mask_height = mask_data->mask_height.value();
 		const int frame_count = mask_data->mask_frame_count.value();
 		std::pair<int, int> frame_dimensions(mask_width, mask_height);
-		Rect sub(0.0f, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
+		Rect sub(frame_dimensions.first*col, frame_dimensions.second*row, frame_dimensions.first, frame_dimensions.second);
 		const std::string rect_string = ImageLoader::get_instance().rect_to_string(sub);
 		const std::string filename = "sprite_sheets/" + prefix + "_" + mask_key + "_spritesheet_mask";
 		return ImageLoader::get_instance().get_mask(filename, rect_string);
@@ -243,6 +248,8 @@ std::string GameImage::get_anim_state_key(int anim_state)
 		return "shearing";
 	case ANIM_STATE_WAVING:
 		return "waving";
+	case ANIM_STATE_NETTING:
+		return "netting";
 	}
 	return std::string();
 }
@@ -257,6 +264,8 @@ const int GameImage::get_anim_state_index(const std::string key)
 		return ANIM_STATE_SHEARING;
 	} else if (key == "waving") {
 		return ANIM_STATE_WAVING;
+	} else if (key == "netting") {
+		return ANIM_STATE_NETTING;
 	}
 	return 0;
 }

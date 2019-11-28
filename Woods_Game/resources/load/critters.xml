@@ -27,6 +27,15 @@
     					<Member Name="animation_frame_duration">16</Member>
     				</Class>
     			</Collection>
+                <Class Type="DialogItem" Name="catch_dialog_item" Version ="1">
+                    <Member Name="conversation_index">0</Member>
+                    <Collection Name="pages">
+                        <Class Type="DialogItemPage" Version="1">
+                            <Member Name="dialog_text">[l]You caught an ant![/l][l]Don't let it out indoors.[/l]</Member>
+                            <Member Name="next_page_index">-1</Member>
+                        </Class>
+                    </Collection>
+                </Class>
     		</Class>
     	</Collection>
     </SerializableClass>

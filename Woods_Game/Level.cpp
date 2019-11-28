@@ -548,6 +548,7 @@ Level::Level()
 {
 	this->setClassName("Level");
 	this->Register("TilesetKey", &(this->tileset_key));
+	this->Register("BiomeKey", &(this->biome_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -565,6 +566,7 @@ Level::Level(std::string level_filename, std::string dungeon_filename, std::stri
 {
 	this->setClassName("Level");
 	this->Register("TilesetKey", &(this->tileset_key));
+	this->Register("BiomeKey", &(this->biome_key));
 	this->Register("GridX", &(this->grid_x));
 	this->Register("GridY", &(this->grid_y));
 	this->Register("GridWidth", &(this->grid_width));
@@ -606,6 +608,7 @@ void Level::load_from_xml()
 	this->initialize_spawners();
 	this->initialize_path_nodes();
 	this->initialize_location_markers();
+	this->initialize_biome();
 }
 
 void Level::reload_from_xml(Level &copy_level)
@@ -947,6 +950,28 @@ void Level::initialize_location_markers()
 		lm->set_content(filename, subsection, position);
 		lm->set_rect(position.first, position.second,
 			TILE_SIZE, TILE_SIZE);
+	}
+}
+
+void Level::initialize_biome()
+{
+	const std::string b_key = this->biome_key.value();
+	if (!b_key.empty()) {
+		BiomeManager::get_instance().initialize_biome(b_key);
+	}
+}
+
+// TODO: when to call this method? (don't forget to use call hierarchy to get rid of temporary place where it's called
+void Level::generate_critters(World * world, GlobalTime * time)
+{
+	const std::string b_key = this->biome_key.value();
+	if (BiomeManager::get_instance().should_generate_critters(world, time, b_key)) {
+		const std::vector<std::string> critter_keys = BiomeManager::get_instance().critter_keys_to_generate(world, this, time);
+		for (std::string ck : critter_keys) {
+			//TODO: do we need to do anything special to keep critters from spawing too close together?
+			// ideally that should be handled in the method add_critter_with_key()
+			this->add_critter_with_key(ck);
+		}
 	}
 }
 
@@ -1304,7 +1329,7 @@ std::vector<Entity*> Level::get_colliding_interactables(Entity * entity, Rect co
 			interactables.push_back(this->get_player());
 		}
 		for (Being * b : this->beings) {
-			if (b && b != entity && b->is_solid() && b->intersects_area(collide_rect)) {
+			if (b && b != entity && b->intersects_area(collide_rect)) {
 				interactables.push_back(b);
 			}
 		}
@@ -1359,6 +1384,30 @@ std::vector<Entity*> Level::get_nearby_interactables(Entity * entity, Rect colli
 		}
 	}
 	return interactables;
+}
+
+std::vector<Entity*> Level::player_visible_entities()
+{
+	std::vector<Entity*> entities;
+	Being * player = this->get_player();
+	if (player != NULL) {
+		const int p_x = (int)player->get_x(), p_y = (int)player->get_y();
+		const int min_x = p_x - PLAYER_VISION_RADIUS, min_y = p_y - PLAYER_VISION_RADIUS;
+		const int max_x = p_x + PLAYER_VISION_RADIUS, max_y = p_y + PLAYER_VISION_RADIUS;
+		for (Being * b : this->beings) {
+			if (b && !b->get_type() == PLAYER && b->get_x() >= min_x && b->get_y() >= min_y && b->get_x() < max_x && b->get_y() < max_y) {
+				entities.push_back(b);
+			}
+		}
+		std::vector<Tile*> nearby_tiles = this->get_tiles_in_range(player, PLAYER_VISION_RADIUS / TILE_SIZE);
+		for (Tile * t : nearby_tiles) {
+			Block * b = t->get_block();
+			if (b != NULL && !b->is_empty()) {
+				entities.push_back(b);
+			}
+		}
+	}
+	return entities;
 }
 
 std::vector<Tile*> Level::get_nearby_tiles(Entity *entity)
@@ -1647,6 +1696,11 @@ LocationMarker * Level::find_location_marker_matching_level(const std::string le
 	return NULL;
 }
 
+const std::string Level::get_biome_key()
+{
+	return this->biome_key.value();
+}
+
 const bool Level::has_spawner_for_key(const std::string spawn_key)
 {
 	return this->spawner_for_key(spawn_key) != NULL;
@@ -1684,17 +1738,18 @@ void Level::add_critter(Critter * critter, const float x_pos, const float y_pos)
 
 void Level::add_critter_with_key(const std::string critter_key)
 {
-	Critter * critter = CritterManager::get_instance().create_critter(critter_key);
+	Critter * critter = CritterManager::get_instance().create_critter(critter_key, this->beings.size());
 	const int t_width = this->get_width() / TILE_SIZE, t_height = this->get_height() / TILE_SIZE;
 	float x_pos = -1.0f, y_pos = -1.0f;
 	const int num_tries = 50;
 	const float check_width = std::max(TILE_SIZE, (int) critter->get_width());
 	const float check_height = std::max(TILE_SIZE, (int) critter->get_height());
-	srand(std::time(NULL));
 	for (int i = 0; i < num_tries; i++) {
-		const int tx = rand() % t_width, ty = rand() % t_height;
+		srand(101 * this->beings.size() + i);
+		rand(); //throw away the first value
+		const int tx = rand() % (t_width - 1) + 1, ty = rand() % (t_height - 1) + 1;
 		//TODO: other valid spawn checks? (like allowed tile type
-		if (critter->empty_at(Rect(tx * TILE_SIZE, ty * TILE_SIZE, check_width, check_height), this, false)) {
+		if (critter->empty_at(Rect(tx * TILE_SIZE - check_width, ty * TILE_SIZE - check_height, check_width * 2, check_height * 2), this, false)) {
 			x_pos = tx * TILE_SIZE, y_pos = ty * TILE_SIZE;
 			break;
 		}
@@ -1704,9 +1759,6 @@ void Level::add_critter_with_key(const std::string critter_key)
 	} else {
 		this->add_critter(critter, x_pos, y_pos);
 	}
-	
-	//TODO: where to call this method? (start of day, entering a room, etc.)
-	// how to choose critters from the library? how many critters to spawn
 	//TODO: check other being-related methods like removing, update, etc
 }
 

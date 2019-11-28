@@ -48,6 +48,7 @@ void MenuManager::set_animations()
 void MenuManager::load_xml_content(std::string menu_key)
 {
 	this->menu_key = menu_key;
+	std::cout << "loading menu: " + menu_key + "\n";
 	file_manager.load_xml_content(this, "resources/load/menus",
 		"SerializableClass", "MenuKey", menu_key);
 	position[0] = x_pos.value();

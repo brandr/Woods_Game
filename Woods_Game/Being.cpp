@@ -21,7 +21,6 @@ void Being::update(World * world, Level * level, GlobalTime * time, const int ga
 {
 	collision_update(world, level, game_mode);
 	movement_update(level, game_mode);
-	//animation_update(game_mode);
 	Entity::update();
 	emit_sound_update(world, level, time, game_mode);
 	play_sound_update(world, level, time, game_mode);
@@ -237,7 +236,7 @@ const bool Being::adjust_movement(Level * level, float xoff, float yoff, const b
 	Rect check_rect(rect.x + xoff, rect.y + yoff, rect.width, rect.height);
 	std::vector<Entity*> interactables = level->get_colliding_interactables(this, check_rect, false);
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	int t_size = nearby_tiles.size();
+	int t_size = (int) nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i]->get_block();
 		if (b) { 
@@ -317,12 +316,12 @@ void Being::collision_update(World * world, Level * level, const int game_mode)
 	std::vector<Entity*> interactables = level->get_colliding_interactables(this, *(this->get_rect_for_collision()), false);
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
 	this->colliding_entities.clear();
-	int t_size = nearby_tiles.size();
+	int t_size = (int) nearby_tiles.size();
 	for (int i = 0; i < t_size; i++) {
 		Block *b = nearby_tiles[i]->get_block();
 		if (b) interactables.push_back(b);
 	}
-	const int size = interactables.size();
+	const int size = (int) interactables.size();
 	for (int i = 0; i < size; i++) {
 		Entity * other = interactables[i];
 		if (other 
@@ -424,7 +423,7 @@ const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 const bool Being::precise_empty_at(std::vector<Entity*> interactables, const int xoff, const int yoff)
 {
 	if (!this->get_mask()) return true;
-	const int size = interactables.size();
+	const int size = (int) interactables.size();
 	for (int i = 0; i < size; i++) {
 		if (interactables[i]
 			&& interactables[i]->is_solid()

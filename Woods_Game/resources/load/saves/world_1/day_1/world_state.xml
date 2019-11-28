@@ -487,18 +487,24 @@
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">4</Member>
                 </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">netting</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                </Class>
             </Collection>
             <Collection Name="additional_mask_data">
                 <Class Type="MaskData" Version="1">
                     <Member Name="mask_key">shearing</Member>
-                    <Member Name="mask_width">32</Member>
-                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
                     <Member Name="mask_frame_count">5</Member>
                 </Class>
                 <Class Type="MaskData" Version="1">
                     <Member Name="mask_key">netting</Member>
-                    <Member Name="mask_width">32</Member>
-                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
                     <Member Name="mask_frame_count">5</Member>
                 </Class>
             </Collection>

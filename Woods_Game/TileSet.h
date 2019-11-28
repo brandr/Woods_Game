@@ -38,6 +38,9 @@ public:
 	
 	std::string get_tileset_key();
 	std::string get_tile_sheet_filename();
+
+	const std::string encyclopedia_entry_name_for_entity(Entity * e);
+	const std::string encyclopedia_category_for_entity(Entity * e);
 	
 	// tile types	
 	ALLEGRO_BITMAP * get_default_tile_bitmap(const int index);

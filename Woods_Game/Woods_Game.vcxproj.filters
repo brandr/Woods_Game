@@ -481,6 +481,12 @@
     <ClInclude Include="Encyclopedia.h">
       <Filter>Encyclopedia\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="CritterBiome.h">
+      <Filter>Critters\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BiomeManager.h">
+      <Filter>Critters\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -746,6 +752,12 @@
     </ClCompile>
     <ClCompile Include="Encyclopedia.cpp">
       <Filter>Encyclopedia\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CritterBiome.cpp">
+      <Filter>Critters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BiomeManager.cpp">
+      <Filter>Critters\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

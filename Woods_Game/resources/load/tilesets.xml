@@ -49,6 +49,8 @@
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">fern</Member>
                 <Member Name="entity_data_index">1</Member>
+                <Member Name="encyclopedia_category_key">plants</Member>
+                <Member Name="encyclopedia_entry_key">fern</Member>
                 <Collection Name="spawn_tile_rules">
                     <Class Type="EntitySpawnTileRule" Version="1">
                         <Member Name="tile_type_index">1</Member>

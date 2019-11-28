@@ -44,6 +44,7 @@ public:
 	std::vector<Level*> get_level_list();
 	const int get_level_list_count();
 	void clear_all_beings();
+	void spawn_critters(World * world, GlobalTime * time);
 };
 
 #endif

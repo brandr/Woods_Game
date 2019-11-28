@@ -40,6 +40,7 @@ private:
 	xmls::xString category_display_name;
 	xmls::Collection<EncyclopediaEntry> entries;
 	EncyclopediaEntry * get_entry(const int index);
+	EncyclopediaEntry * get_entry(const std::string name);
 public:
 	EncyclopediaCategory();
 	~EncyclopediaCategory();
@@ -51,6 +52,7 @@ public:
 	const std::string get_category_display_name();
 	const std::string get_entry_display_name(const int index);
 	const std::vector<std::string> get_entry_description_lines(const int index);
+	const int get_entry_state(const std::string entry_name);
 };
 
 class Encyclopedia : public xmls::Serializable
@@ -65,6 +67,7 @@ public:
 	void reset();
 	void load_content_from_attributes();
 	void update_entry_state(const std::string category_name, const std::string entry_name, const int state);
+	const int get_entry_state(const std::string category_name, const std::string entry_name);
 	ALLEGRO_BITMAP * get_entry_bitmap(const std::string category_name, const int index);
 	const int num_categories();
 	const int num_entries_for_category(const std::string category_key);

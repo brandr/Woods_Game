@@ -43,7 +43,7 @@ void InteractAction::run_action()
 
 const bool InteractAction::evaluate(World * world, Level * level)
 {
-	const int size = this->qualifiers.size();
+	const int size = (int) this->qualifiers.size();
 	for (int i = 0; i < size; i++) {
 		if (!this->qualifiers.getItem(i)->evaluate(world, level)) {
 			return false;
@@ -64,7 +64,7 @@ const std::string InteractAction::get_function_name()
 
 const std::string InteractAction::get_binding(const std::string key)
 {;
-	const int size = this->bindings.size();
+	const int size = (int) this->bindings.size();
 	for (int i = 0; i < size; i++) {
 		ActionBinding * b = this->bindings.getItem(i);
 		if (b->binding_key.value() == key) {
@@ -77,7 +77,7 @@ const std::string InteractAction::get_binding(const std::string key)
 std::vector<ActionBinding*> InteractAction::get_bindings()
 {
 	std::vector<ActionBinding*> bindings;
-	const int size = this->bindings.size();
+	const int size = (int) this->bindings.size();
 	for (int i = 0; i < size; i++) {
 		ActionBinding * b = this->bindings.getItem(i);
 		bindings.push_back(b);
@@ -88,7 +88,7 @@ std::vector<ActionBinding*> InteractAction::get_bindings()
 void InteractAction::set_bindings(std::vector<ActionBinding*> bindings)
 {
 	this->bindings.Clear();
-	const int size = bindings.size();
+	const int size = (int) bindings.size();
 	for (int i = 0; i < size; i++) {
 		this->bindings.addItem(bindings[i]);
 	}

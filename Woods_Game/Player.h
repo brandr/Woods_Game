@@ -2,6 +2,7 @@
 #define PLAYER_H
 
 #define JOYSTICK_DEADZONE 0.1f
+#define PLAYER_VISION_RADIUS 400
 
 #include "AudioManager.h"
 #include "Being.h"
@@ -52,6 +53,7 @@ private:
 	bool should_close_dialog = false;
 	bool should_open_calendar = false;
 	void quest_item_update(World * world, Level * level, GlobalTime * time);
+	void visible_entities_update(World * world, Level * level, GlobalTime * time);
 	void collect_item_pickup(World * world, Level * level, ItemPickup * pickup);
 	const bool can_swing_at_entity(Entity * e, const std::string swing_key);
 	void catch_critter(World* world, Level * level, Critter * critter);
@@ -75,6 +77,7 @@ public:
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void interact_update(World * world, Level * level, GlobalTime * time);
+	virtual void draw(ALLEGRO_DISPLAY * display, int x_off, int y_off);
 	//audio
 	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
@@ -96,7 +99,6 @@ public:
 	const std::string get_active_cutscene_key();
 	//interact
 	const bool interact(World * world, Level * level, GlobalTime * time, Entity* e);
-	void shear_update(Level * level);
 	void swing_update(World * world, Level * level, const std::string swing_key);
 	void sleep_in_bed(GlobalTime * current_time);
 	void load_game_for_day(const int day);

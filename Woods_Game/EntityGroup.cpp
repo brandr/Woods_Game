@@ -106,7 +106,7 @@ std::pair<int, int> EntityGroup::get_root_pos()
 
 void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
-	int size = entities.size();
+	int size = (int) entities.size();
 	for (int i = 0; i < size; i++) {
 		entities[i]->draw(display, x_offset, y_offset);
 	}

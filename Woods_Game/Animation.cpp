@@ -1,5 +1,4 @@
 #include "Animation.h"
-//#include "ImageLoader.h"
 
 Rect::Rect() {
 
@@ -107,10 +106,6 @@ std::pair<int, int>& Animation::get_current_frame()
 std::pair<int, int>& Animation::get_frame_dimensions()
 {
 	return frame_dimensions;
-	//TODO: do this instead if I can figure out includes
-	 //std::pair<int, int> fd();	
-	 //ALLEGRO_BITMAP *image = ImageLoader::get_instance().get_image(filename);
-	 //return std::pair<int, int>(al_get_bitmap_width(image) / frame_count.first, al_get_bitmap_height(image) / frame_count.second);
 }
 
 std::pair<int, int> Animation::get_image_dimensions()

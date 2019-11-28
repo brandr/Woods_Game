@@ -287,3 +287,10 @@ void Dungeon::clear_all_beings()
 		l->clear_all_beings();
 	}
 }
+
+void Dungeon::spawn_critters(World * world, GlobalTime * time)
+{
+	for (Level * l : this->level_list) {
+		l->generate_critters(world, time);
+	}
+}

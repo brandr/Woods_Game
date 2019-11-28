@@ -64,7 +64,6 @@ private:
 	int selected_option_index = 0;
 	std::string active_action_key = "";
 	std::vector<InteractAction *> active_actions;
-	//InteractAction * active_action = NULL;
 	TriggerStatus * active_trigger_status = NULL;
 	std::vector<QuestUpdate *> pending_quest_updates;
 	bool should_scroll_text = true;

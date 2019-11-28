@@ -194,6 +194,24 @@ std::string TileSet::get_tile_sheet_filename()
 	return "tile_sheets/" + this->tile_sheet_name.value();
 }
 
+const std::string TileSet::encyclopedia_entry_name_for_entity(Entity * e)
+{
+	if (e != NULL && e->get_type() == BLOCK) {
+		EntityData * ed = this->block_types.getItem(e->get_entity_data_index());
+		return ed->encyclopedia_entry_key.value();
+	}
+	return "";
+}
+
+const std::string TileSet::encyclopedia_category_for_entity(Entity * e)
+{
+	if (e != NULL && e->get_type() == BLOCK) {
+		EntityData * ed = this->block_types.getItem(e->get_entity_data_index());
+		return ed->encyclopedia_category_key.value();
+	}
+	return "";
+}
+
 // tile types
 
 std::string TileSet::get_full_tile_sheet_filename(int index)

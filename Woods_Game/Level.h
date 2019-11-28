@@ -5,6 +5,7 @@
 #include "TileSet.h"
 #include "GameImage.h"
 #include "Being.h"
+#include "BiomeManager.h"
 #include "Critter.h"
 #include "NPC.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
@@ -40,6 +41,7 @@ private:
 	std::string id = "";
 	TileSet *tileset;
 	xmls::xString tileset_key;
+	xmls::xString biome_key;
 	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	xmls::Collection<Spawner> spawners;
@@ -101,6 +103,8 @@ public:
 	void initialize_spawners();
 	void initialize_path_nodes();
 	void initialize_location_markers();
+	void initialize_biome();
+	void generate_critters(World * world, GlobalTime * time);
 	void clear_level();
 	void remove_tile_edges();
 	void load_tile_edges();
@@ -125,6 +129,7 @@ public:
 	std::vector<Entity*> get_colliding_interactables(Entity* e, Rect collide_rect, const bool ignore_moving_obstacles);
 	std::vector<Entity*> get_moving_interactables(Entity* entity);
 	std::vector<Entity*> get_nearby_interactables(Entity* entity, Rect collide_rect,  const bool ignore_moving_obstacles);
+	std::vector<Entity*> player_visible_entities();
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
@@ -158,6 +163,7 @@ public:
 	LocationMarker * create_location_marker(const std::string filename_start, const int index, const std::pair<int, int> ss_pos, const std::pair<int, int> pos);
 	std::vector<LocationMarker *> get_location_markers();
 	LocationMarker * find_location_marker_matching_level(const std::string level_key);
+	const std::string get_biome_key();
 
 	// tile stuff
 	void set_tile(Tile * tile, std::pair<int, int> pos);

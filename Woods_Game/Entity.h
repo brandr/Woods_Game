@@ -58,6 +58,8 @@ struct EntityData : public xmls::Serializable {
 	xmls::xInt collide_height;
 	xmls::xInt center_offset_x;
 	xmls::xInt center_offset_y;
+	xmls::xString encyclopedia_category_key;
+	xmls::xString encyclopedia_entry_key;
 	xmls::Collection<EntityAttribute> attributes;
 	xmls::Collection<InteractAction> contact_actions;
 	xmls::Collection<InteractAction> interact_actions;
@@ -113,8 +115,6 @@ struct EntitySound {
 };
 
 class GlobalTime;
-//class Item;
-//class ItemManager;
 class ItemPickup;
 class Player;
 class Level;
@@ -178,6 +178,10 @@ public:
 	virtual const bool contact_action(World * world, Level * level, Player * player);
 	virtual const bool interact_action(World * world, Level * level, GlobalTime * time, Player * player);
 	virtual void entity_break(Level * level, Player * player);
+	virtual void update_visibility(World * world, Level * level);
+	virtual const bool has_visibility_actions(Level * level);
+	virtual const std::string encyclopedia_entry_name(Level * level);
+	virtual const std::string encyclopedia_category_name(Level * level);
 	virtual void set_entity_data_index(int index);
 	virtual void set_entity_sheet_offset(int col, int row);
 	virtual void set_entity_attributes(std::map<std::string, int> attributes);

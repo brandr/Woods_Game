@@ -16,6 +16,11 @@ void Player::quest_item_update(World * world, Level * level, GlobalTime * time)
 	this->clear_pending_quest_item_updates();
 }
 
+void Player::visible_entities_update(World * world, Level * level, GlobalTime * time)
+{
+	world->player_visible_entities_update(level);
+}
+
 void Player::collect_item_pickup(World * world, Level * level, ItemPickup * pickup)
 {
 	if (this->inventory.is_full()) {
@@ -51,6 +56,11 @@ void Player::catch_critter(World * world, Level * level, Critter * critter)
 	//TODO: add item?
 	world->update_encyclopedia_for_critter(critter, ENTRY_KNOWN);
 	level->remove_being(critter);
+	Dialog * dialog = CritterManager::get_instance().get_critter_catch_dialog(critter->get_critter_key());
+	if (dialog != NULL) {
+		this->set_open_dialog(dialog);
+	}
+	//TODO: could use dialog image (need to implement) to show critter sprite (use encyclopedia sprite?)
 }
 
 //TODO: probably need pickups in the set of items we check for (see level)
@@ -184,6 +194,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 		this->interact_update(world, level, time);
 	}
 	this->quest_item_update(world, level, time);
+	this->visible_entities_update(world, level, time);
 	clear_input();
 }
 
@@ -404,6 +415,11 @@ void Player::interact_update(World * world, Level * level, GlobalTime * time)
 	}
 }
 
+void Player::draw(ALLEGRO_DISPLAY * display, int x_off, int y_off)
+{
+	Being::draw(display, x_off, y_off);
+}
+
 //TODO: anything player-specific goes here
 void Player::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
@@ -544,54 +560,6 @@ const bool Player::interact(World * world, Level * level, GlobalTime * time, Ent
 	return e->interact_action(world, level, time, this);
 }
 
-void Player::shear_update(Level * level)
-{
-	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
-	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
-	if (get_entity_attribute(E_ATTR_HIT_OTHER) == 1) return;
-	const int t_size = nearby_tiles.size();
-	for (int i = 0; i < t_size; i++) {
-		Block *b = nearby_tiles[i]->get_block();
-		if (b) interactables.push_back(b);
-	}
-	const int size = interactables.size();
-
-	mask_t *shear_mask = this->get_additional_mask("slicing", "player", direction);
-	float x_off = 0, y_off = 0;
-	switch (direction) {
-	case DIR_NEUTRAL:
-		x_off = 16, y_off = 52;
-		break;
-	case DIR_UP:
-		x_off = 16, y_off = 8;
-		break;
-	case DIR_DOWN:
-		x_off = 16, y_off = 52;
-		break;
-	case DIR_LEFT:
-		x_off = -8, y_off = 16;
-		break;
-	case DIR_RIGHT:
-		x_off = 40, y_off = 16;
-		break;
-	}
-
-	for (int i = 0; i < size; i++) {
-		if (interactables[i]->get_mask() && Mask_Collide(shear_mask, interactables[i]->get_mask(),
-			get_x() + x_off - interactables[i]->get_x(),
-			get_y() + y_off - interactables[i]->get_y())) {
-			Entity* e = interactables[i];
-			if (e->has_entity_attribute(E_ATTR_SHEARABLE)
-				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
-				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
-				Item *shears = get_selected_item();
-				const int shear_power = shears->get_item_attribute(Item::ITEM_ATTR_POWER);
-				e->take_durability_damage(level, this, shear_power);
-				return;
-			}
-		}
-	}
-}
 void Player::swing_update(World * world, Level * level, const std::string swing_key)
 {
 	std::vector<Entity*> interactables = level->get_nearby_interactables(this, *(this->get_rect_for_collision()), false);
@@ -603,25 +571,25 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 		if (b) interactables.push_back(b);
 	}
 	const int size = interactables.size();
-
-	mask_t *swing_mask = this->get_additional_mask(swing_key, "player", direction);
+	const int anim_col = this->get_animation()->get_current_frame().first;
+	mask_t *swing_mask = this->get_additional_mask(swing_key, "player", this->get_animation_direction(), anim_col);
 	float x_off = 0, y_off = 0;
 	//TODO: change these offsets based on swung item type? or not necessary?
 	switch (direction) {
 	case DIR_NEUTRAL:
-		x_off = 16, y_off = 52;
+		//x_off = 16, y_off = 52;
 		break;
 	case DIR_UP:
-		x_off = 16, y_off = 8;
+		//x_off = 16, y_off = 8;
 		break;
 	case DIR_DOWN:
-		x_off = 16, y_off = 52;
+		//x_off = 16, y_off = 52;
 		break;
 	case DIR_LEFT:
-		x_off = -8, y_off = 16;
+		//x_off = -8, y_off = 16;
 		break;
 	case DIR_RIGHT:
-		x_off = 40, y_off = 16;
+		//x_off = 40, y_off = 16;
 		break;
 	}
 
@@ -630,12 +598,11 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 			get_x() + x_off - interactables[i]->get_x(),
 			get_y() + y_off - interactables[i]->get_y())) {
 			Entity* e = interactables[i];
-			//TODO: more general than shearing
 			if (this->can_swing_at_entity(e, swing_key)
 				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
 				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 				Item *swung_item = get_selected_item();
-				//TODO: more general
+				//TODO: if we add any more swing types, figure this out more generally
 				if (swing_key == "shearing") {
 					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);
 					e->take_durability_damage(level, this, shear_power);
@@ -827,7 +794,7 @@ void Player::swing_item(const std::string swing_key)
 {
 	xvel = 0, yvel = 0;
 	counters[SWING] = 19; //TEMP. This is done to match up with the animation length, but should get from anim length instead
-	anim_state = ANIM_STATE_SHEARING; //TEMP
+	anim_state = this->get_anim_state_index(swing_key); // TODO: related to swing key
 	current_action = ACTION_SWING;
 	get_animation()->reset();
 	ss_animation->reset();

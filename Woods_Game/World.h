@@ -87,9 +87,11 @@ public:
 	// updates per frame
 	void npc_update(GlobalTime * time, const int game_mode);
 	// updates per new day
-	void update_new_day(Player * player, const std::string current_level_key);
-	void update_reload_day(Player * player, const std::string current_level_key);
+	void update_new_day(GlobalTime * time, Player * player, const std::string current_level_key);
+	void update_reload_day(GlobalTime * time, Player * player, const std::string current_level_key);
 	void update_npcs_new_day();
+	void spawn_critters(GlobalTime * time);
+	void player_visible_entities_update(Level * level);
 	void add_dungeon(Dungeon*);
 	Player * get_player();
 	NPC * get_npc(const std::string npc_key);
@@ -135,7 +137,10 @@ public:
 	void set_has_quest_item(const std::string item_key, const bool has_item);
 	// encyclopedia
 	Encyclopedia * get_encyclopedia();
+	void update_encyclopedia_state(const std::string category_name, const std::string entry_name, const int entry_state);
 	void update_encyclopedia_for_critter(Critter * critter, const int entry_state);
+	const int encyclopedia_state_for_critter(Critter * critter);
+	const int get_encyclopedia_state(const std::string category_name, const std::string entry_name);
 };
 
 #endif
