@@ -24,6 +24,7 @@ struct DialogItemPage : public xmls::Serializable{
 	xmls::xString dialog_text;
 	xmls::xInt page_number;
 	xmls::xInt next_page_index;
+	xmls::xString portrait_image_key;
 	xmls::Collection<DialogItemOption> options;
 	xmls::Collection<QuestUpdate> quest_updates;
 	xmls::Collection<InteractAction> dialog_actions;
@@ -31,6 +32,7 @@ struct DialogItemPage : public xmls::Serializable{
 	~DialogItemPage();
 	const bool has_text();
 	const int get_page_number();
+	const std::string get_portrait_image_key();
 	std::vector<DialogItemOption *> get_options();
 	std::vector<QuestUpdate*> get_quest_updates();
 	std::vector<InteractAction *> get_dialog_actions();

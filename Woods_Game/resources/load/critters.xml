@@ -32,7 +32,9 @@
                     <Collection Name="pages">
                         <Class Type="DialogItemPage" Version="1">
                             <Member Name="dialog_text">[l]You caught an ant![/l][l]Don't let it out indoors.[/l]</Member>
+                            <Member Name="page_number">0</Member>
                             <Member Name="next_page_index">-1</Member>
+                            <Member Name="portrait_image_key">ant_portrait</Member>
                         </Class>
                     </Collection>
                 </Class>

@@ -271,7 +271,7 @@ DialogItemPage::DialogItemPage()
 	Register("options", &options);
 	Register("quest_updates", &quest_updates);
 	Register("dialog_actions", &dialog_actions);
-	//Register("dialog_action", &dialog_action); 
+	Register("portrait_image_key", &portrait_image_key);
 }
 
 DialogItemPage::~DialogItemPage()
@@ -286,6 +286,11 @@ const bool DialogItemPage::has_text()
 const int DialogItemPage::get_page_number()
 {
 	return this->page_number.value();
+}
+
+const std::string DialogItemPage::get_portrait_image_key()
+{
+	return this->portrait_image_key.value();
 }
 
 std::vector<DialogItemOption*> DialogItemPage::get_options()

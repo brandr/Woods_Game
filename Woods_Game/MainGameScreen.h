@@ -35,6 +35,8 @@ private:
 	ALLEGRO_BITMAP* hotbar_box();
 	ALLEGRO_BITMAP* hotbar_box_selected();
 	ALLEGRO_BITMAP* dialog_backdrop_full_width();
+	ALLEGRO_BITMAP* dialog_backdrop_partial_width();
+	ALLEGRO_BITMAP* dialog_portrait_backdrop();
 	ALLEGRO_BITMAP* clock_backdrop();
 	ALLEGRO_BITMAP* option_arrow();
 public:

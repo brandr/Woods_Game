@@ -34,6 +34,14 @@ void Dialog::set_quest_updates_for_page(const int page_num, std::vector<QuestUpd
 	this->page_map[page_num]->set_quest_updates(quest_updates);
 }
 
+void Dialog::set_portrait_image_key_for_page(const int page_num, const std::string image_key)
+{
+	if (this->page_map.find(page_num) == this->page_map.end()) {
+		this->page_map[page_num] = new DialogPage();
+	}
+	this->page_map[page_num]->set_portrait_image_key(image_key);
+}
+
 Dialog::Dialog()
 {
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
@@ -154,6 +162,7 @@ void Dialog::parse_dialog(DialogItem * dialog_item)
 		}
 		std::vector<QuestUpdate *> quest_updates = page->get_quest_updates();
 		this->set_quest_updates_for_page(page_index, quest_updates);
+		this->set_portrait_image_key_for_page(page_index, page->get_portrait_image_key());
 	}
 }
 
@@ -236,6 +245,24 @@ void Dialog::unset_pending_quest_updates()
 	this->pending_quest_updates = std::vector<QuestUpdate *>();
 }
 
+const bool Dialog::has_portrait_image()
+{
+	if (this->has_current_page()) {
+		DialogPage * page = this->page_map[this->page_num];
+		return page->has_portrait_image();
+	}
+	return false;
+}
+
+ALLEGRO_BITMAP * Dialog::get_portrait_image()
+{
+	if (this->has_current_page()) {
+		DialogPage * page = this->page_map[this->page_num];
+		return page->get_portrait_image();
+	}
+	return NULL;
+}
+
 void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off)
 {
 	if (this->has_current_page()) {
@@ -245,6 +272,14 @@ void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_of
 		const std::vector<std::string> text_lines = page->get_text_lines(num_characters);
 		const int line_count = text_lines.size();
 		int option_index = 0;
+		int text_x_off = 0;
+		/*
+		if (page->has_portrait_image()) {
+			ALLEGRO_BITMAP * portrait_image = page->get_portrait_image();
+			text_x_off = al_get_bitmap_width(portrait_image) + 10;
+			al_draw_bitmap(portrait_image, x_off + DIALOG_OFFSET_X + 5, y_off + DIALOG_OFFSET_Y, 0);
+		}
+		*/
 		for (int l = 0; l < line_count; l++) {
 			const std::string text = text_lines[l];
 			const bool line_has_option = page->has_option(l);
@@ -252,11 +287,11 @@ void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_of
 			const int x = x_off + DIALOG_OFFSET_X, y = y_off + DIALOG_OFFSET_Y + (l * DIALOG_LINE_SPACING);
 			if (line_has_option) {
 				if (this->selected_option_index == option_index) {
-					al_draw_bitmap(this->option_arrow, x, y, 0);
+					al_draw_bitmap(this->option_arrow, x + text_x_off, y, 0);
 				}
 				option_index++;
 			}
-			al_draw_text(font, al_map_rgb(0, 0, 0), x + opt_off, y, 0, text.c_str());
+			al_draw_text(font, al_map_rgb(0, 0, 0), x + opt_off + text_x_off, y, 0, text.c_str());
 		}
 	}
 }
@@ -426,6 +461,27 @@ void DialogPage::set_quest_updates(std::vector<QuestUpdate*> updates)
 {
 	this->quest_updates.clear();
 	this->quest_updates = updates;
+}
+
+const bool DialogPage::has_portrait_image()
+{
+	return !this->portrait_image_key.empty();
+}
+
+ALLEGRO_BITMAP * DialogPage::get_portrait_image()
+{
+	if (this->has_portrait_image()) {
+		return ImageLoader::get_instance().get_image("portraits/" + this->portrait_image_key);
+	}
+	return NULL;
+}
+
+void DialogPage::set_portrait_image_key(const std::string image_key)
+{
+	this->portrait_image_key = image_key;
+	if (!image_key.empty()) {
+		ImageLoader::get_instance().load_image("portraits/" + this->portrait_image_key);
+	}
 }
 
 const bool DialogLine::has_option()

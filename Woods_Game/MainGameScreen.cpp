@@ -233,6 +233,16 @@ ALLEGRO_BITMAP * MainGameScreen::dialog_backdrop_full_width()
 	return ImageLoader::get_instance().get_image("ui/dialog_backdrop_full_width");
 }
 
+ALLEGRO_BITMAP * MainGameScreen::dialog_backdrop_partial_width()
+{
+	return ImageLoader::get_instance().get_image("ui/dialog_backdrop_partial_width");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::dialog_portrait_backdrop()
+{
+	return ImageLoader::get_instance().get_image("ui/dialog_portrait_backdrop");
+}
+
 ALLEGRO_BITMAP * MainGameScreen::clock_backdrop()
 {
 	return ImageLoader::get_instance().get_image("ui/time_date_backdrop");
@@ -570,6 +580,8 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/item_box_1");
 	ImageLoader::get_instance().load_image("ui/item_box_1_light");
 	ImageLoader::get_instance().load_image("ui/dialog_backdrop_full_width");
+	ImageLoader::get_instance().load_image("ui/dialog_backdrop_partial_width");
+	ImageLoader::get_instance().load_image("ui/dialog_portrait_backdrop");	
 	ImageLoader::get_instance().load_image("ui/time_date_backdrop");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
@@ -860,12 +872,17 @@ void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
 {
 	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
 	if (dialog != NULL) {
-		const int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width())) / 2;
+		int x = (al_get_display_width(display) - al_get_bitmap_width(dialog_backdrop_full_width())) / 2;
 		const int y = 10;
-		al_draw_bitmap(dialog_backdrop_full_width(), x, y, 0);
+		ALLEGRO_BITMAP * backdrop_bitmap = dialog->has_portrait_image() ? this->dialog_backdrop_partial_width() : this->dialog_backdrop_full_width();
+		if (dialog->has_portrait_image()) {
+			al_draw_bitmap(this->dialog_portrait_backdrop(), x, y, 0);
+			ALLEGRO_BITMAP * portrait_image = dialog->get_portrait_image();
+			al_draw_bitmap(portrait_image, x + 5, y + 5, 0);
+			x += al_get_bitmap_width(this->dialog_portrait_backdrop());
+		}
+		al_draw_bitmap(backdrop_bitmap, x, y, 0);
 		dialog->draw(display, font_map[FONT_DIALOG], x, y);
-		//TODO: draw avatar
-		//TODO: scrolling text (button speeds up)
 		//TODO: font, text size, etc set in some config
 	}
 }

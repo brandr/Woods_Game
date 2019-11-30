@@ -116,6 +116,7 @@
                                                                     <Member Name="dialog_text">[l]I am not a stranger and it is monday.[/l]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -157,6 +158,7 @@
                                                                     <Member Name="dialog_text">[l]I am not a stranger.[/l]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -179,6 +181,7 @@
                                                                     <Member Name="dialog_text">[p][l]I am not a stranger. Or am I?[/l][/p]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -223,6 +226,7 @@
                                                             <Member Name="dialog_text">[l]I am not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
                                                             <Member Name="page_number"/>
                                                             <Member Name="next_page_index">-1</Member>
+                                                            <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates"/>
                                                             <Collection Name="dialog_actions"/>
@@ -264,6 +268,7 @@
                                                             <Member Name="dialog_text">[l]Thanks for the mushroom.[/l][l]Here, have $10.[/l]</Member>
                                                             <Member Name="page_number"/>
                                                             <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">
                                                                 <Class Type="QuestUpdates" Version="1">
@@ -353,6 +358,7 @@
                                                             <Member Name="dialog_text">[l]Here, deliver this letter.[/l]</Member>
                                                             <Member Name="page_number"/>
                                                             <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">
                                                                 <Class Type="QuestUpdates" Version="1">
@@ -458,6 +464,7 @@
                                                     <Member Name="dialog_text">[l]I am a stranger.[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates">
                                                         <Class Type="QuestUpdates" Version="1">
@@ -514,6 +521,7 @@
                                                     <Member Name="dialog_text">[l]I am still a stranger.[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates"/>
                                                     <Collection Name="dialog_actions"/>
@@ -527,6 +535,7 @@
                                                     <Member Name="dialog_text">[l]Do you want to get a missable collectible?[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options">
                                                         <Class Type="DialogItemOption" Version="1">
                                                             <Member Name="option_text">Yes</Member>
@@ -556,6 +565,7 @@
                                                     <Member Name="dialog_text">[l]Here you go.[/l]</Member>
                                                     <Member Name="page_number">1</Member>
                                                     <Member Name="next_page_index">-2</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates"/>
                                                     <Collection Name="dialog_actions">
@@ -580,6 +590,7 @@
                                                     <Member Name="dialog_text">[l]Don't say I didn't warn you.[/l]</Member>
                                                     <Member Name="page_number">2</Member>
                                                     <Member Name="next_page_index">-2</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates"/>
                                                     <Collection Name="dialog_actions"/>
@@ -737,6 +748,7 @@
                                                                     <Member Name="dialog_text">[l]You are not a stranger and it is monday.[/l]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -778,6 +790,7 @@
                                                                     <Member Name="dialog_text">[l]You are not a stranger.[/l]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -800,6 +813,7 @@
                                                                     <Member Name="dialog_text">[p][l]You are not a stranger. Or are you?[/l][/p]</Member>
                                                                     <Member Name="page_number"/>
                                                                     <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
                                                                     <Collection Name="dialog_actions"/>
@@ -844,6 +858,7 @@
                                                             <Member Name="dialog_text">[l]You are not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
                                                             <Member Name="page_number"/>
                                                             <Member Name="next_page_index">-1</Member>
+                                                            <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates"/>
                                                             <Collection Name="dialog_actions"/>
@@ -885,6 +900,7 @@
                                                             <Member Name="dialog_text">[l]Thanks for the letter.[/l]</Member>
                                                             <Member Name="page_number"/>
                                                             <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">
                                                                 <Class Type="QuestUpdates" Version="1">
@@ -953,6 +969,7 @@
                                                     <Member Name="dialog_text">[l]You are a stranger.[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates"/>
                                                     <Collection Name="dialog_actions"/>
@@ -966,6 +983,7 @@
                                                     <Member Name="dialog_text">[l]You are still a stranger.[/l]</Member>
                                                     <Member Name="page_number">0</Member>
                                                     <Member Name="next_page_index">-1</Member>
+                                                    <Member Name="portrait_image_key"/>
                                                     <Collection Name="options"/>
                                                     <Collection Name="quest_updates"/>
                                                     <Collection Name="dialog_actions"/>

@@ -40,6 +40,7 @@ struct DialogPage {
 	std::vector<QuestUpdate*> quest_updates;
 	int next_page_number = -1;
 	std::vector<InteractAction *> dialog_actions;
+	std::string portrait_image_key;
 	DialogPage();
 	const int total_num_characters();
 	const std::vector<std::string> get_text_lines(const int num_characters);
@@ -51,6 +52,9 @@ struct DialogPage {
 	const int options_count();
 	const bool has_quest_updates();
 	void set_quest_updates(std::vector<QuestUpdate *> updates);
+	const bool has_portrait_image();
+	ALLEGRO_BITMAP * get_portrait_image();
+	void set_portrait_image_key(const std::string image_key);
 };
 
 struct DialogItem;
@@ -72,6 +76,7 @@ private:
 	const bool is_showing_full_page();
 	DialogPage * current_page();
 	void set_quest_updates_for_page(const int page_num, std::vector<QuestUpdate*> quest_updates);
+	void set_portrait_image_key_for_page(const int page_num, const std::string image_key);
 	ALLEGRO_BITMAP * option_arrow;
 	std::vector<ActionBinding*> action_bindings;
 public:
@@ -99,6 +104,8 @@ public:
 	std::vector<ActionBinding *> get_action_bindings();
 	std::vector<QuestUpdate *> get_pending_quest_updates();
 	void unset_pending_quest_updates();
+	const bool has_portrait_image();
+	ALLEGRO_BITMAP * get_portrait_image();
 };
 
 #endif

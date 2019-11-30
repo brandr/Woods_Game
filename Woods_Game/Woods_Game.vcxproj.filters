@@ -28,15 +28,6 @@
     <Filter Include="Utilities\Source Files">
       <UniqueIdentifier>{7f8cfe7a-9b49-4f8d-90b5-8bb9d5eac9b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menus">
-      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Menus\Header Files">
-      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Menus\Source Files">
-      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Items">
       <UniqueIdentifier>{093a7900-7b5a-49c1-98ad-01858daca012}</UniqueIdentifier>
     </Filter>
@@ -209,12 +200,27 @@
     <Filter Include="Encyclopedia\Source Files">
       <UniqueIdentifier>{26c8c182-ae51-42aa-a255-6e4718674318}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Menus">
+      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus\Header Files">
+      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menus\Source Files">
+      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tiles">
+      <UniqueIdentifier>{8ed693ab-a79d-4abb-ac5b-62e880a99c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tiles\Header Files">
+      <UniqueIdentifier>{de13d9ba-5e72-4dd9-8762-92f30fdeebe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Tiles\Source Files">
+      <UniqueIdentifier>{e57e7cd6-a020-443b-9152-a9b44d7ab946}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Tile.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
@@ -313,15 +319,6 @@
     <ClInclude Include="Configurations.h">
       <Filter>Application\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TileType.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileSet.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TileGroup.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="LevelEditorScreen.h">
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
@@ -357,12 +354,6 @@
     </ClInclude>
     <ClInclude Include="DungeonData.h">
       <Filter>World\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TiledImage.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="TiledImageLayer.h">
-      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TiledImageGrid.h">
       <Filter>LevelEditor\Header Files</Filter>
@@ -402,9 +393,6 @@
     </ClInclude>
     <ClInclude Include="LevelGenData.h">
       <Filter>World\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AIBeing.h">
-      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PathNode.h">
       <Filter>GameImages\Header Files</Filter>
@@ -487,11 +475,29 @@
     <ClInclude Include="BiomeManager.h">
       <Filter>Critters\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TileType.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledImage.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TiledImageLayer.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileGroup.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TileSet.h">
+      <Filter>Tiles\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AIBeing.h">
+      <Filter>AI\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Tile.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Animation.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
@@ -585,15 +591,6 @@
     <ClCompile Include="Configurations.cpp">
       <Filter>Application\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TileType.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TileSet.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TileGroup.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
@@ -636,12 +633,6 @@
     <ClCompile Include="DungeonData.cpp">
       <Filter>World\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TiledImage.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TiledImageLayer.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TiledImageGrid.cpp">
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
@@ -680,9 +671,6 @@
     </ClCompile>
     <ClCompile Include="MathUtilities.cpp">
       <Filter>Utilities\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="AIBeing.cpp">
-      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PathNode.cpp">
       <Filter>GameImages\Source Files</Filter>
@@ -758,6 +746,27 @@
     </ClCompile>
     <ClCompile Include="BiomeManager.cpp">
       <Filter>Critters\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TiledImage.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TiledImageLayer.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileGroup.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileSet.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TileType.cpp">
+      <Filter>Tiles\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AIBeing.cpp">
+      <Filter>AI\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
