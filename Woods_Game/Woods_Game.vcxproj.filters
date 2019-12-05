@@ -370,9 +370,6 @@
     <ClInclude Include="Dialog.h">
       <Filter>Dialogs\Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NPC.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Spawner.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
@@ -494,6 +491,12 @@
       <Filter>Tiles\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AIBeing.h">
+      <Filter>AI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WanderZone.h">
+      <Filter>AI\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
       <Filter>AI\Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -648,9 +651,6 @@
     <ClCompile Include="Dialog.cpp">
       <Filter>Dialogs\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NPC.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Spawner.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
@@ -766,6 +766,12 @@
       <Filter>Tiles\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AIBeing.cpp">
+      <Filter>AI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WanderZone.cpp">
+      <Filter>AI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
       <Filter>AI\Source Files</Filter>
     </ClCompile>
   </ItemGroup>

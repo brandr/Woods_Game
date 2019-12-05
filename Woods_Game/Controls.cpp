@@ -89,7 +89,7 @@ void Controls::clear()
 std::string Controls::input_key_for_action_key(std::string action_key)
 {
 	const int size = controls_map.size();
-	for (int i = 0; i < controls_map.size(); i++) {
+	for (int i = 0; i < size; i++) {
 		xString mapped_action_key = controls_map.getItem(i)->ActionKey;
 		if (mapped_action_key.value() == action_key) {
 			return controls_map.getItem(i)->InputKey.value();
@@ -101,7 +101,7 @@ std::string Controls::input_key_for_action_key(std::string action_key)
 std::string Controls::action_label_for_input_key(std::string input_key)
 {
 	const int size = controls_map.size();
-	for (int i = 0; i < controls_map.size(); i++) {
+	for (int i = 0; i < size; i++) {
 		if (controls_map.getItem(i)->InputKey.value() == input_key) {
 			return controls_map.getItem(i)->ActionKey.value();
 		}

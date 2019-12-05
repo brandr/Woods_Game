@@ -11,6 +11,10 @@ AIState::~AIState()
 void AIState::set_state_key(const int value)
 {
 	this->state_key = value;
+	if (state_key != AI_STATE_FORCING_ANIMATION) {
+		this->forced_anim_state = -1;
+		this->forced_anim_dir = -1;
+	}
 }
 
 void AIState::timer_update()
@@ -34,7 +38,7 @@ void AIState::timer_update()
 
 void AIState::set_is_idle()
 {
-	this->state_key = AI_STATE_IDLE;
+	this->set_state_key(AI_STATE_IDLE);
 }
 
 const bool AIState::is_idle()
@@ -44,7 +48,7 @@ const bool AIState::is_idle()
 
 void AIState::set_is_locked()
 {
-	this->state_key = AI_STATE_LOCKED;
+	this->set_state_key(AI_STATE_LOCKED);
 }
 
 const bool AIState::is_locked()
@@ -54,7 +58,7 @@ const bool AIState::is_locked()
 
 void AIState::set_is_waiting(const int wait_time)
 {
-	this->state_key = AI_STATE_WAITING;
+	this->set_state_key(AI_STATE_WAITING);
 	this->ai_timer_map[AI_TIMER_WAIT] = wait_time;
 }
 
@@ -70,7 +74,7 @@ const bool AIState::is_waiting()
 
 void AIState::set_is_walking()
 {
-	this->state_key = AI_STATE_WALKING;
+	this->set_state_key(AI_STATE_WALKING);
 }
 
 const bool AIState::is_walking()
@@ -85,17 +89,17 @@ const bool AIState::is_requesting_path()
 
 void AIState::set_is_requesting_next_level()
 {
-	this->state_key = AI_STATE_REQUESTING_NEXT_LEVEL;
+	this->set_state_key(AI_STATE_REQUESTING_NEXT_LEVEL);
 }
 
 const void AIState::set_is_requesting_path()
 {
-	this->state_key = AI_STATE_REQUESTING_PATH;
+	this->set_state_key(AI_STATE_REQUESTING_PATH);
 }
 
 void AIState::set_is_requesting_next_level(const std::string level_key, const std::string node_key)
 {
-	this->state_key = AI_STATE_REQUESTING_NEXT_LEVEL;
+	this->set_state_key(AI_STATE_REQUESTING_NEXT_LEVEL);
 	this->requested_next_level_key = level_key;
 	this->requested_next_level_node_key = node_key;
 }
@@ -108,18 +112,16 @@ void AIState::set_is_requesting_next_level_key(const std::string level_key, cons
 
 void AIState::set_is_walking_to_next_level(const std::string level_key, const std::string node_key, const int x_dir, const int y_dir)
 {
-	this->state_key = AI_STATE_WALKING_TO_NEXT_LEVEL;
+	this->set_state_key(AI_STATE_WALKING_TO_NEXT_LEVEL);
 	this->requested_next_level_key = level_key;
 	this->requested_next_level_node_key = node_key;
 	this->next_level_x_dir = x_dir, next_level_y_dir = y_dir;
-	//this->set_timer(AI_TIMER_DEPART_LEVEL, AI_DEPART_LEVEL_TIME);
 }
 
 void AIState::set_is_walking_from_level(const int x_dir, const int y_dir)
 {
-	this->state_key = AI_STATE_WALKING_FROM_LEVEL;
+	this->set_state_key(AI_STATE_WALKING_FROM_LEVEL);
 	this->next_level_x_dir = x_dir, next_level_y_dir = y_dir;
-	//this->set_timer(AI_TIMER_ARRIVE_LEVEL, AI_ARRIVE_LEVEL_TIME);
 }
 
 const bool AIState::is_walking_to_next_level()
@@ -130,6 +132,44 @@ const bool AIState::is_walking_to_next_level()
 const bool AIState::is_walking_from_level()
 {
 	return this->state_key == AI_STATE_WALKING_FROM_LEVEL;
+}
+
+const bool AIState::is_wandering()
+{
+	return this->state_key == AI_STATE_WANDERING;
+}
+
+const bool AIState::may_wander()
+{
+	return this->ai_timer_map.find(AI_TIMER_DELAY_WANDER) == this->ai_timer_map.end()
+		|| this->ai_timer_map[AI_TIMER_DELAY_WANDER] <= 0;
+}
+
+const bool AIState::is_forcing_animation()
+{
+	return this->state_key == AI_STATE_FORCING_ANIMATION;
+}
+
+void AIState::set_forced_anim_state(const int anim_state)
+{
+	this->state_key = AI_STATE_FORCING_ANIMATION;
+	this->forced_anim_state = anim_state;
+}
+
+const int AIState::get_forced_anim_state()
+{
+	return this->forced_anim_state;
+}
+
+void AIState::set_forced_anim_dir(const int anim_dir)
+{
+	this->state_key = AI_STATE_FORCING_ANIMATION;
+	this->forced_anim_dir = anim_dir;
+}
+
+const int AIState::get_forced_anim_dir()
+{
+	return this->forced_anim_dir;
 }
 
 const std::string AIState::get_requested_next_level_key()

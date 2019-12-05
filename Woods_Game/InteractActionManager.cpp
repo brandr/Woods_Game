@@ -217,6 +217,31 @@ const int exchange_inventory(
 	return 0;
 }
 
+const int play_sound(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && player != NULL) {
+		const std::string sound_key = action->get_binding("sound_key");
+		const std::string duration_str = action->get_binding("sound_duration");
+		const int duration = ::atoi(duration_str.c_str());
+		if (!sound_key.empty() && duration > 0) {
+			const std::string filename = "entity_sounds/" + sound_key;
+			const int require_moving = ::atoi(action->get_binding("require_moving").c_str());
+			if (!require_moving || player->is_moving()) {
+				player->emit_sound(filename, duration, false);
+			} else {
+				player->stop_sound(filename);
+			}
+			
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
@@ -250,6 +275,8 @@ void InteractActionManager::initialize_functions()
 	this->function_map["adjust_player_money"] = fcnPtr;
 	fcnPtr = exchange_inventory;
 	this->function_map["exchange_inventory"] = fcnPtr;
+	fcnPtr = play_sound;
+	this->function_map["play_sound"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()

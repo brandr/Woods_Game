@@ -79,6 +79,9 @@ struct EntityData : public xmls::Serializable {
 	std::vector<std::pair<std::string, std::string>> get_block_contact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_interact_action_data();
 	std::vector<std::pair<std::string, std::string>> get_block_load_day_action_data();
+	std::vector<InteractAction *> get_block_interact_actions();
+	std::vector<InteractAction *> get_block_contact_actions();
+	std::vector<InteractAction *> get_block_load_day_actions();
 	std::vector<ItemDrop *> get_item_drops();
 	const std::vector<EntitySpawnTileRule *> get_block_spawn_tile_rules();
 	bool is_empty();
@@ -110,6 +113,7 @@ struct EntitySound {
 	int source_x = 0, source_y = 0;
 	int duration = 0;
 	int duration_counter = 0;
+	bool repeats = true;
 	EntitySound();
 	EntitySound(const std::string filename, const int duration);
 };
@@ -146,7 +150,6 @@ protected:
 	std::map<std::string, EntitySound*> entity_sounds;
 
 	virtual void emit_sound(const std::string filename, const int duration);
-	virtual void stop_sound(const std::string filename);
 	virtual void clear_sounds();
 
 	virtual void drop_items(Level * level, Player * player);
@@ -188,8 +191,11 @@ public:
 	virtual void set_entity_attributes(std::vector<std::string> attributes);
 	virtual void set_entity_attribute(std::string attr, int val);
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void copy_contact_actions(std::vector<InteractAction*> actions);
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void copy_interact_actions(std::vector<InteractAction*> actions);
 	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
+	virtual void copy_load_day_actions(std::vector<InteractAction*> actions);
 	virtual void set_item_drops(std::vector<ItemDrop*> item_drops);
 	virtual void set_spawn_tile_rules(const std::vector<EntitySpawnTileRule *> rules);
 	virtual void set_starting_pos(int x, int y);
@@ -209,6 +215,8 @@ public:
 	//sounds
 	virtual const std::string get_sound_key();
 	virtual std::vector<EntitySound*> get_active_entity_sounds();
+	virtual void emit_sound(const std::string filename, const int duration, const bool repeat);
+	virtual void stop_sound(const std::string filename);
 	//items
 	virtual Item * get_plant_gather_item();
 };

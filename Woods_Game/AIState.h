@@ -13,7 +13,8 @@ enum AI_STATE_KEYS {
 	AI_STATE_IDLE, AI_STATE_LOCKED, AI_STATE_WAITING, 
 	AI_STATE_WALKING, AI_STATE_REQUESTING_PATH, AI_STATE_STARTING_PATH, 
 	AI_STATE_WALKING_TO_NEXT_LEVEL, AI_STATE_WALKING_FROM_LEVEL,
-	AI_STATE_REQUESTING_NEXT_LEVEL, AI_STATE_FACING_OTHER
+	AI_STATE_REQUESTING_NEXT_LEVEL, AI_STATE_FACING_OTHER,
+	AI_STATE_WANDERING, AI_STATE_FORCING_ANIMATION
 };
 
 enum AI_FLAG_KEYS {
@@ -21,7 +22,7 @@ enum AI_FLAG_KEYS {
 };
 
 enum AI_TIMER_KEYS {
-	AI_TIMER_WAIT, AI_TIMER_FACE_OTHER, AI_TIMER_PUSH_OTHERS, //AI_TIMER_DEPART_LEVEL, AI_TIMER_ARRIVE_LEVEL
+	AI_TIMER_WAIT, AI_TIMER_FACE_OTHER, AI_TIMER_PUSH_OTHERS, AI_TIMER_DELAY_WANDER
 };
 
 class AIState {
@@ -33,6 +34,7 @@ private:
 	std::string requested_next_level_key = "";
 	std::string requested_next_level_node_key = "";
 	int next_level_x_dir = 0, next_level_y_dir = 0;
+	int forced_anim_state = -1, forced_anim_dir = -1;
 public:
 	AIState();
 	~AIState();
@@ -56,6 +58,13 @@ public:
 	void set_is_walking_from_level(const int x_dir, const int y_dir);
 	const bool is_walking_to_next_level();
 	const bool is_walking_from_level();
+	const bool is_wandering();
+	const bool may_wander();
+	const bool is_forcing_animation();
+	void set_forced_anim_state(const int anim_state);
+	const int get_forced_anim_state();
+	void set_forced_anim_dir(const int anim_dir);
+	const int get_forced_anim_dir();
 	const std::string get_requested_next_level_key();
 	const std::string get_requested_next_level_node_key();
 	const int get_next_level_x_dir();

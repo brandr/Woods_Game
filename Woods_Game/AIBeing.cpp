@@ -7,26 +7,31 @@ void AIBeing::ai_timer_update()
 	this->ai_state.timer_update();
 }
 
-// TODO: consider moving this around/reorganizing into a more general order of operations for state flow
 void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * time)
 {
-	if (this->ai_state.is_idle()) {
+	if (this->ai_state.is_wandering()) {
+		this->wander_update(world, level, time);
+	} else if (this->ai_state.is_idle() || this->ai_state.is_forcing_animation()) {
 		std::string node_key = this->ai_state.get_current_destination_node_key();
 		if (node_key == "") {;
 			node_key = this->calculate_destination_node_key(world, time);
 			this->ai_state.set_current_destination_node_key(node_key);
 		}
 		if (node_key != "") {
-			bool close_enough = false;
-			PathNode * matching_node = level->find_path_node_with_key(node_key);
-			if (matching_node != NULL) {
-				Rect * collide_rect = this->get_rect_for_collision();
-				const float x_dist = collide_rect->x - matching_node->get_x(),
-					y_dist = collide_rect->y - matching_node->get_y();
-				close_enough =(std::abs(x_dist) < 2.0 * TILE_SIZE && std::abs(y_dist) < 2.0*TILE_SIZE);
-			}
+			const bool close_enough = this->calculate_close_enough_to_node(world, level, time, node_key);
 			if (!close_enough) {
 				this->set_needs_pathing_calculation(node_key);
+			} else if (this->should_wander(world, level, time)) {
+				this->set_ai_state(AI_STATE_WANDERING);
+			} else {
+				const int forced_anim_state = this->forced_animation_state(world, level, time);
+				if (forced_anim_state >= 0) {
+					this->ai_state.set_forced_anim_state(forced_anim_state);
+				}
+				const int forced_anim_dir = this->forced_animation_direction(world, level, time);
+				if (forced_anim_dir >= 0) {
+					this->ai_state.set_forced_anim_dir(forced_anim_dir);
+				}
 			}
 		}
 	}
@@ -57,6 +62,7 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 				PathNode * dest_node = level->find_path_node_with_key(dest_key);
 				if (dest_node == NULL) {
 					this->clear_primary_destinations();
+					this->mark_destination_reached("");
 				} else {
 					std::vector<NextLevelNode *> next_level_nodes = dest_node->get_next_level_nodes();
 					// only go to the next level if we just stepped onto the node
@@ -137,7 +143,8 @@ void AIBeing::destination_update(Level * level, GlobalTime * time)
 						this->forced_destination = std::pair<std::string, std::pair<int, int>>(
 							forced_dest_key, std::pair<int, int>(pathing_dest.first * TILE_SIZE, pathing_dest.second * TILE_SIZE));
 						this->should_path_around_moving = true;
-						const bool should_face_other = true; //TEMP. determine what to do via AIState, type of being, npc personality, relationship w/ being, etc
+						//TEMP. determine what to do via AIState, type of being, npc personality, relationship w/ being, etc
+						const bool should_face_other = true; 
 						if (should_face_other) {
 							this->set_is_facing_other(blocking_entity);
 						} else {
@@ -189,7 +196,6 @@ void AIBeing::face_other_update(Level * level, GlobalTime * time)
 			return;
 		}
 		this->direction = this->calculate_direction(this->facing_entity);
-		//TODO: don't let the facing entity block us forever-- need to escape somehow
 	}
 }
 
@@ -202,9 +208,7 @@ void AIBeing::walk_update()
 	} else if (this->ai_state.is_requesting_path() || this->ai_state.is_idle() || 
 			(this->primary_destinations.empty() && this->secondary_destinations.empty())) {
 			this->xvel = 0, this->yvel = 0;
-			// TODO: if we need the fact that we reached a destination as context, this may be incorrect
 			if (this->ai_state.is_idle() || this->ai_state.is_walking()) {
-				//TODO: this might be wrong since the AI could be standing still doing something
 				this->ai_state.set_is_idle();
 				anim_state = ANIM_STATE_NEUTRAL;
 			}
@@ -239,12 +243,14 @@ void AIBeing::walk_update()
 
 void AIBeing::update_animation_dir()
 {
+	if (this->ai_state.is_forcing_animation()) {
+		return;
+	}
 	if (this->xvel > 0) {
 		if (this->xvel >= std::abs(this->yvel)) direction = DIR_RIGHT;
 		else if (this->yvel > 0) direction = DIR_DOWN;
 		else direction = DIR_UP;
-	}
-	else {
+	} else {
 		if (std::abs(this->xvel) > 0 && std::abs(this->xvel) >= std::abs(this->yvel)) direction = DIR_LEFT;
 		else if (this->yvel > 0) direction = DIR_DOWN;
 		else if (this->yvel < 0) direction = DIR_UP;
@@ -334,6 +340,79 @@ void AIBeing::walk_to_next_level_update(Level * level)
 			}
 		}
 		
+	}
+}
+
+void AIBeing::wander_update(World * world, Level * level, GlobalTime * time)
+{
+	const float x_pos = this->get_x(), y_pos = this->get_y();
+	const Rect * collide_rect = this->get_rect_for_collision();
+	const int collide_w = collide_rect->width, collide_h = collide_rect->height;
+	const int start_tx = x_pos / collide_w;
+	const int start_ty = y_pos / collide_h;
+
+	//TODO: is it bad to have this the same as other seed?
+	srand(std::time(NULL) + time->get_time() + this->get_x() + this->get_y() * 1001 + this->get_seed_index() * 10001);
+	// how to determine min/max wander range?
+	const int min_range = 1; //temp
+	const int max_range = 3; //temp
+	const int range = (std::rand() % (max_range - min_range + 1)) + min_range;
+	const std::pair<int, int> level_dimensions = level->get_dimensions();
+	
+	WanderZone * zone = this->current_wander_zone(world, level, time);
+	const std::pair<int, int> wander_center = this->get_wander_zone_center(world, level, time);
+	int min_x = 0, min_y = 0, max_x = level_dimensions.first - collide_w, max_y = level_dimensions.second - collide_h;
+	if (wander_center.first >= 0 && wander_center.second >= 0) {
+		min_x = std::max(min_x, std::min(level_dimensions.first - collide_w, wander_center.first + zone->get_min_x()));
+		min_y = std::max(min_y, std::min(level_dimensions.second - collide_h, wander_center.second + zone->get_min_y()));
+		max_x = std::min(max_x, wander_center.first + zone->get_max_x());
+		max_y = std::min(max_y, wander_center.second + zone->get_max_y());
+	}
+	
+	std::vector<std::pair<int, int>> open_tiles;
+	for (int ty = -1 * range; ty < 1 + range; ty++) {
+		for (int tx = -1 * range; tx < 1 + range; tx++) {
+			const std::pair<int, int>
+				tile_center(x_pos / collide_w + tx, y_pos / collide_h + ty);
+			const int cx = std::max(
+				min_x, std::min(max_x, (int)x_pos + tx * collide_w));
+			const int cy = std::max(
+				min_y, std::min(max_y, (int)y_pos + ty * collide_h));
+			if (!this->pathing_blocked_at(cx, cy, level, false) && !(cx / collide_w == start_tx && cy / collide_h == start_ty)) {
+				open_tiles.push_back(std::pair<int, int>(cx / collide_w, cy / collide_h));
+			}
+		}
+	}
+	const int size = open_tiles.size();
+	if (size > 0) {
+		srand(std::time(NULL) + time->get_time() + this->get_x() + this->get_y() * 1001 + this->get_seed_index() * 10001);
+		const int roll_index = rand() % size;
+		const std::pair<int, int> rolled_t_pos = open_tiles[roll_index];
+		const std::pair<int, int> rolled_pos(rolled_t_pos.first * collide_w, rolled_t_pos.second * collide_h);
+		this->primary_destinations.push_back(std::pair<std::string, std::pair<int, int>>("", rolled_pos));
+		this->set_ai_state(AI_STATE_STARTING_PATH);
+	} else {
+		//TODO: is it bad to have this the same as other seed?
+		srand(std::time(NULL) + time->get_time() + this->get_x() + this->get_y() * 1001 + this->get_seed_index() * 10001);
+		//TODO: how to get min/max wait duration?
+		const int min_duration = 75; //temp
+		const int max_duration = 125; //temp
+		const int duration = (std::rand() % (max_duration - min_duration + 1)) + min_duration;
+		this->ai_state.set_is_waiting(duration); //TEMP -- store wait time as constant? Categoriezed by AI type w/ overrides? randomize in range?
+	}
+}
+
+void AIBeing::forced_animation_update()
+{
+	if (this->ai_state.is_forcing_animation()) {
+		const int forced_state = this->ai_state.get_forced_anim_state(); 
+		if (forced_state >= 0) {
+			this->anim_state = forced_state;
+		}
+		const int forced_dir = this->ai_state.get_forced_anim_dir();
+		if (forced_dir >= 0) {
+			this->direction = forced_dir;
+		}
 	}
 }
 
@@ -441,7 +520,9 @@ void AIBeing::walk_to_next_level_update(Level * level)
 
 	void AIBeing::mark_destination_reached(const std::string dest_key)
 	{
-		// override in subclasses
+		// override in subclasses as necessary
+		const int wander_delay = 100; //TEMP
+		this->ai_state.set_timer(AI_TIMER_DELAY_WANDER, wander_delay);
 	}
 
 	void AIBeing::set_ai_state(const int state_key)
@@ -453,6 +534,62 @@ void AIBeing::walk_to_next_level_update(Level * level)
 	const std::string AIBeing::calculate_destination_node_key(World * world, GlobalTime * time)
 	{
 		return "";
+	}
+
+	const bool AIBeing::calculate_close_enough_to_node(World * world, Level * level, GlobalTime * time, const std::string node_key)
+	{
+		bool close_enough = false;
+		PathNode * matching_node = level->find_path_node_with_key(node_key);
+		if (matching_node != NULL) {
+			Rect * collide_rect = this->get_rect_for_collision();
+			const float x_dist = collide_rect->x - matching_node->get_x(),
+				y_dist = collide_rect->y - matching_node->get_y();
+			close_enough = (std::abs(x_dist) < 2.0 * TILE_SIZE && std::abs(y_dist) < 2.0*TILE_SIZE);
+		}
+		return close_enough;
+	}
+
+	const bool AIBeing::should_wander(World * world, Level * level, GlobalTime * time)
+	{
+		if (!this->ai_state.may_wander()) {
+			return false;
+		}
+		WanderZone * zone = this->current_wander_zone(world, level, time);
+		if (zone != NULL && zone->get_should_wander()) {
+			//TODO: is this correct?
+			return true;
+		}
+		return false;
+	}
+
+	WanderZone * AIBeing::current_wander_zone(World * world, Level * level, GlobalTime * time)
+	{
+		// TODO: override 
+		return NULL;
+	}
+
+	const std::pair<int, int> AIBeing::get_wander_zone_center(World * world, Level * level, GlobalTime * time)
+	{
+		//temp. does this make sense as an override?
+		return std::pair<int, int>(-1, -1);
+	}
+
+	const int AIBeing::forced_animation_state(World * world, Level * level, GlobalTime * time)
+	{
+		//TODO: override in subclasses
+		return -1;
+	}
+
+	const int AIBeing::forced_animation_direction(World * world, Level * level, GlobalTime * time)
+	{
+		//TODO: override in subclasses
+		return -1;
+	}
+
+	const int AIBeing::get_seed_index()
+	{
+		//TODO: random seed index
+		return 0;
 	}
 
 	void AIBeing::set_is_starting_path()
@@ -534,6 +671,7 @@ void AIBeing::update(World * world, Level * level, GlobalTime * time, const int 
 	this->failed_pathing_update();
 	this->push_others_update(level);
 	this->walk_to_next_level_update(level);
+	this->forced_animation_update();
 	Being::update(world, level, time, game_mode);
 }
 
@@ -667,7 +805,6 @@ void AIBeing::set_should_path_around_moving(const bool value)
 	this->should_path_around_moving = value;
 }
 
-//TODO: depending on the context, should be looking at moving obstacles only, because we should already have chosen paths that account for blocked tiles
 const bool AIBeing::pathing_blocked_at(const int x, const int y, Level * level, const bool ignore_moving_obstacles)
 {
 	const int tx = x / TILE_SIZE, ty = y / TILE_SIZE;

@@ -6,6 +6,7 @@
 #include "DialogTree.h"
 #include "Encyclopedia.h"
 #include "SpritesheetAnimation.h"
+#include "WanderZone.h"
 
 #include "XMLSerialization.h"
 
@@ -22,6 +23,7 @@ struct CritterTemplate : public xmls::Serializable {
 	xmls::xBool solid;
 	xmls::xFloat base_speed;
 	xmls::Collection<AnimationData> animation_data;
+	WanderZone wander_zone;
 	DialogItem catch_dialog_item;
 	CritterTemplate();
 	~CritterTemplate();
@@ -46,11 +48,16 @@ class Critter : public AIBeing
 private:
 	std::string critter_key;
 	int level_critter_index = 0; // to ensure == distinguishes between critters
+	WanderZone * wander_zone;
+	std::pair<int, int> critter_spawn_pos;
 protected:
-	virtual void mark_destination_reached(const std::string dest_key);
 	virtual void request_pathing_update(World * world, Level * level, GlobalTime * time);
 	virtual void face_other_update(Level * level, GlobalTime * time);
 	virtual void walk_to_next_level_update(Level * level);
+	virtual WanderZone * current_wander_zone(World * world, Level * level, GlobalTime * time);
+	virtual const std::pair<int, int> get_wander_zone_center(World * world, Level * level, GlobalTime * time);
+	virtual const int get_seed_index();
+	virtual const std::string get_footstep_filename_suffix();
 public:
 	Critter();
 	Critter(CritterTemplate * critter_template, const int index);
@@ -61,6 +68,7 @@ public:
 	const bool can_be_netted();
 	virtual void update_visibility(World * world, Level * level);
 	virtual const bool has_visibility_actions(Level * level);
+	void set_critter_spawn_pos(const int x, const int y);
 	
 };
 

@@ -4,45 +4,39 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 11/28/2019
+Last updated 12/3/2019
 
 Target date for main code to be done: ~ May 2020
 
-Total: 32-60 days (~1-2 months)
+Total: 27-50 days (~1-2 months)
 
-1. Dialog/schedule
+1. Audio
 	(5-10 days)
-
-(should get here around January 2020) 
-(clean up todos and try to think of what's missing here)
-
-2. Audio
-	(5-10 days)
-3. Animation/image code stuff
+2. Animation/image code stuff
 	(10-15 days)
-4. Menu/control stuff
+3. Menu/control stuff
 	(5-10 days)
 
 (should get here around February 2020) 
 (clean up todos and try to think of what's missing here)	
 
-5. Loading screens/progress bars
+4. Loading screens/progress bars
 	(3-5 days)
-6. Figure out how to force end of day (otherwise saving gets weird after midnight)
+5. Figure out how to force end of day (otherwise saving gets weird after midnight)
 	(2-5 days)
-7. Wake-up time (alarm clock?)
+6. Wake-up time (alarm clock?)
 	(2-5 days)
-8. Stamina/resource management
+7. Stamina/resource management
 	(5-10 days)
 
 (should get here around March 2020) 
 (clean up todos and try to think of what's missing here)	
 
-9. Miscellaneous code stuff (break out into specific todos after getting here)
+8. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-10. Level Editor improvements
+9. Level Editor improvements
 	(???)
-11. Content!
+10. Content!
 	(???)
 
 Ongoing tasks:
@@ -53,31 +47,44 @@ Ongoing tasks:
 4. come up with more content
 
 ---------------------------------------------------
+Audio
+---------------------------------------------------
+
+Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
+Sound effects
+	* Add sounds: 
+		- cutting plants
+			# see the todo in player.swing_update() -- probably want one for when the net hits a bug too
+		- dialog sounds (like in animal crossing)
+			# how to tie to text scroll speed?
+		- menu sounds
+		- sounds for catching critters ("victory" jingle)
+	* Tie footstep sfx cycles to the animation speed of the walking animation, since this is a more reliable way to get num footsteps
+		- probably almost always safe to assume that a footstep is half of the frame duration of the animation
+		- this will work well with changing frame durations with walk speed (probably want to do this first)	
+	* Replace placeholder sounds
+Music
+	* What kinds of things can cause music to start/stop/fade/add cues?
+		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
+		- do we want a MusicManager or some other structure in AudioManager that handles this?
+		- one example: bedtime sound
+	* The Eye of Pan has a special theme that is hidden inside other tracks
+How to play sounds at title screen?
+
+---------------------------------------------------
 NPCs
 ---------------------------------------------------
 
 AIState/NPC schedule
-	- allow "wander in area" via schedule with serialized WanderArea (rect that determines limits)
-		* wander radius (min/max distance per wander) should possibly be serialized/calculated
-		* wander area also used for critter wandering
-	- extend schedule logic to "go to place and do an animation" or 
-		 "go to place and wander around" in addition to standing on specific tiles at specific times
-		* best way to figure out what things I need is probably with example schedules that are realstic for the actual game
-	- schedule should feed dialog (say different things depending on what NPC is doing)
-		* not a direct connection, but some flag set by schedule, which feeds dialog qualifiers
-		* pretty sure Qualifier methods need to be refactored to take the NPC as an argument for this to work 
-			(unless it can be handled purely through triggers, or we can get the npc via world)
-	(stop here for now)
+	- wander radius (min/max distance per wander) and wander delay should possibly be serialized/calculated
 	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
 		* this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
 		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
 	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
-
 Dialog 
 	- should you be unable to talk to the same NPC too many times a day like in stardew?
 		* probably need a lot more actual gameplay to answer this question
-
 NPC pathing
 	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
 	- can end up on top of an npc and get temporarily stuck if you go into a building right as they're at the exit
@@ -96,18 +103,13 @@ Critter spawning/biomes
 	* incorporate level size when calculating spawn chance/max critters to spawn for biome
 	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
 	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
-
 In dialog saying you caught a critter, show encyclopedia pic (or should it be a separate image?)
 	* this can just be a normal dialog portrait, so add it once that's implemented
-
-Make ant footsteps quieter (and figure out how to manage critter footsteps)
-
 Accurate swing animation
 	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
 		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
 		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
 			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
-
 Basic AI
 	* better/more generalized wandering
 		# wandering in its own method-- what can critters do besides wander?
@@ -132,10 +134,8 @@ Inventory/items/money
 ---------------------------------------------------
 
 Make sure ItemPickups disappear properly from level when they should (maybe on a timer or after leaving level?)
-
 Make an item shop (or at least someone who sells things)
 	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
-
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
 
@@ -146,30 +146,8 @@ Quests
 Might want giving non-quest items for quests to require that you have them 
 	in your active slot like stardew valley (or there's an actual "give button")
 	* could just do ("do you want to give me x?" and yes option gives)
-
 Probably want some brief, unobtrusive notification when a quest is updated
 	* this should not be a dialog, because it would be annoying to have to click through
-
----------------------------------------------------
-Audio
----------------------------------------------------
-
-Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
-
-Sound effects
-	* Different sound filenames for different footstep sound effects
-		- key by NPC + tile type (but not one-to-one, so NPCs can share some footstep sounds if they should sound exactly the same)
-	* Would probably work better to base footstep sfx cycles on the animation speed of the walking animation, since this is a more reliable way to get num footsteps
-		- probably almost always safe to assume that a footstep is half of the frame duration of the animation
-		- this will work well with changing frame durations with walk speed (probably want to do this first)
-	* In addition to tiles influencing footstep sounds, probably want sounds from ferns, swinging shears (and using items in general), etc
-	* Dialog sounds (like in animal crossing)
-
-Music
-	* What kinds of things can cause music to start/stop/fade/add cues?
-		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
-		- do we want a MusicManager or some other structure in AudioManager that handles this?
-	* The Eye of Pan has a special theme that is hidden inside other tracks
 
 ---------------------------------------------------
 Memory management/error handling
@@ -179,24 +157,19 @@ Performance is much worse on large levels-- what could be causing this?
 	* not drawing entity groups fixes this (test extensively to make sure of this)
 		# they might have some associated images that aren't getting converted into video bitmaps
 		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
-
 Document how to format serialized things like dialog trees so I don't forget
-
 Asynchronous loading screen
 	* https://www.allegro.cc/forums/thread/615021
 	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
 	* add a progress bar (remember to use mutex)
 		# how to quantity loading progress? (could split into levels)
-
 If necessary, could make it so we asynchronously load only adjacent levels to the current one
 	* need to be careful to ensure the player can't walk to the edge before we finish loading
 	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
 	* might be easier to just fade to black and have loading screens between areas
-
 Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
 	* remember to re-save levels in the editor after making this change or any others like it
 	* this same strategy could apply to a lot of serializable objects
-
 Fix build warnings
 
 ---------------------------------------------------
@@ -224,11 +197,9 @@ Procedural generation
 IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally" and we start with some baby plants
 IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
 Check NPC pathing when generating and in new day update (in former case, keep re-generating until it's pathable)
-
 How to place special objects/arrangements of objects that won't always be in the same spot?
 	* example: crashed car
 	* may want to spawn location markers that show up on map
-
 Make a "PlantType" class or something similar and have EntityTypes point to it with a "plant type key" or something similar if they are plants
 	* might not even need a plant type key-- could just use entity key
 	* When generating ferns, copy over this data in Plant methods rather than checking a bunch of entity attributes
@@ -242,7 +213,6 @@ Bug fixes
 There's sometimes an exception on closing the window
 	* seems to have something to do with randomized procedural generation, because it only happens some of the time
 	* exception has something to do with level's tile rows -- happens in Level.unload_content()
-
 Exception when going to a level that doesn't exist
 
 ---------------------------------------------------
@@ -251,7 +221,6 @@ Art/content
 
 Draw the leaves for the large tree sprite
 	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
-
 Draw the symbols for the Eye of Pan and the Eye of Gabriel
 
 ---------------------------------------------------
@@ -270,17 +239,13 @@ IDEA: different walk animations for different speed ranges (1.0 - 2.0, 2.0 - 3.0
 	* do this at the same time as making "rustle" animation because that animation might need to sync up with player's feet
 	* could also adjust frame duration based on speed up to a certain point
 	* test this with controller since this gives the most fine-grain speed control
-
 Give some brush types "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
 	* this could be used for wading through shallow water
-
 IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
-
 Buildings
 	* need door animation? (no other blocks are animated, might need to be a new thing)
 	* stairs? (good test of building mechanics, similar to going outside)
 		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-
 Make custom mouse cursor
 
 ---------------------------------------------------
@@ -303,7 +268,6 @@ IDEA: Stamina could drain slowly when walking and faster when running since time
 	* running should be significantly less stamina-efficient 
 		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than when walking
 	* need to add a run button, also consider how this works with analog stick (need smooth stamina formula)
-
 IDEA: Stamina upgrades could be the only thing you take with you when reloading
 Contact with thorns should cost stamina (look for a "damage" attribute that I already made)
 
@@ -313,7 +277,6 @@ Menus
 
 Fix the way we load game from title screen-- need to select (did I mean "display"?) a specific day (and should probably display the current day in menu)
 	* save current day in global xml that exists outside the day folders?
-
 Need to make a "restore defaults" (or something similar) button for video/audio/etc configurations
 Allow changing text speed in options
 
@@ -322,9 +285,7 @@ Controls
 ---------------------------------------------------
 
 Allow exiting from calendar screen (I think there's a button for it but it doesn't get mapped or something)
-
 Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
-
 Make it so the game can detect when a controller is plugged in and update properly
 	*look at main, where the event queue registers the source 
 		(might need some check accessed through the main loop)
@@ -335,7 +296,5 @@ Long term
 ---------------------------------------------------
 
 Hire a sprite artist
-
 Look up how to get on steam ahead of time
-
 When balancing money, adjust for inflation for 1987

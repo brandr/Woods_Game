@@ -28,7 +28,7 @@ void Being::update(World * world, Level * level, GlobalTime * time, const int ga
 
 void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	this->clear_sounds();
+	//this->clear_sounds();
 	TileSet * tileset = level->get_tileset();
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
 	std::vector<Tile*> colliding_tiles = this->get_colliding_tiles(tileset, nearby_tiles);
@@ -41,10 +41,14 @@ void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, c
 		const std::string footstep_key = "footstep_" + tile_key;
 		footstep_filename = "entity_sounds/" + footstep_key;
 	}
-	
-	// TODO: also include information about the being in forming the key
-
-	if (!AudioManager::get_instance().sfx_exists(footstep_filename, this->get_sound_key())) {
+	std::string full_footstep_filename = footstep_filename;
+	const std::string footstep_filename_suffix = this->get_footstep_filename_suffix();
+	if (!footstep_filename_suffix.empty()) {
+		full_footstep_filename += "_" + footstep_filename_suffix;
+	}
+	if (AudioManager::get_instance().sfx_exists(full_footstep_filename, this->get_sound_key())) {
+		footstep_filename = full_footstep_filename;
+	} else if (!AudioManager::get_instance().sfx_exists(footstep_filename, this->get_sound_key())) {
 		footstep_filename = "entity_sounds/" + default_name;
 	}
 
@@ -53,23 +57,20 @@ void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, c
 	if (speed > 0.0f) {
 		const float step_px_size = (2.0f/3.0f) * TILE_SIZE; // TEMP. this is how many pixels a "step" should be
 		const int duration = (int)(step_px_size / speed); //TODO: get number of frames sound should last
-
 		if (this->anim_state == ANIM_STATE_WALKING) {
-			this->emit_sound(footstep_filename, duration);
-		}
-		else {
+			this->emit_sound(footstep_filename, duration, false);
+		} else {
 			this->stop_sound(footstep_filename);
 		}
-	}
-	else {
+	} else {
 		this->stop_sound(footstep_filename);
 	}
-	
 }
 
 void Being::play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
 	// probably just override this in player, unless there's some reason we have to play sounds elsewhere
+	
 }
 
 void Being::set_xvel(int vel)
@@ -411,6 +412,11 @@ void Being::bounce_from_entity(Entity * entity, const int knockback)
 	counters[BOUNCE] = knockback * 2;
 }
 
+const bool Being::is_moving()
+{
+	return this->xvel != 0 || this->yvel != 0;
+}
+
 const bool Being::empty_at(Rect r, std::vector<Entity*> interactables) {
 	for (Entity *e : interactables) {
 		if (e && e != this && e->is_solid() && e->intersects_area(r)) {
@@ -475,4 +481,10 @@ std::vector<Tile *> Being::get_colliding_tiles(TileSet * tileset, std::vector<Ti
 void Being::play_sounds_for_entity(Entity * e)
 {
 	// probably just override in player
+}
+
+const std::string Being::get_footstep_filename_suffix()
+{
+	// override in subclasses
+	return "";
 }

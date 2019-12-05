@@ -4,6 +4,7 @@
 
 #include "AIState.h"
 #include "Being.h"
+#include "WanderZone.h"
 #include <math.h>
 
 class Level;
@@ -36,6 +37,8 @@ protected:
 	virtual void failed_pathing_update();
 	virtual void push_others_update(Level * level);
 	virtual void walk_to_next_level_update(Level * level);
+	virtual void wander_update(World * world, Level * level, GlobalTime * time);
+	virtual void forced_animation_update();
 	const std::pair<int, int> find_closest_open_tile_pos(
 		Level * level,
 		const std::pair<int, int> destination);
@@ -47,6 +50,13 @@ protected:
 	virtual void mark_destination_reached(const std::string dest_key);
 	virtual void set_ai_state(const int state_key);
 	virtual const std::string calculate_destination_node_key(World * world, GlobalTime * time);
+	virtual const bool calculate_close_enough_to_node(World * world, Level * level, GlobalTime * time, const std::string node_key);
+	virtual const bool should_wander(World * world, Level * level, GlobalTime * time);
+	virtual WanderZone * current_wander_zone(World * world, Level * level, GlobalTime * time);
+	virtual const std::pair<int, int> get_wander_zone_center(World * world, Level * level, GlobalTime * time);
+	virtual const int forced_animation_state(World * world, Level * level, GlobalTime * time);
+	virtual const int forced_animation_direction(World * world, Level * level, GlobalTime * time);
+	virtual const int get_seed_index();
 public:
 	AIBeing();
 	~AIBeing();

@@ -37,6 +37,16 @@
                         <Collection Name="schedule_blocks">
                             <Class Type="ScheduleTimeBlock" Version="1">
                                 <Member Name="node_key">g_woods_a</Member>
+                                <Member Name="priority">1</Member>
+                                <Member Name="forced_anim_state"/>
+                                <Member Name="forced_anim_dir"/>
+                                <Class Name="wander_zone" Type="WanderZone" Version="1">
+                                    <Member Name="should_wander">false</Member>
+                                    <Member Name="min_x"/>
+                                    <Member Name="min_y"/>
+                                    <Member Name="max_x"/>
+                                    <Member Name="max_y"/>
+                                </Class>
                                 <Collection Name="qualifiers"/>
                             </Class>
                         </Collection>
@@ -44,6 +54,16 @@
                     <Collection Name="schedule_blocks">
                         <Class Type="ScheduleTimeBlock" Version="1">
                             <Member Name="node_key">g_woods_a</Member>
+                            <Member Name="priority">1</Member>
+                            <Member Name="forced_anim_state"/>
+                            <Member Name="forced_anim_dir"/>
+                            <Class Name="wander_zone" Type="WanderZone" Version="1">
+                                <Member Name="should_wander">false</Member>
+                                <Member Name="min_x"/>
+                                <Member Name="min_y"/>
+                                <Member Name="max_x"/>
+                                <Member Name="max_y"/>
+                            </Class>
                             <Collection Name="qualifiers">
                                 <Class Type="Qualifier" Version="1">
                                     <Member Name="comparator">5</Member>
@@ -669,6 +689,16 @@
                         <Collection Name="schedule_blocks">
                             <Class Type="ScheduleTimeBlock" Version="1">
                                 <Member Name="node_key">stranger_house_a</Member>
+                                <Member Name="priority">1</Member>
+                                <Member Name="forced_anim_state"/>
+                                <Member Name="forced_anim_dir"/>
+                                <Class Name="wander_zone" Type="WanderZone" Version="1">
+                                    <Member Name="should_wander">true</Member>
+                                    <Member Name="min_x">-64</Member>
+                                    <Member Name="min_y">-64</Member>
+                                    <Member Name="max_x">64</Member>
+                                    <Member Name="max_y">64</Member>
+                                </Class>
                                 <Collection Name="qualifiers"/>
                             </Class>
                         </Collection>
@@ -676,6 +706,16 @@
                     <Collection Name="schedule_blocks">
                         <Class Type="ScheduleTimeBlock" Version="1">
                             <Member Name="node_key">stranger_house_a</Member>
+                            <Member Name="priority">1</Member>
+                            <Member Name="forced_anim_state">3</Member>
+                            <Member Name="forced_anim_dir">1</Member>
+                            <Class Name="wander_zone" Type="WanderZone" Version="1">
+                                <Member Name="should_wander">true</Member>
+                                <Member Name="min_x">-64</Member>
+                                <Member Name="min_y">-64</Member>
+                                <Member Name="max_x">64</Member>
+                                <Member Name="max_y">64</Member>
+                            </Class>
                             <Collection Name="qualifiers">
                                 <Class Type="Qualifier" Version="1">
                                     <Member Name="comparator">5</Member>

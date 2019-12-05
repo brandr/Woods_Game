@@ -27,7 +27,6 @@ private:
 	DialogTree dialog_tree;
 	xmls::xString default_dialog_text;
 	xmls::xBool obeys_tile_rules;
-
 	std::string current_level_key = "";
 	std::string current_position_node_key = "";
 	bool is_processing = false; //TEMP. replace with AI state for AIBeing
@@ -35,6 +34,13 @@ private:
 	DialogGroup * current_dialog_group = NULL;
 protected:
 	virtual const std::string calculate_destination_node_key(World * world, GlobalTime * time);
+	virtual const bool calculate_close_enough_to_node(World * world, Level * level, GlobalTime * time, const std::string node_key);
+	virtual const bool should_wander(World * world, Level * level, GlobalTime * time);
+	virtual WanderZone * current_wander_zone(World * world, Level * level, GlobalTime * time);
+	virtual const std::pair<int, int> get_wander_zone_center(World * world, Level * level, GlobalTime * time);
+	virtual const int forced_animation_state(World * world, Level * level, GlobalTime * time);
+	virtual const int forced_animation_direction(World * world, Level * level, GlobalTime * time);
+	virtual const std::string get_footstep_filename_suffix();
 public:
 	NPC();
 	~NPC();

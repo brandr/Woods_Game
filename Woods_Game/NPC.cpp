@@ -21,6 +21,86 @@ const std::string NPC::calculate_destination_node_key(World * world, GlobalTime 
 	return scheduled_node_key;
 }
 
+//TODO: might want tto put this in super method and make "current wander zone" the thing we calculate
+const bool NPC::calculate_close_enough_to_node(World * world, Level * level, GlobalTime * time, const std::string node_key)
+{
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		WanderZone * zone = this->current_wander_zone(world, level, time); //this->schedule.scheduled_wander_zone(world, level, time);
+		if (zone != NULL && zone->get_should_wander()) {
+			const int node_x = matching_node->get_x(), node_y = matching_node->get_y();
+			return zone->contains_object(node_x, node_y, this->get_x(), this->get_y());
+		}
+	}
+	return AIBeing::calculate_close_enough_to_node(world, level, time, node_key);
+}
+
+const bool NPC::should_wander(World * world, Level * level, GlobalTime * time)
+{
+	if (!this->ai_state.may_wander()) {
+		return false;
+	}
+	const std::string node_key = this->calculate_destination_node_key(world, time);
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		WanderZone * zone = this->current_wander_zone(world, level, time);
+		if (zone != NULL && zone->get_should_wander()) {
+			const int node_x = matching_node->get_x(), node_y = matching_node->get_y();
+			return zone->contains_object(node_x, node_y, this->get_x(), this->get_y());
+		}
+	}
+	return false;
+}
+
+WanderZone * NPC::current_wander_zone(World * world, Level * level, GlobalTime * time)
+{
+	const std::string node_key = this->calculate_destination_node_key(world, time);
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		WanderZone * zone = this->schedule.scheduled_wander_zone(world, level, time);
+		return zone;
+	}
+	return NULL;
+}
+
+const std::pair<int, int> NPC::get_wander_zone_center(World * world, Level * level, GlobalTime * time)
+{
+	WanderZone * zone = this->current_wander_zone(world, level, time);
+	if (zone != NULL && zone->get_should_wander()) {
+		const std::string node_key = this->calculate_destination_node_key(world, time);
+		PathNode * matching_node = level->find_path_node_with_key(node_key);
+		if (matching_node != NULL) {
+			return matching_node->get_center();
+		}
+	}
+	return AIBeing::get_wander_zone_center(world, level, time);
+}
+
+const int NPC::forced_animation_state(World * world, Level * level, GlobalTime * time)
+{
+	const std::string node_key = this->calculate_destination_node_key(world, time);
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		return this->schedule.scheduled_forced_animation_state(world, level, time);
+	}
+	return -1;
+}
+
+const int NPC::forced_animation_direction(World * world, Level * level, GlobalTime * time)
+{
+	const std::string node_key = this->calculate_destination_node_key(world, time);
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		return this->schedule.scheduled_forced_animation_direction(world, level, time);
+	}
+	return -1;
+}
+
+const std::string NPC::get_footstep_filename_suffix()
+{
+	return this->get_npc_key();
+}
+
 NPC::NPC()
 {
 	setClassName("NPC");

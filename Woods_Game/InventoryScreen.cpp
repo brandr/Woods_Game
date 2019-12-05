@@ -819,9 +819,10 @@ void InventoryScreen::draw_map(ALLEGRO_DISPLAY * display)
 
 	ALLEGRO_BITMAP * location_frame = this->map_location_label_frame();
 
+	const int locations_size = this->locations_for_display.size();
 	const std::string location_text 
 		= this->map_selected_location_index >= 0 
-			&& this->map_selected_location_index  < this->locations_for_display.size()
+			&& this->map_selected_location_index  < locations_size
 			? this->locations_for_display[this->map_selected_location_index].first : "???";
 
 	const int location_frame_width = al_get_bitmap_width(location_frame), location_frame_height = al_get_bitmap_height(location_frame);
@@ -905,7 +906,7 @@ void InventoryScreen::draw_journal(ALLEGRO_DISPLAY * display)
 	al_draw_bitmap(select_bitmap, select_x, select_y, 0);
 
 	const bool is_hiding_quests_up = this->quest_scroll_offset > 0;
-	const bool is_hiding_quests_down = this->quest_scroll_offset + 5 < this->quests_for_display().size();
+	const bool is_hiding_quests_down = this->quest_scroll_offset + 5 < quest_count;
 	if (is_hiding_quests_up) {
 		al_draw_bitmap(quest_scroll_up_arrow(), quest_pane_x + 16 + al_get_bitmap_width(quest_label_backdrop()) + 6, quest_pane_y + 16, 0);
 	}
@@ -1284,7 +1285,8 @@ Quest * InventoryScreen::selected_quest()
 	if (this->quest_selection.first < QUEST_INVENTORY_COLS) {
 		return NULL;
 	}
-	return this->quest_selection.second >= 0 && this->quest_selection.second < this->quests_for_display().size() ?
+	const int quest_size = this->quests_for_display().size();
+	return this->quest_selection.second >= 0 && this->quest_selection.second < quest_size ?
 	this->quests_for_display()[this->quest_selection.second] : NULL;
 }
 

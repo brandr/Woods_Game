@@ -374,6 +374,7 @@
     <ClInclude Include="tinyxml2.h" />
     <ClInclude Include="TitleScreen.h" />
     <ClInclude Include="TriggerStatus.h" />
+    <ClInclude Include="WanderZone.h" />
     <ClInclude Include="World.h" />
     <ClInclude Include="WorldState.h" />
     <ClInclude Include="XMLSerialization.h" />
@@ -466,6 +467,7 @@
     <ClCompile Include="tinyxml2.cpp" />
     <ClCompile Include="TitleScreen.cpp" />
     <ClCompile Include="TriggerStatus.cpp" />
+    <ClCompile Include="WanderZone.cpp" />
     <ClCompile Include="World.cpp" />
     <ClCompile Include="WorldState.cpp" />
     <ClCompile Include="XMLSerialization.cpp" />

@@ -21,6 +21,9 @@
             				<Class Type="ScheduleTimeBlock" Version="1">
             					<Collection Name="qualifiers">
             					</Collection>
+                                <Class Type="WanderZone" Name="wander_zone" Version="1">
+                                    <Member Name="should_wander">false</Member>
+                                </Class>
                 				<Member Name="priority">1</Member>
                 				<Member Name="node_key">g_woods_a</Member>
             				</Class>
@@ -47,6 +50,9 @@
             						</Collection>
             					</Class>
             				</Collection>
+                            <Class Type="WanderZone" Name="wander_zone" Version="1">
+                                <Member Name="should_wander">false</Member>
+                            </Class>
                 			<Member Name="priority">1</Member>
                 			<Member Name="node_key">g_woods_a</Member>
             			</Class>
@@ -492,6 +498,13 @@
             				<Class Type="ScheduleTimeBlock" Version="1">
             					<Collection Name="qualifiers">
             					</Collection>
+                                <Class Type="WanderZone" Name="wander_zone" Version="1">
+                                    <Member Name="should_wander">true</Member>
+                                    <Member Name="min_x">-64</Member>
+                                    <Member Name="min_y">-64</Member>
+                                    <Member Name="max_x">64</Member>
+                                    <Member Name="max_y">64</Member>
+                                </Class>
                 				<Member Name="priority">1</Member>
                 				<Member Name="node_key">stranger_house_a</Member>
             				</Class>
@@ -518,8 +531,17 @@
             						</Collection>
             					</Class>
             				</Collection>
+                            <Class Type="WanderZone" Name="wander_zone" Version="1">
+                                <Member Name="should_wander">true</Member>
+                                <Member Name="min_x">-64</Member>
+                                <Member Name="min_y">-64</Member>
+                                <Member Name="max_x">64</Member>
+                                <Member Name="max_y">64</Member>
+                            </Class>
                 			<Member Name="priority">1</Member>
                 			<Member Name="node_key">stranger_house_a</Member>
+                            <Member Name="forced_anim_state">3</Member>
+                            <Member Name="forced_anim_dir">1</Member>
             			</Class>
             		</Collection>
 				</Class>

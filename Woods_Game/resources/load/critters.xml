@@ -27,6 +27,13 @@
     					<Member Name="animation_frame_duration">16</Member>
     				</Class>
     			</Collection>
+                <Class Type="WanderZone" Name="wander_zone" Version="1">
+                    <Member Name="should_wander">true</Member>
+                    <Member Name="min_x">-64</Member>
+                    <Member Name="min_y">-64</Member>
+                    <Member Name="max_x">64</Member>
+                    <Member Name="max_y">64</Member>
+                </Class>
                 <Class Type="DialogItem" Name="catch_dialog_item" Version ="1">
                     <Member Name="conversation_index">0</Member>
                     <Collection Name="pages">

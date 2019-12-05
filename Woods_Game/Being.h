@@ -37,6 +37,7 @@ protected:
 	const float get_speed_multiplier(TileSet * tileset, std::vector<Tile*> tiles);
 	std::vector<Tile *> get_colliding_tiles(TileSet * tileset, std::vector<Tile*> tiles);
 	virtual void play_sounds_for_entity(Entity* e);
+	virtual const std::string get_footstep_filename_suffix();
 public:
 	Being();
 	~Being();
@@ -54,6 +55,7 @@ public:
 	virtual const bool set_should_push_others(const bool value);
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 	virtual void bounce_from_entity(Entity * entity, const int knockback);
+	virtual const bool is_moving();
 };
 
 #endif

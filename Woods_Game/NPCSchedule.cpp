@@ -60,12 +60,38 @@ NPCSchedule::~NPCSchedule()
 
 const std::string NPCSchedule::scheduled_node_key(World * world, Level * level, GlobalTime * time)
 {
-	//TODO: probably want to pass in quest triggers here
 	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
 	if (schedule_block != NULL) {
 		return schedule_block->node_key.value();
 	}
 	return "";
+}
+
+WanderZone * NPCSchedule::scheduled_wander_zone(World * world, Level * level, GlobalTime * time)
+{
+	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
+	if (schedule_block != NULL) {
+		return &schedule_block->wander_zone;
+	}
+	return NULL;
+}
+
+const int NPCSchedule::scheduled_forced_animation_state(World * world, Level * level, GlobalTime * time)
+{
+	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
+	if (schedule_block != NULL) {
+		return schedule_block->forced_anim_state.value();
+	}
+	return -1;
+}
+
+const int NPCSchedule::scheduled_forced_animation_direction(World * world, Level * level, GlobalTime * time)
+{
+	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
+	if (schedule_block != NULL) {
+		return schedule_block->forced_anim_dir.value();
+	}
+	return -1;
 }
 
 DaySchedule::DaySchedule()
@@ -94,9 +120,11 @@ ScheduleTimeBlock::ScheduleTimeBlock()
 {
 	this->setClassName("ScheduleTimeBlock");
 	Register("qualifiers", &qualifiers);
-	//Register("start_time", &start_time);
-	//Register("stop_time", &stop_time);
+	Register("wander_zone", &wander_zone);
 	Register("node_key", &node_key);  
+	Register("priority", &priority);
+	Register("forced_anim_state", &forced_anim_state);
+	Register("forced_anim_dir", &forced_anim_dir);
 }
 
 ScheduleTimeBlock::~ScheduleTimeBlock()

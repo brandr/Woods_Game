@@ -2,6 +2,7 @@
 #define INTERACT_ACTION_MANAGER_H
 
 #include <functional>
+#include "AudioManager.h"
 #include "InteractAction.h"
 #include "Dialog.h"
 #include "GlobalTime.h"

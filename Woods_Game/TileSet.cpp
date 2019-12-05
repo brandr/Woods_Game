@@ -370,6 +370,36 @@ const std::vector<std::pair<std::string, std::string>> TileSet::get_block_load_d
 	return this->block_types.getItem(index)->get_block_load_day_action_data();
 }
 
+std::vector<InteractAction*> TileSet::get_block_interact_actions(const int index)
+{
+	std::vector<InteractAction *> actions;
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
+		return actions;
+	}
+	return this->block_types.getItem(index)->get_block_interact_actions();
+}
+
+std::vector<InteractAction*> TileSet::get_block_contact_actions(const int index)
+{
+	std::vector<InteractAction *> actions;
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
+		return actions;
+	}
+	return this->block_types.getItem(index)->get_block_contact_actions();
+}
+
+std::vector<InteractAction*> TileSet::get_block_load_day_actions(const int index)
+{
+	std::vector<InteractAction *> actions;
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
+		return actions;
+	}
+	return this->block_types.getItem(index)->get_block_load_day_actions();
+}
+
 std::vector<ItemDrop*> TileSet::get_block_item_drops(const int index)
 {
 	std::vector<ItemDrop*> item_drops;

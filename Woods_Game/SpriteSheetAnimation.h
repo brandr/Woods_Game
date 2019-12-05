@@ -2,10 +2,10 @@
 #define SPRITESHEETANIMATION_H
 
 #include "ControlsMenuManager.h"
-class SpriteSheetAnimation //:public Animation
+class SpriteSheetAnimation
 {
 private:
-	int frame_counter;//, switch_frame;
+	int frame_counter;
 public:
 	SpriteSheetAnimation();
 	~SpriteSheetAnimation();

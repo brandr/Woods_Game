@@ -3,16 +3,18 @@
 
 #include "GlobalTime.h"
 #include "Qualifier.h"
+#include "WanderZone.h"
 #include "XMLSerialization.h"
 
-// TODO: remove start/stop time in favor of qualifiers
 struct ScheduleTimeBlock : public xmls::Serializable {
 	ScheduleTimeBlock();
 	~ScheduleTimeBlock();
-	//TODO: refactor and/or qualifiers because this serialization doesn't let us call superclass methods
+	WanderZone wander_zone;
 	xmls::Collection<Qualifier> qualifiers;
 	xmls::xInt priority;
-	xmls::xString node_key; //TODO: either give this a more specific name to indicate we're forced to go there at that time or rework scheduled location logic
+	xmls::xString node_key;
+	xmls::xInt forced_anim_state;
+	xmls::xInt forced_anim_dir;
 	const bool matches_time(World * wold, Level * level, GlobalTime * time);
 	const int get_priority();
 };
@@ -37,6 +39,9 @@ public:
 	NPCSchedule();
 	~NPCSchedule();
 	const std::string scheduled_node_key(World * world, Level * level, GlobalTime * time);
+	WanderZone * scheduled_wander_zone(World * world, Level * level, GlobalTime * time);
+	const int scheduled_forced_animation_state(World * world, Level * level, GlobalTime * time);
+	const int scheduled_forced_animation_direction(World * world, Level * level, GlobalTime * time);
 
 };
 #endif

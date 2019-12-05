@@ -63,6 +63,7 @@ protected:
 	virtual const float calculate_gain_for_sound(EntitySound * sound);
 	virtual const float calculate_pan_for_sound(EntitySound * sound);
 	virtual void update_animation_dir();
+	virtual const std::string get_footstep_filename_suffix();
 public:
 	Player();
 	virtual ~Player();

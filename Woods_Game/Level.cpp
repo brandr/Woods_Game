@@ -618,8 +618,10 @@ void Level::reload_from_xml(Level &copy_level)
 
 void Level::reset_for_reload()
 {
-	for (int i = 0; i < tile_rows.size(); i++) {
-		for (int j = 0; j < tile_rows.getItem(i)->get_size(); j++) {
+	const int num_rows = tile_rows.size();
+	for (int i = 0; i < num_rows; i++) {
+		const int num_cols = tile_rows.getItem(i)->get_size();
+		for (int j = 0; j < num_cols; j++) {
 			this->get_tile(j, i)->reset_for_reload();
 		}
 	}
@@ -1091,8 +1093,10 @@ void Level::save_to_xml()
 void Level::unload_content()
 {
 	//FIXME: Figure out why there's a memory leak here
-	for (int i = 0; i < tile_rows.size(); i++) {
-		for (int j = 0; j < tile_rows.getItem(i)->get_size(); j++) {
+	const int num_rows = tile_rows.size();
+	for (int i = 0; i < num_rows; i++) {
+		const int num_cols = tile_rows.getItem(i)->get_size();
+		for (int j = 0; j < num_cols; j++) {
 			this->get_tile(j, i)->unload_content();
 		}
 	}
@@ -1734,6 +1738,7 @@ void Level::add_critter(Critter * critter, const float x_pos, const float y_pos)
 {
 	this->add_being(critter);
 	critter->set_position(x_pos, y_pos);
+	critter->set_critter_spawn_pos(x_pos, y_pos);
 }
 
 void Level::add_critter_with_key(const std::string critter_key)
@@ -1808,26 +1813,27 @@ EntityGroup * Level::create_entity_group(std::string filename_start, int index, 
 
 void Level::set_tile(Tile * tile, std::pair<int, int> pos)
 {
-
-	while (pos.second >= this->tile_rows.size()) {
+	const int num_rows = this->tile_rows.size();
+	while (pos.second >= num_rows) {
 		this->tile_rows.addItem(new TileGroup());
 	}
-		TileGroup * tg = this->tile_rows.getItem(pos.second);
-		if (tg != NULL) {
-			tg->set_tile(this->tileset, tile, pos.first);
-		}
-	
+	TileGroup * tg = this->tile_rows.getItem(pos.second);
+	if (tg != NULL) {
+		tg->set_tile(this->tileset, tile, pos.first);
+	}
 }
 
 Tile * Level::get_tile(const int x, const int y)
 {
+	const int num_rows = this->tile_rows.size();
 	if (y < 0 
-		|| y >= this->tile_rows.size()) {
+		|| y >= num_rows) {
 		return NULL;
 	}
 	TileGroup *tile_row = this->tile_rows.getItem(y);
+	const int num_cols = tile_row->get_size();
 	if (x < 0 
-		|| x > tile_row->get_size()) {
+		|| x > num_cols) {
 		return NULL;
 	}
 	return tile_row->get_tile(x);

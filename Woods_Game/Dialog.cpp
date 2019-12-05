@@ -72,7 +72,8 @@ void Dialog::add_line(const std::string line_text, const int page_num, const int
 		this->page_map[page_num]->dialog_actions = page_actions;
 	}
 	DialogPage * page = this->page_map[page_num];
-	while (line_num >= page->lines.size()) {
+	const int size = page->lines.size();
+	while (line_num >= size) {
 		page->lines.push_back(new DialogLine());
 	}
 	page->lines[line_num]->text = line_text;
@@ -273,13 +274,6 @@ void Dialog::draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_of
 		const int line_count = text_lines.size();
 		int option_index = 0;
 		int text_x_off = 0;
-		/*
-		if (page->has_portrait_image()) {
-			ALLEGRO_BITMAP * portrait_image = page->get_portrait_image();
-			text_x_off = al_get_bitmap_width(portrait_image) + 10;
-			al_draw_bitmap(portrait_image, x_off + DIALOG_OFFSET_X + 5, y_off + DIALOG_OFFSET_Y, 0);
-		}
-		*/
 		for (int l = 0; l < line_count; l++) {
 			const std::string text = text_lines[l];
 			const bool line_has_option = page->has_option(l);
@@ -426,7 +420,8 @@ TriggerStatus * DialogPage::trigger_status(const int index)
 
 const bool DialogPage::has_option(const int index)
 {
-	return index >= 0 && index < this->lines.size() && this->lines[index]->has_option();
+	const int size = this->lines.size();
+	return index >= 0 && index < size && this->lines[index]->has_option();
 }
 
 const bool DialogPage::has_options()

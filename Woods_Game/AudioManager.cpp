@@ -17,8 +17,6 @@ void AudioManager::initialize_audio()
 	master_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
 	music_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
 	sfx_mixer = al_create_mixer(44100, ALLEGRO_AUDIO_DEPTH_FLOAT32, ALLEGRO_CHANNEL_CONF_2);
-
-	//al_set_default_mixer(master_mixer);
 	
 	al_attach_mixer_to_mixer(music_mixer, master_mixer);
 	al_attach_mixer_to_mixer(sfx_mixer, master_mixer);
@@ -76,7 +74,6 @@ void AudioManager::load_sample_instance(const std::string filename, const int au
 		}
 		ALLEGRO_SAMPLE * sample = AudioLoader::get_instance().get_sample(filename, audio_type);
 		if (sample != NULL) {
-			//TODO: do we need to key by audio type?
 			ALLEGRO_SAMPLE_INSTANCE * sample_instance = al_create_sample_instance(sample);
 			sample_instance_map[key_pair] = new AudioInstance(sample_instance);
 			al_attach_sample_instance_to_mixer(sample_instance, mixer);
@@ -112,7 +109,13 @@ const bool AudioManager::sfx_exists(const std::string filename, const std::strin
 const bool AudioManager::audio_exists(const std::string filename, const int audio_type, const std::string sound_key)
 {
 	AudioInstance * instance = this->get_sample_instance(filename, audio_type, sound_key);
-	return instance != NULL;
+	if (instance == NULL) {
+		AudioInstance * empty_instance = new AudioInstance(NULL);
+		empty_instance->is_empty = true;
+		const std::pair<std::string, std::string> key_pair(filename, sound_key);
+		sample_instance_map[key_pair] = empty_instance;
+	}
+	return instance != NULL && !instance->is_empty;
 }
 
 void AudioManager::stop_all_music()

@@ -25,19 +25,24 @@ const std::string Entity::image_filename_suffix()
 	return GameImage::image_filename_suffix();
 }
 
-void Entity::emit_sound(const std::string filename, const int duration)
+void Entity::emit_sound(const std::string filename, const int duration, const bool repeat)
 {
 	if (this->entity_sounds.find(filename) == this->entity_sounds.end()) {
-		EntitySound * sound = new EntitySound(filename, duration); 
+		EntitySound * sound = new EntitySound(filename, duration);
 		this->entity_sounds[filename] = sound;
 	}
 	EntitySound * sound = this->entity_sounds[filename];
 	if (!sound->is_playing) {
-		//sound->duration_counter = 0;
 		sound->is_playing = true;
 	}
 	sound->duration = duration;
-	sound->source_x = this->get_x(), sound->source_y = this->get_y(); //TODO: should this be center?
+	sound->source_x = this->get_center().first, sound->source_y = this->get_center().second;
+	sound->repeats = repeat;
+}
+
+void Entity::emit_sound(const std::string filename, const int duration)
+{
+	this->emit_sound(filename, duration, true);
 }
 
 void Entity::stop_sound(const std::string filename)
@@ -373,6 +378,21 @@ void Entity::set_contact_actions(const std::vector<std::pair<std::string, std::s
 	}
 }
 
+void Entity::copy_contact_actions(std::vector<InteractAction*> actions)
+{
+	for (InteractAction * ia : actions) {
+		InteractAction *action = new InteractAction(ia->get_interact_action_key(), ia->get_function_name());
+		std::vector<ActionBinding*> bindings = ia->get_bindings();
+		std::vector<ActionBinding *> copy_bindings;
+		for (ActionBinding * b : bindings) {
+			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
+			copy_bindings.push_back(b);
+		}
+		action->set_bindings(copy_bindings);
+		this->contact_actions.addItem(action);
+	}
+}
+
 void Entity::set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions)
 {
 	this->interact_actions.Clear();
@@ -382,11 +402,41 @@ void Entity::set_interact_actions(const std::vector<std::pair<std::string, std::
 	}
 }
 
+void Entity::copy_interact_actions(std::vector<InteractAction*> actions)
+{
+	for (InteractAction * ia : actions) {
+		InteractAction *action = new InteractAction(ia->get_interact_action_key(), ia->get_function_name());
+		std::vector<ActionBinding*> bindings = ia->get_bindings();
+		std::vector<ActionBinding *> copy_bindings;
+		for (ActionBinding * b : bindings) {
+			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
+			copy_bindings.push_back(b);
+		}
+		action->set_bindings(copy_bindings);
+		this->interact_actions.addItem(action);
+	}
+}
+
 void Entity::set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions)
 {
 	this->load_day_actions.Clear();
 	for (std::pair<std::string, std::string> action_data : actions) {
 		InteractAction *action = new InteractAction(action_data.first, action_data.second);
+		this->load_day_actions.addItem(action);
+	}
+}
+
+void Entity::copy_load_day_actions(std::vector<InteractAction*> actions)
+{
+	for (InteractAction * ia : actions) {
+		InteractAction *action = new InteractAction(ia->get_interact_action_key(), ia->get_function_name());
+		std::vector<ActionBinding*> bindings = ia->get_bindings();
+		std::vector<ActionBinding *> copy_bindings;
+		for (ActionBinding * b : bindings) {
+			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
+			copy_bindings.push_back(b);
+		}
+		action->set_bindings(copy_bindings);
 		this->load_day_actions.addItem(action);
 	}
 }
@@ -528,6 +578,9 @@ std::vector<EntitySound*> Entity::get_active_entity_sounds()
 			s->duration_counter = (s->duration_counter + 1) % s->duration;
 			if (s->duration_counter == 0) {
 				active_sounds.push_back(s);
+				if (!s->repeats) {
+					s->is_playing = false;
+				}
 			}
 		} else {
 			s->duration_counter = 0;
@@ -654,6 +707,36 @@ std::vector<std::pair<std::string, std::string>> EntityData::get_block_load_day_
 			this->load_day_actions.getItem(i)->get_function_name()));
 	}
 	return data;
+}
+
+std::vector<InteractAction*> EntityData::get_block_interact_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = (int)this->interact_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->interact_actions.getItem(i));
+	}
+	return actions;
+}
+
+std::vector<InteractAction*> EntityData::get_block_contact_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = (int)this->contact_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->contact_actions.getItem(i));
+	}
+	return actions;
+}
+
+std::vector<InteractAction*> EntityData::get_block_load_day_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = (int)this->load_day_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->load_day_actions.getItem(i));
+	}
+	return actions;
 }
 
 std::vector<ItemDrop*> EntityData::get_item_drops()

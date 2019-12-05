@@ -34,7 +34,7 @@ Tile * TileGroup::get_tile(int index)
 
 void TileGroup::set_tile(TileSet * tileset, Tile * t, int index)
 {
-	while (index >= this->tiles.size()) {
+	while (index >= (int) this->tiles.size()) {
 		this->tiles.addItem(new Tile());
 	}
 	Tile * tile = this->tiles.getItem(index);

@@ -30,6 +30,9 @@ void Player::collect_item_pickup(World * world, Level * level, ItemPickup * pick
 	else {
 		Item * item = pickup->get_pickup_item();
 		if (item != NULL) {
+			const std::string sound_filename = "item_pickup_sounds/" + item->get_item_name();
+			const int sound_duration = 10; //TEMP
+			this->emit_sound(sound_filename, sound_duration, false);
 			this->inventory.add_item(item);
 			level->remove_item_pickup(pickup);
 		}
@@ -123,6 +126,11 @@ void Player::update_animation_dir()
 	if (std::abs(this->xvel) > 0 || std::abs(this->yvel) > 0) {
 		anim_state = ANIM_STATE_WALKING;
 	}
+}
+
+const std::string Player::get_footstep_filename_suffix()
+{
+	return "player";
 }
 
 Player::Player()
@@ -423,6 +431,7 @@ void Player::draw(ALLEGRO_DISPLAY * display, int x_off, int y_off)
 //TODO: anything player-specific goes here
 void Player::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
+	//TODO: shears? (should either go here or when swinging them)
 	Being::emit_sound_update(world, level, time, game_mode);
 }
 
@@ -606,6 +615,7 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 				if (swing_key == "shearing") {
 					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);
 					e->take_durability_damage(level, this, shear_power);
+					//TODO: sound effect
 				} else if (swing_key == "netting" && e->get_type() == CRITTER) {
 					Critter * c = (Critter*)e;
 					this->catch_critter(world, level, c);
@@ -793,9 +803,13 @@ void Player::use_shears()
 void Player::swing_item(const std::string swing_key)
 {
 	xvel = 0, yvel = 0;
-	counters[SWING] = 19; //TEMP. This is done to match up with the animation length, but should get from anim length instead
-	anim_state = this->get_anim_state_index(swing_key); // TODO: related to swing key
+	anim_state = this->get_anim_state_index(swing_key); 
 	current_action = ACTION_SWING;
+	const int duration = get_animation()->get_frame_count().first * get_animation()->get_frame_duration();
+	const std::string sound_filename = "tool_sounds/" + swing_key;
+	this->emit_sound(sound_filename, duration, false);
+	//TODO: need to test this (and maybe make more sophisticated duration check)
+	counters[SWING] = duration;
 	get_animation()->reset();
 	ss_animation->reset();
 }

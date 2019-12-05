@@ -5,7 +5,7 @@
 
 const bool Cutscene::has_current_cutscene_block()
 {
-	return this->current_block_index >= 0 && this->current_block_index < this->cutscene_blocks.size();
+	return this->current_block_index >= 0 && this->current_block_index < (int) this->cutscene_blocks.size();
 }
 
 Cutscene::Cutscene()

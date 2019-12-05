@@ -121,15 +121,15 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
-	const std::vector<std::pair<std::string, std::string>> interact_action_data 
-		= tileset->get_block_interact_action_data(block_index);
-	const std::vector<std::pair<std::string, std::string>> contact_action_data
-		= tileset->get_block_contact_action_data(block_index);
+	std::vector<InteractAction *> interact_actions = tileset->get_block_interact_actions(block_index);
+	std::vector<InteractAction *> contact_actions = tileset->get_block_contact_actions(block_index);
+	std::vector<InteractAction *> load_day_actions = tileset->get_block_load_day_actions(block_index);
 	const std::vector<std::pair<std::string, std::string>> load_day_action_data
 		= tileset->get_block_load_day_action_data(block_index);
 	const std::vector<ItemDrop *> item_drops = tileset->get_block_item_drops(block_index);
 	const std::vector<EntitySpawnTileRule *> spawn_tile_rules
 		= tileset->get_block_spawn_tile_rules(block_index);
+	
 
 	// set serializable attributes
 	const bool solid = tileset->get_block_solid(block_index);
@@ -141,8 +141,9 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
-	this->block.set_interact_actions(interact_action_data);
-	this->block.set_contact_actions(contact_action_data);	
+	this->block.copy_interact_actions(interact_actions);
+	this->block.copy_contact_actions(contact_actions);
+	this->block.copy_load_day_actions(load_day_actions);
 	this->block.set_load_day_actions(load_day_action_data);
 	this->block.set_item_drops(item_drops);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);

@@ -20,6 +20,7 @@ struct AudioInstance {
 	ALLEGRO_SAMPLE_INSTANCE *instance;
 	int duration = 0;
 	AudioInstance(ALLEGRO_SAMPLE_INSTANCE * inst);
+	bool is_empty = false;
 };
 
 class AudioManager

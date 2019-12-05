@@ -19,8 +19,10 @@ Dungeon::~Dungeon()
 void Dungeon::unload_content()
 {
 	std::vector<std::string> deleted_level_coords;
-	for (int y = 0; y < 0 + dungeon_grid.size(); y++) {
-		for (int x = 0; x < 0 + dungeon_grid[y].size(); x++) {
+	const int size = dungeon_grid.size();
+	for (int y = 0; y < 0 + size; y++) {
+		const int row_size = dungeon_grid[y].size();
+		for (int x = 0; x < 0 + row_size; x++) {
 			std::string pos_str = std::to_string(x) + "," + std::to_string(y);
 			Level *level = dungeon_grid[y][x];
 			if (level) {
@@ -103,7 +105,8 @@ ALLEGRO_BITMAP * Dungeon::generate_map_image(const int standard_level_width, con
 	al_clear_to_color(al_map_rgba(255, 255, 255, 255));
 	for (int y = 0; y < grid_height; y++) {
 		for (int x = 0; x < grid_width; x++) {
-			if (x >= this->dungeon_grid[y].size()) {
+			const int row_size = this->dungeon_grid[y].size();
+			if (x >= row_size) {
 				continue;
 			}
 			Level * level = this->dungeon_grid[y][x];
