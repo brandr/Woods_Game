@@ -91,6 +91,8 @@ protected:
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
 	virtual const int calculate_direction(GameImage * other);
+	virtual const bool should_adjust_anim_duration();
+	virtual const float speed_for_anim_duration();
 public:
 	GameImage(std::string);
 	GameImage();
@@ -121,7 +123,7 @@ public:
 	int get_animation_direction();
 	void set_animation_index(const int index);
 	void set_animation_direction(const int dir);
-	Animation* get_animation();
+	virtual Animation* get_animation();
 	SpriteSheetAnimation* get_ss_animation();
 	Rect* get_image_subsection();
 	Rect * get_collide_rect();

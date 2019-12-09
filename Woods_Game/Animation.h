@@ -35,6 +35,9 @@ struct AnimationData : xmls::Serializable {
 	xmls::xInt animation_frame_width;
 	xmls::xInt animation_frame_height;
 	xmls::xInt animation_frame_duration;
+	xmls::xInt animation_pixel_step_size;
+	xmls::xFloat animation_min_speed = -1.0f;
+	xmls::xFloat animation_max_speed = -1.0f;
 	AnimationData();
 };
 
@@ -43,7 +46,7 @@ class Animation
 public:
 	Animation();
 	~Animation();
-	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>, int);
+	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>, int, const int animation_pixel_step_size, const float min_speed, const float max_speed);
 	void unload_content();
 	void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();
@@ -58,8 +61,11 @@ public:
 	std::pair<int, int> &get_frame_dimensions();
 	std::pair<int, int> get_image_dimensions();
 	int get_frame_duration();
+	const int get_pixel_step_size();
+	const float get_min_speed();
+	const float get_max_speed();
+	const bool speed_qualifies(const float speed);
 protected:
-	//TODO: necessary data to to get the image via imageloader
 	float alpha;
 	bool active;
 	std::string filename;
@@ -67,6 +73,9 @@ protected:
 	std::pair<int, int> current_frame;
 	std::pair<int, int> frame_dimensions;
 	int frame_duration = 1;
+	int pixel_step_size = 0;
+	float min_speed = -1;
+	float max_speed = -1;
 };
 
 #endif

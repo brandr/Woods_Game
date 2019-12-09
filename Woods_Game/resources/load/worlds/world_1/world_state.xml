@@ -448,6 +448,7 @@
                 <Member Name="animation_frame_width">2</Member>
                 <Member Name="animation_frame_height">5</Member>
                 <Member Name="animation_frame_duration">8</Member>
+                <Member Name="animation_pixel_step_size">40</Member>
             </Class>
             <Class Type="AnimationData" Version="1">
                 <Member Name="animation_key">shearing</Member>
@@ -462,6 +463,26 @@
                 <Member Name="animation_frame_duration">4</Member>
             </Class>
         	</Collection>
+            <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">40</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">3.0</Member>
+                    </Class>
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">running</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">60</Member>
+                        <Member Name="animation_min_speed">3.0</Member>
+                        <Member Name="animation_max_speed">6.0</Member>
+                    </Class>
+            </Collection>
         	<Collection Name="additional_mask_data">
             <Class Type="MaskData" Version="1">
                 <Member Name="mask_key">shearing</Member>

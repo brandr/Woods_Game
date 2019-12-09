@@ -38,14 +38,18 @@ Animation::~Animation()
 {
 }
 
-void Animation::load_content(std::string filename, std::pair<int, int> frame_count, std::pair<int,int> current_frame, std::pair<int, int> frame_dimensions, int frame_duration)
+void Animation::load_content(std::string filename, std::pair<int, int> frame_count, std::pair<int,int> current_frame, std::pair<int, int> frame_dimensions, 
+	const int frame_duration, const int animation_pixel_step_size, const float anim_min_speed, const float anim_max_speed)
 {
-	active = true;	//TEMP
+	active = true;
 	this->filename = filename;
 	this->frame_count = frame_count;
 	this->current_frame = current_frame;
 	this->frame_dimensions = frame_dimensions;
 	this->frame_duration = frame_duration;
+	this->pixel_step_size = animation_pixel_step_size;
+	this->min_speed = anim_min_speed;
+	this->max_speed = anim_max_speed;
 }
 
 void Animation::unload_content()
@@ -118,6 +122,26 @@ int Animation::get_frame_duration()
 	return frame_duration;
 }
 
+const int Animation::get_pixel_step_size()
+{
+	return this->pixel_step_size;
+}
+
+const float Animation::get_min_speed()
+{
+	return this->min_speed;
+}
+
+const float Animation::get_max_speed()
+{
+	return this->max_speed;
+}
+
+const bool Animation::speed_qualifies(const float speed)
+{
+	return (this->min_speed < 0 || this->max_speed < 0) || (speed >= this->min_speed && speed < this->max_speed);
+}
+
 AnimationData::AnimationData()
 {
 	setClassName("AnimationData");
@@ -125,6 +149,9 @@ AnimationData::AnimationData()
 	Register("animation_frame_width", &animation_frame_width);
 	Register("animation_frame_height", &animation_frame_height);
 	Register("animation_frame_duration", &animation_frame_duration);
+	Register("animation_pixel_step_size", &animation_pixel_step_size);
+	Register("animation_min_speed", &animation_min_speed);
+	Register("animation_max_speed", &animation_max_speed);
 }
 
 MaskData::MaskData()

@@ -10,11 +10,11 @@ Target date for main code to be done: ~ May 2020
 
 Total: 27-50 days (~1-2 months)
 
-1. Audio
-	(5-10 days)
-2. Animation/image code stuff
+1. Animation/image code stuff
 	(10-15 days)
-3. Menu/control stuff
+2. Menu/control stuff
+	(5-10 days)
+3. Audio
 	(5-10 days)
 
 (should get here around February 2020) 
@@ -39,37 +39,79 @@ Total: 27-50 days (~1-2 months)
 10. Content!
 	(???)
 
-Ongoing tasks:
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
 
-1. improve memory usage/performance
-2. fix bugs
-3. streamline level editor
-4. come up with more content
+Give some brush types "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
+	* this could be used for wading through shallow water
+IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
+might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
+	* how to handle areas with their own lighting like lamps?
+Stairs
+	* could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+Make custom mouse cursor
+
+---------------------------------------------------
+Menus
+---------------------------------------------------
+
+Need to make a "restore defaults" (or something similar) button for video/audio/etc configurations
+Allow changing text speed in options
+Display the current day and other info for a save in title screen menu
+
+---------------------------------------------------
+Controls
+---------------------------------------------------
+
+Allow exiting from calendar screen (I think there's a button for it but it doesn't get mapped or something)
+Make it so the game can detect when a controller is plugged in and update properly
+	*look at main, where the event queue registers the source 
+		(might need some check accessed through the main loop)
+	*might need to do this for mouse too, need to test
+Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
 
 ---------------------------------------------------
 Audio
 ---------------------------------------------------
 
 Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
-Sound effects
+Sound effects	
 	* Add sounds: 
-		- cutting plants
-			# see the todo in player.swing_update() -- probably want one for when the net hits a bug too
-		- dialog sounds (like in animal crossing)
-			# how to tie to text scroll speed?
-		- menu sounds
+		- menu sounds (advancing dialog page, scrolling, selecting button, etc.)
 		- sounds for catching critters ("victory" jingle)
-	* Tie footstep sfx cycles to the animation speed of the walking animation, since this is a more reliable way to get num footsteps
-		- probably almost always safe to assume that a footstep is half of the frame duration of the animation
-		- this will work well with changing frame durations with walk speed (probably want to do this first)	
-	* Replace placeholder sounds
+		- dialog sounds
+			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
+How to play sounds at title screen?
+Replace placeholder sounds
 Music
 	* What kinds of things can cause music to start/stop/fade/add cues?
 		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
 		- do we want a MusicManager or some other structure in AudioManager that handles this?
 		- one example: bedtime sound
-	* The Eye of Pan has a special theme that is hidden inside other tracks
-How to play sounds at title screen?
+
+---------------------------------------------------
+Memory management/error handling
+---------------------------------------------------
+
+Performance is much worse on large levels-- what could be causing this?
+	* not drawing entity groups fixes this (test extensively to make sure of this)
+		# they might have some associated images that aren't getting converted into video bitmaps
+		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
+Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
+	* remember to re-save levels in the editor after making this change or any others like it
+	* this same strategy could apply to a lot of serializable objects
+Document how to format serialized things like dialog trees so I don't forget
+Asynchronous loading screen
+	* https://www.allegro.cc/forums/thread/615021
+	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
+	* add a progress bar (remember to use mutex)
+		# how to quantity loading progress? (could split into levels)
+If necessary, could make it so we asynchronously load only adjacent levels to the current one
+	* need to be careful to ensure the player can't walk to the edge before we finish loading
+	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
+	* might be easier to just fade to black and have loading screens between areas
+Fix build warnings
 
 ---------------------------------------------------
 NPCs
@@ -103,8 +145,6 @@ Critter spawning/biomes
 	* incorporate level size when calculating spawn chance/max critters to spawn for biome
 	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
 	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
-In dialog saying you caught a critter, show encyclopedia pic (or should it be a separate image?)
-	* this can just be a normal dialog portrait, so add it once that's implemented
 Accurate swing animation
 	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
 		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
@@ -116,7 +156,6 @@ Basic AI
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
 		# sneak up on NPCs?
-
 Make other critters and large animals
 
 ---------------------------------------------------
@@ -150,45 +189,11 @@ Probably want some brief, unobtrusive notification when a quest is updated
 	* this should not be a dialog, because it would be annoying to have to click through
 
 ---------------------------------------------------
-Memory management/error handling
----------------------------------------------------
-
-Performance is much worse on large levels-- what could be causing this?
-	* not drawing entity groups fixes this (test extensively to make sure of this)
-		# they might have some associated images that aren't getting converted into video bitmaps
-		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
-Document how to format serialized things like dialog trees so I don't forget
-Asynchronous loading screen
-	* https://www.allegro.cc/forums/thread/615021
-	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
-	* add a progress bar (remember to use mutex)
-		# how to quantity loading progress? (could split into levels)
-If necessary, could make it so we asynchronously load only adjacent levels to the current one
-	* need to be careful to ensure the player can't walk to the edge before we finish loading
-	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
-	* might be easier to just fade to black and have loading screens between areas
-Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
-	* remember to re-save levels in the editor after making this change or any others like it
-	* this same strategy could apply to a lot of serializable objects
-Fix build warnings
-
----------------------------------------------------
 Level editor
 ---------------------------------------------------
 
 - Fix bug where XML attributes can get saved twice after editing via ctrl-click
 - Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
-
----------------------------------------------------
-Cutscenes
----------------------------------------------------
-
-Ways cutscenes can start (try to combine into as few as possible from a code perspective)
-	- Talk to an NPC (they should probably have to be in a specific location-- ie on a specific part of their schedule)
-		# probably don't want it to be guaranteed, so tie it to a specific node in the dialog tree 
-		(though this can be the start if the cutscene should start right away)
-	- Waking up on a specific day (possibly do this on day 1)
-	- Time going past midnight
 
 ---------------------------------------------------
 Procedural generation
@@ -216,14 +221,6 @@ There's sometimes an exception on closing the window
 Exception when going to a level that doesn't exist
 
 ---------------------------------------------------
-Art/content
----------------------------------------------------
-
-Draw the leaves for the large tree sprite
-	* if it's hard to see the player when walking behind trees, make the "transparent on contact" attribute actually work
-Draw the symbols for the Eye of Pan and the Eye of Gabriel
-
----------------------------------------------------
 Physics
 ---------------------------------------------------
 
@@ -232,29 +229,10 @@ Consider giving blocks optional masks (we use the block's image if there's no ma
 For one-way gates, important part is player direction relative to gate-- could be an action binding/qualfier
 
 ---------------------------------------------------
-Animation/image code
----------------------------------------------------
-
-IDEA: different walk animations for different speed ranges (1.0 - 2.0, 2.0 - 3.0, etc)
-	* do this at the same time as making "rustle" animation because that animation might need to sync up with player's feet
-	* could also adjust frame duration based on speed up to a certain point
-	* test this with controller since this gives the most fine-grain speed control
-Give some brush types "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
-	* this could be used for wading through shallow water
-IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
-Buildings
-	* need door animation? (no other blocks are animated, might need to be a new thing)
-	* stairs? (good test of building mechanics, similar to going outside)
-		# could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-Make custom mouse cursor
-
----------------------------------------------------
 Day/night cycle
 ---------------------------------------------------
 
 Day/night cycle
-	- might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
-		* how to handle areas with their own lighting like lamps?
 	- What happens in terms of date/saving if the player stays up past midnight? (could also prevent them staying up till some late time like 11 PM)
 		* Should player pass out, get a game over, etc if they're up too late?
 	- calculate "time to wake up" somehow rather than just making it constant
@@ -270,26 +248,6 @@ IDEA: Stamina could drain slowly when walking and faster when running since time
 	* need to add a run button, also consider how this works with analog stick (need smooth stamina formula)
 IDEA: Stamina upgrades could be the only thing you take with you when reloading
 Contact with thorns should cost stamina (look for a "damage" attribute that I already made)
-
----------------------------------------------------
-Menus
----------------------------------------------------
-
-Fix the way we load game from title screen-- need to select (did I mean "display"?) a specific day (and should probably display the current day in menu)
-	* save current day in global xml that exists outside the day folders?
-Need to make a "restore defaults" (or something similar) button for video/audio/etc configurations
-Allow changing text speed in options
-
----------------------------------------------------
-Controls
----------------------------------------------------
-
-Allow exiting from calendar screen (I think there's a button for it but it doesn't get mapped or something)
-Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
-Make it so the game can detect when a controller is plugged in and update properly
-	*look at main, where the event queue registers the source 
-		(might need some check accessed through the main loop)
-	*might need to do this for mouse too, need to test
 
 ---------------------------------------------------
 Long term

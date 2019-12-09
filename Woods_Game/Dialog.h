@@ -79,6 +79,7 @@ private:
 	void set_portrait_image_key_for_page(const int page_num, const std::string image_key);
 	ALLEGRO_BITMAP * option_arrow;
 	std::vector<ActionBinding*> action_bindings;
+	void dialog_sound_update(DialogPage * page);
 public:
 	Dialog();
 	~Dialog();

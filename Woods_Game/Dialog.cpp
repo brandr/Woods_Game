@@ -42,6 +42,27 @@ void Dialog::set_portrait_image_key_for_page(const int page_num, const std::stri
 	this->page_map[page_num]->set_portrait_image_key(image_key);
 }
 
+void Dialog::dialog_sound_update(DialogPage * page)
+{
+	//TODO: different "voices"
+	// plays the audio of the last character (as long as it's a letter)
+	const int num_characters = this->current_num_characters();
+	const std::vector<std::string> text_lines = page->get_text_lines(num_characters);
+	const int num_lines = text_lines.size();
+	if (num_lines > 0) {
+		const std::string last_line = text_lines[num_lines - 1];
+		const int last_line_size = last_line.size();
+		if (last_line_size > 0) {
+			const char letter = last_line.back();
+			if (isalpha(letter)) {
+				std::string syllable_filename = "dialog_sounds/syllables/";
+				syllable_filename += letter;
+				AudioManager::get_instance().play_sfx(syllable_filename, std::to_string(SOUND_KEY_DIALOG));
+			}
+		}
+	}
+}
+
 Dialog::Dialog()
 {
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
@@ -56,7 +77,8 @@ void Dialog::update()
 	if (this->should_scroll_text) {
 		DialogPage * page = this->current_page();
 		if (page && this->current_num_characters() < page->total_num_characters()) {
-			this->character_counter++;
+			this->character_counter++; 
+			this->dialog_sound_update(page);
 		}
 	}
 }
@@ -72,8 +94,9 @@ void Dialog::add_line(const std::string line_text, const int page_num, const int
 		this->page_map[page_num]->dialog_actions = page_actions;
 	}
 	DialogPage * page = this->page_map[page_num];
-	const int size = page->lines.size();
+	int size = page->lines.size();
 	while (line_num >= size) {
+		size = page->lines.size();
 		page->lines.push_back(new DialogLine());
 	}
 	page->lines[line_num]->text = line_text;

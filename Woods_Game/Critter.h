@@ -23,6 +23,7 @@ struct CritterTemplate : public xmls::Serializable {
 	xmls::xBool solid;
 	xmls::xFloat base_speed;
 	xmls::Collection<AnimationData> animation_data;
+	xmls::Collection<AnimationData> walk_animation_data;
 	WanderZone wander_zone;
 	DialogItem catch_dialog_item;
 	CritterTemplate();

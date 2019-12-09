@@ -147,6 +147,7 @@ Player::Player()
 	Register("base_walk_speed", &base_walk_speed);
 	Register("jump_speed", &jump_speed);
 	Register("animation_data", &animation_data);
+	Register("walk_animation_data", &walk_animation_data);
 	Register("additional_mask_data", &additional_mask_data);
 	Register("inventory", &inventory);
 	Register("spawn_key", &spawn_key);
@@ -167,7 +168,7 @@ int Player::get_type()
 
 void Player::load_content_from_attributes()
 {
-	Entity::load_content_from_attributes();
+	Being::load_content_from_attributes();
 	inventory.load_content_from_attributes();
 }
 
@@ -609,16 +610,22 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 			Entity* e = interactables[i];
 			if (this->can_swing_at_entity(e, swing_key)
 				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
+				TileSet * tileset = level->get_tileset();
 				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
 				Item *swung_item = get_selected_item();
 				//TODO: if we add any more swing types, figure this out more generally
 				if (swing_key == "shearing") {
 					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);
 					e->take_durability_damage(level, this, shear_power);
-					//TODO: sound effect
+					const std::string sound_filename = "entity_sounds/damage_" + tileset->get_block_key(e->get_entity_data_index());
+					const int sound_duration = 12; // TODO: how to get this?
+					this->emit_sound(sound_filename, sound_duration, false);
 				} else if (swing_key == "netting" && e->get_type() == CRITTER) {
 					Critter * c = (Critter*)e;
 					this->catch_critter(world, level, c);
+					const std::string sound_filename = "entity_sounds/catch_critter";
+					const int sound_duration = 12; // TODO: how to get this?
+					this->emit_sound(sound_filename, sound_duration, false);
 				}
 				return;
 			}

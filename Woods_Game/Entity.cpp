@@ -575,7 +575,8 @@ std::vector<EntitySound*> Entity::get_active_entity_sounds()
 	for (auto const &it : this->entity_sounds) {
 		EntitySound * s = it.second;
 		if (s->is_playing) {
-			s->duration_counter = (s->duration_counter + 1) % s->duration;
+			const int duration = std::max(1, s->duration);
+			s->duration_counter = (s->duration_counter + 1) % duration;
 			if (s->duration_counter == 0) {
 				active_sounds.push_back(s);
 				if (!s->repeats) {

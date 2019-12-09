@@ -60,7 +60,8 @@ void GameImage::load_content_from_attributes() {
 		std::pair<int, int> ss_frame_dimensions(this->spritesheet_frame_width.value()
 			, this->spritesheet_frame_height.value());
 		anim->load_content(anim_filename + "_" + anim_key, frame_count
-			, std::pair<int, int>(0, 0), ss_frame_dimensions, anim_data->animation_frame_duration.value());
+			, std::pair<int, int>(0, 0), ss_frame_dimensions, anim_data->animation_frame_duration.value(), anim_data->animation_pixel_step_size.value(),
+			anim_data->animation_min_speed.value(), anim_data->animation_max_speed.value());
 		ImageLoader::get_instance().load_spritesheet(*anim);
 		animations[anim_key] = anim;
 	}
@@ -171,7 +172,9 @@ void GameImage::update()
 		Animation* anim = get_animation();
 		if (anim) {
 			anim->set_row(get_animation_row());
-			ss_animation->update(*anim);
+			const bool adjust = this->should_adjust_anim_duration();
+			const float speed = this->speed_for_anim_duration();
+			this->ss_animation->update(*anim, adjust, speed);
 		}
 	}
 }
@@ -299,7 +302,6 @@ void GameImage::set_animation_direction(const int dir)
 
 Animation * GameImage::get_animation()
 {
-	//TODO: don't accidentally create a null pointer here
 	auto it = animations.find(get_anim_state_key());
 	if (it == animations.end()) {
 		return NULL;
@@ -379,6 +381,17 @@ const int GameImage::calculate_direction(GameImage * other)
 	return DIR_NEUTRAL;
 }
 
+const bool GameImage::should_adjust_anim_duration()
+{
+	// override in subclasses
+	return false;
+}
+
+const float GameImage::speed_for_anim_duration()
+{
+	return 0.0f;
+}
+
 const bool GameImage::intersects_area(Rect area)
 {
 	return this->get_rect_for_collision()->intersects_rect(area);
@@ -400,7 +413,7 @@ Animation * GameImage::load_animation_single_row(std::string filename, int row, 
 	std::pair<int, int> frame_count(al_get_bitmap_width(full_spritesheet)/frame_dimensions.first, 
 		al_get_bitmap_height(full_spritesheet) / frame_dimensions.second);
 	const int frame_duration = DEFAULT_EFFECT_FRAME_DURATION;
-	anim->load_content(filename, frame_count, std::pair<int, int>(0, 0), frame_dimensions, frame_duration);
+	anim->load_content(filename, frame_count, std::pair<int, int>(0, 0), frame_dimensions, frame_duration, 0, -1.0f, -1.0f);
 	ImageLoader::get_instance().load_spritesheet(*anim);
 	return anim;
 }

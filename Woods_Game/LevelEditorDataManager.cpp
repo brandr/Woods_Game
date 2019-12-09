@@ -104,7 +104,8 @@ const std::string LevelEditorDataManager::get_selected_object_display_name() {
 
 void LevelEditorDataManager::reset_active_levels()
 {
-	for (int i = 0; i < this->active_levels.size(); i++) {
+	const int size = this->active_levels.size();
+	for (int i = 0; i < size; i++) {
 		this->active_levels[i]->unload_content();
 		this->active_levels[i].release();
 	}
@@ -266,7 +267,8 @@ void LevelEditorDataManager::update_new_day()
 
 void LevelEditorDataManager::load_all_tilesets()
 {
-	for (int i = 0; i < this->active_tilesets.size(); i++) {
+	const int size = this->active_tilesets.size();
+	for (int i = 0; i < size; i++) {
 		this->active_tilesets[i]->unload_content();
 		this->active_tilesets[i].release();
 	}
@@ -828,7 +830,8 @@ bool LevelEditorDataManager::has_active_dungeon()
 std::vector<std::string> LevelEditorDataManager::get_active_level_names()
 {
 	std::vector<std::string> names;
-	for (int i = 0; i < this->active_levels.size(); i++) {
+	const int size = this->active_levels.size();
+	for (int i = 0; i < size; i++) {
 		const std::string filename = this->active_levels[i]->get_filename();
 		names.push_back(filename);
 	}
@@ -967,7 +970,8 @@ std::string LevelEditorDataManager::get_selected_tileset_name()
 
 std::string LevelEditorDataManager::get_tileset_name(int index)
 {
-	if (index >= 0 && index < this->active_tilesets.size()) {
+	const int size = this->active_tilesets.size();
+	if (index >= 0 && index < size) {
 		return this->active_tilesets[index]->get_tileset_key();
 	}
 	return NULL;
@@ -1191,8 +1195,9 @@ agui::Allegro5Image * LevelEditorDataManager::load_tiled_image_select_layer(std:
 	const std::string image_key = this->get_selected_tiled_image_key();
 	agui::Allegro5Image *image_layer = new agui::Allegro5Image();
 	ALLEGRO_BITMAP* tileset_sheet = NULL;
+	const int size = this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size();
 	if (this->selected_tileset_tile_image_index >= 0 
-		&& this->selected_tileset_tile_image_index < this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size()) {
+		&& this->selected_tileset_tile_image_index < size) {
 		tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
 	} else {
 		return image_layer;

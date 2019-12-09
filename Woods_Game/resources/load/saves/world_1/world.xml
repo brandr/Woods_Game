@@ -656,12 +656,29 @@
                         <Member Name="animation_frame_width">1</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">1</Member>
+                        <Member Name="animation_pixel_step_size"/>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
                     </Class>
                     <Class Type="AnimationData" Version="1">
                         <Member Name="animation_key">walking</Member>
                         <Member Name="animation_frame_width">2</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
+                    </Class>
+                </Collection>
+                <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">5.0</Member>
                     </Class>
                 </Collection>
                 <Collection Name="additional_mask_data"/>
@@ -1069,18 +1086,38 @@
                         <Member Name="animation_frame_width">1</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">1</Member>
+                        <Member Name="animation_pixel_step_size"/>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
                     </Class>
                     <Class Type="AnimationData" Version="1">
                         <Member Name="animation_key">walking</Member>
                         <Member Name="animation_frame_width">2</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
                     </Class>
                     <Class Type="AnimationData" Version="1">
                         <Member Name="animation_key">waving</Member>
                         <Member Name="animation_frame_width">2</Member>
                         <Member Name="animation_frame_height">5</Member>
                         <Member Name="animation_frame_duration">16</Member>
+                        <Member Name="animation_pixel_step_size"/>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
+                    </Class>
+                </Collection>
+                <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">5.0</Member>
                     </Class>
                 </Collection>
                 <Collection Name="additional_mask_data"/>

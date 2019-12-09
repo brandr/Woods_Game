@@ -319,7 +319,7 @@
                         <Collection Name="Bindings">
                             <Class Type="ActionBinding" Version="1">
                                 <Member Name="BindingKey">sound_key</Member>
-                                <Member Name="BindingValue">fern_rustle</Member>
+                                <Member Name="BindingValue">door_slam</Member>
                             </Class>
                             <Class Type="ActionBinding" Version="1">
                                 <Member Name="BindingKey">sound_duration</Member>

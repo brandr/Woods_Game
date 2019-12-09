@@ -13,8 +13,11 @@ class World;
 class Being: public Entity
 {
 protected:
+	xmls::Collection<AnimationData> walk_animation_data;
+
 	ALLEGRO_BITMAP * test_rect_bitmap; //TEMP
 
+	std::vector<Animation*> walk_animations;
 	xmls::xFloat base_walk_speed;
 	float xvel = 0.0f;
 	float yvel = 0.0f;
@@ -32,12 +35,16 @@ protected:
 	const bool on_ground(std::vector<Entity*>);
 	const bool empty_at(Rect collide_rect, Level * level);
 	virtual void update_animation_dir();
+	virtual const bool should_adjust_anim_duration();
+	virtual const float speed_for_anim_duration();
+	virtual const float absolute_move_speed();
 
 	const bool empty_at(Rect, std::vector<Entity*>);
 	const float get_speed_multiplier(TileSet * tileset, std::vector<Tile*> tiles);
 	std::vector<Tile *> get_colliding_tiles(TileSet * tileset, std::vector<Tile*> tiles);
 	virtual void play_sounds_for_entity(Entity* e);
 	virtual const std::string get_footstep_filename_suffix();
+	
 public:
 	Being();
 	~Being();
@@ -46,6 +53,8 @@ public:
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
 	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
+	virtual void load_content_from_attributes();
+	virtual Animation* get_animation();
 	virtual const bool cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty);
 	void set_xvel(int);
 	void set_yvel(int);

@@ -25,8 +25,20 @@
     					<Member Name="animation_frame_width">2</Member>
     					<Member Name="animation_frame_height">5</Member>
     					<Member Name="animation_frame_duration">16</Member>
+                        <Member Name="animation_pixel_step_size">10</Member>
     				</Class>
     			</Collection>
+                <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">16</Member>
+                        <Member Name="animation_pixel_step_size">10</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">5.0</Member>
+                    </Class>
+                </Collection>
                 <Class Type="WanderZone" Name="wander_zone" Version="1">
                     <Member Name="should_wander">true</Member>
                     <Member Name="min_x">-64</Member>

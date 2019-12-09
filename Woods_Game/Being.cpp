@@ -28,7 +28,6 @@ void Being::update(World * world, Level * level, GlobalTime * time, const int ga
 
 void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	//this->clear_sounds();
 	TileSet * tileset = level->get_tileset();
 	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
 	std::vector<Tile*> colliding_tiles = this->get_colliding_tiles(tileset, nearby_tiles);
@@ -52,12 +51,14 @@ void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, c
 		footstep_filename = "entity_sounds/" + default_name;
 	}
 
-	// this is how many pixels we travel per frame
-	const float speed = std::pow((float)std::pow(this->xvel, 2) + (float)std::pow(this->yvel, 2), 0.5f);
-	if (speed > 0.0f) {
-		const float step_px_size = (2.0f/3.0f) * TILE_SIZE; // TEMP. this is how many pixels a "step" should be
-		const int duration = (int)(step_px_size / speed); //TODO: get number of frames sound should last
-		if (this->anim_state == ANIM_STATE_WALKING) {
+	
+	if (this->anim_state == ANIM_STATE_WALKING) {
+		// this is how many pixels we travel per frame
+		const float speed = std::pow((float)std::pow(this->xvel, 2.0f) + (float)std::pow(this->yvel, 2.0f), 0.5f);
+		if (speed > 0.0f) {
+			Animation* anim = this->get_animation();
+			const float step_px_size = anim->get_pixel_step_size();
+			const int duration = (int)(step_px_size / speed);
 			this->emit_sound(footstep_filename, duration, false);
 		} else {
 			this->stop_sound(footstep_filename);
@@ -231,6 +232,43 @@ void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 	Entity::draw(display, x_offset, y_offset);
 }
 
+void Being::load_content_from_attributes()
+{
+	Entity::load_content_from_attributes();
+	std::vector<std::string> anim_keys;
+	std::string anim_filename = "sprite_sheets/" + this->animation_spritesheet_key.value();
+	const int anim_data_count = this->walk_animation_data.size();
+	for (int i = 0; i < anim_data_count; i++) {
+		Animation *anim = new Animation();
+		AnimationData *walk_data = this->walk_animation_data.getItem(i);
+		std::string anim_key = walk_data->animation_key.value();
+		int frame_count_x = walk_data->animation_frame_width.value();
+		int frame_count_y = walk_data->animation_frame_height.value();
+		std::pair<int, int> frame_count(frame_count_x, frame_count_y);
+		std::pair<int, int> ss_frame_dimensions(this->spritesheet_frame_width.value()
+			, this->spritesheet_frame_height.value());
+		anim->load_content(anim_filename + "_" + anim_key, frame_count
+			, std::pair<int, int>(0, 0), ss_frame_dimensions, walk_data->animation_frame_duration.value(), walk_data->animation_pixel_step_size.value(),
+			walk_data->animation_min_speed.value(), walk_data->animation_max_speed.value());
+		ImageLoader::get_instance().load_spritesheet(*anim);
+		this->walk_animations.push_back(anim);
+	}
+}
+
+Animation * Being::get_animation()
+{
+	if (this->is_moving() && this->anim_state == ANIM_STATE_WALKING) {
+		const float move_speed = this->absolute_move_speed();
+		for (Animation * a : this->walk_animations)
+		{
+			if (a->speed_qualifies(move_speed)) {
+				return a;
+			}
+		}
+	}
+	return GameImage::get_animation();
+}
+
 const bool Being::adjust_movement(Level * level, float xoff, float yoff, const bool snap)
 {
 	bool blocked = false;
@@ -379,6 +417,22 @@ const bool Being::empty_at(Rect collide_rect, Level * level)
 void Being::update_animation_dir()
 {
 	//override in subclasses
+}
+
+const bool Being::should_adjust_anim_duration()
+{
+	return this->is_moving() && this->anim_state == ANIM_STATE_WALKING;
+}
+
+const float Being::speed_for_anim_duration()
+{
+	return this->absolute_move_speed();
+}
+
+const float Being::absolute_move_speed()
+{
+	return this->is_moving()
+		? (float)std::pow(std::pow(this->xvel, 2.0) + std::pow(this->yvel, 2.0), 0.5) : 0.0f;
 }
 
 const bool Being::empty_at(Rect collide_rect, Level * level, const bool ignore_moving_obstacles)

@@ -166,7 +166,7 @@ const int GlobalTime::get_day_index(const int mon, const int day)
 	timeinfo.tm_mday = day;
 	timeinfo.tm_mon = mon;
 	time_t other_time = mktime(&timeinfo);
-	int difference = std::difftime(this->current_timestamp, other_time) / (60 * 60 * 24);
+	int difference = (int) std::difftime(this->current_timestamp, other_time) / (60 * 60 * 24);
 	return this->day - (difference + 1);
 }
 

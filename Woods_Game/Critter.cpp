@@ -12,9 +12,10 @@ Critter::Critter(CritterTemplate * critter_template, const int index)
 	this->spritesheet_frame_width = critter_template->get_spritesheet_frame_width();
 	this->spritesheet_frame_height = critter_template->get_spritesheet_frame_height();
 	this->animation_data = critter_template->animation_data;
+	this->walk_animation_data = critter_template->walk_animation_data;
 	this->animation_spritesheet_key = "critters/" + critter_template->get_critter_key();
-	GameImage::load_content_from_attributes(); 
-	this->rect.x = 0, this->rect.y = 0; // position won't be set just yet
+	Being::load_content_from_attributes(); 
+	this->rect.x = 0, this->rect.y = 0; // position won't be set yet
 	this->rect.width = std::max((int)this->rect.width, critter_template->get_spritesheet_frame_width());
 	this->rect.height = std::max((int)this->rect.height, critter_template->get_spritesheet_frame_height());
 	this->collide_rect.x = this->rect.x + critter_template->get_collide_x_offset(); 
@@ -137,6 +138,7 @@ CritterTemplate::CritterTemplate()
 	Register("solid", &solid);
 	Register("base_speed", &base_speed);
 	Register("animation_data", &animation_data);
+	Register("walk_animation_data", &walk_animation_data);
 	Register("wander_zone", &wander_zone);
 	Register("catch_dialog_item", &catch_dialog_item);
 }
