@@ -91,6 +91,30 @@
                         <Member Name="drop_rate">1.0</Member>
                     </Class>
                 </Collection>
+                <Collection Name="entity_effect_data">
+                    <Class Type="EntityEffectData" Version="1">
+                        <Member Name="effect_key">hit</Member>
+                        <Collection Name="animation_data">
+                            <Class Type="AnimationData" Version="1">
+                                <Member Name="animation_key">neutral</Member>
+                                <Member Name="animation_frame_width">3</Member>
+                                <Member Name="animation_frame_height">1</Member>
+                                <Member Name="animation_frame_duration">4</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Class Type="EntityEffectData" Version="1">
+                        <Member Name="effect_key">break</Member>
+                        <Collection Name="animation_data">
+                            <Class Type="AnimationData" Version="1">
+                                <Member Name="animation_key">neutral</Member>
+                                <Member Name="animation_frame_width">3</Member>
+                                <Member Name="animation_frame_height">1</Member>
+                                <Member Name="animation_frame_duration">4</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                </Collection>
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_slow</Member>
@@ -162,6 +186,30 @@
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">plant_day_update</Member>
                         <Member Name="FunctionName">plant_day_update</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="entity_effect_data">
+                    <Class Type="EntityEffectData" Version="1">
+                        <Member Name="effect_key">hit</Member>
+                        <Collection Name="animation_data">
+                            <Class Type="AnimationData" Version="1">
+                                <Member Name="animation_key">neutral</Member>
+                                <Member Name="animation_frame_width">3</Member>
+                                <Member Name="animation_frame_height">1</Member>
+                                <Member Name="animation_frame_duration">4</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Class Type="EntityEffectData" Version="1">
+                        <Member Name="effect_key">break</Member>
+                        <Collection Name="animation_data">
+                            <Class Type="AnimationData" Version="1">
+                                <Member Name="animation_key">neutral</Member>
+                                <Member Name="animation_frame_width">3</Member>
+                                <Member Name="animation_frame_height">1</Member>
+                                <Member Name="animation_frame_duration">4</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                 </Collection>
                 <Collection Name="attributes">
@@ -560,6 +608,22 @@
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">exchange_inventory</Member>
                         <Member Name="FunctionName">exchange_inventory</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">lamp_1</Member>
+                <Member Name="entity_data_index">6</Member>
+                <Collection Name="contact_actions">
+                </Collection>
+                <Collection Name="interact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">toggle_light</Member>
+                        <Member Name="FunctionName">toggle_light</Member>
                     </Class>
                 </Collection>
                 <Collection Name="attributes"/>

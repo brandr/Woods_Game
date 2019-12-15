@@ -42,15 +42,17 @@ Total: 27-50 days (~1-2 months)
 ---------------------------------------------------
 Animation/image code
 ---------------------------------------------------
-
-Give some brush types "rustling" sprites/animation that correspond to the player walking through them so it covers the player's feet and doesn't just look flat
-	* this could be used for wading through shallow water
-IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
 might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
 	* how to handle areas with their own lighting like lamps?
+		# see Level.initialize_light_filters(), Level.toggle_light_filter(), and Level.draw_active_light_filters()
+		# load light filters async and key them by integer IDs
+	* could have lights that can be turned on and off (like light switches)
+IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
+	* how to determine draw order of entityGroup parts/effects/other objects?
+	* not positive yet I actually want shadows
 Stairs
-	* could also make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-Make custom mouse cursor
+	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
 
 ---------------------------------------------------
 Menus
@@ -59,6 +61,7 @@ Menus
 Need to make a "restore defaults" (or something similar) button for video/audio/etc configurations
 Allow changing text speed in options
 Display the current day and other info for a save in title screen menu
+Make custom mouse cursor
 
 ---------------------------------------------------
 Controls
@@ -82,6 +85,7 @@ Sound effects
 		- sounds for catching critters ("victory" jingle)
 		- dialog sounds
 			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
+			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
 How to play sounds at title screen?
 Replace placeholder sounds
 Music
@@ -119,6 +123,8 @@ NPCs
 
 AIState/NPC schedule
 	- wander radius (min/max distance per wander) and wander delay should possibly be serialized/calculated
+	- Consider letting NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
+		* send to a node near the interactable, but perforam the action directly so we don't have to check if they're "close enough"
 	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
 		* this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
 		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
@@ -227,6 +233,9 @@ Physics
 Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
 Consider giving blocks optional masks (we use the block's image if there's no mask filepath)
 For one-way gates, important part is player direction relative to gate-- could be an action binding/qualfier
+Can use qualifiers on interact actions to make doors only open at a certain time
+	- see if it's possible to "branch" actions this way and put multiplie actions with different qualfiers on the same door
+	- this allow allows "you must be friends with X to go here"
 
 ---------------------------------------------------
 Day/night cycle

@@ -149,6 +149,7 @@ Player::Player()
 	Register("animation_data", &animation_data);
 	Register("walk_animation_data", &walk_animation_data);
 	Register("additional_mask_data", &additional_mask_data);
+	Register("entity_effect_data", &entity_effect_data);
 	Register("inventory", &inventory);
 	Register("spawn_key", &spawn_key);
 	this->direction = DIR_NEUTRAL;

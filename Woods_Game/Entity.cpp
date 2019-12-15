@@ -5,6 +5,7 @@
 #include "ItemPickup.h"
 #include "Player.h"
 #include "Level.h"
+#include "TileSet.h"
 #include "World.h"
 
 const std::string Entity::image_filename_suffix()
@@ -149,20 +150,24 @@ bool Entity::is_visible()
 	return visible.value();
 }
 
-void Entity::load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int, int> frame_dimensions)
+void Entity::load_entity_effects(TileSet * tileset, const std::string entity_key, int row, std::pair<int, int> frame_dimensions)
 {
-	//TODO: consider including animation speed if we decide we want different animation speeds
-	const std::string filename_prefix = filename + "/effects/";
-	const std::vector<std::string> entity_effect_names = get_entity_effect_names(); //FIXME: effect names should be set in tileset, or should be a constant
-	const int size = entity_effect_names.size();
+	
+
+	const std::string tileset_filename = tileset->get_tile_sheet_filename();
+	const std::string filename_prefix = tileset_filename + "/effects/";
+	const int size = this->entity_effect_data.size();
 	for (int i = 0; i < size; i++) {
-		std::string filename = filename_prefix + entity_key + "_" + entity_effect_names[i];
+		EntityEffectData * effect_data = this->entity_effect_data.getItem(i);
+		const std::string effect_key = effect_data->get_effect_key();
+		std::string filename = filename_prefix + entity_key + "_" + effect_key;
 		std::string full_filename = "resources/images/" + filename + ".png";
-		if (!al_filename_exists(full_filename.c_str())) continue;
+		if (!al_filename_exists(full_filename.c_str())) continue;		
 		EntityEffect effect;
-		effect.load_content(filename, row, frame_dimensions);
+		std::vector<AnimationData *> anim_data = effect_data->get_animation_data();
+		effect.load_content(filename, row, frame_dimensions, anim_data);
 		effect.set_position(get_x(), get_y());
-		entity_effects[entity_effect_names[i]] = effect;
+		entity_effects[effect_key] = effect;
 	}
 }
 
@@ -187,19 +192,21 @@ void Entity::unload_content()
 
 void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 {
+	GameImage::draw(display, x_offset, y_offset);
 	for (auto &it : entity_effects) {
 		if (!it.second.get_effect_active()) continue;
+		
 		it.second.draw(display, x_offset, y_offset);
 	}
 	if (get_entity_attribute(E_ATTR_BROKEN) == 1) return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
-	GameImage::draw(display, x_offset, y_offset);
 }
 
 void Entity::update()
 {
 	for (auto &it : entity_effects) {
-		if (!it.second.get_effect_active()) continue;
-		it.second.update();
+		it.second.set_position(this->get_x(), this->get_y()); //TODO: offset?
+		if (!it.second.get_effect_active()) continue;		
+		it.second.update(this->speed_for_anim_duration());
 	}
 	counter_update();
 	GameImage::update();
@@ -564,6 +571,14 @@ void Entity::push_back(Level * level, const float xvel, const float yvel)
 	//override in subclasse	
 }
 
+void Entity::set_entity_effect_data(std::vector<EntityEffectData *> effect_data)
+{
+	this->entity_effect_data.Clear();
+	for (EntityEffectData * ed : effect_data) {
+		this->entity_effect_data.addItem(ed);
+	}
+}
+
 const std::string Entity::get_sound_key()
 {
 	return "" + SOUND_KEY_DEFAULT;
@@ -613,6 +628,7 @@ EntityData::EntityData()
 	Register("load_day_actions", &load_day_actions);
 	Register("item_drops", &item_drops);
 	Register("spawn_tile_rules", &spawn_tile_rules);
+	Register("entity_effect_data", &entity_effect_data);
 	Register("attributes", &attributes);
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);
@@ -762,6 +778,16 @@ const std::vector<EntitySpawnTileRule *> EntityData::get_block_spawn_tile_rules(
 		data.push_back(this->spawn_tile_rules.getItem(i));
 	}
 	return data;
+}
+
+std::vector<EntityEffectData*> EntityData::get_entity_effect_data()
+{
+	std::vector<EntityEffectData*> effect_data;
+	const int size = this->entity_effect_data.size();
+	for (int i = 0; i < size; i++) {
+		effect_data.push_back(this->entity_effect_data.getItem(i));
+	}
+	return effect_data;
 }
 
 bool EntityData::is_empty()

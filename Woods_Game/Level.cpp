@@ -315,6 +315,22 @@ void Level::update_collide_buckets(Entity * e)
 	}
 }
 
+void Level::update_light_filters(World * world, GlobalTime * time, Entity * e)
+{
+	if (e->has_entity_attribute(Entity::E_ATTR_PENDING_LIGHT_FILTER)) {
+		const int filter_id = e->get_entity_attribute(Entity::E_ATTR_PENDING_LIGHT_FILTER);
+		if (filter_id >= 0) {
+			this->toggle_light_filter(filter_id);
+			e->set_entity_attribute(Entity::E_ATTR_PENDING_LIGHT_FILTER, -1);
+		}
+	}
+}
+
+void Level::toggle_light_filter(const int filter_id)
+{
+	//TODO
+}
+
 void Level::reset_collide_buckets()
 {
 	this->collide_buckets.clear();
@@ -609,6 +625,7 @@ void Level::load_from_xml()
 	this->initialize_path_nodes();
 	this->initialize_location_markers();
 	this->initialize_biome();
+	this->initialize_light_filters();
 }
 
 void Level::reload_from_xml(Level &copy_level)
@@ -822,7 +839,10 @@ void Level::initialize_tiles()
 			Rect *block_subsection = b->get_bitmap_subsection();
 			b->set_content(block_filename, block_subsection, position);
 			const std::string block_key = this->tileset->get_block_key(b->get_entity_data_index());
-			b->load_entity_effects(this->tileset->get_tile_sheet_filename(), block_key, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+			std::vector<EntityEffectData *> effect_data = this->tileset->get_block_entity_effect_data(b->get_entity_data_index());
+			b->set_entity_effect_data(effect_data);
+			b->load_entity_effects(this->tileset, 
+				block_key, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 			b->refresh_mask();
 		}
 	}
@@ -963,7 +983,13 @@ void Level::initialize_biome()
 	}
 }
 
-// TODO: when to call this method? (don't forget to use call hierarchy to get rid of temporary place where it's called
+void Level::initialize_light_filters()
+{
+	//TODO: get filters from filtermanager
+	//TODO: filters should be serialized in some separate file and we load them via ImageLoader here, or load in filtermanager
+	//		need to figure out how to handle transparency/offset, where to store image file, and how to match int key/filename/etc.
+}
+
 void Level::generate_critters(World * world, GlobalTime * time)
 {
 	const std::string b_key = this->biome_key.value();
@@ -1136,6 +1162,7 @@ void Level::update(World * world, GlobalTime * time, const int game_mode)
 			Block *b = this->get_tile(x, y)->get_block();
 			if (b) {
 				b->update();
+				this->update_light_filters(world, time, b);
 			}
 		}
 	}
@@ -1219,6 +1246,11 @@ void Level::draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filena
 	Rect subsection(dir_key*TILE_SIZE, edge_row*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	ImageLoader::get_instance().load_image(edge_filename, subsection);
 	tile.add_additional_image_layer(edge_filename, subsection);
+}
+
+void Level::draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset)
+{
+	//TODO: draw currently active light filters (should probably be stored in ImageLoader and loaded async)
 }
 
 void Level::add_edge_to_tile(Tile * tile, const int edge_row, const int dir_key, const std::string tile_key)

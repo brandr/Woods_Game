@@ -681,6 +681,7 @@
                         <Member Name="animation_max_speed">5.0</Member>
                     </Class>
                 </Collection>
+                <Collection Name="entity_effect_data"/>
                 <Collection Name="additional_mask_data"/>
             </Class>
             <Class Type="NPC" Version="1">
@@ -1120,6 +1121,7 @@
                         <Member Name="animation_max_speed">5.0</Member>
                     </Class>
                 </Collection>
+                <Collection Name="entity_effect_data"/>
                 <Collection Name="additional_mask_data"/>
             </Class>
         </Collection>

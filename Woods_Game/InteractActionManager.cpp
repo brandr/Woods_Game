@@ -242,6 +242,22 @@ const int play_sound(
 	return 0;
 }
 
+const int toggle_light(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL) {
+		const std::string light_filter_key = action->get_binding("light_filter_key");
+		if (!light_filter_key.empty()) {
+			actor->set_entity_attribute(Entity::E_ATTR_PENDING_LIGHT_FILTER, ::atoi(light_filter_key.c_str()));
+			return 1;
+		}
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
@@ -277,6 +293,8 @@ void InteractActionManager::initialize_functions()
 	this->function_map["exchange_inventory"] = fcnPtr;
 	fcnPtr = play_sound;
 	this->function_map["play_sound"] = fcnPtr;
+	fcnPtr = toggle_light;
+	this->function_map["toggle_light"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()

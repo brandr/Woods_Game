@@ -17,6 +17,7 @@ protected:
 
 	ALLEGRO_BITMAP * test_rect_bitmap; //TEMP
 
+
 	std::vector<Animation*> walk_animations;
 	xmls::xFloat base_walk_speed;
 	float xvel = 0.0f;
@@ -51,6 +52,7 @@ public:
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
+	virtual void brush_effect_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
 	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
 	virtual void load_content_from_attributes();

@@ -59,6 +59,7 @@ public:
 	static constexpr const char* E_ATTR_KNOCKBACK = "knockback";
 	static constexpr const char* E_ATTR_SHEARABLE = "shearable";
 	static constexpr const char* E_ATTR_PLANT_GATHER_ITEM_KEY = "plant_gather_item_key";
+	static constexpr const char* E_ATTR_PENDING_LIGHT_FILTER = "pending_light_filter";
 		// plant growth attributes
 	static constexpr const char* E_ATTR_PLANT_GROWTH_CURRENT_AGE = "plant_growth_current_age";			// plant's current age in days
 	static constexpr const char* E_ATTR_PLANT_GROWTH_MATURE_AGE = "plant_growth_mature_age";			// age before plant uses its "mature" sprite and can spread
@@ -93,6 +94,7 @@ protected:
 	virtual const int calculate_direction(GameImage * other);
 	virtual const bool should_adjust_anim_duration();
 	virtual const float speed_for_anim_duration();
+	virtual const bool should_update_animation();
 public:
 	GameImage(std::string);
 	GameImage();

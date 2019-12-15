@@ -296,6 +296,16 @@ const int TileSet::get_block_sheet_image_cols_by_index(const int index)
 	return 0;
 }
 
+std::vector<EntityEffectData *> TileSet::get_block_entity_effect_data(const int index)
+{
+	std::vector<EntityEffectData*> effect_data;
+	const int size = this->block_types.size();
+	if (index >= 0 && index < size) {
+		return this->block_types.getItem(index)->get_entity_effect_data();
+	}
+	return effect_data;
+}
+
 const int TileSet::get_entity_group_sheet_image_cols_by_index(const int index)
 {
 	const int size = this->entity_group_types.size();

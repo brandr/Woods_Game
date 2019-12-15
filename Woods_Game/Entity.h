@@ -66,6 +66,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<InteractAction> load_day_actions;
 	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
+	xmls::Collection<EntityEffectData> entity_effect_data;
 	xmls::xBool solid = false;
 	xmls::xBool visible = true;
 	xmls::Collection<EntityComponentData> components;
@@ -84,6 +85,7 @@ struct EntityData : public xmls::Serializable {
 	std::vector<InteractAction *> get_block_load_day_actions();
 	std::vector<ItemDrop *> get_item_drops();
 	const std::vector<EntitySpawnTileRule *> get_block_spawn_tile_rules();
+	std::vector<EntityEffectData *> get_entity_effect_data();
 	bool is_empty();
 	std::string get_entity_data_key();
 	std::pair<int, int> get_root_offset();
@@ -122,6 +124,7 @@ class GlobalTime;
 class ItemPickup;
 class Player;
 class Level;
+class TileSet;
 class World;
 class Entity :
 	public GameImage
@@ -135,6 +138,7 @@ protected:
 	xmls::Collection<InteractAction> load_day_actions;
 	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
+	xmls::Collection<EntityEffectData> entity_effect_data;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;
 	xmls::xInt entity_sheet_row;
@@ -165,7 +169,7 @@ public:
 	virtual void set_visible(const bool visible);
 	virtual bool is_solid();
 	virtual bool is_visible();
-	virtual void load_entity_effects(std::string filename, const std::string entity_key, int row, std::pair<int, int> frame_dimensions);
+	virtual void load_entity_effects(TileSet * tileset, const std::string entity_key, int row, std::pair<int, int> frame_dimensions);
 	virtual void load_content_from_attributes();
 	virtual void unload_content();
 	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
@@ -212,6 +216,7 @@ public:
 	static std::vector<std::string> get_entity_effect_names();
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
+	virtual void set_entity_effect_data(std::vector<EntityEffectData *> effect_data);
 	//sounds
 	virtual const std::string get_sound_key();
 	virtual std::vector<EntitySound*> get_active_entity_sounds();

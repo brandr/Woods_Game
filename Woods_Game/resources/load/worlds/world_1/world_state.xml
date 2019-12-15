@@ -483,6 +483,20 @@
                         <Member Name="animation_max_speed">6.0</Member>
                     </Class>
             </Collection>
+            <Collection Name="entity_effect_data">
+                 <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
         	<Collection Name="additional_mask_data">
             <Class Type="MaskData" Version="1">
                 <Member Name="mask_key">shearing</Member>

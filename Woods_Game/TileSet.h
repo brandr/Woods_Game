@@ -74,6 +74,7 @@ public:
 	bool get_block_visible(const int row);
 	std::map<std::string, int> get_block_attributes(const int row);
 	const int get_block_sheet_image_cols_by_index(const int index);
+	std::vector<EntityEffectData *> get_block_entity_effect_data(const int index);
 	std::vector<std::string> all_block_keys();
 	// entity group types
 	ALLEGRO_BITMAP * get_default_entity_group_bitmap(const int index);

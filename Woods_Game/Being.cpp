@@ -19,11 +19,12 @@ Being::~Being()
 
 void Being::update(World * world, Level * level, GlobalTime * time, const int game_mode)
 {
-	collision_update(world, level, game_mode);
-	movement_update(level, game_mode);
+	this->collision_update(world, level, game_mode);
+	this->movement_update(level, game_mode);
 	Entity::update();
-	emit_sound_update(world, level, time, game_mode);
-	play_sound_update(world, level, time, game_mode);
+	this->emit_sound_update(world, level, time, game_mode);
+	this->play_sound_update(world, level, time, game_mode);
+	this->brush_effect_update(world, level, time, game_mode);
 }
 
 void Being::emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode)
@@ -72,6 +73,38 @@ void Being::play_sound_update(World * world, Level * level, GlobalTime * time, c
 {
 	// probably just override this in player, unless there's some reason we have to play sounds elsewhere
 	
+}
+
+void Being::brush_effect_update(World * world, Level * level, GlobalTime * time, const int game_mode)
+{
+	
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	const std::pair<int, int> center = this->get_center();
+	Tile * brush_tile = NULL;
+	for (Tile * t : nearby_tiles) {
+		if (t->contains_point(center.first, center.second)) {
+			brush_tile = t;
+			break;
+		}
+	}
+	if (brush_tile != NULL) {
+		TileSet * tileset = level->get_tileset();
+		const std::string t_key = tileset->get_tile_key(brush_tile->get_tile_type_index());
+		const std::string brush_effect_key = "brush_" + t_key;
+		auto it = this->entity_effects.find(brush_effect_key);
+		if (it != this->entity_effects.end()) {
+			for (auto &it2 : this->entity_effects) {
+				const std::string effect_key = it2.first;
+				EntityEffect& effect = it2.second;
+				if (effect_key == brush_effect_key) {
+					effect.set_effect_active(true);
+					effect.set_effect_animated(this->is_moving());
+				} else if (effect_key.rfind("brush", 0) == 0) {
+					effect.set_effect_active(false);
+				}
+			}
+		}
+	}
 }
 
 void Being::set_xvel(int vel)
@@ -252,6 +285,23 @@ void Being::load_content_from_attributes()
 			walk_data->animation_min_speed.value(), walk_data->animation_max_speed.value());
 		ImageLoader::get_instance().load_spritesheet(*anim);
 		this->walk_animations.push_back(anim);
+	}
+	const std::string filename_prefix = "effects/";
+	const int size = this->entity_effect_data.size();
+	for (int i = 0; i < size; i++) {
+		EntityEffectData * effect_data = this->entity_effect_data.getItem(i);
+		const std::string effect_key = effect_data->get_effect_key();
+		std::string filename = filename_prefix + this->animation_spritesheet_key.value() + "_" + effect_key;
+		std::string full_filename = "resources/images/" + filename + ".png";
+		if (!al_filename_exists(full_filename.c_str())) continue;
+		EntityEffect effect;
+		std::pair<int, int> ss_frame_dimensions(this->spritesheet_frame_width.value()
+			, this->spritesheet_frame_height.value());
+		std::vector<AnimationData *> anim_data = effect_data->get_animation_data();
+		//TODO: is zero always the correct row?
+		effect.load_content(filename, 0, ss_frame_dimensions, anim_data);
+		effect.set_position(get_x(), get_y());
+		this->entity_effects[effect_key] = effect;
 	}
 }
 

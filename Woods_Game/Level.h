@@ -64,6 +64,8 @@ private:
 	void generate_entity_groups();
 	void generate_blocks();
 	void update_collide_buckets(Entity * e);
+	void update_light_filters(World * world, GlobalTime * time, Entity * e);
+	void toggle_light_filter(const int filter_id);
 	void reset_collide_buckets();
 	const std::vector<std::string> collide_bucket_keys(Rect * collide_rect);
 	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, 
@@ -104,6 +106,7 @@ public:
 	void initialize_path_nodes();
 	void initialize_location_markers();
 	void initialize_biome();
+	void initialize_light_filters();
 	void generate_critters(World * world, GlobalTime * time);
 	void clear_level();
 	void remove_tile_edges();
@@ -116,6 +119,7 @@ public:
 	void cutscene_animation_update();
 	void draw(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
+	void draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);
 	void add_being(Being *b);
 	void add_item_pickup(ItemPickup *ip);

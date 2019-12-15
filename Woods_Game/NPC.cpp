@@ -119,6 +119,7 @@ NPC::NPC()
 	Register("spritesheet_frame_height", &spritesheet_frame_height);
 	Register("animation_data", &animation_data);
 	Register("walk_animation_data", &walk_animation_data);
+	Register("entity_effect_data", &entity_effect_data);
 	Register("additional_mask_data", &additional_mask_data);
 	Register("base_walk_speed", &base_walk_speed);
 	Register("start_spawn_key", &start_spawn_key);

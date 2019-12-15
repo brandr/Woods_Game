@@ -51,7 +51,8 @@ const std::string Quest::get_quest_name()
 const int Quest::get_quest_state()
 {
 	const int index = this->current_page_index.value();
-	if (index < 0 || index > this->pages.size()) {
+	const int size = this->pages.size();
+	if (index < 0 || index > size) {
 		return QUEST_STATE_INACTIVE;
 	} else {
 		return this->get_quest_page(index)->get_quest_state();
@@ -93,7 +94,8 @@ const bool Quest::is_completed()
 const std::string Quest::get_quest_summary()
 {
 	const int index = this->current_page_index.value();
-	if (index < 0 || index > this->pages.size()) {
+	const int size = this->pages.size();
+	if (index < 0 || index > size) {
 		return "";
 	} else {
 		return this->pages.getItem(index)->summary.value();

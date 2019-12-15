@@ -1181,8 +1181,9 @@ void LevelEditorDataManager::select_tiled_image(std::pair<int, int> grid_pos)
 
 std::pair<int, int> LevelEditorDataManager::selected_tiled_image_sheet_dimensions()
 {
+	const int size = this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size();
 	if (this->selected_tileset_tile_image_index >= 0
-		&& this->selected_tileset_tile_image_index < this->active_tilesets[this->selected_tileset_index]->all_tiled_image_keys().size()) {
+		&& this->selected_tileset_tile_image_index < size) {
 		ALLEGRO_BITMAP* tileset_sheet = this->active_tilesets[this->selected_tileset_index]->get_full_tiled_image_sheet(this->selected_tileset_tile_image_index);
 		const int width = al_get_bitmap_width(tileset_sheet), height = al_get_bitmap_height(tileset_sheet);
 		return std::pair<int, int>(width, height);
@@ -1246,7 +1247,8 @@ std::string LevelEditorDataManager::get_selected_tiled_image_key()
 {
 	if (this->has_selected_tiled_image_key()) {
 		const std::vector<std::string> image_keys = this->all_selected_tiled_image_keys();
-		if (this->selected_tileset_tile_image_index >= 0 && this->selected_tileset_tile_image_index < image_keys.size()) {
+		const int size = image_keys.size();
+		if (this->selected_tileset_tile_image_index >= 0 && this->selected_tileset_tile_image_index < size) {
 			return image_keys[this->selected_tileset_tile_image_index];
 		}
 	}

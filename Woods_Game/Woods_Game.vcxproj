@@ -317,6 +317,7 @@
     <ClInclude Include="ExchangeInventoryScreen.h" />
     <ClInclude Include="FileDialogManager.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="FilterManager.h" />
     <ClInclude Include="GameImage.h" />
     <ClInclude Include="GameImageDisplay.h" />
     <ClInclude Include="GameImageManager.h" />
@@ -410,6 +411,7 @@
     <ClCompile Include="ExchangeInventoryScreen.cpp" />
     <ClCompile Include="FileDialogManager.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="FilterManager.cpp" />
     <ClCompile Include="GameImage.cpp" />
     <ClCompile Include="GameImageDisplay.cpp" />
     <ClCompile Include="GameImageManager.cpp" />

@@ -540,6 +540,22 @@
                     <Member Name="mask_frame_count">5</Member>
                 </Class>
             </Collection>
+            <Collection Name="entity_effect_data">
+                <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                            <Member Name="animation_min_speed"/>
+                            <Member Name="animation_max_speed"/>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
         </Class>
         <Collection Name="inventories"/>
         <Collection Name="trigger_statuses">

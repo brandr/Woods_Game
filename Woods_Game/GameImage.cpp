@@ -48,7 +48,7 @@ void GameImage::load_content_from_attributes() {
 
 	std::vector<std::string> anim_keys;
 	std::string anim_filename = "sprite_sheets/" + this->animation_spritesheet_key.value();
-	ss_animation = new SpriteSheetAnimation();
+	this->ss_animation = new SpriteSheetAnimation();
 	const int anim_data_count = this->animation_data.size();
 	for (int i = 0; i < anim_data_count; i++) {
 		Animation *anim = new Animation();
@@ -170,7 +170,7 @@ void GameImage::update()
 {
 	if (ss_animation) {
 		Animation* anim = get_animation();
-		if (anim) {
+		if (anim && this->should_update_animation()) {
 			anim->set_row(get_animation_row());
 			const bool adjust = this->should_adjust_anim_duration();
 			const float speed = this->speed_for_anim_duration();
@@ -390,6 +390,11 @@ const bool GameImage::should_adjust_anim_duration()
 const float GameImage::speed_for_anim_duration()
 {
 	return 0.0f;
+}
+
+const bool GameImage::should_update_animation()
+{
+	return true;
 }
 
 const bool GameImage::intersects_area(Rect area)

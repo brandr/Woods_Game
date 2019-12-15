@@ -46,7 +46,8 @@ class Animation
 public:
 	Animation();
 	~Animation();
-	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>, int, const int animation_pixel_step_size, const float min_speed, const float max_speed);
+	void load_content(std::string, std::pair<int,int>, std::pair<int, int>, std::pair<int, int>, int, 
+		const int animation_pixel_step_size, const float min_speed, const float max_speed);
 	void unload_content();
 	void draw(ALLEGRO_DISPLAY*, int, int);
 	virtual void update();

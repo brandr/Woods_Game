@@ -148,7 +148,8 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_item_drops(item_drops);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);
 	//TODO: don't load any images here
-	this->block.load_entity_effects(tileset->get_tile_sheet_filename(), tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+	this->block.load_entity_effects(tileset, 
+		tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.refresh_mask();
 }
 
@@ -254,7 +255,7 @@ int Tile::get_tile_pos_y()
 
 const bool Tile::get_can_grow_plants()
 {
-	if (!this->block.is_empty() && !this->block.get_entity_attribute(GameImage::E_ATTR_BROKEN) > 0) {
+	if (!this->block.is_empty() && !(this->block.get_entity_attribute(GameImage::E_ATTR_BROKEN) > 0)) {
 		return false;
 	}
 	//TEMP. make it so some tile types can't grow plants

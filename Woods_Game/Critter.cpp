@@ -13,6 +13,7 @@ Critter::Critter(CritterTemplate * critter_template, const int index)
 	this->spritesheet_frame_height = critter_template->get_spritesheet_frame_height();
 	this->animation_data = critter_template->animation_data;
 	this->walk_animation_data = critter_template->walk_animation_data;
+	this->entity_effect_data = critter_template->entity_effect_data;
 	this->animation_spritesheet_key = "critters/" + critter_template->get_critter_key();
 	Being::load_content_from_attributes(); 
 	this->rect.x = 0, this->rect.y = 0; // position won't be set yet
@@ -139,6 +140,7 @@ CritterTemplate::CritterTemplate()
 	Register("base_speed", &base_speed);
 	Register("animation_data", &animation_data);
 	Register("walk_animation_data", &walk_animation_data);
+	Register("entity_effect_data", &entity_effect_data);
 	Register("wander_zone", &wander_zone);
 	Register("catch_dialog_item", &catch_dialog_item);
 }

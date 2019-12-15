@@ -667,7 +667,9 @@ void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
 	//TODO: check whether we actually need a light filter before drawing it
-	this->draw_light_filter(display, offset);
+	//TODO: could draw time filters in level so we adjust behavior if we're indoors vs outdoors
+	this->draw_time_light_filter(display, offset);
+	this->draw_level_light_filters(display, offset);
 	if (this->player != NULL && this->player->has_active_cutscene()) {
 		const int width = al_get_display_width(display), height = al_get_display_height(display);
 		const std::vector<ALLEGRO_BITMAP *> filters = player->get_cutscene_filters(display, width, height);
@@ -678,7 +680,15 @@ void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, in
 	}
 }
 
-void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
+void GameImageManager::draw_level_light_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
+{
+	Level * level = this->current_level;
+	if (level != NULL) {
+		level->draw_active_light_filters(display, offset);
+	}
+}
+
+void GameImageManager::draw_time_light_filter(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
 	const int width = al_get_display_width(display);
 	const int height = al_get_display_height(display);
@@ -690,19 +700,10 @@ void GameImageManager::draw_light_filter(ALLEGRO_DISPLAY * display, std::pair<in
 	} else {
 		filter = ImageLoader::get_instance().get_keyed_image(IMAGE_KEY_FILLED_RECT, width, height, suffix);
 	}
-	//if (this->light_filter == NULL) {
-	//	this->light_filter = al_create_bitmap(width, height);
-	//}
 
 	
 	al_set_target_bitmap(filter);
-	/*
-	if (al_get_bitmap_width(filter) != width
-		|| al_get_bitmap_height(filter) != height) {
-		al_destroy_bitmap(filter);
-		this->light_filter = al_create_bitmap(width, height);
-	}
-	*/
+
 	// (4 AM) blue, darkest -> (6 AM) orange, lighter -> (8 AM) yellow, ligthest -> orange, lighter (6 PM) -> blue, darkest (8 PM)
 	const float minutes = this->get_current_minutes();
 	int r = 0;

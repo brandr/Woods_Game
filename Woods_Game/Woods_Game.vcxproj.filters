@@ -218,12 +218,18 @@
     <Filter Include="Tiles\Source Files">
       <UniqueIdentifier>{e57e7cd6-a020-443b-9152-a9b44d7ab946}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Animations">
+      <UniqueIdentifier>{1ef228f6-c61f-41f8-b728-6693da5f5d70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animations\Header Files">
+      <UniqueIdentifier>{d148d286-5a8f-45fd-8bdf-82f74573160c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Animations\Source Files">
+      <UniqueIdentifier>{70928667-40e3-419c-b921-38690a387bb1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
-      <Filter>GameImages\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Animation.h">
       <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Being.h">
@@ -306,9 +312,6 @@
     </ClInclude>
     <ClInclude Include="Inventory.h">
       <Filter>Items\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SpriteSheetAnimation.h">
-      <Filter>GameImages\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Controls\Header Files</Filter>
@@ -499,11 +502,17 @@
     <ClInclude Include="NPC.h">
       <Filter>AI\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Animation.h">
+      <Filter>Animations\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SpriteSheetAnimation.h">
+      <Filter>Animations\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FilterManager.h">
+      <Filter>Animations\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Animation.cpp">
-      <Filter>GameImages\Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Being.cpp">
       <Filter>GameImages\Source Files</Filter>
     </ClCompile>
@@ -578,9 +587,6 @@
     </ClCompile>
     <ClCompile Include="Item.cpp">
       <Filter>Items\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="SpriteSheetAnimation.cpp">
-      <Filter>GameImages\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Controls\Source Files</Filter>
@@ -773,6 +779,15 @@
     </ClCompile>
     <ClCompile Include="NPC.cpp">
       <Filter>AI\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Animation.cpp">
+      <Filter>Animations\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteSheetAnimation.cpp">
+      <Filter>Animations\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FilterManager.cpp">
+      <Filter>Animations\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
