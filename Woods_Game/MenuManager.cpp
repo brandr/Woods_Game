@@ -34,7 +34,8 @@ void MenuManager::set_animations()
 {
 	float pos[2];
 	pos[0] = x_pos.value(), pos[1] = y_pos.value();
-	for (int i = 0; i < menu_items.size(); i++) {
+	const int size = menu_items.size();
+	for (int i = 0; i < size; i++) {
 		//menu_items[i].;		//TODO: set animation
 		if (axis.value() == 2) {
 			*(pos + 1) += MENU_ITEM_SPACING;
@@ -263,7 +264,8 @@ xmls::Collection<MenuItem> &MenuManager::get_menu_items()
 
 std::string MenuManager::get_selected_action_key()
 {
-	if (menu_items.size() < item_index + 1) return "";
+	const int size = menu_items.size();
+	if (size < item_index + 1) return "";
 	return menu_items.getItem(item_index)->get_selection_action_key();
 }
 

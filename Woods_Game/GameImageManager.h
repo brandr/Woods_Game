@@ -3,45 +3,13 @@
 
 #define START_TIME_HOUR 3
 
-#define SUNRISE_START_MINUTES 240
-#define SUNRISE_END_MINUTES 360
-#define DAY_START_MINUTES 480
-#define DAY_END_MINUTES 1020
-#define SUNSET_START_MINUTES 1080
-#define SUNSET_END_MINUTES 1200
-
-#define NIGHT_B 80
-#define NIGHT_A 140
-
-#define SUNRISE_END_R 160
-#define SUNRISE_END_G 120
-#define SUNRISE_END_B 0
-#define SUNRISE_END_A 70
-
-#define DAY_START_R 200
-#define DAY_START_G 200
-#define DAY_START_A 40
-
-#define DAY_END_R 200
-#define DAY_END_G 200
-#define DAY_END_A 40
-
-#define SUNSET_START_R 160
-#define SUNSET_START_G 120
-#define SUNSET_START_B 0
-#define SUNSET_START_A 70
-
-#define SUNSET_END_R 0
-#define SUNSET_END_G 0
-#define SUNSET_END_B 80
-#define SUNSET_END_A 140
-
 #include <string>
 #include <set>
 #include "utility"  // for pair
 #include "xstring"  // for string
 #include "allegro5/bitmap.h"   // for ALLEGRO_BITMAP
 #include "allegro5/threads.h"
+#include "FilterManager.h"
 #include "World.h"
 #include "Player.h"
 #include "FileManager.h"
@@ -138,7 +106,6 @@ public:
 	void change_player_level();
 	void draw(ALLEGRO_DISPLAY *display);
 	void draw_filters(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
-	void draw_level_light_filters(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void draw_time_light_filter(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void resume();
 	void decrement_dialog_option();

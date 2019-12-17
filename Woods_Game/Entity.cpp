@@ -579,6 +579,51 @@ void Entity::set_entity_effect_data(std::vector<EntityEffectData *> effect_data)
 	}
 }
 
+void Entity::load_image_filters()
+{
+	const int size = this->image_filters.size();
+	for (int i = 0; i < size; i++) {
+		ImageFilter * f = this->image_filters.getItem(i);
+		ImageLoader::get_instance().load_image("filters/" + f->get_filename(), "", false, "resources/images/", true);
+		ALLEGRO_BITMAP * filter_bmp = ImageLoader::get_instance().get_image("filters/" + f->get_filename());
+		const int w = al_get_bitmap_width(filter_bmp), h = al_get_bitmap_height(filter_bmp);
+		f->set_image_dimensions(w, h);
+	}
+}
+
+void Entity::set_image_filters(std::vector<ImageFilter*> filters)
+{
+	this->image_filters.Clear();
+	for (ImageFilter * f : filters) {
+		this->image_filters.addItem(f);
+	}
+}
+
+void Entity::toggle_light_filter(const int filter_id)
+{
+	const int size = this->image_filters.size();
+	for (int i = 0; i < size; i++) {
+		ImageFilter * f = this->image_filters.getItem(i);
+		if (f->get_filter_id() == filter_id) {
+			f->toggle();
+			break;
+		}
+	}
+}
+
+std::vector<ImageFilter*> Entity::get_active_image_filters()
+{
+	std::vector<ImageFilter*> active_filters;
+	const int size = this->image_filters.size();
+	for (int i = 0; i < size; i++) {
+		ImageFilter * f = this->image_filters.getItem(i);
+		if (f->get_is_toggled()) {
+			active_filters.push_back(f);
+		}
+	}
+	return active_filters;
+}
+
 const std::string Entity::get_sound_key()
 {
 	return "" + SOUND_KEY_DEFAULT;
@@ -629,6 +674,7 @@ EntityData::EntityData()
 	Register("item_drops", &item_drops);
 	Register("spawn_tile_rules", &spawn_tile_rules);
 	Register("entity_effect_data", &entity_effect_data);
+	Register("image_filters", &image_filters);
 	Register("attributes", &attributes);
 	Register("components", &components);
 	Register("root_offset_x", &root_offset_x);

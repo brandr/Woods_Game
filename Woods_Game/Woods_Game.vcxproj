@@ -323,6 +323,7 @@
     <ClInclude Include="GameImageManager.h" />
     <ClInclude Include="GameScreen.h" />
     <ClInclude Include="GlobalTime.h" />
+    <ClInclude Include="ImageFilter.h" />
     <ClInclude Include="ImageLoader.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="InteractAction.h" />
@@ -417,6 +418,7 @@
     <ClCompile Include="GameImageManager.cpp" />
     <ClCompile Include="GameScreen.cpp" />
     <ClCompile Include="GlobalTime.cpp" />
+    <ClCompile Include="ImageFilter.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="InteractAction.cpp" />

@@ -46,6 +46,7 @@ public:
 	void load_image(std::string filename, Rect subsection);
 	void load_image(std::string filename, const std::string rect_string, const bool allow_failure);
 	void load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix);
+	void load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix, const bool allow_partial_alpha);
 	void load_spritesheet(Animation);
 	void load_mask(const std::string base_filename);
 	void load_mask(const std::string base_filename, const std::string rect_string);

@@ -50,7 +50,8 @@ private:
 	xmls::Collection<TiledImageLayer> tiled_image_layers;
 	LevelGenData gen_data;
 	std::vector<Being*> beings;
-	std::vector<ItemPickup*> item_pickups; //TODO
+	std::vector<ItemPickup*> item_pickups;
+	std::set<int> active_light_filter_ids;
 	xmls::xInt grid_x;
 	xmls::xInt grid_y;
 	xmls::xInt grid_width;
@@ -106,7 +107,6 @@ public:
 	void initialize_path_nodes();
 	void initialize_location_markers();
 	void initialize_biome();
-	void initialize_light_filters();
 	void generate_critters(World * world, GlobalTime * time);
 	void clear_level();
 	void remove_tile_edges();
@@ -117,9 +117,9 @@ public:
 	void unload_content();
 	void update(World * world, GlobalTime * time, const int game_mode);
 	void cutscene_animation_update();
-	void draw(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset);
+	void draw(ALLEGRO_DISPLAY *display, GlobalTime * global_time, const std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
-	void draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
+	//void draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);
 	void add_being(Being *b);
 	void add_item_pickup(ItemPickup *ip);

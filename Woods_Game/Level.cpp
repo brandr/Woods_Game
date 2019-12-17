@@ -328,7 +328,12 @@ void Level::update_light_filters(World * world, GlobalTime * time, Entity * e)
 
 void Level::toggle_light_filter(const int filter_id)
 {
-	//TODO
+	auto it = this->active_light_filter_ids.find(filter_id);
+	if (it != this->active_light_filter_ids.end()) {
+		this->active_light_filter_ids.erase(it);
+	} else {
+		this->active_light_filter_ids.insert(filter_id);
+	}
 }
 
 void Level::reset_collide_buckets()
@@ -625,7 +630,6 @@ void Level::load_from_xml()
 	this->initialize_path_nodes();
 	this->initialize_location_markers();
 	this->initialize_biome();
-	this->initialize_light_filters();
 }
 
 void Level::reload_from_xml(Level &copy_level)
@@ -843,6 +847,7 @@ void Level::initialize_tiles()
 			b->set_entity_effect_data(effect_data);
 			b->load_entity_effects(this->tileset, 
 				block_key, b->get_entity_sheet_row(), std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+			b->load_image_filters();
 			b->refresh_mask();
 		}
 	}
@@ -981,13 +986,6 @@ void Level::initialize_biome()
 	if (!b_key.empty()) {
 		BiomeManager::get_instance().initialize_biome(b_key);
 	}
-}
-
-void Level::initialize_light_filters()
-{
-	//TODO: get filters from filtermanager
-	//TODO: filters should be serialized in some separate file and we load them via ImageLoader here, or load in filtermanager
-	//		need to figure out how to handle transparency/offset, where to store image file, and how to match int key/filename/etc.
 }
 
 void Level::generate_critters(World * world, GlobalTime * time)
@@ -1177,27 +1175,56 @@ void Level::cutscene_animation_update()
 	}
 }
 
-void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
+void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<int, int> offset)
 {
-	const int max_layer_index = this->tiled_image_layers.size();
+	int max_layer_index = this->tiled_image_layers.size();
 	std::pair<int, int> off = offset;
 	const int start_x = std::max(0, (-1 * off.first) / TILE_SIZE - 1);
 	const int start_y = std::max(0, (-1 * off.second) / TILE_SIZE - 1);
 	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
 	const int end_x = std::min(x_size, start_x + al_get_display_width(display) / TILE_SIZE + 3);
 	const int end_y = std::min(y_size, start_y + al_get_display_height(display) / TILE_SIZE + 3);
+	std::map<int, std::vector<ImageFilter *>> active_filters;
+	ALLEGRO_BITMAP * filter_bitmap = FilterManager::get_instance().time_light_filter(display, global_time->get_current_minutes());
+	//std::vector<ImageFilter *> active_filters;
+	//TODO: get entity group filters too
 
 	// tiles: layer 0
 	for (int y = start_y; y < end_y; y++) {
 		for (int x = start_x; x < end_x; x++) {
-			this->get_tile(x, y)->draw(display, off.first, off.second);
+			Tile * t = this->get_tile(x, y);
+			t->draw(display, off.first, off.second);
+			Block * b = t->get_block();
+			if (b != NULL && !b->is_empty()) {
+				std::vector<ImageFilter *> block_filters = b->get_active_image_filters();
+				if (!block_filters.empty()) {
+					for (ImageFilter * bf : block_filters) {
+						const int bf_layer = bf->get_image_layer();
+						auto it = active_filters.find(bf_layer);
+						std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[bf_layer] : std::vector<ImageFilter *>();
+						bf->set_position(b->get_x(), b->get_y());
+						layer_filters.push_back(bf);
+						active_filters[bf_layer] = layer_filters;
+						if (bf_layer > max_layer_index) {
+							max_layer_index = bf_layer;
+						}
+					}
+				}
+			}
 		}
 	}
 
 	// layers 1-9
-	for (int layer_index = Level::LAYER_INDEX_TILES + 1; 
+	for (int layer_index = Level::LAYER_INDEX_TILES + 1;
 		layer_index < std::min(Level::LAYER_INDEX_BLOCKS, max_layer_index); layer_index++) {
 		this->draw_tiled_images(display, offset, layer_index);
+		auto it = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters.empty()) {
+			for (ImageFilter * f : layer_filters) {
+				f->draw(display, filter_bitmap, global_time, offset.first, offset.second);
+			}
+		}
 	}
 
 	// blocks: layer 10
@@ -1206,11 +1233,25 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 			this->get_tile(x, y)->draw_block(display, off.first, off.second);
 		}
 	}
+	auto it = active_filters.find(10);
+	std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[10] : std::vector<ImageFilter *>();
+	if (!layer_filters.empty()) {
+		for (ImageFilter * f : layer_filters) {
+			f->draw(display, filter_bitmap, global_time, offset.first, offset.second);
+		}
+	}
 
 	// layers 11-19
 	for (int layer_index = Level::LAYER_INDEX_BLOCKS + 1;
 		layer_index < std::min(Level::LAYER_INDEX_BEINGS, max_layer_index); layer_index++) {
 		this->draw_tiled_images(display, offset, layer_index);
+		auto it = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters.empty()) {
+			for (ImageFilter * f : layer_filters) {
+				f->draw(display, filter_bitmap, global_time, offset.first, offset.second);
+			}
+		}
 	}
 	std::vector<Entity *> draw_entities;
 	const int eg_size = this->entity_groups.size();
@@ -1233,11 +1274,27 @@ void Level::draw(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 	for (int i = 0; i < size; i++) {
 		draw_entities[i]->draw(display, off.first, off.second);
 	}
+	auto it2 = active_filters.find(20);
+	std::vector<ImageFilter *> layer_filters2 = it2 != active_filters.end() ? active_filters[20] : std::vector<ImageFilter *>();
+	if (!layer_filters2.empty()) {
+		for (ImageFilter * f : layer_filters2) {
+			f->draw(display, filter_bitmap, global_time, offset.first, offset.second);
+		}
+	}
+
 	// layers 21+
 	for (int layer_index = Level::LAYER_INDEX_BEINGS + 1;
-		layer_index < max_layer_index; layer_index++) {
+		layer_index < max_layer_index + 1; layer_index++) {
 		this->draw_tiled_images(display, offset, layer_index);
+		auto it3 = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters3 = it3 != active_filters.end() ? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters3.empty()) {
+			for (ImageFilter * f : layer_filters3) {
+				f->draw(display, filter_bitmap, global_time, offset.first, offset.second);
+			}
+		}
 	}
+	al_draw_bitmap(filter_bitmap, 0, 0, 0);
 }
 
 void Level::draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key)
@@ -1248,10 +1305,18 @@ void Level::draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filena
 	tile.add_additional_image_layer(edge_filename, subsection);
 }
 
+/*
 void Level::draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset)
 {
-	//TODO: draw currently active light filters (should probably be stored in ImageLoader and loaded async)
+	for (int filter_id : this->active_light_filter_ids) {
+		ImageFilter * filter = FilterManager::get_instance().get_image_filter(filter_id);
+		if (filter != NULL) {
+			filter->draw(display, offset.first, offset.second);
+			//TODO: draw currently active light filters (should probably be stored in ImageLoader and loaded async)
+		}
+	}
 }
+*/
 
 void Level::add_edge_to_tile(Tile * tile, const int edge_row, const int dir_key, const std::string tile_key)
 {

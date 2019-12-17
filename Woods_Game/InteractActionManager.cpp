@@ -251,7 +251,7 @@ const int toggle_light(
 	if (action != NULL) {
 		const std::string light_filter_key = action->get_binding("light_filter_key");
 		if (!light_filter_key.empty()) {
-			actor->set_entity_attribute(Entity::E_ATTR_PENDING_LIGHT_FILTER, ::atoi(light_filter_key.c_str()));
+			actor->toggle_light_filter(::atoi(light_filter_key.c_str()));
 			return 1;
 		}
 	}

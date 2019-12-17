@@ -70,6 +70,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->load_item_templates();
 	this->load_critter_templates();
 	this->world.spawn_critters(this->get_current_global_time());
+	//this->load_filter_images();
 	this->load_player();
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
@@ -101,6 +102,7 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->load_item_templates();
 	this->load_critter_templates();
 	this->world.spawn_critters(this->get_current_global_time());
+	//this->load_filter_images();
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -129,6 +131,8 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->world.reload_encyclopedia(encyclopedia_path);
 	this->load_item_templates();
 	this->load_critter_templates();
+	this->world.spawn_critters(this->get_current_global_time()); //TODO: sholud we be spawning critters here? or should they already be here by this point?
+	//this->load_filter_images();
 	this->load_player();
 	this->world.recalculate_npc_paths();
 	this->save_game();
@@ -659,7 +663,7 @@ void GameImageManager::change_player_level()
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
 	if (current_level) {
-		current_level->draw(display, get_camera_offset(display));
+		current_level->draw(display, current_global_time, get_camera_offset(display));
 		this->draw_filters(display, get_camera_offset(display));
 	}
 }
@@ -668,8 +672,7 @@ void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, in
 {
 	//TODO: check whether we actually need a light filter before drawing it
 	//TODO: could draw time filters in level so we adjust behavior if we're indoors vs outdoors
-	this->draw_time_light_filter(display, offset);
-	this->draw_level_light_filters(display, offset);
+	//this->draw_time_light_filter(display, offset);
 	if (this->player != NULL && this->player->has_active_cutscene()) {
 		const int width = al_get_display_width(display), height = al_get_display_height(display);
 		const std::vector<ALLEGRO_BITMAP *> filters = player->get_cutscene_filters(display, width, height);
@@ -680,74 +683,9 @@ void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, in
 	}
 }
 
-void GameImageManager::draw_level_light_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
-{
-	Level * level = this->current_level;
-	if (level != NULL) {
-		level->draw_active_light_filters(display, offset);
-	}
-}
-
 void GameImageManager::draw_time_light_filter(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
-	const int width = al_get_display_width(display);
-	const int height = al_get_display_height(display);
-	ALLEGRO_BITMAP * filter = NULL;
-	const std::string suffix = "";
-	if (!ImageLoader::get_instance().keyed_image_exists(IMAGE_KEY_FILLED_RECT, width, height, suffix)) {
-		filter = al_create_bitmap(width, height);
-		ImageLoader::get_instance().set_keyed_image(filter, IMAGE_KEY_FILLED_RECT, width, height, suffix);
-	} else {
-		filter = ImageLoader::get_instance().get_keyed_image(IMAGE_KEY_FILLED_RECT, width, height, suffix);
-	}
-
-	
-	al_set_target_bitmap(filter);
-
-	// (4 AM) blue, darkest -> (6 AM) orange, lighter -> (8 AM) yellow, ligthest -> orange, lighter (6 PM) -> blue, darkest (8 PM)
-	const float minutes = this->get_current_minutes();
-	int r = 0;
-	int g = 0;
-	int b = NIGHT_B;
-	int a = NIGHT_A;
-	if (minutes >= SUNRISE_START_MINUTES && minutes < SUNRISE_END_MINUTES ) {
-		const float m = ((minutes - SUNRISE_START_MINUTES) / (SUNRISE_END_MINUTES - SUNRISE_START_MINUTES));
-		r = SUNRISE_END_R * m;
-		g = SUNRISE_END_G * m;
-		b = NIGHT_B - ((NIGHT_B - SUNRISE_END_B) * m);
-		a = NIGHT_A - ((NIGHT_A - SUNRISE_END_A) * m);
-	} else if (minutes >= SUNRISE_END_MINUTES && minutes < DAY_START_MINUTES) {
-		const float m = ((minutes - SUNRISE_END_MINUTES) / (DAY_START_MINUTES - SUNRISE_END_MINUTES));
-		r = SUNRISE_END_R + ((DAY_START_R - SUNRISE_END_R) * m);
-		g = SUNRISE_END_G + ((DAY_START_G - SUNRISE_END_G) * m);
-		b = SUNRISE_END_B;
-		a = SUNRISE_END_A - ((SUNRISE_END_A - DAY_START_A) * m);
-	} else if (minutes >= DAY_START_MINUTES && minutes < DAY_END_MINUTES) {
-		const float m = ((minutes - DAY_START_MINUTES) / (DAY_END_MINUTES - DAY_START_MINUTES));
-		r = DAY_START_R;
-		g = DAY_START_G;
-		b = 0;
-		a = DAY_START_A - ((DAY_END_A - DAY_START_A) * m);
-	} else if (minutes >= DAY_END_MINUTES && minutes < SUNSET_START_MINUTES) {
-		const float m = ((minutes - DAY_END_MINUTES) / (SUNSET_START_MINUTES - DAY_END_MINUTES));
-		r = DAY_END_R - ((DAY_END_R - SUNSET_START_R) * m);
-		g = DAY_END_G - ((DAY_END_G - SUNSET_START_G) * m);
-		b = 0;
-		a = DAY_END_A + ((SUNSET_START_A - DAY_END_A) * m);
-	} else if (minutes >= SUNSET_START_MINUTES && minutes < SUNSET_END_MINUTES) {
-		const float m = ((minutes - SUNSET_START_MINUTES) / (SUNSET_END_MINUTES - SUNSET_START_MINUTES));
-		r = SUNSET_START_R - ((SUNSET_START_R - SUNSET_END_R) * m);
-		g = SUNSET_START_G - ((SUNSET_START_G - SUNSET_END_G) * m);
-		b = (SUNSET_END_B - SUNSET_START_B) * m;
-		a = SUNSET_START_A + ((SUNSET_END_A - SUNSET_START_A) * m);
-	} else if (minutes >= SUNSET_END_MINUTES) {
-		r = SUNSET_END_R;
-		g = SUNSET_END_G;
-		b = SUNSET_END_B;
-		a = SUNSET_END_A;
-	}
-	al_clear_to_color(al_map_rgba(r, g, b, a));
-	al_set_target_bitmap(al_get_backbuffer(display));
+	ALLEGRO_BITMAP * filter = FilterManager::get_instance().time_light_filter(display, this->get_current_minutes());
 	al_draw_bitmap(filter, 0, 0, 0);
 }
 

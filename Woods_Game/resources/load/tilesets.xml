@@ -626,6 +626,16 @@
                         <Member Name="FunctionName">toggle_light</Member>
                     </Class>
                 </Collection>
+                <Collection Name="image_filters">
+                    <Class Type="ImageFilter" Version = "1">
+                        <Member Name="filter_id">1</Member>
+                        <Member Name="filename">player_room_lamp_light</Member>
+                        <Member Name="pos_x">300</Member>
+                        <Member Name="pos_y">300</Member>
+                        <Member Name="alpha_f">0.5</Member>
+                        <Member Name="is_toggled">true</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>

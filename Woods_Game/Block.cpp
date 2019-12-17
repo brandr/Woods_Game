@@ -16,6 +16,7 @@ Block::Block()
 	this->Register("LoadDayActions", &load_day_actions);
 	this->Register("ItemDrops", &item_drops);
 	this->Register("SpawnTileRules", &spawn_tile_rules);
+	this->Register("ImageFilters", &image_filters);
 	this->entity_data_index = -1;
 }
 
@@ -35,6 +36,7 @@ Block::Block(int x, int y)
 	this->Register("LoadDayActions", &load_day_actions);
 	this->Register("ItemDrops", &item_drops);
 	this->Register("SpawnTileRules", &spawn_tile_rules);
+	this->Register("ImageFilters", &image_filters);
 	this->entity_data_index = -1;
 	this->rect.x = x;
 	this->rect.y = y;

@@ -108,6 +108,11 @@ void ImageLoader::load_image(const std::string filename, const std::string rect_
 
 void ImageLoader::load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix)
 {
+	ImageLoader::get_instance().load_image(filename, rect_string, allow_failure, path_prefix, false);
+}
+
+void ImageLoader::load_image(std::string filename, const std::string rect_string, const bool allow_failure, const std::string path_prefix, const bool allow_partial_alpha)
+{
 	// if the full image is not already loaded in, we load it here.
 	const std::string full_filename = ImageLoader::full_filename(filename, path_prefix);
 	if (image_map.find(std::pair<std::string, std::string>(full_filename, rect_string)) == image_map.end()
@@ -126,13 +131,16 @@ void ImageLoader::load_image(std::string filename, const std::string rect_string
 	if (image == NULL) {
 		if (allow_failure) {
 			return;
-		} else {
+		}
+		else {
 			std::cout << filename << std::endl;
 			std::cout << "loader failed to load image" << std::endl;
 			//TODO: better error handling
 		}
 	}
-	al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
+	if (!allow_partial_alpha) {
+		al_convert_mask_to_alpha(image, al_map_rgb(255, 0, 255));
+	}
 	FileManager fm;
 	std::vector<std::string> rect_parts;
 	if (rect_string.length() > 0) {

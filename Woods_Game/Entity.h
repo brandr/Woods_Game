@@ -4,6 +4,7 @@
 #include "AudioManager.h"
 #include "EntityEffect.h"
 #include "allegro5/display.h"  // for ALLEGRO_DISPLAY
+#include "ImageFilter.h"
 #include "GameImage.h"         // for GameImage
 #include "InteractAction.h"
 #include "InteractActionManager.h"
@@ -67,6 +68,7 @@ struct EntityData : public xmls::Serializable {
 	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::Collection<EntityEffectData> entity_effect_data;
+	xmls::Collection<ImageFilter> image_filters;
 	xmls::xBool solid = false;
 	xmls::xBool visible = true;
 	xmls::Collection<EntityComponentData> components;
@@ -139,6 +141,7 @@ protected:
 	xmls::Collection<ItemDrop> item_drops;
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::Collection<EntityEffectData> entity_effect_data;
+	xmls::Collection<ImageFilter> image_filters;
 	xmls::xInt entity_data_index;
 	xmls::xInt entity_sheet_col;
 	xmls::xInt entity_sheet_row;
@@ -217,6 +220,10 @@ public:
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 	virtual void set_entity_effect_data(std::vector<EntityEffectData *> effect_data);
+	virtual void load_image_filters();
+	virtual void set_image_filters(std::vector<ImageFilter *> image_filters);
+	virtual void toggle_light_filter(const int filter_id);
+	virtual std::vector<ImageFilter *> get_active_image_filters();
 	//sounds
 	virtual const std::string get_sound_key();
 	virtual std::vector<EntitySound*> get_active_entity_sounds();

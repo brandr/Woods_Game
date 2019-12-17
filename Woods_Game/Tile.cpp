@@ -150,6 +150,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	//TODO: don't load any images here
 	this->block.load_entity_effects(tileset, 
 		tileset->get_block_key(block_index), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
+	this->block.load_image_filters();
 	this->block.refresh_mask();
 }
 

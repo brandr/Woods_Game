@@ -26,7 +26,6 @@ void CritterManager::load_critter_templates()
 	FileManager filemanager;
 	const std::string filename = "resources/load/critters";
 	filemanager.load_xml_content(&(this->critter_library), filename, "SerializableClass", "CritterLibraryKey", "default_critter_library");
-	const std::vector<CritterTemplate *> critter_templates = this->critter_library.get_critter_templates();
 }
 
 Critter * CritterManager::create_critter(const std::string critter_key, const int index)

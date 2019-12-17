@@ -508,6 +508,9 @@
     <ClInclude Include="SpriteSheetAnimation.h">
       <Filter>Animations\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ImageFilter.h">
+      <Filter>Animations\Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="FilterManager.h">
       <Filter>Animations\Header Files</Filter>
     </ClInclude>
@@ -786,9 +789,10 @@
     <ClCompile Include="SpriteSheetAnimation.cpp">
       <Filter>Animations\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FilterManager.cpp">
+    <ClCompile Include="ImageFilter.cpp">
       <Filter>Animations\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="FilterManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

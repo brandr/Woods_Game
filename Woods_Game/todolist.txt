@@ -8,51 +8,30 @@ Last updated 12/3/2019
 
 Target date for main code to be done: ~ May 2020
 
-Total: 27-50 days (~1-2 months)
+Total: 22-35 days (~1-2 months)
 
-1. Animation/image code stuff
-	(10-15 days)
-2. Menu/control stuff
+1. Menu/control stuff
 	(5-10 days)
-3. Audio
+2. Audio
 	(5-10 days)
-
 (should get here around February 2020) 
 (clean up todos and try to think of what's missing here)	
-
-4. Loading screens/progress bars
+3. Loading screens/progress bars
 	(3-5 days)
-5. Figure out how to force end of day (otherwise saving gets weird after midnight)
+4. Figure out how to force end of day (otherwise saving gets weird after midnight)
 	(2-5 days)
-6. Wake-up time (alarm clock?)
+5. Wake-up time (alarm clock?)
 	(2-5 days)
-7. Stamina/resource management
+6. Stamina/resource management
 	(5-10 days)
-
 (should get here around March 2020) 
 (clean up todos and try to think of what's missing here)	
-
-8. Miscellaneous code stuff (break out into specific todos after getting here)
+7. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-9. Level Editor improvements
+8. Level Editor improvements
 	(???)
-10. Content!
+9. Content!
 	(???)
-
----------------------------------------------------
-Animation/image code
----------------------------------------------------
-might want to use different filtering techniques depending on indoors/outdoors, in shaded/non shaded areas, etc.
-	* how to handle areas with their own lighting like lamps?
-		# see Level.initialize_light_filters(), Level.toggle_light_filter(), and Level.draw_active_light_filters()
-		# load light filters async and key them by integer IDs
-	* could have lights that can be turned on and off (like light switches)
-IDEA: could give trees shadows -- these would be similar to night/day filters and would have spritesheets like entitygroup masks
-	* how to determine draw order of entityGroup parts/effects/other objects?
-	* not positive yet I actually want shadows
-Stairs
-	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
 
 ---------------------------------------------------
 Menus
@@ -73,6 +52,16 @@ Make it so the game can detect when a controller is plugged in and update proper
 		(might need some check accessed through the main loop)
 	*might need to do this for mouse too, need to test
 Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
+
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
+
+Stairs
+	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+	* also make sure there are egs you can walk "under" like archways (I think we can do this using center)
+Give trees shadows and ensure they cover only the objects I want
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
 
 ---------------------------------------------------
 Audio
