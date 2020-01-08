@@ -116,6 +116,10 @@ public:
 	// map
 	const std::pair<int, int> current_player_location_for_map();
 	const std::set<std::pair<int, int>> explored_map();
+	// controls
+	void mouse_scroll_update(const int scroll);
+	void process_mouse_click_left(const int mouse_x, const int mouse_y);
+	void process_mouse_click_right(const int mouse_x, const int mouse_y);
 };
 
 #endif

@@ -11,20 +11,33 @@
             <Member Name="spritesheet_frame_height">64</Member>
             <Member Name="base_walk_speed">5</Member>
             <Member Name="jump_speed">30</Member>
+            <Member Name="current_stamina">100000</Member>
+            <Member Name="max_stamina">100000</Member>
+            <Member Name="is_running">false</Member>
             <Member Name="spawn_key">player_spawner_room</Member>
             <Class Name="inventory" Type="Inventory" Version="1">
                 <Member Name="inventory_key">player_inventory</Member>
                 <Member Name="money">5.00</Member>
                 <Collection Name="inventory_items">
                     <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_key">0</Member>
                         <Member Name="inventory_pos_x">0</Member>
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded">false</Member>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
+                        <Member Name="item_description">Garden shears for cutting plants.\nUse with caution.</Member>
+                        <Member Name="item_name">shears</Member>
+                        <Member Name="item_display_name">Shears</Member>
+                        <Member Name="swing_key">shearing</Member>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">power</Member>
+                                <Member Name="attribute_value">1</Member>
+                            </Class>
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">20</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
                         <Member Name="item_key">-1</Member>
@@ -34,27 +47,44 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_key">1</Member>
                         <Member Name="inventory_pos_x">2</Member>
                         <Member Name="inventory_pos_y">-1</Member>
                         <Member Name="may_be_discarded">false</Member>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
+                        <Member Name="item_description">A heavy hammer for smashing rocks.\nThis might not end up in the game.</Member>
+                        <Member Name="item_name">mallet</Member>
+                        <Member Name="item_display_name">Mallet</Member>
+                        <Member Name="swing_key"/>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">power</Member>
+                                <Member Name="attribute_value">1</Member>
+                            </Class>
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">50</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_key">5</Member>
                         <Member Name="inventory_pos_x">3</Member>
                         <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
+                        <Member Name="may_be_discarded">false</Member>
+                        <Member Name="item_description">Catch bugs and other small critters.</Member>
+                        <Member Name="item_name">bug_net</Member>
+                        <Member Name="item_display_name">Bug Net</Member>
+                        <Member Name="swing_key">netting</Member>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">10</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
                         <Member Name="item_key">-1</Member>
@@ -64,6 +94,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -74,6 +105,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -84,6 +116,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -94,6 +127,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -104,6 +138,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -114,6 +149,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -124,6 +160,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -134,6 +171,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -144,6 +182,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -154,6 +193,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -164,6 +204,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -174,6 +215,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -184,6 +226,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -194,6 +237,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -204,6 +248,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -214,6 +259,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -224,6 +270,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -234,6 +281,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -244,6 +292,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -254,6 +303,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -264,6 +314,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -274,6 +325,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -284,6 +336,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -294,6 +347,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -304,6 +358,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -314,6 +369,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -324,6 +380,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -334,6 +391,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -344,6 +402,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -354,6 +413,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -364,6 +424,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -374,6 +435,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -384,6 +446,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -394,6 +457,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -404,6 +468,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -414,6 +479,7 @@
                         <Member Name="item_description"/>
                         <Member Name="item_name"/>
                         <Member Name="item_display_name"/>
+                        <Member Name="swing_key"/>
                         <Collection Name="item_attributes"/>
                     </Class>
                 </Collection>
@@ -424,877 +490,330 @@
                     <Member Name="animation_frame_width">3</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">1</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
                 </Class>
                 <Class Type="AnimationData" Version="1">
                     <Member Name="animation_key">walking</Member>
                     <Member Name="animation_frame_width">2</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
                 </Class>
                 <Class Type="AnimationData" Version="1">
                     <Member Name="animation_key">shearing</Member>
                     <Member Name="animation_frame_width">5</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">netting</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
                 </Class>
                 <Class Type="AnimationData" Version="1">
                     <Member Name="animation_key">neutral</Member>
                     <Member Name="animation_frame_width">3</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">1</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
                 </Class>
                 <Class Type="AnimationData" Version="1">
                     <Member Name="animation_key">walking</Member>
                     <Member Name="animation_frame_width">2</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
                 </Class>
                 <Class Type="AnimationData" Version="1">
                     <Member Name="animation_key">shearing</Member>
                     <Member Name="animation_frame_width">5</Member>
                     <Member Name="animation_frame_height">5</Member>
                     <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">netting</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">neutral</Member>
+                    <Member Name="animation_frame_width">3</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">1</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">shearing</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">netting</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">neutral</Member>
+                    <Member Name="animation_frame_width">3</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">1</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">shearing</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">netting</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                    <Member Name="animation_pixel_step_size"/>
+                    <Member Name="animation_min_speed"/>
+                    <Member Name="animation_max_speed"/>
+                </Class>
+            </Collection>
+            <Collection Name="walk_animation_data">
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed">0.0</Member>
+                    <Member Name="animation_max_speed">3.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">running</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">60</Member>
+                    <Member Name="animation_min_speed">3.0</Member>
+                    <Member Name="animation_max_speed">6.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed">0.0</Member>
+                    <Member Name="animation_max_speed">3.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">running</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">60</Member>
+                    <Member Name="animation_min_speed">3.0</Member>
+                    <Member Name="animation_max_speed">6.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed">0.0</Member>
+                    <Member Name="animation_max_speed">3.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">running</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">60</Member>
+                    <Member Name="animation_min_speed">3.0</Member>
+                    <Member Name="animation_max_speed">6.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">40</Member>
+                    <Member Name="animation_min_speed">0.0</Member>
+                    <Member Name="animation_max_speed">3.0</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">running</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                    <Member Name="animation_pixel_step_size">60</Member>
+                    <Member Name="animation_min_speed">3.0</Member>
+                    <Member Name="animation_max_speed">6.0</Member>
                 </Class>
             </Collection>
             <Collection Name="additional_mask_data">
                 <Class Type="MaskData" Version="1">
-                    <Member Name="mask_key">slicing</Member>
-                    <Member Name="mask_width">32</Member>
-                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_key">shearing</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
                     <Member Name="mask_frame_count">5</Member>
                 </Class>
                 <Class Type="MaskData" Version="1">
-                    <Member Name="mask_key">slicing</Member>
-                    <Member Name="mask_width">32</Member>
-                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_key">netting</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">shearing</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">netting</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">shearing</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">netting</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">shearing</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">netting</Member>
+                    <Member Name="mask_width">64</Member>
+                    <Member Name="mask_height">64</Member>
                     <Member Name="mask_frame_count">5</Member>
                 </Class>
             </Collection>
+            <Collection Name="entity_effect_data">
+                <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                            <Member Name="animation_min_speed"/>
+                            <Member Name="animation_max_speed"/>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                            <Member Name="animation_min_speed"/>
+                            <Member Name="animation_max_speed"/>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                            <Member Name="animation_min_speed"/>
+                            <Member Name="animation_max_speed"/>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="EntityEffectData" Version="1">
+                    <Member Name="effect_key">brush_grass</Member>
+                    <Collection Name="animation_data">
+                        <Class Type="AnimationData" Version="1">
+                            <Member Name="animation_key">neutral</Member>
+                            <Member Name="animation_frame_width">2</Member>
+                            <Member Name="animation_frame_height">1</Member>
+                            <Member Name="animation_frame_duration">4</Member>
+                            <Member Name="animation_pixel_step_size">40</Member>
+                            <Member Name="animation_min_speed"/>
+                            <Member Name="animation_max_speed"/>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
         </Class>
-        <Collection Name="inventories">
-            <Class Type="Inventory" Version="1">
-                <Member Name="inventory_key">player_room_chest_2</Member>
-                <Member Name="money"/>
-                <Collection Name="inventory_items">
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">0</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded">false</Member>
-                        <Member Name="item_description">Garden shears for cutting plants.\nUse with caution.</Member>
-                        <Member Name="item_name">shears</Member>
-                        <Member Name="item_display_name">Shears</Member>
-                        <Collection Name="item_attributes">
-                            <Class Type="ItemAttribute" Version="1">
-                                <Member Name="attribute_key">power</Member>
-                                <Member Name="attribute_value">1</Member>
-                            </Class>
-                        </Collection>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                </Collection>
-            </Class>
-            <Class Type="Inventory" Version="1">
-                <Member Name="inventory_key">player_room_chest_1</Member>
-                <Member Name="money"/>
-                <Collection Name="inventory_items">
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">-1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded">false</Member>
-                        <Member Name="item_description">A heavy hammer for smashing rocks.\nThis might not end up in the game.</Member>
-                        <Member Name="item_name">mallet</Member>
-                        <Member Name="item_display_name">Mallet</Member>
-                        <Collection Name="item_attributes">
-                            <Class Type="ItemAttribute" Version="1">
-                                <Member Name="attribute_key">power</Member>
-                                <Member Name="attribute_value">1</Member>
-                            </Class>
-                        </Collection>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">0</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">1</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">0</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">1</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">2</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">3</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">4</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">5</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">6</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">7</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">8</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                    <Class Type="Item" Version="1">
-                        <Member Name="item_key">-1</Member>
-                        <Member Name="inventory_pos_x">9</Member>
-                        <Member Name="inventory_pos_y">2</Member>
-                        <Member Name="may_be_discarded"/>
-                        <Member Name="item_description"/>
-                        <Member Name="item_name"/>
-                        <Member Name="item_display_name"/>
-                        <Collection Name="item_attributes"/>
-                    </Class>
-                </Collection>
-            </Class>
-        </Collection>
+        <Collection Name="inventories"/>
         <Collection Name="trigger_statuses">
             <Class Type="TriggerStatus" Version="1">
                 <Member Name="trigger_key">has_met_npc</Member>
@@ -1323,180 +842,6 @@
                 <Member Name="grid_y">10</Member>
             </Class>
         </Collection>
-        <Collection Name="quests">
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">meet_stranger_2</Member>
-                <Member Name="quest_name">Meet Stranger 2</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You haven't met stranger 2 yet,\nbut you know you need to.</Member>
-                    </Class>
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">1</Member>
-                        <Member Name="quest_state">3</Member>
-                        <Member Name="summary">You met stranger 2. Success!</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates">
-                    <Class Type="QuestUpdate" Version="1">
-                        <Member Name="quest_key">avoid_stranger_2</Member>
-                        <Member Name="page_num">1</Member>
-                        <Member Name="priority">100</Member>
-                        <Collection Name="qualifiers">
-                            <Class Type="Qualifier" Version="1">
-                                <Member Name="comparator">0</Member>
-                                <Member Name="evaluator">4</Member>
-                                <Member Name="month">-1</Member>
-                                <Member Name="day">-1</Member>
-                                <Member Name="hour">-1</Member>
-                                <Member Name="minute">-1</Member>
-                                <Member Name="day_of_week">-1</Member>
-                                <Member Name="int_val"/>
-                                <Member Name="string_val"/>
-                                <Member Name="npc_key"/>
-                                <Class Name="trigger_status" Type="TriggerStatus" Version="1">
-                                    <Member Name="trigger_key">has_met_npc</Member>
-                                    <Member Name="trigger_state">1</Member>
-                                    <Collection Name="trigger_attributes">
-                                        <Class Type="TriggerAttribute" Version="1">
-                                            <Member Name="attribute_key">npc_key</Member>
-                                            <Member Name="attribute_value">stranger_2</Member>
-                                        </Class>
-                                    </Collection>
-                                </Class>
-                                <Collection Name="qualifiers"/>
-                            </Class>
-                        </Collection>
-                    </Class>
-                </Collection>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">avoid_stranger_2</Member>
-                <Member Name="quest_name">Avoid Stranger 2</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">Don't talk to stranger 2. He's bad.</Member>
-                    </Class>
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">1</Member>
-                        <Member Name="quest_state">2</Member>
-                        <Member Name="summary">You talked to stranger 2. That's bad.</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates">
-                    <Class Type="QuestUpdate" Version="1">
-                        <Member Name="quest_key">avoid_stranger_2</Member>
-                        <Member Name="page_num">1</Member>
-                        <Member Name="priority">100</Member>
-                        <Collection Name="qualifiers">
-                            <Class Type="Qualifier" Version="1">
-                                <Member Name="comparator">0</Member>
-                                <Member Name="evaluator">4</Member>
-                                <Member Name="month">-1</Member>
-                                <Member Name="day">-1</Member>
-                                <Member Name="hour">-1</Member>
-                                <Member Name="minute">-1</Member>
-                                <Member Name="day_of_week">-1</Member>
-                                <Member Name="int_val"/>
-                                <Member Name="string_val"/>
-                                <Member Name="npc_key"/>
-                                <Class Name="trigger_status" Type="TriggerStatus" Version="1">
-                                    <Member Name="trigger_key">has_met_npc</Member>
-                                    <Member Name="trigger_state">1</Member>
-                                    <Collection Name="trigger_attributes">
-                                        <Class Type="TriggerAttribute" Version="1">
-                                            <Member Name="attribute_key">npc_key</Member>
-                                            <Member Name="attribute_value">stranger_2</Member>
-                                        </Class>
-                                    </Collection>
-                                </Class>
-                                <Collection Name="qualifiers"/>
-                            </Class>
-                        </Collection>
-                    </Class>
-                </Collection>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">give_stranger_1_mushroom</Member>
-                <Member Name="quest_name">Find a Mushroom</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">Give Stranger 1 a mushroom.</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates"/>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">deliver_letter</Member>
-                <Member Name="quest_name">Deliver a Letter</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">Deliver a letter from Stranger 1 to \nStranger 2.</Member>
-                    </Class>
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">1</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You have the letter. Now, deliver it.</Member>
-                    </Class>
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">2</Member>
-                        <Member Name="quest_state">3</Member>
-                        <Member Name="summary">You delivered the letter. Good job!</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates"/>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">quest_5</Member>
-                <Member Name="quest_name">Test Quest 5</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You must complete this quest too.</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates"/>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">quest_6</Member>
-                <Member Name="quest_name">Test Quest 6</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You must complete this quest too.</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates"/>
-            </Class>
-            <Class Type="Quest" Version="1">
-                <Member Name="quest_key">quest_7</Member>
-                <Member Name="quest_name">Test Quest 7</Member>
-                <Member Name="current_page_index">-1</Member>
-                <Collection Name="pages">
-                    <Class Type="QuestPage" Version="1">
-                        <Member Name="page_index">0</Member>
-                        <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You must complete this quest too.</Member>
-                    </Class>
-                </Collection>
-                <Collection Name="quest_updates"/>
-            </Class>
-        </Collection>
+        <Collection Name="quests"/>
     </SerializableClass>
 </root>

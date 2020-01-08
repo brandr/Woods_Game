@@ -5,8 +5,8 @@
 		<Member Name="player_key">default_player</Member>
 		<Member Name="default_level_width">832</Member>
         <Member Name="default_level_height">640</Member>
-        <Member Name="current_level_grid_x">0</Member>
-		<Member Name="current_level_grid_y">0</Member>
+        <Member Name="current_level_grid_x">-1</Member>
+		<Member Name="current_level_grid_y">-1</Member>
 		<Member Name="current_day">1</Member>
 		<Collection Name="dungeon_data">
 			<Class Type="DungeonData" Version="1">

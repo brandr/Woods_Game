@@ -22,7 +22,7 @@ private:
 	void load_image_layer(std::string layer);
 	void update_image_layer(std::string layer);
 	void clear_image_layers();
-	void select_grid_pos(const std::pair<int, int> pos);
+	void select_grid_pos(const std::pair<float, float> pos);
 	bool has_tiled_image_key();
 	std::string tiled_image_name();
 protected:

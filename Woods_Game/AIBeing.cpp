@@ -373,7 +373,7 @@ void AIBeing::wander_update(World * world, Level * level, GlobalTime * time)
 	for (int ty = -1 * range; ty < 1 + range; ty++) {
 		for (int tx = -1 * range; tx < 1 + range; tx++) {
 			const std::pair<int, int>
-				tile_center(x_pos / collide_w + tx, y_pos / collide_h + ty);
+				tile_center((int) x_pos / collide_w + tx, (int) y_pos / collide_h + ty);
 			const int cx = std::max(
 				min_x, std::min(max_x, (int)x_pos + tx * collide_w));
 			const int cy = std::max(
@@ -675,7 +675,7 @@ void AIBeing::update(World * world, Level * level, GlobalTime * time, const int 
 	Being::update(world, level, time, game_mode);
 }
 
-void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+void AIBeing::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
 	//TEMP
 	const bool should_draw_test_rects = true; //TEMP
@@ -684,7 +684,7 @@ void AIBeing::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 		this->draw_destinations(display, x_offset, y_offset);
 	}
 	//TEMP
-	Being::draw(display, x_offset, y_offset);
+	Being::draw(display, x_offset, y_offset, screen_w, screen_h);
 }
 
 void AIBeing::draw_adjacent_rect(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)

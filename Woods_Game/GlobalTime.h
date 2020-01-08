@@ -19,6 +19,8 @@
 #define ORIGIN_MONTH 5
 #define ORIGIN_DAY 18
 
+#define MIDNIGHT_MINUTES 1440 // 60 * 24
+
 class GlobalTime {
 private:
 	bool intialized = false;

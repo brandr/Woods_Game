@@ -24,6 +24,7 @@ public:
 	static constexpr const char* SELECTION_KEY_OPEN_VIDEO_SETTINGS = "open_video_settings";
 	static constexpr const char* SELECTION_KEY_OPEN_CONTROL_SETTINGS = "open_control_settings";
 	static constexpr const char* SELECTION_KEY_OPEN_AUDIO_SETTINGS = "open_audio_settings";
+	static constexpr const char* SELECTION_KEY_OPEN_GAMEPLAY_SETTINGS = "open_gameplay_settings";
 	// pause video settings	
 	static constexpr const char* SELECTION_KEY_SET_RESOLUTION = "set_resolution";
 	static constexpr const char* SELECTION_KEY_SET_SCREEN_STYLE = "set_screen_style";
@@ -31,6 +32,8 @@ public:
 	static constexpr const char* SELECTION_KEY_SET_MASTER_VOLUME = "set_master_volume";
 	static constexpr const char* SELECTION_KEY_SET_MUSIC_VOLUME = "set_music_volume";
 	static constexpr const char* SELECTION_KEY_SET_SFX_VOLUME = "set_sfx_volume";
+	// pause gameplay settings;
+	static constexpr const char* SELECTION_KEY_SET_TEXT_SPEED = "set_text_speed";
 	// pause controls settings
 	static constexpr const char* SELECTION_KEY_OPEN_KEYBOARD_CONTROLS = "open_keyboard_controls";
 	static constexpr const char* SELECTION_KEY_OPEN_CONTROLLER_CONTROLS = "open_controller_controls";
@@ -38,6 +41,9 @@ public:
 	static constexpr const char* SELECTION_KEY_SET_CONTROL_INPUT = "set_control_input";
 	static constexpr const char* SELECTION_KEY_CANCEL_CONTROLS_CHANGES = "cancel_controls_changes";
 	static constexpr const char* SELECTION_KEY_REVERT_CONTROLS_DEFAULT = "revert_controls_default";
+	static constexpr const char* SELECTION_KEY_REVERT_VIDEO_SETTINGS_DEFAULT = "revert_video_settings_default";
+	static constexpr const char* SELECTION_KEY_REVERT_AUDIO_SETTINGS_DEFAULT = "revert_audio_settings_default";
+	static constexpr const char* SELECTION_KEY_REVERT_GAMEPLAY_SETTINGS_DEFAULT = "revert_gameplay_settings_default";
 	static constexpr const char* SELECTION_KEY_SAVE_CONTROLS_CHANGES = "save_controls_changes";
 	// title screen menu options
 	static constexpr const char* SELECTION_KEY_START_NEW_GAME = "start_new_game";
@@ -59,12 +65,10 @@ protected:
 	xmls::xInt axis;
 	xmls::xString align;
 	xmls::xString selection_style;
-	//std::vector<std::string> animation_types;
 	xmls::xString font_filename;
 	xmls::xInt font_size;
 	ALLEGRO_FONT *font;
 	xmls::xString color_str;
-	//std::vector<Animation*> temp_animations;
 	void set_menu_items();
 	void set_animations();
 	bool selecting_input = false;
@@ -94,6 +98,7 @@ public:
 	void select_options();
 	void cancel_option_select();
 	void confirm_option_select();
+	void set_option_for_menu_item(const std::string menu_item_name, const std::string option_name, const bool should_save);
 	bool is_selecting_options();
 	void set_item_index(const int index);
 	bool is_selecting_input();

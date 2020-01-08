@@ -45,7 +45,7 @@ public:
 	NPC();
 	~NPC();
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
-	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual void draw(ALLEGRO_DISPLAY* display, const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	const std::string get_npc_key();
 	const std::string get_start_level_key();
 	const std::string get_current_spawn_level_key();

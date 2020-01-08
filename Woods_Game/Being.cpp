@@ -248,7 +248,7 @@ void Being::movement_update_top_down(Level * level)
 	collide_rect.y += yvel;
 }
 
-void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+void Being::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
 	//TEMP
 	Rect * collide_rect = this->get_rect_for_collision();
@@ -262,7 +262,7 @@ void Being::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
 	}
 	al_draw_bitmap(this->test_rect_bitmap, collide_rect->x + x_offset, collide_rect->y + y_offset, 0);
 	//TEMP
-	Entity::draw(display, x_offset, y_offset);
+	Entity::draw(display, x_offset, y_offset, screen_w, screen_h);
 }
 
 void Being::load_content_from_attributes()
@@ -431,7 +431,6 @@ void Being::collide_with_entity(World * world, Level * level, Entity * e)
 	if (e->get_entity_attribute(E_ATTR_BROKEN) != 1 && e->has_entity_attribute(E_ATTR_CONTACT_DAMAGE)) {
 		if (counters[BOUNCE] > 0) return;
 		if (counters[SWING] > 0) return;
-		//TODO: once health/stamina is implemented, apply damage as necessary. (will also need to figure out invincibility frames)
 		std::pair<float, float> p1 = get_rect_center();
 		std::pair<float, float> p2 = e->get_rect_center();
 		std::pair<float, float> bounce_vec = std::pair<float, float>(p1.first - p2.first, p1.second - p2.second);
@@ -439,6 +438,7 @@ void Being::collide_with_entity(World * world, Level * level, Entity * e)
 		float mag = std::pow(std::pow(bounce_vec.first, 2.0) + std::pow(bounce_vec.second, 2), 0.5);
 		xvel = (bounce_vec.first / mag)*knockback, yvel = (bounce_vec.second / mag)*knockback;
 		counters[BOUNCE] = knockback * 2;
+		this->take_damage(e->get_entity_attribute(E_ATTR_CONTACT_DAMAGE));
 	}
 }
 

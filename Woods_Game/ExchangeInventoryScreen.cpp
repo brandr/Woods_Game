@@ -11,6 +11,68 @@ const bool ExchangeInventoryScreen::allow_trash()
 	return false;
 }
 
+void ExchangeInventoryScreen::items_tab_mouse_cursor_update(Inventory * cursor_inv, const float mouse_x, const float mouse_y, const int x_off, const int y_off, const bool is_exchange)
+{
+	const std::vector<std::vector<Item*>> inventory_items = cursor_inv->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	for (int row = 0; row < rows; row++) {
+		const float y = y_off + (height - backdrop_height) / 2.0 + box_height * row + 32.0;
+		if (mouse_y >= y && mouse_y < y + item_cell_h) {
+			for (int col = 0; col < cols; col++) {
+				const float x = x_off + (width - box_width * cols) / 2.0 + col * box_width;
+				if (mouse_x >= x && mouse_x < x + item_cell_w) {
+					if (is_exchange) {
+						this->inventory_selection = std::pair<int, int>(col, row);
+					} else {
+						this->inventory_selection = std::pair<int, int>(col, row + INVENTORY_ROWS);
+					}					
+					return;
+				}
+			}
+		}
+	}
+}
+
+void ExchangeInventoryScreen::items_tab_left_click(Inventory * click_inv, const float mouse_x, const float mouse_y, const int x_off, const int y_off, const bool is_exchange)
+{
+	const std::vector<std::vector<Item*>> inventory_items = click_inv->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	for (int row = 0; row < rows; row++) {
+		const float y = y_off + (height - backdrop_height) / 2.0 + box_height * row + 32.0;
+		if (mouse_y >= y && mouse_y < y + item_cell_h) {
+			for (int col = 0; col < cols; col++) {
+				const float x = x_off + (width - box_width * cols) / 2.0 + col * box_width;
+				if (mouse_x >= x && mouse_x < x + item_cell_w) {
+					if (is_exchange) {
+						this->inventory_selection = std::pair<int, int>(col, row);
+					}
+					else {
+						this->inventory_selection = std::pair<int, int>(col, row + INVENTORY_ROWS);
+					}
+					this->items_tab_select();
+					return;
+				}
+			}
+		}
+	}
+}
+
 ExchangeInventoryScreen::ExchangeInventoryScreen()
 {
 	InventoryScreen();
@@ -38,9 +100,6 @@ void ExchangeInventoryScreen::draw(ALLEGRO_DISPLAY * display)
 	const float exch_inv_height = INVENTORY_ROWS * al_get_bitmap_height(item_box_inventory());
 	const float exch_off_x = 0, exch_off_y = main_inv_off_y - exch_inv_height - 36;
 	al_draw_bitmap(backdrop_bitmap, back_x, back_y, NULL);
-	//TODO: take which inventory we're looking at into account when showing selection square, dragged item, etc.
-	//			could have an arg that says whether we should draw these at all, and/or pass in the selection pair as an arg 
-	//          (adjust it based on which inventory we're in)
 	
 	const int exchange_rows = INVENTORY_ROWS;
 	const bool is_in_exchange = this->is_selecting_exchange_inventory();
@@ -62,6 +121,30 @@ void ExchangeInventoryScreen::draw(ALLEGRO_DISPLAY * display)
 	// draw the exchange inventory
 	InventoryScreen::draw_inventory(display, this->exchange_inventory, exch_off_x, exch_off_y, 
 		this->inventory_selection.first, exchange_inv_select_y, this->dragging_selection.first, exchange_drag_y);
+}
+
+void ExchangeInventoryScreen::mouse_cursor_update()
+{
+	const int mouse_x = this->mouse_pos.first, mouse_y = this->mouse_pos.second;
+	const float screen_width = al_get_display_width(al_get_current_display()), screen_height = al_get_display_height(al_get_current_display());
+	const float main_inv_off_x = 0, main_inv_off_y = screen_height / 3 - 36;
+	const float exch_inv_height = INVENTORY_ROWS * al_get_bitmap_height(item_box_inventory());
+	const float exch_off_x = 0, exch_off_y = main_inv_off_y - exch_inv_height - 36;
+
+	this->items_tab_mouse_cursor_update(this->inventory, mouse_x, mouse_y, main_inv_off_x, main_inv_off_y, false);
+	this->items_tab_mouse_cursor_update(this->exchange_inventory, mouse_x, mouse_y, exch_off_x, exch_off_y, true);
+	this->items_tab_hotbar_mouse_cursor_update(mouse_x, mouse_y, main_inv_off_x, main_inv_off_y);
+}
+
+void ExchangeInventoryScreen::process_mouse_click_left(const int x, const int y)
+{
+	const float screen_width = al_get_display_width(al_get_current_display()), screen_height = al_get_display_height(al_get_current_display());
+	const float main_inv_off_x = 0, main_inv_off_y = screen_height / 3 - 36;
+	const float exch_inv_height = INVENTORY_ROWS * al_get_bitmap_height(item_box_inventory());
+	const float exch_off_x = 0, exch_off_y = main_inv_off_y - exch_inv_height - 36;
+	this->items_tab_left_click(this->inventory, x, y, main_inv_off_x, main_inv_off_y, false);
+	this->items_tab_left_click(this->exchange_inventory, x, y, exch_off_x, exch_off_y, true);
+	this->items_tab_hotbar_left_click(x, y, main_inv_off_x, main_inv_off_y);
 }
 
 void ExchangeInventoryScreen::set_exchange_inventory(Inventory * inv)
@@ -159,5 +242,3 @@ const int ExchangeInventoryScreen::num_inventory_cols()
 {
 	return INVENTORY_COLS;
 }
-
-//TODO: override some or all of the code in input methods so we can drag between inventories

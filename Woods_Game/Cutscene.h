@@ -23,6 +23,8 @@
 #define ACTION_LOAD_GAME "action_load_game"
 #define ACTION_UPDATE_GLOBAL_TIME "action_update_global_time"
 #define ACTION_UPDATE_NEW_DAY "update_new_day"
+#define ACTION_SET_FULL_STAMINA "set_full_stamina"
+#define ACTION_SET_REDUCED_STAMINA "set_reduced_stamina"
 
 // other actions
 #define ACTION_DIALOG "action_dialog"
@@ -77,6 +79,7 @@ struct CutsceneBlock {
 	void set_has_opened_dialog(const bool value);
 };
 
+class Player;
 class Cutscene
 {
 private:
@@ -102,6 +105,7 @@ public:
 	void add_global_time_update(const int day, const int time);
 	void add_advance_day_update(GlobalTime * global_time, const int wake_up_time);
 	void add_load_game_update(const int day, const int time);
+	void add_pass_out_update(Player * player, GlobalTime * time, const int wake_up_time);
 	void set_cutscene_key(const std::string key);
 	const std::string get_cutscene_key();
 	const bool get_is_finished();

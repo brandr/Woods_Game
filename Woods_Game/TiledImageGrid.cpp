@@ -74,9 +74,9 @@ void TiledImageGrid::clear_image_layers()
 	}
 }
 
-void TiledImageGrid::select_grid_pos(const std::pair<int, int> pos)
+void TiledImageGrid::select_grid_pos(const std::pair<float, float> pos)
 {
-	const std::pair<int, int> grid_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const std::pair<int, int> grid_pos((int) pos.first / TILE_SIZE, (int) pos.second / TILE_SIZE);
 	LevelEditorDataManager::get_instance().select_tiled_image(grid_pos);
 	this->load_image_layer(LevelEditorDataManager::GRID_LINES_LAYER);
 }

@@ -173,6 +173,23 @@ void InventoryScreen::reset_tab_mode()
 	this->tab_mode = TAB_MODE_DEFAULT;
 }
 
+const bool InventoryScreen::select_tab_via_click(const float mouse_x, const float mouse_y)
+{
+	const int x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(inventory_backdrop())) / 2;
+	const int y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(inventory_backdrop())) / 2;
+	const int tab_spacing = 130;
+	const int tab_height = 51;
+	for (int i = 0; i < NUM_INVENTORY_TABS; i++) {
+		const float tab_x = x_off + i * tab_spacing, tab_y = y_off - tab_height;
+		if (mouse_x >= tab_x && mouse_y >= tab_y && mouse_x < tab_x + tab_spacing && mouse_y < tab_y + tab_height && i != this->tab_index) {
+			this->tab_index = i;
+			this->reset_tab_mode();
+			return true;
+		}
+	}
+	return false;
+}
+
 const int InventoryScreen::num_inventory_rows()
 {
 	return INVENTORY_ROWS;
@@ -332,6 +349,195 @@ void InventoryScreen::map_tab_menu_right()
 	}
 }
 
+void InventoryScreen::map_tab_mouse_cursor_update(const float mouse_x, const float mouse_y)
+{
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	ALLEGRO_BITMAP * map_frame_bitmap = this->map_frame();
+	const int map_frame_width = al_get_bitmap_width(map_frame_bitmap), map_frame_height = al_get_bitmap_height(map_frame_bitmap);
+	const float x = (width - map_frame_width) / 2.0;
+	const float y = (height - map_frame_height) / 2.0;
+	const int grid_square_w = this->default_level_width / LEVEL_MAP_SCALE, grid_square_h = this->default_level_height / LEVEL_MAP_SCALE;
+	const int pad = 5;
+	const int icon_w = al_get_bitmap_width(this->map_location_icon()), icon_h = al_get_bitmap_height(this->map_location_icon());
+	const int display_loc_count = this->locations_for_display.size();
+	for (int i = 0; i < display_loc_count; i++) {
+		const std::pair<std::string, std::pair<int, int>> loc = this->locations_for_display[i];
+		const std::pair<int, int> loc_pos = loc.second;
+		const int loc_off_x = loc_pos.first / LEVEL_MAP_SCALE;
+		const int loc_off_y = loc_pos.second / LEVEL_MAP_SCALE;
+		const int loc_grid_x = loc_off_x / grid_square_w, loc_grid_y = loc_off_y / grid_square_h;
+		if (this->explored_map.find(std::pair<int, int>(loc_grid_x, loc_grid_y)) != this->explored_map.end()) {
+			const int gx = x + pad + loc_off_x - 10;
+			const int gy = y + pad + loc_off_y - 5;
+			if (mouse_x >= gx && mouse_y >= gy && mouse_x < gx + icon_w && mouse_y < gy + icon_h) {
+				this->map_selected_location_index = i;
+				break;
+			}
+		}
+	}
+}
+
+void InventoryScreen::items_tab_mouse_cursor_update(Inventory * cursor_inv, const float mouse_x, const float mouse_y, const int x_off, const int y_off) //TODO: need x off and y off too?
+{
+	if (this->tab_mode != TAB_MODE_DEFAULT) {
+		return;
+	}
+	const std::vector<std::vector<Item*>> inventory_items = cursor_inv->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	for (int row = 0; row < rows; row++) {
+		const float y = y_off + (height - backdrop_height) / 2.0 + box_height * row + 32.0;
+		if (mouse_y >= y && mouse_y < y + item_cell_h) {
+			for (int col = 0; col < cols; col++) {
+				const float x = x_off + (width - box_width * cols) / 2.0 + col * box_width;
+				if (mouse_x >= x && mouse_x < x + item_cell_w) {
+					this->inventory_selection = std::pair<int, int>(col, row);
+					return;
+				}
+			}
+		}
+	}
+}
+
+void InventoryScreen::items_tab_hotbar_mouse_cursor_update(const float mouse_x, const float mouse_y, const int x_off, const int y_off)
+{
+	const std::vector<std::vector<Item*>> inventory_items = this->inventory->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	const int hotbar_index = this->inventory->get_hotbar_index();
+	const float y = y_off + (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 100;
+	const int size = HOTBAR_SIZE;
+	if (mouse_y >= y && mouse_y < y + item_cell_h) {
+		for (int i = 0; i < size; i++) {
+			const float x = x_off + (width - box_width * size) / 2 + i * box_width;
+			if (mouse_x >= x && mouse_x < x + item_cell_w) {
+				this->inventory_selection = std::pair<int, int>(i, -1);
+				inventory->set_hotbar_index(i);
+				return;
+			}
+		}
+	}
+}
+
+void InventoryScreen::items_tab_trash_mouse_cursor_update(const float mouse_x, const float mouse_y)
+{
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int back_width = al_get_bitmap_width(inventory_backdrop());
+	const int back_height = al_get_bitmap_height(inventory_backdrop());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int size = HOTBAR_SIZE;
+
+	const float x = (width - box_width * size) / 2;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 28;
+	ALLEGRO_BITMAP * trash_box = this->item_box_trash();
+	const int trash_w = al_get_bitmap_width(trash_box), trash_h = al_get_bitmap_height(trash_box);
+	if (mouse_x >= x && mouse_y >= y && mouse_x < x + trash_w && mouse_y < y + trash_h) {
+		this->inventory_selection = std::pair<int, int>(0, -2);
+	}
+}
+
+void InventoryScreen::items_tab_left_click(const float mouse_x, const float mouse_y, const int x_off, const int y_off)
+{
+	if (this->tab_mode != TAB_MODE_DEFAULT) {
+		this->tab_mode = TAB_MODE_DEFAULT;
+	}
+	const std::vector<std::vector<Item*>> inventory_items = this->inventory->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	for (int row = 0; row < rows; row++) {
+		const float y = y_off + (height - backdrop_height) / 2.0 + box_height * row + 32.0;
+		if (mouse_y >= y && mouse_y < y + item_cell_h) {
+			for (int col = 0; col < cols; col++) {
+				const float x = x_off + (width - box_width * cols) / 2.0 + col * box_width;
+				if (mouse_x >= x && mouse_x < x + item_cell_w) {
+					this->inventory_selection = std::pair<int, int>(col, row);
+					this->items_tab_select();
+					return;
+				}
+			}
+		}
+	}
+	this->items_tab_hotbar_left_click(mouse_x, mouse_y, 0, 0);
+}
+
+void InventoryScreen::items_tab_hotbar_left_click(const float mouse_x, const float mouse_y, const int x_off, const int y_off)
+{
+	const std::vector<std::vector<Item*>> inventory_items = this->inventory->get_inventory_items();
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int backdrop_height = al_get_bitmap_height(inventory_backdrop());
+	const int rows = inventory_items.size();
+	const int cols = inventory_items[0].size();
+	const int item_cell_w = al_get_bitmap_width(this->item_box_inventory());
+	const int item_cell_h = al_get_bitmap_height(this->item_box_inventory());
+	const int hotbar_index = this->inventory->get_hotbar_index();
+	const float y = y_off + (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 100;
+	const int size = HOTBAR_SIZE;
+	if (mouse_y >= y && mouse_y < y + item_cell_h) {
+		for (int i = 0; i < size; i++) {
+			const float x = x_off + (width - box_width * size) / 2 + i * box_width;
+			if (mouse_x >= x && mouse_x < x + item_cell_w) {
+				this->inventory_selection = std::pair<int, int>(i, -1);
+				inventory->set_hotbar_index(i);
+				this->items_tab_select();
+				return;
+			}
+		}
+	}
+	this->items_tab_trash_left_click(mouse_x, mouse_y);
+}
+
+void InventoryScreen::items_tab_trash_left_click(const float mouse_x, const float mouse_y)
+{
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int back_width = al_get_bitmap_width(inventory_backdrop());
+	const int back_height = al_get_bitmap_height(inventory_backdrop());
+	const int box_width = al_get_bitmap_width(item_box_hotbar());
+	const int box_height = al_get_bitmap_height(item_box_hotbar());
+	const int size = HOTBAR_SIZE;
+
+	const float x = (width - box_width * size) / 2;
+	const float y = (height + al_get_bitmap_height(inventory_backdrop())) / 2 - box_height - 28;
+	ALLEGRO_BITMAP * trash_box = this->item_box_trash();
+	const int trash_w = al_get_bitmap_width(trash_box), trash_h = al_get_bitmap_height(trash_box);
+	if (mouse_x >= x && mouse_y >= y && mouse_x < x + trash_w && mouse_y < y + trash_h) {
+		this->inventory_selection = std::pair<int, int>(0, -2);
+		if (dragging_item() != NULL && !dragging_item()->is_empty() && dragging_item()->get_may_be_discarded()) {
+			this->inventory->remove_item_with_key(dragging_item()->get_item_key());
+		}
+		return;
+	}
+}
+
 std::vector<Quest*> InventoryScreen::quests_for_display()
 {
 	std::vector<Quest*> quests;
@@ -430,6 +636,130 @@ void InventoryScreen::journal_tab_secondary_select()
 	}
 }
 
+void InventoryScreen::journal_tab_left_click(const float mouse_x, const float mouse_y)
+{
+	if (this->tab_mode != TAB_MODE_DEFAULT) {
+		this->tab_mode = TAB_MODE_DEFAULT;
+		return;
+	}
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+	const int quest_items_off_x = 16, quest_items_off_y = 16;
+	const int x_pad = 4, y_pad = 4;
+
+	std::vector<QuestItem *> quest_items = this->quest_data->get_quest_items();
+	for (QuestItem * qi : quest_items) {
+		const int qi_x = qi->get_inventory_pos_x(), qi_y = qi->get_inventory_pos_y();
+		const int x = x_off + quest_items_off_x + qi_x * (TILE_SIZE + x_pad);
+		const int y = y_off + quest_items_off_y + qi_y * (TILE_SIZE + y_pad);
+		if (mouse_x >= x && mouse_y >= y && mouse_x < x + TILE_SIZE && mouse_y < y + TILE_SIZE) {
+			this->quest_selection = std::pair<int, int>(qi_x, qi_y);
+			this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+			return;
+		}
+	}
+
+	// quests
+
+	const int quest_pane_x = x_off + back_w / 2 + 24, quest_pane_y = y_off + 24;
+	const int qx = quest_pane_x + 16;
+	const int quest_entry_height = 63;
+	const int quest_count = this->quests_for_display().size();
+	const int draw_quest_rows = std::min(quest_count, 5);
+	const float q_w = al_get_bitmap_width(this->quest_label_backdrop()), q_h = al_get_bitmap_height(this->quest_label_backdrop());
+	std::vector<Quest *> quests = this->quests_for_display();
+	for (int i = 0; i < draw_quest_rows; i++) {
+		Quest * q = quests[i + this->quest_scroll_offset];
+		const int qy = quest_pane_y + 16 + (i * quest_entry_height);
+		if (mouse_x >= qx && mouse_y >= qy && mouse_x < qx + q_w && mouse_y < qy + q_h) {
+			this->quest_selection = std::pair<int, int>(QUEST_INVENTORY_COLS, i + this->quest_scroll_offset);
+			this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+			return;
+		}
+	}
+	//TODO: allow scroll wheel?
+	const bool is_hiding_quests_up = this->quest_scroll_offset > 0;
+	const bool is_hiding_quests_down = this->quest_scroll_offset + 5 < quest_count;
+	if (is_hiding_quests_up) {
+		const int a_x = quest_pane_x + 16 + al_get_bitmap_width(quest_label_backdrop()) + 6,
+			a_y = quest_pane_y + 16;
+		const int a_w = al_get_bitmap_width(quest_scroll_up_arrow()), a_h = al_get_bitmap_width(quest_scroll_up_arrow());
+		if (mouse_x >= a_x && mouse_y >= a_y && mouse_x < a_x + a_w && mouse_y < a_y + a_h) {
+			this->quest_scroll_offset = std::max(0, this->quest_scroll_offset - 1);
+			return;
+		}
+	}
+	if (is_hiding_quests_down) {
+		const int a_x = quest_pane_x + 16 + al_get_bitmap_width(quest_label_backdrop()) + 6,
+			a_y = quest_pane_y + al_get_bitmap_height(this->quest_pane_backdrop()) - al_get_bitmap_height(quest_scroll_down_arrow()) - 16;
+		const int a_w = al_get_bitmap_width(quest_scroll_down_arrow()), a_h = al_get_bitmap_width(quest_scroll_down_arrow());
+		if (mouse_x >= a_x && mouse_y >= a_y && mouse_x < a_x + a_w && mouse_y < a_y + a_h) {
+			this->quest_scroll_offset = std::min(quest_count - 5, this->quest_scroll_offset + 1);
+			return;
+		}
+	}
+}
+
+void InventoryScreen::journal_tab_cursor_update(const float mouse_x, const float mouse_y)
+{
+	if (this->tab_mode != TAB_MODE_DEFAULT) {
+		return;
+	}
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+	const int quest_items_off_x = 16, quest_items_off_y = 16;
+	const int x_pad = 4, y_pad = 4;
+
+	std::vector<QuestItem *> quest_items = this->quest_data->get_quest_items();
+	for (QuestItem * qi : quest_items) {
+		const int qi_x = qi->get_inventory_pos_x(), qi_y = qi->get_inventory_pos_y();
+		const int x = x_off + quest_items_off_x + qi_x * (TILE_SIZE + x_pad);
+		const int y = y_off + quest_items_off_y + qi_y * (TILE_SIZE + y_pad);
+		if (mouse_x >= x && mouse_y >= y && mouse_x < x + TILE_SIZE && mouse_y < y + TILE_SIZE) {
+			this->quest_selection = std::pair<int, int>(qi_x, qi_y);
+			return;
+		}
+	}
+
+	// quests
+
+	const int quest_pane_x = x_off + back_w / 2 + 24, quest_pane_y = y_off + 24;
+	const int qx = quest_pane_x + 16;
+	const int quest_entry_height = 63;
+	const int quest_count = this->quests_for_display().size();
+	const int draw_quest_rows = std::min(quest_count, 5);
+	const float q_w = al_get_bitmap_width(this->quest_label_backdrop()), q_h = al_get_bitmap_height(this->quest_label_backdrop());
+	std::vector<Quest *> quests = this->quests_for_display();
+	for (int i = 0; i < draw_quest_rows; i++) {
+		Quest * q = quests[i + this->quest_scroll_offset];
+		const int qy = quest_pane_y + 16 + (i * quest_entry_height);
+		if (mouse_x >= qx && mouse_y >= qy && mouse_x < qx + q_w && mouse_y < qy + q_h) {
+			this->quest_selection = std::pair<int, int>(QUEST_INVENTORY_COLS, i + this->quest_scroll_offset);
+			return;
+		}
+	}
+}
+
+void InventoryScreen::journal_tab_mouse_scroll_update(const int scroll)
+{
+	if (this->num_quest_rows() < 5) {
+		return;
+	}
+	if (scroll > 0) {
+		this->quest_scroll_offset = this->quest_scroll_offset - scroll >= 0 ? this->quest_scroll_offset - scroll : (this->num_quest_rows() - 4) + (this->quest_scroll_offset - scroll);
+	} else if (scroll < 0) {
+		this->quest_scroll_offset = (this->quest_scroll_offset - scroll) % (this->num_quest_rows() - 4);
+	}
+}
+
 const int InventoryScreen::encyclopedia_rows_for_display()
 {
 	if (this->selected_encyclopedia_category.empty()) {
@@ -501,6 +831,58 @@ void InventoryScreen::encyclopedia_tab_select()
 {
 	if (this->selected_encyclopedia_category.empty()) {
 		this->encyclopedia_tab_menu_right();
+	}
+}
+
+void InventoryScreen::encyclopedia_tab_cursor_update(const float mouse_x, const float mouse_y)
+{
+	//TODO: does hovering do anything in the encyclopedia tab?
+}
+
+void InventoryScreen::encyclopedia_tab_left_click(const float mouse_x, const float mouse_y)
+{
+	const int width = al_get_display_width(al_get_current_display());
+	const int height = al_get_display_height(al_get_current_display());
+	const int back_w = al_get_bitmap_width(inventory_backdrop());
+	const int back_h = al_get_bitmap_height(inventory_backdrop());
+	const int x_off = (width - back_w) / 2;
+	const int y_off = (height - back_h) / 2;
+
+	ALLEGRO_BITMAP * item_label = item_label_backdrop();
+	const int label_width = (al_get_bitmap_width(item_label));
+	const int label_x = x_off + (back_w / 4) - label_width / 2; // in the middle of the left half
+	const int label_y = y_off + back_h - al_get_bitmap_height(item_label) - 16;
+	const int encyclopedia_pane_x = x_off + back_w / 2 + 24, encyclopedia_pane_y = y_off + 24;
+	const int ex = encyclopedia_pane_x + 16;
+	const int encyclopedia_entry_height = 63;
+	const int encyclopedia_row_count = this->encyclopedia_rows_for_display();
+	const int draw_rows = std::min(encyclopedia_row_count, 5);
+	ALLEGRO_BITMAP * label_backdrop = this->encyclopedia_label_backdrop();
+	const float ew = al_get_bitmap_width(label_backdrop);
+	const float eh = al_get_bitmap_height(label_backdrop);
+	for (int i = 0; i < draw_rows; i++) {
+		const int ey = encyclopedia_pane_y + 16 + (i * encyclopedia_entry_height);
+		if (mouse_x >= ex && mouse_y >= ey && mouse_x < ex + ew && mouse_y < ey + eh) {
+			this->encyclopedia_selection = i - this->encyclopedia_scroll_offset;
+			if (this->selected_encyclopedia_category.empty()) {
+				this->selected_encyclopedia_category = this->encyclopedia->category_name(this->encyclopedia_selection);
+				this->encyclopedia_selection = 0;
+			}
+		}
+	}
+}
+
+void InventoryScreen::encyclopedia_tab_mouse_scroll_update(const int scroll)
+{
+	const int encyclopedia_rows = this->encyclopedia_rows_for_display();
+	if (encyclopedia_rows < 5) {
+		return;
+	}
+	if (scroll > 0) {
+		this->encyclopedia_scroll_offset = this->encyclopedia_scroll_offset - scroll >= 0 
+			? this->encyclopedia_scroll_offset - scroll : (encyclopedia_rows - 4) + (this->encyclopedia_scroll_offset - scroll);
+	} else if (scroll < 0) {
+		this->encyclopedia_scroll_offset = (this->encyclopedia_scroll_offset - scroll) % (encyclopedia_rows - 4);
 	}
 }
 
@@ -903,7 +1285,9 @@ void InventoryScreen::draw_journal(ALLEGRO_DISPLAY * display)
 		: quest_pane_y + 16 + (this->quest_selection.second - this->quest_scroll_offset) * quest_entry_height;
 	
 	ALLEGRO_BITMAP * select_bitmap = is_quest_item ? this->item_drag_selection() : this->quest_label_selection();
-	al_draw_bitmap(select_bitmap, select_x, select_y, 0);
+	if (is_quest_item || (this->quest_selection.second >= this->quest_scroll_offset && this->quest_selection.second < this->quest_scroll_offset + 5)) {
+		al_draw_bitmap(select_bitmap, select_x, select_y, 0);
+	}
 
 	const bool is_hiding_quests_up = this->quest_scroll_offset > 0;
 	const bool is_hiding_quests_down = this->quest_scroll_offset + 5 < quest_count;
@@ -1038,6 +1422,7 @@ void InventoryScreen::draw_encyclopedia_entry(ALLEGRO_DISPLAY * display)
 
 void InventoryScreen::update()
 {
+	this->mouse_cursor_update();
 	GameScreen::update();
 	if (this->tab_index == INVENTORY_TAB_MAP) {
 		this->map_current_location_blink_index = (this->map_current_location_blink_index + 1) % MAP_CURRENT_LOCATION_BLINK_TIME;
@@ -1151,7 +1536,7 @@ void InventoryScreen::menu_right()
 void InventoryScreen::tab_left()
 {
 	if (this->tab_index == 0) {
-		this-> tab_index = NUM_INVENTORY_TABS - 1;
+		this->tab_index = NUM_INVENTORY_TABS - 1;
 	} else {
 		this->tab_index = this->tab_index - 1;
 	}
@@ -1206,6 +1591,74 @@ void InventoryScreen::secondary_select()
 		break;
 	default:
 		break;
+	}
+}
+
+void InventoryScreen::process_mouse_click_left(const int x, const int y)
+{
+	if (this->select_tab_via_click(x, y)) {
+		return;
+	}
+	switch (this->tab_index) {
+	case INVENTORY_TAB_ITEMS:
+		this->items_tab_left_click(x, y, 0, 0);
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		this->journal_tab_left_click(x, y);
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_left_click(x, y);
+		break;
+	default:
+		break;
+	}
+}
+
+void InventoryScreen::mouse_cursor_update()
+{
+	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(this->inventory_backdrop_large())) / 2.0;
+	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(this->inventory_backdrop_large())) / 2.0;
+	switch (this->tab_index) {
+	case INVENTORY_TAB_ITEMS:
+		switch (this->tab_mode) {
+		case TAB_MODE_DEFAULT:
+			this->items_tab_mouse_cursor_update(this->inventory, this->mouse_pos.first, this->mouse_pos.second, 0, 0);
+			this->items_tab_hotbar_mouse_cursor_update(this->mouse_pos.first, this->mouse_pos.second, 0, 0);
+			if (this->allow_trash()) {
+				this->items_tab_trash_mouse_cursor_update(this->mouse_pos.first, this->mouse_pos.second);
+			}
+			break;
+		default:
+			break;
+		}
+		break;
+	case INVENTORY_TAB_MAP:
+		this->map_tab_mouse_cursor_update(this->mouse_pos.first, this->mouse_pos.second);
+		break;
+	case INVENTORY_TAB_JOURNAL:
+		this->journal_tab_cursor_update(this->mouse_pos.first, this->mouse_pos.second);
+		break;
+	case INVENTORY_TAB_ENCYCLOPEDIA:
+		this->encyclopedia_tab_cursor_update(this->mouse_pos.first, this->mouse_pos.second);
+		break;
+	default:
+		break;
+	}
+}
+
+void InventoryScreen::mouse_scroll_update(const int scroll)
+{
+	if (std::abs(scroll) > 0) {
+		switch (this->tab_index) {
+		case INVENTORY_TAB_JOURNAL:
+			this->journal_tab_mouse_scroll_update(scroll);
+			break;
+		case INVENTORY_TAB_ENCYCLOPEDIA:
+			this->encyclopedia_tab_mouse_scroll_update(scroll);
+			break;
+		default:
+			break;
+		}
 	}
 }
 

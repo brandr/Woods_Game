@@ -11,6 +11,7 @@ Configurations::Configurations()
 	Register("master_volume", &master_volume);
 	Register("music_volume", &music_volume);
 	Register("sfx_volume", &sfx_volume);
+	Register("text_scroll_speed", &text_scroll_speed);
 }
 
 
@@ -77,4 +78,14 @@ const float Configurations::get_music_volume()
 const float Configurations::get_sfx_volume()
 {
 	return this->sfx_volume.value();
+}
+
+const int Configurations::get_text_scroll_speed()
+{
+	return this->text_scroll_speed.value();
+}
+
+void Configurations::set_text_scroll_speed(const int value)
+{
+	this->text_scroll_speed = value;
 }

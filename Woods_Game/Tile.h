@@ -23,8 +23,6 @@ class Tile:
 private:
 	Block block;
 	int sheet_row = 0;
-	xmls::xInt tile_pos_x;
-	xmls::xInt tile_pos_y;
 	xmls::xInt tile_type_index;
 	xmls::xInt tile_sheet_row;
 	xmls::xInt tile_sheet_col;
@@ -37,13 +35,13 @@ public:
 	static Tile *null_tile(TileSet *tileset, int tile_x, int tile_y);
 	virtual void set_content(std::string image_filename, Rect* image_subsection, std::pair<int, int> position);
 	virtual void unload_content();
-	void reset(TileSet *tileset, Tile *t);
+	void reset(TileSet *tileset, Tile *t, const int tile_x, const int tile_y);
 	void reset(TileSet *tileset, const int tile_index);
 	void reset_for_reload();
-	virtual void draw(ALLEGRO_DISPLAY*, const int, const int);
-	void draw_block(ALLEGRO_DISPLAY*, const int, const int);
-	void initialize_block();
+	virtual void draw(ALLEGRO_DISPLAY*, const int, const int, const int screen_w, const int screen_h);
+	void draw_block(ALLEGRO_DISPLAY*, const int, const int, const int screen_w, const int screen_h);
 	void replace_block(TileSet * tileset, const int block_index, std::pair<int, int> ss_pos, std::pair<int, int> pos);
+	void replace_block(TileSet* tileset, Block * other_block, std::pair<int, int> ss_pos, std::pair<int, int> pos);
 	void remove_block();
 	void remove_edges();
 	Rect *get_bitmap_subsection();
@@ -53,8 +51,6 @@ public:
 	const int get_tile_type_index();
 	const int get_sheet_row();
 	const int get_sheet_col();
-	//void set_speed_mod(const float sm);
-	//float get_speed_mod();
 	void add_edge(const int row, const int dir, std::string tile_key);
 	std::vector<TileEdge*> get_tile_edges();
 	const bool has_edges();

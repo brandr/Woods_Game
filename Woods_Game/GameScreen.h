@@ -39,13 +39,16 @@ protected:
 	InputManager input;
 	FileManager file_manager;
 	std::unique_ptr<Configurations> config;
+	std::unique_ptr<Configurations> default_config;
 	std::map<int, std::map<std::pair<int,int>, controlFunc>> control_map;	
 	std::map<int, bool> input_map;
 	std::map<int, std::pair<float, float>> joystick_pos_map;
 	std::pair<int, int> mouse_pos;
+	int last_mouse_z = 0;
+	int mouse_scroll = 0; //how much the scroll wheel has moved since last frame
 	int screen_flag = FLAG_NONE;
 	std::map<int, ALLEGRO_FONT*> font_map;
-	std::string load_game_filepath;
+	std::string load_game_filepath = "";
 public:
 	GameScreen();
 	~GameScreen();
@@ -88,7 +91,8 @@ public:
 	virtual void mouse_cursor_update();
 	virtual void set_mouse_position(std::pair<int, int> pos);
 	virtual void process_mouse_click_left(const int x, const int y);
-	virtual void update_mouse_position(const int x, const int y);
+	virtual void process_mouse_click_right(const int x, const int y);
+	virtual void update_mouse_position(const int x, const int y, const int z);
 	virtual void confirm_selection();
 	virtual void select();
 	virtual void secondary_select();
@@ -96,6 +100,7 @@ public:
 	virtual void interact_action();
 	virtual void use_item_action();
 	virtual void open_inventory_action();
+	virtual void toggle_run_action();
 	virtual void hotbar_left_action();
 	virtual void hotbar_right_action();
 	virtual void a_button_action();

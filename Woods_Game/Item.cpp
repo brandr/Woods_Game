@@ -9,9 +9,9 @@ Item::Item()
 	Register("inventory_pos_y", &inventory_pos_y);
 	Register("may_be_discarded", &may_be_discarded);
 	Register("item_description", &item_description);
-	Register("swing_key", &swing_key);
 	Register("item_name", &item_name);
 	Register("item_display_name", &item_display_name);
+	Register("swing_key", &swing_key);
 	Register("item_attributes", &item_attributes);
 }
 
@@ -27,10 +27,10 @@ Item::Item(Item * copy)
 	Register("inventory_pos_x", &inventory_pos_x);
 	Register("inventory_pos_y", &inventory_pos_y);
 	Register("may_be_discarded", &may_be_discarded);
-	Register("item_description", &item_description);
-	Register("swing_key", &swing_key);
+	Register("item_description", &item_description);	
 	Register("item_name", &item_name);
 	Register("item_display_name", &item_display_name);
+	Register("swing_key", &swing_key);
 	Register("item_attributes", &item_attributes);
 	load_content(copy->get_item_name(), copy->get_item_key());
 	this->item_name = copy->get_item_name();

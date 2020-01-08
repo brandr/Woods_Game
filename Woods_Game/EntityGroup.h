@@ -22,7 +22,8 @@ public:
 	EntityGroup();
 	EntityGroup(std::pair<int, int> root_offset);
 	~EntityGroup();
-	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual void draw(ALLEGRO_DISPLAY* display, const int x_offset, const int y_offset, const int screen_w, const int screen_h);
+	virtual const bool should_draw(const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	virtual int get_type();
 	void set_entity_group_name(std::string name);
 	void set_sheet_pos(int col, int row);

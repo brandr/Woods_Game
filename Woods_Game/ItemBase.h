@@ -45,6 +45,7 @@ public:
 	virtual const xmls::Collection<ItemAttribute> get_item_attributes();
 	virtual const std::vector<ItemAttribute*> get_item_attributes_vec();
 	virtual const std::vector<ItemAttribute*> get_item_attributes_vec_copy();
+	virtual const bool has_item_attribute(const std::string attr_key);
 	virtual const int get_item_attribute(const std::string attr_key);
 	virtual const bool is_empty();
 	virtual const int get_inventory_pos_x();

@@ -4,6 +4,17 @@
 #define JOYSTICK_DEADZONE 0.1f
 #define PLAYER_VISION_RADIUS 400
 
+#define WALKING_SPEED_RATIO 0.5f;
+
+//TODO: tweak stamina constants as necessary
+#define STAMINA_CONSUMPTION_MULTIPLIER 1.0f 
+#define STAMINA_SLOW_1_RATIO 0.250f
+#define STAMINA_SLOW_2_RATIO 0.125f
+#define STAMINA_SLOW_1_SPEED_RATIO 0.80f
+#define STAMINA_SLOW_2_SPEED_RATIO 0.55f
+#define STAMINA_EMPTY_SPEED_RATIO 0.16f
+#define STAMINA_PASSED_OUT_RATIO 0.60f
+
 #include "AudioManager.h"
 #include "Being.h"
 #include "Critter.h"
@@ -33,12 +44,17 @@ class Player :
 {
 private:
 	xmls::xFloat jump_speed;
+	xmls::xInt current_stamina;
+	xmls::xInt max_stamina;
 	xmls::xString spawn_key;
+	xmls::xBool is_running = false;
+	
 	std::map<int, bool> move_map;
 	std::pair<float, float> move_joystick_pos;
 	bool jumping = false;
 	bool exit_level_check(std::pair<int, int>);
 	bool exit_level_flag = false; //TODO: store this in a larger set of flags if we add more flags
+	int stamina_counter = 0;
 	std::map<std::string, std::string> pending_trigger_updates;
 	std::map<std::string, bool> pending_quest_item_updates;
 	std::string destination_level_key_override = "";
@@ -53,7 +69,11 @@ private:
 	bool should_close_dialog = false;
 	bool should_open_calendar = false;
 	void quest_item_update(World * world, Level * level, GlobalTime * time);
+	void time_update(World * world, Level * level, GlobalTime * time);
 	void visible_entities_update(World * world, Level * level, GlobalTime * time);
+	void stamina_update(World * world, Level * level, GlobalTime * time);
+	const bool has_low_stamina_1();
+	const bool has_low_stamina_2();
 	void collect_item_pickup(World * world, Level * level, ItemPickup * pickup);
 	const bool can_swing_at_entity(Entity * e, const std::string swing_key);
 	void catch_critter(World* world, Level * level, Critter * critter);
@@ -64,6 +84,8 @@ protected:
 	virtual const float calculate_pan_for_sound(EntitySound * sound);
 	virtual void update_animation_dir();
 	virtual const std::string get_footstep_filename_suffix();
+	virtual const bool should_adjust_anim_duration();
+	virtual const float speed_for_anim_duration();
 public:
 	Player();
 	virtual ~Player();
@@ -78,7 +100,7 @@ public:
 	void update_input_side_scrolling(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void update_input_top_down(std::map<int, bool>, std::map<int, std::pair<float, float>>);
 	void interact_update(World * world, Level * level, GlobalTime * time);
-	virtual void draw(ALLEGRO_DISPLAY * display, int x_off, int y_off);
+	virtual void draw(ALLEGRO_DISPLAY * display, const int x_off, const int y_off, const int screen_w, const int screen_h);
 	//audio
 	virtual void emit_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
@@ -155,6 +177,17 @@ public:
 	// quests
 	void add_pending_quest_item_update(const std::string quest_item_key, const bool has_item);
 	void clear_pending_quest_item_updates();
+	// damage 
+	virtual void take_damage(const int damage);
+	// stamina
+	void set_stamina_full();
+	void set_reduced_stamina();
+	const bool has_full_stamina();
+	const int get_max_stamina();
+	const int get_current_stamina();
+	// running
+	void toggle_run();
+	
 };
 
 #endif

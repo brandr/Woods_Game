@@ -62,7 +62,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->world.generate_levels();
 	this->world.generate_map_images();
 	const std::string initial_state_filename = new_game_path + "world_state";
-	this->world.reload_world_state(initial_state_filename);
+	this->world.load_world_state(initial_state_filename);
 	const std::string initial_quest_data_filename = new_game_path + "quest_data";
 	this->world.reload_quest_data(initial_quest_data_filename);
 	const std::string encyclopedia_path = new_game_path + "encyclopedia";
@@ -70,8 +70,8 @@ void GameImageManager::start_new_game(const std::string world_key)
 	this->load_item_templates();
 	this->load_critter_templates();
 	this->world.spawn_critters(this->get_current_global_time());
-	//this->load_filter_images();
 	this->load_player();
+	this->player->set_stamina_full(); // don't do this in load_player(), because we might not always have full stamina
 	this->current_global_time = new GlobalTime(1, START_TIME_HOUR*TIME_RATIO);
 	this->load_all_cutscenes();
 	this->save_game();
@@ -93,6 +93,7 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->world.load_dungeons(dungeons_path);
 	this->world.load_npcs();
 	this->world.generate_map_images();
+	this->world.initialize_tiles();
 	const std::string world_state_path = "resources/load/saves/" + world_key + "/" + "day_" + std::to_string(day) + "/world_state";
 	this->world.reload_world_state(world_state_path);
 	const std::string quest_data_path = "resources/load/saves/" + world_key + "/quest_data";
@@ -102,7 +103,6 @@ void GameImageManager::full_load_game_from_save(const std::string save_file)
 	this->load_item_templates();
 	this->load_critter_templates();
 	this->world.spawn_critters(this->get_current_global_time());
-	//this->load_filter_images();
 	this->load_player();
 	this->load_all_cutscenes();
 	this->save_game();
@@ -132,9 +132,9 @@ void GameImageManager::load_game_from_save(const int day, const int time)
 	this->load_item_templates();
 	this->load_critter_templates();
 	this->world.spawn_critters(this->get_current_global_time()); //TODO: sholud we be spawning critters here? or should they already be here by this point?
-	//this->load_filter_images();
 	this->load_player();
 	this->world.recalculate_npc_paths();
+	this->world.initialize_tiles();
 	this->save_game();
 	
 }
@@ -195,6 +195,7 @@ void GameImageManager::load_player()
 {
 	this->player = this->world.get_player();
 	this->player->load_content_from_attributes();
+	//this->player->set_stamina_full();
 	player->load_additional_masks_from_attributes("player");
 	this->current_level = this->world.extract_current_level(player, "");
 	this->current_level->add_being(player);
@@ -453,7 +454,7 @@ Inventory * GameImageManager::get_exchange_inventory()
 
 void GameImageManager::update_quests()
 {
-	this->world.update_quests();
+	this->world.update_quests(this->current_level);
 }
 
 QuestData * GameImageManager::get_quest_data()
@@ -541,7 +542,7 @@ void GameImageManager::time_update()
 
 void GameImageManager::npc_update()
 {
-	this->world.npc_update(this->current_global_time, this->game_mode);
+	this->world.npc_update(this->current_level, this->current_global_time, this->game_mode);
 }
 
 GlobalTime * GameImageManager::get_current_global_time()
@@ -663,6 +664,7 @@ void GameImageManager::change_player_level()
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
 	if (current_level) {
+		const bool is_active = this->game_mode == TOP_DOWN;
 		current_level->draw(display, current_global_time, get_camera_offset(display));
 		this->draw_filters(display, get_camera_offset(display));
 	}
@@ -670,9 +672,6 @@ void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 
 void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
 {
-	//TODO: check whether we actually need a light filter before drawing it
-	//TODO: could draw time filters in level so we adjust behavior if we're indoors vs outdoors
-	//this->draw_time_light_filter(display, offset);
 	if (this->player != NULL && this->player->has_active_cutscene()) {
 		const int width = al_get_display_width(display), height = al_get_display_height(display);
 		const std::vector<ALLEGRO_BITMAP *> filters = player->get_cutscene_filters(display, width, height);
@@ -775,6 +774,14 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 					cutscene->set_has_opened_dialog(true);
 				}
 			}
+			else if (action_key == ACTION_SET_REDUCED_STAMINA) {
+				player->set_reduced_stamina();
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == ACTION_SET_FULL_STAMINA) {
+				player->set_stamina_full();
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
 		}
 		if (cutscene->should_update_trigger_statuses()) {
 			std::vector<TriggerStatus *> statuses = cutscene->trigger_statuses();
@@ -826,4 +833,27 @@ const std::pair<int, int> GameImageManager::current_player_location_for_map()
 const std::set<std::pair<int, int>> GameImageManager::explored_map()
 {
 	return this->world.explored_map();
+}
+
+void GameImageManager::mouse_scroll_update(const int scroll)
+{
+	if (std::abs(scroll) > 0) {
+		const int current_index = this->get_player()->get_inventory().get_hotbar_index();
+		const int index = current_index - scroll >= 0 ? (current_index - scroll) % (HOTBAR_SIZE): HOTBAR_SIZE + (current_index - scroll);
+		this->get_player()->get_inventory().set_hotbar_index(index);
+	}
+}
+
+void GameImageManager::process_mouse_click_left(const int mouse_x, const int mouse_y)
+{
+	if (this->current_level != NULL) {
+		this->current_level->process_mouse_click_left(&this->world, this->current_global_time, this->get_camera_offset(al_get_current_display()), mouse_x, mouse_y);
+	}
+}
+
+void GameImageManager::process_mouse_click_right(const int mouse_x, const int mouse_y)
+{
+	if (this->current_level != NULL) {
+		this->current_level->process_mouse_click_right(&this->world, this->current_global_time, this->get_camera_offset(al_get_current_display()), mouse_x, mouse_y);
+	}
 }

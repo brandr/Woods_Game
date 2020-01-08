@@ -300,20 +300,20 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 	DjikstraNode * start_node = this->get_tile_node(start_t_pos.first, start_t_pos.second);
 	DjikstraNode * dest_node = this->get_tile_node(dest_t_pos.first, dest_t_pos.second);
 	if (start_node == NULL || dest_node == NULL) {
-		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1);
+		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1.0f);
 	}
 
 	std::vector<std::pair<int, int>> open_adjacent_tiles
 		= this->open_adjacent_tiles(
 			start_t_pos, dest_t_pos, visited);
 	if (open_adjacent_tiles.empty()) {
-		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1);
+		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1.0f);
 	}
 	float adj_start_cost = 1.0;
 
 	shortest_path.push_back(start_t_pos);
 	if (start_t_pos == dest_t_pos) {
-		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, 0);
+		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, 0.0f);
 	}
 	auto it_start = distances.find(start_t_pos_key);
 	if (it_start == distances.end()) {
@@ -334,7 +334,6 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 			const float adj_dest_cost = this->calculate_edge_cost(adj_t, dest_t_pos);
 			distances[adj_t_key][dest_t_pos_key] = 0;
 			distances[start_t_pos_key][dest_t_pos_key] = adj_dest_cost;
-			//distances[origin_t_pos_key][dest_t_pos_key] = dist_tally + adj_dest_cost;
 			shortest_path.push_back(std::pair<int, int>(dest_t_pos.first, dest_t_pos.second));
 			// the destination is adjacent, so just go there
 			return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, adj_dest_cost);
@@ -413,7 +412,7 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 		// we add cost to the shortest dist to denote that we have to travel to the adjacent tile to reach it
 		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, shortest_dist + adj_start_cost);
 	}
-	return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1);
+	return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1.0f);
 }
 
 DjikstraNode::DjikstraNode()
@@ -462,9 +461,9 @@ void PathNodeDjikstraPath::initialize_node(World * world, NPC * npc, Level * lev
 {
 	const std::string start_node_key = start_node->get_node_id();
 	TileDjikstraPath tile_path(level, npc, true);
-	const std::pair<int, int> origin_t_pos(start_node->get_x() / TILE_SIZE, start_node->get_y() / TILE_SIZE);
+	const std::pair<int, int> origin_t_pos((int) start_node->get_x() / TILE_SIZE, (int) start_node->get_y() / TILE_SIZE);
 	DjikstraNode * djikstra_node = new DjikstraNode();
-	djikstra_node->position = std::pair<int, int>(start_node->get_x(), start_node->get_y());
+	djikstra_node->position = std::pair<int, int>((int) start_node->get_x(), (int) start_node->get_y());
 	djikstra_node->level_key = level->get_filename();
 	djikstra_node->node_key = start_node_key;
 	djikstra_node->node_cost = 1.0;
@@ -476,7 +475,7 @@ void PathNodeDjikstraPath::initialize_node(World * world, NPC * npc, Level * lev
 		PathNode * next_node = level->find_path_node_with_key(neighbor->node_id.value());
 		const std::string next_node_key = next_node->get_node_id();
 		if (next_node != NULL) {
-			const std::pair<int, int> dest_t_pos(next_node->get_x() / TILE_SIZE, next_node->get_y() / TILE_SIZE);
+			const std::pair<int, int> dest_t_pos((int) next_node->get_x() / TILE_SIZE, (int) next_node->get_y() / TILE_SIZE);
 			const std::pair<std::vector<std::pair<int, int>>, float> shortest_path
 				= tile_path.calculate_shortest_tile_path(origin_t_pos, dest_t_pos);
 			const std::vector<std::pair<int, int>> tile_path = shortest_path.first;
@@ -508,7 +507,6 @@ void PathNodeDjikstraPath::initialize_node(World * world, NPC * npc, Level * lev
 					this->initialize_node(world, npc, next_level, next_path_node);
 				}
 				DjikstraNode * next_djikstra_node = this->node_map[next_node_key];
-				//TODO: might not be able to use an empty vector for tile path, and/or may need to refactor
 				djikstra_node->add_neighbor(next_djikstra_node, 1.0, std::vector<std::pair<int, int>>());
 			}
 		}
@@ -548,12 +546,12 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 	DjikstraNode * dest_d_node = this->get_djikstra_path_node(dest_node_level_key, dest_node_id);
 
 	if (start_d_node == NULL || dest_d_node == NULL) {
-		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1);
+		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1.0f);
 	}
 
 	std::vector<std::pair<DjikstraNode *, float>> adjacent_d_nodes = start_d_node->neighbors;
 	if (adjacent_d_nodes.empty()) {
-		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1);
+		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1.0f);
 	}
 
 	shortest_path.push_back(start_d_node);
@@ -568,7 +566,7 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 		distances[start_node_key][dest_node_key] = 0;
 		shortest_path.push_back(dest_d_node);
 		// we're at the destination, so just stay there, so just go there
-		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, 0);
+		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, 0.0f);
 	}
 	std::map<std::string, float> origin_dists = distances[origin_node_key];
 	std::map<std::string, float> start_dists = distances[start_node_key];
@@ -581,11 +579,11 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 		auto it_adj = distances.find(adj_node_key);
 		if (it_adj == distances.end()) {
 			distances[adj_node_key] = std::map<std::string, float>();
-			distances[adj_node_key][adj_node_key] = 0;
+			distances[adj_node_key][adj_node_key] = 0.0f;
 		}
 		if (adj_d_neighbor.first->node_key == dest_node_id) {
 			
-			distances[adj_node_key][dest_node_key] = 0;
+			distances[adj_node_key][dest_node_key] = 0.0f;
 			distances[start_node_key][dest_node_key] = start_to_adj_cost;
 			shortest_path.push_back(dest_d_node);
 			// the destination is adjacent, so just go there
@@ -601,7 +599,7 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 		bool found_new_shortest = it_origin_adj == origin_dists.end();
 		if (!found_new_shortest) {
 			const float old_shortest = distances[origin_node_key][adj_node_key];
-			found_new_shortest = old_shortest < 0 || dist_tally + start_to_adj_cost < old_shortest;
+			found_new_shortest = old_shortest < 0.0f || dist_tally + start_to_adj_cost < old_shortest;
 		}
 		// we found a new shortest path to the adjacent tile, so add it to the map
 		if (found_new_shortest) {
@@ -613,7 +611,7 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 				dest_node_id, dest_node_level_key,
 				distances,
 				dist_tally + start_to_adj_cost); 
-								 // an empty path means it's impossible
+			// an empty path means it's impossible
 			if (!adj_t_path.first.empty() && adj_t_path.second >= 0) {
 				const float adj_dist = adj_t_path.second;
 				distances[adj_node_key][dest_node_key] = adj_dist;
@@ -642,7 +640,7 @@ std::pair<std::vector<DjikstraNode*>, float> PathNodeDjikstraPath::calculate_sho
 		// we add the adj cost to the shortest dist to denote that we have to travel to the adjacent node to reach it
 		return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, shortest_dist + shortest_adj_cost);
 	}
-	return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1);
+	return std::pair<std::vector<DjikstraNode*>, float>(shortest_path, -1.0f);
 }
 
 PathNodeDjikstraPath::PathNodeDjikstraPath()
@@ -656,9 +654,9 @@ PathNodeDjikstraPath::PathNodeDjikstraPath(World * world, NPC * npc, Level * des
 
 PathNodeDjikstraPath::PathNodeDjikstraPath(World * world, NPC * npc)
 {
-	std::cout << "START initializing pathing nodes\n";
+	//std::cout << "START initializing pathing nodes\n";
 	this->initialize_nodes(world, npc);
-	std::cout << "FINISH initializing pathing nodes\n";
+	//std::cout << "FINISH initializing pathing nodes\n";
 }
 
 PathNodeDjikstraPath::~PathNodeDjikstraPath()
@@ -694,7 +692,8 @@ const std::pair<std::vector<std::pair<int, int>>, float> PathNodeDjikstraPath::g
 			return start_node->neighbor_paths[dest_node_key];
 		}
 	}
-	return std::pair<std::vector<std::pair<int, int>>, float>(std::vector<std::pair<int, int>>(), -1.0);
+	std::vector<std::pair<int, int>> empty_vect;
+	return std::pair<std::vector<std::pair<int, int>>, float>(empty_vect, -1.0f);
 }
 
 void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, void * arg)
@@ -703,7 +702,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 	double start_time = al_get_time();
 	double accounted_time = 0.0;
 
-	bool enable_logging = true; //temp
+	bool enable_logging = false; //temp
 
 	if (enable_logging) {
 		std::cout << "--------------------------------------\n";
@@ -761,7 +760,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 		for (int i = 0; i < level_node_count; i++) {
 			al_lock_mutex(data->mutex);
 			const std::pair<int, int> current_level_node_t_pos
-			(data->current_level_path_nodes[i]->get_x() / TILE_SIZE, data->current_level_path_nodes[i]->get_y() / TILE_SIZE);
+			((int) data->current_level_path_nodes[i]->get_x() / TILE_SIZE, (int) data->current_level_path_nodes[i]->get_y() / TILE_SIZE);
 			al_unlock_mutex(data->mutex);
 
 			if (path_around_moving && data->tile_djikstra_path->tile_is_blocked(current_level_node_t_pos.first, current_level_node_t_pos.second)) {
@@ -836,7 +835,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 
 		} else if (second_shortest_current_level_node_dist < 0 || second_closest_node == NULL) {
 			// there is only one possible destination, so we'll path there
-			const std::pair<int, int> primary_dest(closest_node->get_x(), closest_node->get_y());
+			const std::pair<int, int> primary_dest((int) closest_node->get_x(), (int) closest_node->get_y());
 			data->primary_destinations.push_back(std::pair<std::string, std::pair<int, int>>(closest_node->get_node_id(), primary_dest));
 			data->has_found_path = true;
 		} else {
@@ -994,7 +993,8 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 				primary_tile_path = tile_djikstra_path->calculate_shortest_tile_path
 					(data->npc_t_pos, final_tile_path_dest);
 				has_failed = primary_tile_path.second < 0;
-			} else {
+			}
+			else {
 				std::vector<std::pair<int, int>> known_primary_tiles;
 				float known_primary_dist = 0.0;
 				int shortest_dist_to_known = -1;
@@ -1009,7 +1009,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 					}
 					// if we're not trying to path around something that's moving, just keep pushing back tiles 
 					//		until we get to the shortest distance
-					const int dist_to_known = std::abs(ti_pos.first - data->npc_t_pos.first) 
+					const int dist_to_known = std::abs(ti_pos.first - data->npc_t_pos.first)
 						+ std::abs(ti_pos.second - data->npc_t_pos.second);
 					if (shortest_dist_to_known < 0 || dist_to_known < shortest_dist_to_known) {
 						shortest_dist_to_known = dist_to_known;
@@ -1017,6 +1017,9 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 						closest_index = ti;
 					}
 					known_primary_tiles.insert(known_primary_tiles.begin(), ti_pos);
+				}
+				if (closest_index == -1) {
+					has_failed = true;
 				}
 				if (!has_failed) {
 					primary_tile_path = tile_djikstra_path->calculate_shortest_tile_path

@@ -63,6 +63,12 @@ void open_inventory(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	}
 }
 
+void toggle_run(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.toggle_run_action();
+	}
+}
+
 void hotbar_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
 		screen.hotbar_left_action();
@@ -208,13 +214,19 @@ void move_joystick_axis(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 
 void move_mouse_pos(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.update_mouse_position(ev.mouse.x, ev.mouse.y);
+		screen.update_mouse_position(ev.mouse.x, ev.mouse.y, ev.mouse.z);
 	}
 }
 
 void register_mouse_click_left(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
 		screen.process_mouse_click_left(ev.mouse.x, ev.mouse.y);
+	}
+}
+
+void register_mouse_click_right(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
+	if (toggle) {
+		screen.process_mouse_click_right(ev.mouse.x, ev.mouse.y);
 	}
 }
 
@@ -253,6 +265,62 @@ ALLEGRO_BITMAP * MainGameScreen::option_arrow()
 	return ImageLoader::get_instance().get_image("ui/arrows/ui_arrow");
 }
 
+ALLEGRO_BITMAP * MainGameScreen::stamina_meter_top_full()
+{
+	return ImageLoader::get_instance().get_image("ui/stamina_meter_top_full");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::stamina_meter_top_empty()
+{
+	return ImageLoader::get_instance().get_image("ui/stamina_meter_top_empty");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::stamina_meter_middle_full()
+{
+	return ImageLoader::get_instance().get_image("ui/stamina_meter_middle_full");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::stamina_meter_middle_empty()
+{
+	return ImageLoader::get_instance().get_image("ui/stamina_meter_middle_empty");
+}
+
+ALLEGRO_BITMAP * MainGameScreen::stamina_meter_bottom()
+{
+	return ImageLoader::get_instance().get_image("ui/stamina_meter_bottom");
+}
+
+void MainGameScreen::dialog_process_mouse_click_left(const int mouse_x, const int mouse_y)
+{
+	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
+	if (dialog != NULL) {
+		const int width = al_get_bitmap_width(dialog_backdrop_full_width());
+		const int height = al_get_bitmap_height(dialog_backdrop_full_width());
+		int x = (al_get_display_width(al_get_current_display()) - width) / 2;
+		const int y = 10;
+		if (mouse_x >= x && mouse_y >= y && mouse_x < x + width && mouse_y < y + height) {
+			dialog->process_mouse_click_left(font_map[FONT_DIALOG], mouse_x, mouse_y, x, y);
+			this->dialog_advance();
+		}
+	}
+}
+
+void MainGameScreen::dialog_mouse_cursor_update(const int mouse_x, const int mouse_y)
+{
+	Dialog *dialog = game_image_manager.get_player()->get_open_dialog();
+	if (dialog != NULL) {
+		const int width = al_get_bitmap_width(dialog_backdrop_full_width());
+		const int height = al_get_bitmap_height(dialog_backdrop_full_width());
+		int x = (al_get_display_width(al_get_current_display()) - width) / 2;
+		const int y = 10;
+		if (mouse_x >= x && mouse_y >= y && mouse_x < x + width && mouse_y < y + height) {
+			if (dialog->current_page_has_options()) {
+				dialog->mouse_cursor_update(font_map[FONT_DIALOG], mouse_x, mouse_y, x, y);
+			}
+		}
+	}
+}
+
 MainGameScreen::MainGameScreen()
 {
 	set_input_map();
@@ -269,6 +337,8 @@ void MainGameScreen::set_default_controls()
 	control_map[TOP_DOWN] = std::map<std::pair<int, int>, controlFunc>();
 		// keyboard
 			// movement
+				// arrow keys
+	//TODO: maybe these should be removed since WASD is already default
 	control_map[TOP_DOWN].emplace(std::pair<int,int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_UP), &move_up);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &move_down);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &move_left);
@@ -284,6 +354,11 @@ void MainGameScreen::set_default_controls()
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_8), &number_entry);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_9), &number_entry);
 	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_0), &number_entry);
+
+		// mouse
+	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
+	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
+	control_map[TOP_DOWN].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 2), &register_mouse_click_right);
 
 		// controller
 			// movement
@@ -330,6 +405,15 @@ void MainGameScreen::set_default_controls()
 
 		// secondary select
 	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_X), &input_secondary_select);
+		// resume
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
+
+	// mouse 
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
+	control_map[MAIN_GAME_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
+	control_map[EXCHANGE_INVENTORY].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
 
 		// controller
 			// select
@@ -361,6 +445,9 @@ void MainGameScreen::set_default_controls()
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
+	// mouse 
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
+	control_map[MAIN_GAME_DIALOG].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
 
 	// calendar controls
 	// keyboard
@@ -368,11 +455,18 @@ void MainGameScreen::set_default_controls()
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_DOWN), &input_menu_down);
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_LEFT), &input_menu_left);
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_RIGHT), &input_menu_right);
+	// resume
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_KEY_DOWN, ALLEGRO_KEY_ESCAPE), &resume);
+	// mouse 
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_AXES, 0), &move_mouse_pos);
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_MOUSE_BUTTON_DOWN, 1), &register_mouse_click_left);
 	// controller
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_UP), &input_menu_up);
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_DOWN), &input_menu_down);
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_LEFT), &input_menu_left);
 	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_PAD_RIGHT), &input_menu_right);
+		// resume
+	control_map[CALENDAR].emplace(std::pair<int, int>(ALLEGRO_EVENT_JOYSTICK_BUTTON_DOWN, XC_BUTTON_B), &resume);
 }
 
 void MainGameScreen::set_mappable_controls()
@@ -381,6 +475,11 @@ void MainGameScreen::set_mappable_controls()
 	this->map_keyboard_control_action(TOP_DOWN, "interact", &interact);
 	this->map_keyboard_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_keyboard_control_action(TOP_DOWN, "open_inventory", &open_inventory);
+	this->map_keyboard_control_action(TOP_DOWN, "toggle_run", &toggle_run);
+	this->map_keyboard_control_action(TOP_DOWN, "move_up", &move_up);
+	this->map_keyboard_control_action(TOP_DOWN, "move_down", &move_down);
+	this->map_keyboard_control_action(TOP_DOWN, "move_left", &move_left);
+	this->map_keyboard_control_action(TOP_DOWN, "move_right", &move_right);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(EXCHANGE_INVENTORY, "open_inventory", &open_inventory);
 	this->map_keyboard_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
@@ -402,6 +501,7 @@ void MainGameScreen::set_mappable_controls()
 	this->map_controller_control_action(TOP_DOWN, "interact", &interact);
 	this->map_controller_control_action(TOP_DOWN, "use_item", &use_item);
 	this->map_controller_control_action(TOP_DOWN, "open_inventory", &open_inventory);
+	this->map_controller_control_action(TOP_DOWN, "toggle_run", &toggle_run);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory", &open_inventory);
 	this->map_controller_control_action(EXCHANGE_INVENTORY, "open_inventory", &open_inventory);
 	this->map_controller_control_action(MAIN_GAME_INVENTORY, "pause", &resume);
@@ -428,6 +528,11 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_keyboard_control_action(TOP_DOWN, "interact");
 	this->unmap_keyboard_control_action(TOP_DOWN, "use_item");
 	this->unmap_keyboard_control_action(TOP_DOWN, "open_inventory");
+	this->unmap_keyboard_control_action(TOP_DOWN, "toggle_run");
+	this->unmap_keyboard_control_action(TOP_DOWN, "move_up");
+	this->unmap_keyboard_control_action(TOP_DOWN, "move_down");
+	this->unmap_keyboard_control_action(TOP_DOWN, "move_left");
+	this->unmap_keyboard_control_action(TOP_DOWN, "move_right");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "open_inventory");
 	this->unmap_keyboard_control_action(MAIN_GAME_INVENTORY, "pause");
 	this->unmap_keyboard_control_action(MAIN_GAME_PAUSED, "pause");
@@ -446,6 +551,7 @@ void MainGameScreen::unset_mappable_controls()
 	this->unmap_controller_control_action(TOP_DOWN, "interact");
 	this->unmap_controller_control_action(TOP_DOWN, "use_item");
 	this->unmap_controller_control_action(TOP_DOWN, "open_inventory");
+	this->unmap_controller_control_action(TOP_DOWN, "toggle_run");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "open_inventory");
 	this->unmap_controller_control_action(MAIN_GAME_INVENTORY, "pause");
 	this->unmap_controller_control_action(MAIN_GAME_PAUSED, "pause");
@@ -551,7 +657,7 @@ void MainGameScreen::load_content()
 	calendar_screen.set_global_time(global_time);
 	calendar_screen.set_player(game_image_manager.get_player());
 	calendar_screen.set_world(game_image_manager.get_world());
-	calendar_screen.set_level(game_image_manager.get_world()->get_current_level());
+	calendar_screen.set_level(game_image_manager.current_level);
 	load_controls();
 	set_default_controls();
 	set_mappable_controls();
@@ -585,7 +691,11 @@ void MainGameScreen::load_ui_content()
 	ImageLoader::get_instance().load_image("ui/time_date_backdrop");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow");
 	ImageLoader::get_instance().load_image("ui/arrows/ui_arrow_small");
-	//TODO: other UI components like stamina
+	ImageLoader::get_instance().load_image("ui/stamina_meter_top_empty");
+	ImageLoader::get_instance().load_image("ui/stamina_meter_top_full");
+	ImageLoader::get_instance().load_image("ui/stamina_meter_middle_empty");
+	ImageLoader::get_instance().load_image("ui/stamina_meter_middle_full");
+	ImageLoader::get_instance().load_image("ui/stamina_meter_bottom");
 }
 
 void MainGameScreen::load_location_markers()
@@ -654,6 +764,8 @@ void MainGameScreen::reset_controls()
 
 void MainGameScreen::update()
 {
+	this->mouse_cursor_update();
+	this->mouse_scroll_update();
 	const int game_mode = game_image_manager.get_game_mode();
 	GlobalTime * global_time = NULL;
 	World * world = NULL;
@@ -679,7 +791,7 @@ void MainGameScreen::update()
 			break;
 		case CALENDAR:
 			world = this->game_image_manager.get_world();
-			current_level = world->get_current_level();
+			current_level = this->game_image_manager.current_level;
 			global_time = game_image_manager.get_current_global_time();
 			this->calendar_screen.set_global_time(global_time);
 			this->calendar_screen.set_level(current_level);
@@ -692,15 +804,62 @@ void MainGameScreen::update()
 	GameScreen::update();
 }
 
+void MainGameScreen::mouse_cursor_update()
+{
+	GameScreen::mouse_cursor_update();
+	const int width = al_get_bitmap_width(dialog_backdrop_full_width());
+	int x = (al_get_display_width(al_get_current_display()) - width) / 2;
+	const int y = 10;
+	switch (get_game_mode()) {
+	case TOP_DOWN:
+		//TODO: change cursor based on highlighted interactable
+		break;
+	case MAIN_GAME_PAUSED:
+		// already handled on pause screen
+		break;
+	case MAIN_GAME_INVENTORY:
+		// already handled on inventory screen
+		break;
+	case MAIN_GAME_DIALOG:
+		this->dialog_mouse_cursor_update(this->mouse_pos.first, this->mouse_pos.second);
+		break;
+	case CUTSCENE:
+		// it turns out this is already handled by the dialog update
+		break;
+	case CALENDAR:		
+		this->calendar_screen.mouse_cursor_update(font_map[FONT_DIALOG], this->mouse_pos.first, this->mouse_pos.second, x, y);
+		break;
+	case EXCHANGE_INVENTORY:
+		// already handled on inventory screen
+		break;
+	}
+}
+
+void MainGameScreen::mouse_scroll_update()
+{
+	switch (get_game_mode()) {
+	case TOP_DOWN:
+		this->game_image_manager.mouse_scroll_update(this->mouse_scroll);
+		//TODO: item select
+		break;
+	case MAIN_GAME_INVENTORY:
+		this->inventory_screen.mouse_scroll_update(this->mouse_scroll);
+		break;
+	}
+}
+
+
 void MainGameScreen::pause_screen_update()
 {
 	pause_screen.set_mouse_position(mouse_pos);
 	pause_screen.update();
-	if (pause_screen.get_screen_flag() == FLAG_RESUME_GAME) {
+	const bool taking_mappable_input = this->pause_screen.taking_mappable_input();
+	const int pause_screen_flag = this->pause_screen.get_screen_flag();
+	if (pause_screen_flag == FLAG_RESUME_GAME) {
 		resume_game();
-	} else if (pause_screen.get_screen_flag() == FLAG_QUIT_GAME) {
+	} else if (pause_screen_flag == FLAG_QUIT_GAME) {
 		quit_game();
-	} else if (pause_screen.taking_mappable_input()) {
+	} else if (taking_mappable_input) {
 		game_image_manager.set_game_mode(TAKING_MAPPABLE_INPUT);
 	} else {
 		game_image_manager.set_game_mode(MAIN_GAME_PAUSED);
@@ -711,7 +870,7 @@ void MainGameScreen::dialog_update()
 {
 	Player * player = game_image_manager.get_player();
 	World * world = this->game_image_manager.get_world();
-	player->dialog_update(world, world->get_current_level());
+	player->dialog_update(world, this->game_image_manager.current_level);
 	if (player->has_active_cutscene()) {
 		this->game_image_manager.cutscene_animation_update();
 	}
@@ -727,12 +886,14 @@ void MainGameScreen::dialog_update()
 
 void MainGameScreen::inventory_update()
 {
+	this->inventory_screen.set_mouse_position(mouse_pos);
 	this->inventory_screen.update();
 }
 
 void MainGameScreen::exchange_inventory_update()
-{
+{	
 	if (this->exchange_inventory_screen.has_inventory() && this->exchange_inventory_screen.has_exchange_inventory()) {
+		this->exchange_inventory_screen.set_mouse_position(mouse_pos);
 		this->exchange_inventory_screen.update();
 	} else {
 		Inventory& inv = this->game_image_manager.get_player()->get_inventory();
@@ -765,6 +926,7 @@ void MainGameScreen::calendar_update()
 		this->resume_game();
 	}
 	else {
+		this->calendar_screen.set_mouse_position(mouse_pos);
 		this->calendar_screen.update();
 	}
 }
@@ -823,7 +985,7 @@ void MainGameScreen::draw_ui_main_game(ALLEGRO_DISPLAY * display)
 {
 	draw_hotbar(display);
 	draw_clock(display);
-	//TODO: draw other HUD components like stamina
+	draw_stamina(display);
 }
 
 void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
@@ -861,6 +1023,33 @@ void MainGameScreen::draw_clock(ALLEGRO_DISPLAY * display)
 	const std::string time_str = game_image_manager.time_display_string();
 	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 20.0f, y + 16.0f, 0, date_str.c_str());
 	al_draw_text(font_map[FONT_CLOCK], al_map_rgb(0, 0, 0), x + 200.0f, y + 16.0f, 0, time_str.c_str());
+}
+
+void MainGameScreen::draw_stamina(ALLEGRO_DISPLAY * display)
+{
+	Player * player = game_image_manager.get_player();	
+	const int max_stamina = player->get_max_stamina();
+	const int current_stamina = player->get_current_stamina();
+	const int total_pixels = max_stamina / STAMINA_METER_SCALE;
+	const int top_h = al_get_bitmap_height(this->stamina_meter_top_full());
+	const float stamina_ratio = (float)current_stamina / (float)max_stamina;
+	const float top_bar_ratio = 1.0f - (float)top_h / (float) total_pixels;
+	ALLEGRO_BITMAP* top_bmp = stamina_ratio >= top_bar_ratio
+		? this->stamina_meter_top_full() : this->stamina_meter_top_empty();	
+	const int x_off = al_get_display_width(display) - al_get_bitmap_width(top_bmp) - 8;
+	const int y_off = al_get_display_height(display) - total_pixels - al_get_bitmap_height(this->stamina_meter_bottom()) - 8;
+	al_draw_bitmap(top_bmp, x_off, y_off, 0);
+	const int middle_h = al_get_bitmap_height(this->stamina_meter_middle_full());
+	
+	const int num_middle_sections = (total_pixels - top_h) / middle_h;
+	for (int i = 0; i < num_middle_sections; i++) {
+		const int pixel_h = total_pixels - top_h - (i * middle_h);
+		const int stamina_h = pixel_h * STAMINA_METER_SCALE;
+		ALLEGRO_BITMAP* middle_bmp = current_stamina >= stamina_h
+			? this->stamina_meter_middle_full() : this->stamina_meter_middle_empty();
+		al_draw_bitmap(middle_bmp, x_off, y_off + top_h + i * middle_h, 0);
+	}
+	al_draw_bitmap(this->stamina_meter_bottom(), x_off, y_off + top_h + num_middle_sections * middle_h, 0);
 }
 
 void MainGameScreen::draw_ui_paused(ALLEGRO_DISPLAY* display)
@@ -1093,12 +1282,59 @@ void MainGameScreen::select()
 	}
 }
 
-//TODO: use this in a lot of other UI, like inventory screen
 void MainGameScreen::process_mouse_click_left(const int x, const int y)
 {
 	switch (get_game_mode()) {
+	case TOP_DOWN:
+		this->game_image_manager.process_mouse_click_left(x, y);
+		break;
 	case MAIN_GAME_PAUSED:
-		pause_screen.process_mouse_click_left(x, y);
+		this->pause_screen.process_mouse_click_left(x, y);
+		break;
+	case MAIN_GAME_INVENTORY:
+		this->inventory_screen.process_mouse_click_left(x, y);
+		break;
+	case MAIN_GAME_DIALOG:
+		this->dialog_process_mouse_click_left(x, y);
+		break;
+	case CUTSCENE:
+		// it turns out cutscenes are already handled by the dialog processing
+		break;
+	case CALENDAR:
+		this->calendar_screen.process_mouse_click_left(x, y);
+		break;
+	case EXCHANGE_INVENTORY:
+		//TODO
+		this->exchange_inventory_screen.process_mouse_click_left(x, y);
+		break;
+	}
+}
+
+void MainGameScreen::process_mouse_click_right(const int x, const int y)
+{
+	switch (get_game_mode()) {
+	case TOP_DOWN:
+		this->game_image_manager.process_mouse_click_right(x, y);
+		//TODO: other modes
+		break;
+	case MAIN_GAME_PAUSED:
+		//this->pause_screen.process_mouse_click_left(x, y);
+		break;
+	case MAIN_GAME_INVENTORY:
+		//this->inventory_screen.process_mouse_click_left(x, y);
+		break;
+	case MAIN_GAME_DIALOG:
+		//this->dialog_process_mouse_click_left(x, y);
+		break;
+	case CUTSCENE:
+		// it turns out cutscenes are already handled by the dialog processing
+		break;
+	case CALENDAR:
+		//this->calendar_screen.process_mouse_click_left(x, y);
+		break;
+	case EXCHANGE_INVENTORY:
+		//TODO
+		//this->exchange_inventory_screen.process_mouse_click_left(x, y);
 		break;
 	}
 }
@@ -1161,12 +1397,10 @@ void MainGameScreen::y_button_action()
 
 void MainGameScreen::left_bumper_action()
 {
-	//game_image_manager.get_player()->hotbar_index_left();
 }
 
 void MainGameScreen::right_bumper_action()
 {
-	//game_image_manager.get_player()->hotbar_index_right();
 }
 
 void MainGameScreen::open_inventory_action()
@@ -1197,6 +1431,17 @@ void MainGameScreen::open_inventory_action()
 			break;
 		}
 	}
+}
+
+void MainGameScreen::toggle_run_action()
+{
+	Player * player = game_image_manager.get_player();
+	player->toggle_run();
+	//TODO: toggle serializable run setting for player (not running caps max speed)
+	//should serialize in config or world (someplace that persists across saves)
+	// can serialize on player since people shouldn't care
+	//		I think I want some new config file like "WorldConfig"
+	//TODO: need controller button for this too? (might as well but need to pick a button and add it to xml, controls loading, etc)
 }
 
 void MainGameScreen::hotbar_left_action()

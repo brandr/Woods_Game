@@ -146,24 +146,30 @@ void GameImage::unload_content()
 	ss_animation = NULL;
 }
 
-void GameImage::draw(ALLEGRO_DISPLAY *display, int x_offset, int y_offset)
+void GameImage::draw(ALLEGRO_DISPLAY *display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
-	ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_current_image(this);
-	const int image_width = std::max(this->spritesheet_frame_width.value(), (int) this->get_width());
-	const int image_height = std::max(this->spritesheet_frame_height.value(), (int) this->get_height());
-	if (draw_bitmap 
-		&& rect.x + x_offset < al_get_display_width(display) 
-		&& rect.x + image_width + x_offset >= 0 
-		&& rect.y + y_offset < al_get_display_height(display) 
-		&& rect.y + image_height + y_offset >= 0) {
-		al_draw_bitmap(draw_bitmap, rect.x + x_offset, rect.y + y_offset, 0);
-		int size = additional_image_layer_data.size();
-		for (int i = 0; i < size; i++) {
-			const std::pair<std::string, Rect> additional_data = this->additional_image_layer_data[i];
-			ALLEGRO_BITMAP * additional_bmp = ImageLoader::get_instance().get_image(additional_data.first, additional_data.second);
-			al_draw_bitmap(additional_bmp, rect.x + x_offset, rect.y + y_offset, 0);
+	if (this->should_draw(x_offset, y_offset, screen_w, screen_h)) {
+		ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_current_image(this);
+		if (draw_bitmap != NULL) {
+			al_draw_bitmap(draw_bitmap, rect.x + x_offset, rect.y + y_offset, 0);
+			int size = additional_image_layer_data.size();
+			for (int i = 0; i < size; i++) {
+				const std::pair<std::string, Rect> additional_data = this->additional_image_layer_data[i];
+				ALLEGRO_BITMAP * additional_bmp = ImageLoader::get_instance().get_image(additional_data.first, additional_data.second);
+				al_draw_bitmap(additional_bmp, rect.x + x_offset, rect.y + y_offset, 0);
+			}
 		}
 	}
+}
+
+const bool GameImage::should_draw(const int x_offset, const int y_offset, const int screen_w, const int screen_h)
+{
+	const int image_width = std::max(this->spritesheet_frame_width.value(), (int)this->get_width());
+	const int image_height = std::max(this->spritesheet_frame_height.value(), (int)this->get_height());
+	return rect.x + x_offset < screen_w
+		&& rect.x + image_width + x_offset >= 0
+		&& rect.y + y_offset < screen_h
+		&& rect.y + image_height + y_offset >= 0;
 }
 
 void GameImage::update()
@@ -204,6 +210,16 @@ const std::pair<int, int> GameImage::get_center()
 	int offset_y = this->center_offset_y.value();
 	return std::pair<int, int>(static_cast<int>(rect.x) + offset_x
 		, static_cast<int>(rect.y) + offset_y);
+}
+
+const int GameImage::get_center_x()
+{
+	return this->center_offset_x.value() + this->rect.x;
+}
+
+const int GameImage::get_center_y()
+{
+	return this->center_offset_y.value() + this->rect.y;
 }
 
 void GameImage::add_additional_image_layer(const std::string filename, Rect subsection)

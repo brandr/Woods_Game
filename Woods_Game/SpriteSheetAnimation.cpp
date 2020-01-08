@@ -20,9 +20,14 @@ void SpriteSheetAnimation::update(Animation &a, const bool should_adjust_duratio
 		std::pair<int, int> fdim = a.get_frame_dimensions();
 		std::pair<int, int> dim = a.get_image_dimensions();
 		const float step_size = a.get_pixel_step_size();
-		if (should_adjust_duration && speed > 0.0f && step_size > 0.0f) {
-			// 2d/sf
-			frame_duration = std::max(1, (int)(2.0f * step_size / (speed * ((float)a.get_frame_count().first))));
+		if (should_adjust_duration && speed > 0.0f) {
+			if (step_size > 0.0f) {
+				// 2d/sf
+				frame_duration = std::max(1, (int)(2.0f * step_size / (speed * ((float)a.get_frame_count().first))));
+			} else {
+				// "speed" actually just means frame duration
+				frame_duration = std::max(1, (int)(speed));
+			}
 		}
 		if (frame_counter >= frame_duration){
 			frame_counter = 0;

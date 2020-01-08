@@ -73,6 +73,7 @@ public:
 	void load_dungeons();
 	void load_dungeons(const std::string filepath);
 	void reload_dungeons(const std::string dungeons_path);
+	void load_world_state(const std::string world_state_path);
 	void reload_world_state(const std::string world_state_path);
 	void reload_quest_data(const std::string filepath);
 	void reload_encyclopedia(const std::string filepath);
@@ -81,11 +82,12 @@ public:
 	void load_player();
 	void generate_levels();
 	void generate_map_images();
+	void initialize_tiles();
 	void unload_content();
 	void load_images(ImageLoader&);
 	static void save_game(World * world, GlobalTime * global_time);
 	// updates per frame
-	void npc_update(GlobalTime * time, const int game_mode);
+	void npc_update(Level * level, GlobalTime * time, const int game_mode);
 	// updates per new day
 	void update_new_day(GlobalTime * time, Player * player, const std::string current_level_key);
 	void update_reload_day(GlobalTime * time, Player * player, const std::string current_level_key);
@@ -127,7 +129,7 @@ public:
 	// inventory
 	Inventory * get_inventory_for_key(const std::string inv_key, const bool create_if_missing);
 	// quests
-	void update_quests();
+	void update_quests(Level * level);
 	QuestData * get_quest_data();
 	void process_quest_update(QuestUpdate *quest_update);
 	std::vector<Quest *> get_active_quests();

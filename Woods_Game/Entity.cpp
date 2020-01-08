@@ -190,15 +190,16 @@ void Entity::unload_content()
 	GameImage::unload_content();
 }
 
-void Entity::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+void Entity::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
-	GameImage::draw(display, x_offset, y_offset);
-	for (auto &it : entity_effects) {
-		if (!it.second.get_effect_active()) continue;
-		
-		it.second.draw(display, x_offset, y_offset);
+	if (get_entity_attribute(E_ATTR_BROKEN) == 1) {
+		return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
 	}
-	if (get_entity_attribute(E_ATTR_BROKEN) == 1) return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
+	GameImage::draw(display, x_offset, y_offset, screen_w, screen_h);
+	for (auto &it : entity_effects) {
+		if (!it.second.get_effect_active()) continue;		
+		it.second.draw(display, x_offset, y_offset, screen_w, screen_h);
+	}	
 }
 
 void Entity::update()
@@ -400,6 +401,16 @@ void Entity::copy_contact_actions(std::vector<InteractAction*> actions)
 	}
 }
 
+std::vector<InteractAction*> Entity::get_contact_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = this->contact_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->contact_actions.getItem(i));
+	}
+	return actions;
+}
+
 void Entity::set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions)
 {
 	this->interact_actions.Clear();
@@ -422,6 +433,16 @@ void Entity::copy_interact_actions(std::vector<InteractAction*> actions)
 		action->set_bindings(copy_bindings);
 		this->interact_actions.addItem(action);
 	}
+}
+
+std::vector<InteractAction*> Entity::get_interact_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = this->interact_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->interact_actions.getItem(i));
+	}
+	return actions;
 }
 
 void Entity::set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions)
@@ -448,12 +469,32 @@ void Entity::copy_load_day_actions(std::vector<InteractAction*> actions)
 	}
 }
 
+std::vector<InteractAction*> Entity::get_load_day_actions()
+{
+	std::vector<InteractAction*> actions;
+	const int size = this->load_day_actions.size();
+	for (int i = 0; i < size; i++) {
+		actions.push_back(this->load_day_actions.getItem(i));
+	}
+	return actions;
+}
+
 void Entity::set_item_drops(std::vector<ItemDrop*> item_drops)
 {
 	this->item_drops.Clear();
 	for (ItemDrop * id : item_drops) {
 		this->item_drops.addItem(id);
 	}
+}
+
+std::vector<ItemDrop*> Entity::get_item_drops()
+{
+	std::vector<ItemDrop*> drops;
+	const int size = this->item_drops.size();
+	for (int i = 0; i < size; i++) {
+		drops.push_back(this->item_drops.getItem(i));
+	}
+	return drops;
 }
 
 void Entity::set_spawn_tile_rules(const std::vector<EntitySpawnTileRule*> rules)
@@ -554,11 +595,9 @@ void Entity::take_durability_damage(Level * level, Player * player, const int da
 	entity_effects["hit"].set_effect_active(true);
 }
 
-//TODO: do this part better
-std::vector<std::string> Entity::get_entity_effect_names()
+void Entity::take_damage(const int damage)
 {
-	std::vector<std::string> names{ "break", "hit" };
-	return names;
+	// override in subclasses unless this should do something for all entities
 }
 
 const bool Entity::get_should_push_others()

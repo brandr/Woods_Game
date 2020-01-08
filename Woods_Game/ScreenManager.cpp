@@ -53,7 +53,9 @@ void ScreenManager::update()
 			
 			const std::string world_key = "world_1";
 
+			// async (what we should do)
 
+			
 			al_set_new_bitmap_flags(ALLEGRO_MEMORY_BITMAP);
 			LoadingScreen * loading_screen = new LoadingScreen();
 			loading_screen->load_content();
@@ -69,8 +71,10 @@ void ScreenManager::update()
 			game_screen->load_content();
 			game_screen->load_fonts();
 			
+			
 			add_screen(game_screen, false);
 			*/
+			
 			//temp
 			return;
 		} else if (current_screen->get_screen_flag() == FLAG_LOAD_GAME) {
@@ -84,7 +88,7 @@ void ScreenManager::update()
 			((LoadingScreen*)current_screen)->finish_loading();
 			//((LoadingScreen*)current_screen)->unload_content();
 			//TODO: make sure we actually need to do this every time
-			ImageLoader::get_instance().convert_bitmaps_to_video();
+			//ImageLoader::get_instance().convert_bitmaps_to_video();
 			
 			al_set_new_bitmap_flags(ALLEGRO_VIDEO_BITMAP);
 			al_convert_memory_bitmaps();
@@ -111,8 +115,6 @@ void ScreenManager::process_event(ALLEGRO_EVENT ev)
 
 void ScreenManager::process_joystick(ALLEGRO_JOYSTICK_STATE joy_state)
 {
-	//if (current_screen)
-	//	current_screen->set_joystick_pos(LEFT_STICK, joy_state.stick->axis[0], joy_state.stick->axis[1]);
 }
 
 void ScreenManager::add_screen(GameScreen *screen, const bool should_load_content)

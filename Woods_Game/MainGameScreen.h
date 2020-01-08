@@ -18,6 +18,7 @@
 #define DEFAULT_SCREEN_WIDTH 800
 #define DEFAULT_SCREEN_HEIGHT 600
 
+#define STAMINA_METER_SCALE 320 // 1 pixel = 320 stamina
 
 class MainGameScreen :
 	public GameScreen
@@ -39,6 +40,14 @@ private:
 	ALLEGRO_BITMAP* dialog_portrait_backdrop();
 	ALLEGRO_BITMAP* clock_backdrop();
 	ALLEGRO_BITMAP* option_arrow();
+	ALLEGRO_BITMAP* stamina_meter_top_full();
+	ALLEGRO_BITMAP* stamina_meter_top_empty();
+	ALLEGRO_BITMAP* stamina_meter_middle_full();
+	ALLEGRO_BITMAP* stamina_meter_middle_empty();
+	ALLEGRO_BITMAP* stamina_meter_bottom();
+
+	void dialog_process_mouse_click_left(const int mouse_x, const int mouse_y);
+	void dialog_mouse_cursor_update(const int mouse_x, const int mouse_y);
 public:
 	MainGameScreen();
 	~MainGameScreen();
@@ -63,6 +72,8 @@ public:
 	void load_controls();
 	void reset_controls();
 	virtual void update();
+	virtual void mouse_cursor_update();
+	virtual void mouse_scroll_update();
 	void pause_screen_update();
 	void dialog_update();
 	void inventory_update();
@@ -77,6 +88,7 @@ public:
 	void draw_ui_main_game(ALLEGRO_DISPLAY* display);
 	void draw_hotbar(ALLEGRO_DISPLAY* display);
 	void draw_clock(ALLEGRO_DISPLAY* display);
+	void draw_stamina(ALLEGRO_DISPLAY* display);
 	void draw_ui_paused(ALLEGRO_DISPLAY* display);
 	void draw_ui_dialog(ALLEGRO_DISPLAY* display);
 	virtual int get_game_mode();
@@ -97,10 +109,12 @@ public:
 	virtual void confirm_selection();
 	virtual void select();
 	virtual void process_mouse_click_left(const int x, const int y);
+	virtual void process_mouse_click_right(const int x, const int y);
 	virtual void process_number_input(int num);
 	virtual void interact_action();
 	virtual void use_item_action();
 	virtual void open_inventory_action();
+	virtual void toggle_run_action();
 	virtual void hotbar_left_action();
 	virtual void hotbar_right_action();
 	virtual void a_button_action();

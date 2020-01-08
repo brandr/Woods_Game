@@ -49,6 +49,10 @@ void PauseScreen::load_content()
 	ImageLoader::get_instance().load_image("ui/pause_audio_backdrop");
 	backdrop_filenames[PAUSE_AUDIO_MENU] = "ui/pause_audio_backdrop";
 
+	//gameplay settings
+	ImageLoader::get_instance().load_image("ui/pause_gameplay_backdrop");
+	backdrop_filenames[PAUSE_GAMEPLAY_MENU] = "ui/pause_gameplay_backdrop";	
+
 	// controls settings
 	ImageLoader::get_instance().load_image("ui/pause_controls_backdrop");
 	backdrop_filenames[PAUSE_CONTROLS_MENU] = "ui/pause_controls_backdrop";
@@ -77,6 +81,10 @@ void PauseScreen::load_menus()
 	menus[PAUSE_AUDIO_MENU] = std::make_unique<MenuManager>();
 	menus[PAUSE_AUDIO_MENU]->load_xml_content("pause_audio_menu");
 
+	//gameplay settings
+	menus[PAUSE_GAMEPLAY_MENU] = std::make_unique<MenuManager>();
+	menus[PAUSE_GAMEPLAY_MENU]->load_xml_content("pause_gameplay_menu");
+
 	// controls settings
 	menus[PAUSE_CONTROLS_MENU] = std::make_unique<MenuManager>();
 	menus[PAUSE_CONTROLS_MENU]->load_xml_content("pause_controls_menu");;
@@ -95,6 +103,7 @@ void PauseScreen::load_config_settings()
 	FileManager filemanager;
 	std::string filename = "resources/config";
 	filemanager.load_xml_content(config.get(), filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
+	filemanager.load_xml_content(default_config.get(), filename, "SerializableClass", "ConfigurationsKey", "default_configurations");
 }
 
 void PauseScreen::unload_content()
@@ -153,6 +162,16 @@ void PauseScreen::process_mouse_click_left(const int x, const int y)
 	}
 }
 
+void PauseScreen::process_mouse_click_right(const int x, const int y)
+{
+	// right clicking does nothing on the pause screen
+}
+
+void PauseScreen::update_mouse_position(const int x, const int y, const int z)
+{
+	GameScreen::update_mouse_position(x, y, z);
+}
+
 void PauseScreen::mouse_cursor_update()
 {
 	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
@@ -175,6 +194,9 @@ void PauseScreen::cancel_menu()
 		menu_key = PAUSE_MAIN_MENU;
 		break;
 	case PAUSE_AUDIO_MENU:
+		menu_key = PAUSE_MAIN_MENU;
+		break;
+	case PAUSE_GAMEPLAY_MENU:
 		menu_key = PAUSE_MAIN_MENU;
 		break;
 	case PAUSE_CONTROLS_MENU:
@@ -231,37 +253,8 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 		}
 		else if (confirm_key == MenuManager::SELECTION_KEY_SET_SCREEN_STYLE) {
 			const std::string style_string = current_menu_manager().get_menu_items().getItem(1)->get_selected_text_option();
-			if (style_string == Configurations::SCREEN_STYLE_FULLSCREEN) {
-				ALLEGRO_DISPLAY_MODE   disp_data;
-				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, false);
-				this->config->set_screen_res_x(disp_data.width);
-				this->config->set_screen_res_y(disp_data.height);
-			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
-				ALLEGRO_DISPLAY_MODE   disp_data;
-				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, true);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_MAXIMIZED, true);
-				this->config->set_screen_res_x(disp_data.width);
-				this->config->set_screen_res_y(disp_data.height);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, false);
-			} else if (style_string == Configurations::SCREEN_STYLE_WINDOWED) {
-				ALLEGRO_DISPLAY_MODE   disp_data;
-				al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
-				const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
-				std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
-				al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
-				al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
-				this->config->set_screen_res_x(::atoi(res_parts.first.c_str()));
-				this->config->set_screen_res_y(::atoi(res_parts.second.c_str()));
-			}
-			this->config->set_screen_mode(style_string);
-			this->save_configurations();
+			const std::string res_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			this->update_video_settings(style_string, res_string);
 		}
 		//audio
 		else if (confirm_key == MenuManager::SELECTION_KEY_SET_MASTER_VOLUME) {
@@ -283,11 +276,50 @@ else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 			this->config->set_sfx_volume(volume);
 			this->save_configurations();
 		}
+		//gameplay
+		else if (confirm_key == MenuManager::SELECTION_KEY_SET_TEXT_SPEED) {
+			const std::string text_speed_string = current_menu_manager().get_menu_items().getItem(0)->get_selected_text_option();
+			const int speed = ::atoi(text_speed_string.c_str());
+			this->config->set_text_scroll_speed(speed);
+			this->save_configurations();
+		}
 		current_menu_manager().confirm_option_select();
 	}
 	else {
 		current_menu_manager().select_options();
 	}
+}
+// video settings
+else if (action_key == MenuManager::SELECTION_KEY_REVERT_VIDEO_SETTINGS_DEFAULT) {
+	const std::string style_string = this->default_config->get_screen_mode();
+	const std::string res_string = std::to_string(this->default_config->get_screen_res_x()) + "x" + std::to_string(this->default_config->get_screen_res_y());
+	this->update_video_settings(style_string, res_string);
+	current_menu_manager().set_option_for_menu_item("Resolution", res_string, true);
+	current_menu_manager().set_option_for_menu_item("Screen style", style_string, true);
+	this->save_configurations();
+}
+// audio settings
+else if (action_key == MenuManager::SELECTION_KEY_REVERT_AUDIO_SETTINGS_DEFAULT) {
+	const float master_volume = this->default_config->get_master_volume();
+	const float music_volume = this->default_config->get_music_volume();
+	const float sfx_volume = this->default_config->get_sfx_volume();
+	this->config->set_master_volume(master_volume);
+	this->config->set_music_volume(music_volume);
+	this->config->set_sfx_volume(sfx_volume);
+	AudioManager::get_instance().set_master_gain(master_volume / 100.0);
+	AudioManager::get_instance().set_music_gain(music_volume / 100.0);
+	AudioManager::get_instance().set_sfx_gain(sfx_volume / 100.0);
+	current_menu_manager().set_option_for_menu_item("Master Volume", std::to_string((int) master_volume), true);
+	current_menu_manager().set_option_for_menu_item("Music Volume", std::to_string((int) music_volume), true);
+	current_menu_manager().set_option_for_menu_item("Effects Volume", std::to_string((int) sfx_volume), true);
+	this->save_configurations();
+}
+// gameplay settings
+else if (action_key == MenuManager::SELECTION_KEY_REVERT_GAMEPLAY_SETTINGS_DEFAULT) {
+	const int scroll_speed = this->default_config->get_text_scroll_speed();
+	this->config->set_text_scroll_speed(scroll_speed);
+	current_menu_manager().set_option_for_menu_item("Text Speed", std::to_string(scroll_speed), true);
+	this->save_configurations();
 }
 // main pause menu actions
 else if (action_key == MenuManager::SELECTION_KEY_RESUME_GAME) {
@@ -303,6 +335,9 @@ else if (action_key == MenuManager::SELECTION_KEY_OPEN_VIDEO_SETTINGS) {
 }
 else if (action_key == MenuManager::SELECTION_KEY_OPEN_AUDIO_SETTINGS) {
 	menu_key = PAUSE_AUDIO_MENU;
+}
+else if (action_key == MenuManager::SELECTION_KEY_OPEN_GAMEPLAY_SETTINGS) {
+	menu_key = PAUSE_GAMEPLAY_MENU;
 }
 else if (action_key == MenuManager::SELECTION_KEY_OPEN_CONTROL_SETTINGS) {
 	menu_key = PAUSE_CONTROLS_MENU;
@@ -337,6 +372,42 @@ else if (action_key == MenuManager::SELECTION_KEY_SAVE_CONTROLS_CHANGES) {
 	menu_key = PAUSE_CONTROLS_MENU;
 	screen_flag = FLAG_RESUME_GAME;
 }
+}
+
+void PauseScreen::update_video_settings(const std::string style_string, const std::string res_string)
+{
+	if (style_string == Configurations::SCREEN_STYLE_FULLSCREEN) {
+		ALLEGRO_DISPLAY_MODE   disp_data;
+		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, true);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, false);
+		this->config->set_screen_res_x(disp_data.width);
+		this->config->set_screen_res_y(disp_data.height);
+	}
+	else if (style_string == Configurations::SCREEN_STYLE_WINDOWED_FULLSCREEN) {
+		ALLEGRO_DISPLAY_MODE   disp_data;
+		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, true);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_MAXIMIZED, true);
+		this->config->set_screen_res_x(disp_data.width);
+		this->config->set_screen_res_y(disp_data.height);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_RESIZABLE, false);
+	}
+	else if (style_string == Configurations::SCREEN_STYLE_WINDOWED) {
+		ALLEGRO_DISPLAY_MODE   disp_data;
+		al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
+		std::pair<std::string, std::string> res_parts = FileManager::string_to_pair(res_string, "x");
+		al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN_WINDOW, false);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_FULLSCREEN, false);
+		al_set_display_flag(al_get_current_display(), ALLEGRO_WINDOWED, true);
+		al_resize_display(al_get_current_display(), ::atoi(res_parts.first.c_str()), ::atoi(res_parts.second.c_str()));
+		this->config->set_screen_res_x(::atoi(res_parts.first.c_str()));
+		this->config->set_screen_res_y(::atoi(res_parts.second.c_str()));
+	}
+	this->config->set_screen_mode(style_string);
+	this->save_configurations();
 }
 
 void PauseScreen::call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle)

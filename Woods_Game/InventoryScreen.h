@@ -80,6 +80,7 @@ protected:
 
 	const std::string label_for_tab(const int index);
 	void reset_tab_mode();
+	const bool select_tab_via_click(const float mouse_x, const float mouse_y);
 
 	// items
 	Inventory *inventory;
@@ -101,6 +102,13 @@ protected:
 	virtual void items_tab_select();
 	void items_tab_secondary_select();
 
+	virtual void items_tab_mouse_cursor_update(Inventory * cursor_inv, const float mouse_x, const float mouse_y, const int x_off, const int y_off);
+	void items_tab_hotbar_mouse_cursor_update(const float mouse_x, const float mouse_y, const int x_off, const int y_off);
+	void items_tab_trash_mouse_cursor_update(const float x_off, const float y_off);
+	virtual void items_tab_left_click(const float mouse_x, const float mouse_y, const int x_off, const int y_off);
+	void items_tab_hotbar_left_click(const float mouse_x, const float mouse_y, const int x_off, const int y_off);
+	void items_tab_trash_left_click(const float mouse_x, const float mouse_y);
+
 	// map
 
 	int map_current_location_blink_index = 0;
@@ -118,6 +126,8 @@ protected:
 	void map_tab_menu_down();
 	void map_tab_menu_left();
 	void map_tab_menu_right();
+
+	void map_tab_mouse_cursor_update(const float x_off, const float y_off);
 
 	// journal
 
@@ -137,6 +147,11 @@ protected:
 	void journal_tab_menu_right();
 	void journal_tab_secondary_select();
 
+	void journal_tab_left_click(const float mouse_x, const float mouse_y);
+	void journal_tab_cursor_update(const float mouse_x, const float mouse_y);
+
+	void journal_tab_mouse_scroll_update(const int scroll);
+
 	// encyclopedia
 
 	Encyclopedia * encyclopedia;
@@ -154,7 +169,11 @@ protected:
 	void encyclopedia_tab_menu_left();
 	void encyclopedia_tab_menu_right();
 	void encyclopedia_tab_select();
-	
+
+	void encyclopedia_tab_cursor_update(const float x_off, const float y_off);
+	void encyclopedia_tab_left_click(const float mouse_x, const float mouse_y);
+
+	void encyclopedia_tab_mouse_scroll_update(const int scroll);	
 
 public:
 	InventoryScreen();
@@ -195,6 +214,9 @@ public:
 	virtual void tab_right();
 	virtual void select();
 	virtual void secondary_select();
+	virtual void process_mouse_click_left(const int x, const int y);
+	virtual void mouse_cursor_update();
+	virtual void mouse_scroll_update(const int scroll);
 	void set_inventory(Inventory *inventory);
 	const bool has_inventory();
 	void set_quest_data(QuestData *data);

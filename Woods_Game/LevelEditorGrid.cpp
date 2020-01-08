@@ -59,7 +59,7 @@ void LevelEditorGrid::add_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::string level_name = manager.get_selected_level_name();
-	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const std::pair<int, int> tile_pos((int) pos.first / TILE_SIZE, (int) pos.second / TILE_SIZE);
 	if (manager.has_tiled_image_grid_selection()) {
 		const bool update = manager.add_tiled_image(tile_pos);
 		if (update) {
@@ -77,7 +77,7 @@ void LevelEditorGrid::delete_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::string level_name = manager.get_selected_level_name();
-	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const std::pair<int, int> tile_pos((int) pos.first / TILE_SIZE, (int) pos.second / TILE_SIZE);
 	if (manager.has_tiled_image_grid_selection()) {
 		const bool update = manager.delete_tiled_image(tile_pos);
 		if (update) {
@@ -96,7 +96,7 @@ void LevelEditorGrid::select_object(std::pair<float, float> pos)
 {
 	LevelEditorDataManager &manager = LevelEditorDataManager::get_instance();
 	const std::string level_name = manager.get_selected_level_name();
-	const std::pair<int, int> tile_pos(pos.first / TILE_SIZE, pos.second / TILE_SIZE);
+	const std::pair<int, int> tile_pos((int) pos.first / TILE_SIZE, (int) pos.second / TILE_SIZE);
 	manager.select_level_object(tile_pos);
 	this->reset_image_layer(LevelEditorDataManager::GRID_LINES_LAYER, level_name);
 }

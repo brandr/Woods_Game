@@ -1,5 +1,6 @@
 #include "Cutscene.h"
 #include "ImageLoader.h"
+#include "Player.h"
 #include "Level.h"
 #include "World.h"
 
@@ -120,9 +121,9 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 	//this->add_block(block); // do this here if we're not updating async
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_global_time_update(global_time->get_day() + 1, wake_up_time);
+	this->add_action(ACTION_SET_FULL_STAMINA, EFFECT_DISPLAY_BLACK); // set full stamina before saving so player gets saved with it
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
-
 }
 
 void Cutscene::add_load_game_update(const int day, const int time)
@@ -135,10 +136,32 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	block->block_index = this->cutscene_blocks.size();
 	this->add_block(block);
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
-	this->add_global_time_update(day, time);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_global_time_update(day, time);
+	this->add_action(ACTION_SET_FULL_STAMINA, EFFECT_DISPLAY_BLACK); // this is okay because we're reloading via calendar, so the player can't exploit it
+	//this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+}
+
+void Cutscene::add_pass_out_update(Player * player, GlobalTime * time, const int wake_up_time)
+{
+	CutsceneBlock * block = new CutsceneBlock();
+	block->action_key = ACTION_UPDATE_NEW_DAY;
+	block->duration = 1;
+	block->effect_key = EFFECT_DISPLAY_BLACK;
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block); // do this here if we're updating async
+	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_global_time_update(time->get_day() + 1, wake_up_time);
+	this->add_action(ACTION_SET_REDUCED_STAMINA, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);	
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	
+	
+	//TODO: for this and new day, need a "Screenshot" so we don't see bugs/npc/player/etc disappering
+	//TODO: player needs passing out animation
 }
 
 void Cutscene::set_cutscene_key(const std::string key)
@@ -218,6 +241,7 @@ const bool CutsceneBlock::is_finished()
 	return false;
 }
 
+// true means we will advance the cutscene after performing the action
 const bool CutsceneBlock::process_action()
 {
 	if (this->action_key.length() > 0) {
@@ -236,6 +260,13 @@ const bool CutsceneBlock::process_action()
 		else if (this->action_key == ACTION_WALK_AGENTS) {
 			return true;
 		} else if (this->action_key == ACTION_DIALOG) {
+			return true;
+		}
+		// player actions
+		else if (this->action_key == ACTION_SET_REDUCED_STAMINA) {
+			return true;
+		}
+		else if (this->action_key == ACTION_SET_FULL_STAMINA) {
 			return true;
 		}
 	}

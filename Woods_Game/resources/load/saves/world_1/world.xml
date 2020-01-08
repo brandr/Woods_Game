@@ -5,9 +5,9 @@
         <Member Name="player_key">default_player</Member>
         <Member Name="default_level_width">832</Member>
         <Member Name="default_level_height">640</Member>
-        <Member Name="current_level_grid_x">0</Member>
-        <Member Name="current_level_grid_y">0</Member>
-        <Member Name="current_day">1</Member>
+        <Member Name="current_level_grid_x">-1</Member>
+        <Member Name="current_level_grid_y">-1</Member>
+        <Member Name="current_day">3</Member>
         <Collection Name="dungeon_data">
             <Class Type="DungeonData" Version="1">
                 <Member Name="dungeon_key">dungeon_1</Member>
@@ -135,7 +135,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[l]I am not a stranger and it is monday.[/l]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -177,7 +177,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[l]I am not a stranger.[/l]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -200,7 +200,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[p][l]I am not a stranger. Or am I?[/l][/p]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -245,7 +245,7 @@
                                                         <Class Type="DialogItemPage" Version="1">
                                                             <Member Name="dialog_text">[l]I am not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
                                                             <Member Name="page_number"/>
-                                                            <Member Name="next_page_index">-1</Member>
+                                                            <Member Name="next_page_index"/>
                                                             <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates"/>
@@ -287,7 +287,7 @@
                                                         <Class Type="DialogItemPage" Version="1">
                                                             <Member Name="dialog_text">[l]Thanks for the mushroom.[/l][l]Here, have $10.[/l]</Member>
                                                             <Member Name="page_number"/>
-                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="next_page_index"/>
                                                             <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">
@@ -377,7 +377,7 @@
                                                         <Class Type="DialogItemPage" Version="1">
                                                             <Member Name="dialog_text">[l]Here, deliver this letter.[/l]</Member>
                                                             <Member Name="page_number"/>
-                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="next_page_index"/>
                                                             <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">
@@ -701,7 +701,7 @@
                 <Member Name="start_spawn_key">stranger_spawner_2</Member>
                 <Member Name="default_spawn_key">stranger_spawner_2</Member>
                 <Member Name="obeys_tile_rules"/>
-                <Member Name="default_dialog_text">[p][l]You are a stranger.[/l][/p]</Member>
+                <Member Name="default_dialog_text"/>
                 <Class Name="schedule" Type="NPCSchedule" Version="1">
                     <Class Name="default_day_schedule" Type="DaySchedule" Version="1">
                         <Collection Name="schedule_blocks">
@@ -805,7 +805,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[l]You are not a stranger and it is monday.[/l]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -847,7 +847,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[l]You are not a stranger.[/l]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -870,7 +870,7 @@
                                                                 <Class Type="DialogItemPage" Version="1">
                                                                     <Member Name="dialog_text">[p][l]You are not a stranger. Or are you?[/l][/p]</Member>
                                                                     <Member Name="page_number"/>
-                                                                    <Member Name="next_page_index">-1</Member>
+                                                                    <Member Name="next_page_index"/>
                                                                     <Member Name="portrait_image_key"/>
                                                                     <Collection Name="options"/>
                                                                     <Collection Name="quest_updates"/>
@@ -915,7 +915,7 @@
                                                         <Class Type="DialogItemPage" Version="1">
                                                             <Member Name="dialog_text">[l]You are not a stranger, but more importantly, you[/l][l]shouldn't be in my house.[/l]</Member>
                                                             <Member Name="page_number"/>
-                                                            <Member Name="next_page_index">-1</Member>
+                                                            <Member Name="next_page_index"/>
                                                             <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates"/>
@@ -957,7 +957,7 @@
                                                         <Class Type="DialogItemPage" Version="1">
                                                             <Member Name="dialog_text">[l]Thanks for the letter.[/l]</Member>
                                                             <Member Name="page_number"/>
-                                                            <Member Name="next_page_index">-2</Member>
+                                                            <Member Name="next_page_index"/>
                                                             <Member Name="portrait_image_key"/>
                                                             <Collection Name="options"/>
                                                             <Collection Name="quest_updates">

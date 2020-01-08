@@ -142,7 +142,7 @@ protected:
 	xmls::Collection<EntitySpawnTileRule> spawn_tile_rules;
 	xmls::Collection<EntityEffectData> entity_effect_data;
 	xmls::Collection<ImageFilter> image_filters;
-	xmls::xInt entity_data_index;
+	xmls::xInt entity_data_index = -1;
 	xmls::xInt entity_sheet_col;
 	xmls::xInt entity_sheet_row;
 	xmls::xInt entity_starting_pos_x;
@@ -175,7 +175,7 @@ public:
 	virtual void load_entity_effects(TileSet * tileset, const std::string entity_key, int row, std::pair<int, int> frame_dimensions);
 	virtual void load_content_from_attributes();
 	virtual void unload_content();
-	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual void draw(ALLEGRO_DISPLAY* display, const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	virtual void update();
 	
 	void counter_update();
@@ -199,11 +199,15 @@ public:
 	virtual void set_entity_attribute(std::string attr, int val);
 	virtual void set_contact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void copy_contact_actions(std::vector<InteractAction*> actions);
+	virtual std::vector<InteractAction*> get_contact_actions();
 	virtual void set_interact_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void copy_interact_actions(std::vector<InteractAction*> actions);
+	virtual std::vector<InteractAction*> get_interact_actions();
 	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void copy_load_day_actions(std::vector<InteractAction*> actions);
+	virtual std::vector<InteractAction*> get_load_day_actions();
 	virtual void set_item_drops(std::vector<ItemDrop*> item_drops);
+	virtual std::vector<ItemDrop*> get_item_drops();
 	virtual void set_spawn_tile_rules(const std::vector<EntitySpawnTileRule *> rules);
 	virtual void set_starting_pos(int x, int y);
 	virtual int get_entity_starting_pos_x();
@@ -216,7 +220,7 @@ public:
 	virtual int get_entity_sheet_col();
 	virtual int get_entity_sheet_row();
 	virtual void take_durability_damage(Level * level, Player * player, const int damage);
-	static std::vector<std::string> get_entity_effect_names();
+	virtual void take_damage(const int damage);
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 	virtual void set_entity_effect_data(std::vector<EntityEffectData *> effect_data);

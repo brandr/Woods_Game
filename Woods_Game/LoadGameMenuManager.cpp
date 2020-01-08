@@ -30,7 +30,7 @@ void LoadGameMenuManager::load_xml_content(const std::string id)
 			MenuItem * menu_item = new MenuItem();
 			menu_item->set_text(filename); //TEMP- might not want to have the "name" match the filename
 			menu_item->set_menu_binding(MENU_BINDING_FILENAME, filename);
-			menu_item->set_position(std::pair<float, float>(30, 30 + index * 30));
+			menu_item->set_position(std::pair<float, float>(30.0f, 30.0f + (float) index * 30.0f));
 			menu_item->set_selection_action_key("confirm_load_game");
 			this->menu_items.addItem(menu_item);
 			index++;

@@ -75,6 +75,13 @@ void Dungeon::intialize_levels(const std::string filepath, int default_level_wid
 	}
 }
 
+void Dungeon::initialize_tiles()
+{
+	for (Level * level : this->level_list) {
+		level->initialize_tiles();
+	}
+}
+
 void Dungeon::generate_levels()
 {
 	for (Level * level : this->level_list) {
@@ -170,8 +177,12 @@ void Dungeon::remove_level(int index)
 Level * Dungeon::level_at(int x, int y)
 {
 	Level* level = NULL;
-	if (x >= 0 && y >= 0) {
-		level = dungeon_grid[y][x];
+	const int size = dungeon_grid.size();
+	if (x >= 0 && y >= 0 && y < size) {
+		const int row_size = dungeon_grid[y].size();
+		if (x < row_size) {
+			level = dungeon_grid[y][x];
+		}
 	}
 	if (level == NULL) {
 		std::cout << "empty level " << std::endl;

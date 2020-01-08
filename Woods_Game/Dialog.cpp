@@ -4,7 +4,12 @@
 
 const int Dialog::current_num_characters()
 {
-	return this->character_counter/DIALOG_TEXT_SCROLL_FRAMES;
+	return this->character_counter/this->get_dialog_text_scroll_frames();
+}
+
+const int Dialog::get_dialog_text_scroll_frames()
+{
+	return DIALOG_TEXT_SCROLL_BASE_FRAMES / (this->text_speed * 2);
 }
 
 const bool Dialog::is_showing_full_page()
@@ -19,6 +24,15 @@ const bool Dialog::is_showing_full_page()
 const bool Dialog::has_current_page()
 {
 	return this->page_map.find(this->page_num) != this->page_map.end();
+}
+
+const bool Dialog::current_page_has_options()
+{
+	DialogPage * page = this->current_page();
+	if (page != NULL) {
+		return page->has_options();
+	}
+	return false;
 }
 
 DialogPage * Dialog::current_page()
@@ -63,9 +77,19 @@ void Dialog::dialog_sound_update(DialogPage * page)
 	}
 }
 
+void Dialog::initialize_text_speed()
+{
+	FileManager filemanager;
+	std::string filename = "resources/config";
+	Configurations * config = new Configurations();
+	filemanager.load_xml_content(config, filename, "SerializableClass", "ConfigurationsKey", "current_configurations");
+	this->text_speed = config->get_text_scroll_speed();
+}
+
 Dialog::Dialog()
 {
 	this->option_arrow = ImageLoader::get_instance().get_image("ui/arrows/ui_arrow_small");
+	this->initialize_text_speed();
 }
 
 Dialog::~Dialog()
@@ -81,6 +105,38 @@ void Dialog::update()
 			this->dialog_sound_update(page);
 		}
 	}
+}
+
+void Dialog::mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off)
+{
+	if (this->has_current_page()) {
+		DialogPage * page = this->page_map[this->page_num];
+		const bool page_has_options = page->has_options();
+		const int num_characters = this->should_scroll_text ? this->current_num_characters() : page->total_num_characters();
+		const std::vector<std::string> text_lines = page->get_text_lines(num_characters);
+		const int line_count = text_lines.size();
+		int option_index = 0;
+		int text_x_off = 0;
+		for (int l = 0; l < line_count; l++) {
+			const std::string text = text_lines[l];
+			const bool line_has_option = page->has_option(l);
+			if (line_has_option) {
+				const int x = x_off + DIALOG_OFFSET_X, y = y_off + DIALOG_OFFSET_Y + (l * DIALOG_LINE_SPACING);
+				const int text_width = al_get_text_width(font, text.c_str()), text_height = DIALOG_LINE_SPACING;
+				if (mouse_x >= x && y >= y && mouse_x < x + text_width, mouse_y < y + text_height) {
+					this->selected_option_index = option_index;
+					return;
+				}
+				option_index++;
+			}
+		}
+	}
+}
+
+void Dialog::process_mouse_click_left(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off)
+{
+	// the actual advance dialog step happens in MainGameScreen
+	this->mouse_cursor_update(font, mouse_x, mouse_y, x_off, y_off);
 }
 
 void Dialog::add_line(const std::string line_text, const int page_num, const int next_page_num, const int line_num, const std::string option_action_key, 
@@ -322,7 +378,7 @@ void Dialog::advance_dialog()
 	if (this->should_scroll_text && !this->is_showing_full_page()) {
 		DialogPage * page = this->current_page();
 		if (page) {
-			this->character_counter = page->total_num_characters()*DIALOG_TEXT_SCROLL_FRAMES;
+			this->character_counter = page->total_num_characters()*DIALOG_TEXT_SCROLL_BASE_FRAMES;
 		}
 	} else {
 		int next_page_num = -1;

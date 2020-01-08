@@ -65,6 +65,7 @@ public:
 	void set_confirm_action_key(std::string key);
 	void set_text_options(std::vector<std::string> options);
 	void set_options_index(int index);
+	void set_option_with_name(const std::string option_name);
 	void set_controls_action_key(std::string action_key);
 	void set_controls_input_key(std::string input_key);
 	void set_controls_input_label(std::string input_label);

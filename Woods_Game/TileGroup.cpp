@@ -40,7 +40,7 @@ void TileGroup::set_tile(TileSet * tileset, Tile * t, int index)
 	}
 	Tile * tile = this->tiles.getItem(index);
 	if (tile != NULL) {
-		tile->reset(tileset, t);
+		tile->reset(tileset, t, index, this->index.value());
 	}
 }
 

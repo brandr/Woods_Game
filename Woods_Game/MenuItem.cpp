@@ -195,6 +195,18 @@ void MenuItem::set_options_index(int index)
 	options_index = index;
 }
 
+void MenuItem::set_option_with_name(const std::string option_name)
+{
+	const int size = this->text_options.size();
+	for (int i = 0; i < size; i++) {
+		TextOption * to = this->text_options.getItem(i);
+		if (to->Option.value() == option_name) {
+			this->options_index = i;
+			break;
+		}
+	}
+}
+
 void MenuItem::set_controls_action_key(std::string action_key)
 {
 	this->controls_action_key = action_key;
@@ -257,7 +269,7 @@ std::pair<float, float> MenuItem::get_right_bracket_dimensions()
 
 std::pair<float, float> MenuItem::get_position()
 {
-	return position;
+	return std::pair<float, float>(this->x_pos.value(), this->y_pos.value());
 }
 
 std::string MenuItem::get_selection_action_key()

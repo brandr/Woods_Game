@@ -792,7 +792,9 @@
     <ClCompile Include="ImageFilter.cpp">
       <Filter>Animations\Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FilterManager.cpp" />
+    <ClCompile Include="FilterManager.cpp">
+      <Filter>Animations\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

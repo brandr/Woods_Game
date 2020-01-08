@@ -2,6 +2,26 @@
     <SerializableClass Type="Controls" Version="1" ControlsKey="current_controls_keyboard">
         <Collection Name="ControlsMap">
             <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_up</Member>
+                <Member Name="InputKey">keyboard_w</Member>
+                <Member Name="Label">Up</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_down</Member>
+                <Member Name="InputKey">keyboard_s</Member>
+                <Member Name="Label">Down</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_left</Member>
+                <Member Name="InputKey">keyboard_a</Member>
+                <Member Name="Label">Left</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_right</Member>
+                <Member Name="InputKey">keyboard_d</Member>
+                <Member Name="Label">Right</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">interact</Member>
                 <Member Name="InputKey">keyboard_z</Member>
                 <Member Name="Label">Interact</Member>
@@ -15,6 +35,11 @@
                 <Member Name="ActionKey">open_inventory</Member>
                 <Member Name="InputKey">keyboard_v</Member>
                 <Member Name="Label">Open inventory</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">toggle_run</Member>
+                <Member Name="InputKey">keyboard_r</Member>
+                <Member Name="Label">Toggle run</Member>
             </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">pause</Member>
@@ -51,6 +76,26 @@
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_keyboard">
         <Collection Name="ControlsMap">
             <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_up</Member>
+                <Member Name="InputKey">keyboard_w</Member>
+                <Member Name="Label">Up</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_down</Member>
+                <Member Name="InputKey">keyboard_s</Member>
+                <Member Name="Label">Down</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_left</Member>
+                <Member Name="InputKey">keyboard_a</Member>
+                <Member Name="Label">Left</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">move_right</Member>
+                <Member Name="InputKey">keyboard_d</Member>
+                <Member Name="Label">Right</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">interact</Member>
                 <Member Name="InputKey">keyboard_z</Member>
                 <Member Name="Label">Interact</Member>
@@ -64,6 +109,11 @@
                 <Member Name="ActionKey">open_inventory</Member>
                 <Member Name="InputKey">keyboard_v</Member>
                 <Member Name="Label">Open inventory</Member>
+            </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">toggle_run</Member>
+                <Member Name="InputKey">keyboard_r</Member>
+                <Member Name="Label">Toggle run</Member>
             </Class>
             <Class Type="ControlMapping" Version="1">
                 <Member Name="ActionKey">pause</Member>
@@ -144,6 +194,11 @@
                 <Member Name="InputKey">controller_a</Member>
                 <Member Name="Label">Advance Dialog</Member>
             </Class>
+            <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">toggle_run</Member>
+                <Member Name="InputKey">controller_pad_up</Member>
+                <Member Name="Label">Toggle run</Member>
+            </Class>
         </Collection>
     </SerializableClass>
     <SerializableClass Type="Controls" Version="1" ControlsKey="default_controls_controller">
@@ -192,6 +247,11 @@
                 <Member Name="ActionKey">dialog_advance</Member>
                 <Member Name="InputKey">controller_a</Member>
                 <Member Name="Label">Advance Dialog</Member>
+            </Class>
+             <Class Type="ControlMapping" Version="1">
+                <Member Name="ActionKey">toggle_run</Member>
+                <Member Name="InputKey">controller_pad_up</Member>
+                <Member Name="Label">Toggle run</Member>
             </Class>
         </Collection>
     </SerializableClass>

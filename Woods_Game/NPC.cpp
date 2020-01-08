@@ -138,9 +138,9 @@ void NPC::update(World * world, Level * level, GlobalTime * time, const int game
 	AIBeing::update(world, level, time, game_mode);
 }
 
-void NPC::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+void NPC::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
-	AIBeing::draw(display, x_offset, y_offset);
+	AIBeing::draw(display, x_offset, y_offset, screen_w, screen_h);
 }
 
 const std::string NPC::get_npc_key()

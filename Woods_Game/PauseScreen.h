@@ -10,6 +10,7 @@ enum PAUSE_MENUS{
 	PAUSE_MAIN_MENU, 
 	PAUSE_VIDEO_MENU, 
 	PAUSE_AUDIO_MENU,
+	PAUSE_GAMEPLAY_MENU,
 	PAUSE_CONTROLS_MENU, PAUSE_CONTROLS_MENU_KEYBOARD, PAUSE_CONTROLS_MENU_CONTROLLER};
 enum CONFIG_SETTINGS{ CONFIG_SCREEN_RESOLUTION, CONFIG_SCREEN_STYLE };
 
@@ -17,7 +18,6 @@ class PauseScreen:
 	public GameScreen
 {
 private:
-	//std::map<int, ALLEGRO_BITMAP*> backdrops;
 	std::map<int, std::string> backdrop_filenames;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
 	int menu_key = PAUSE_MAIN_MENU;
@@ -35,6 +35,8 @@ public:
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
 	virtual void process_mouse_click_left(const int x, const int y);
+	virtual void process_mouse_click_right(const int x, const int y);
+	virtual void update_mouse_position(const int x, const int y, const int z);
 	virtual void mouse_cursor_update();
 	virtual void cancel_menu();
 	virtual void menu_up();
@@ -42,6 +44,7 @@ public:
 	virtual void menu_left();
 	virtual void menu_right();
 	virtual void confirm_selection();
+	virtual void update_video_settings(const std::string style_string, const std::string res_string);
 	virtual void call_keyboard_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual void call_controller_mappable_input(ALLEGRO_EVENT ev, bool toggle);
 	virtual bool taking_mappable_input();

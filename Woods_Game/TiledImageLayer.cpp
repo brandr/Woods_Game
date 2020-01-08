@@ -42,13 +42,13 @@ bool TiledImageLayer::remove_tiled_image(const std::pair<int, int> pos)
 	return false;
 }
 
-void TiledImageLayer::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset)
+void TiledImageLayer::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset, const int screen_w, const int screen_h)
 {
 	const int size = this->tiled_images.size();
 	for (int i = 0; i < size; i++) {
 		TiledImage *ti = this->tiled_images.getItem(i);
 		if (!ti->is_empty()) {
-			ti->draw(display, offset.first, offset.second);
+			ti->draw(display, offset.first, offset.second, screen_w, screen_h);
 		}
 	}
 }

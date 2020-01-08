@@ -215,7 +215,7 @@
                 <Collection Name="attributes">
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">contact_damage</Member>
-                        <Member Name="attribute_value">1</Member>
+                        <Member Name="attribute_value">400</Member>
                     </Class>
                     <Class Type="EntityAttribute" Version="1">
                         <Member Name="attribute_key">durability</Member>

@@ -19,7 +19,9 @@ ImageFilter::~ImageFilter()
 {
 }
 
-void ImageFilter::draw(ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * filter_bitmap, GlobalTime* global_time, int x_offset, int y_offset)
+//TODO: need to determine if this causes performance issues and fix them if so
+void ImageFilter::draw(ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * filter_bitmap, 
+	GlobalTime* global_time, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
 	ALLEGRO_BITMAP* draw_bitmap = ImageLoader::get_instance().get_image("filters/" + this->get_filename());
 	const int x = this->x_pos + this->filter_offset_x.value(), 
@@ -27,9 +29,9 @@ void ImageFilter::draw(ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * filter_bitmap
 	const int image_width = this->image_dimensions.first;
 	const int image_height = this->image_dimensions.second;
 	if (draw_bitmap
-		&& x + x_offset < al_get_display_width(display)
+		&& x + x_offset < screen_w
 		&& x + image_width + x_offset >= 0
-		&& y + y_offset < al_get_display_height(display)
+		&& y + y_offset < screen_h
 		&& y + image_height + y_offset >= 0) {
 		const int minutes = global_time->get_current_minutes();
 		ALLEGRO_COLOR time_filter_color = FilterManager::get_instance().time_light_filter_color(minutes);
@@ -55,7 +57,7 @@ void ImageFilter::draw(ALLEGRO_DISPLAY * display, ALLEGRO_BITMAP * filter_bitmap
 		} else {
 			// draw directly to the display (other objects will render on top of this one)
 			al_draw_tinted_bitmap(draw_bitmap, al_map_rgba_f(1.0, 1.0, 1.0, this->alpha_f.value()), x + x_offset, y + y_offset, 0);
-			//TODO: logic for drawing shadows
+			//TODO: logic for drawing shadows if different from light
 		}
 	}
 }

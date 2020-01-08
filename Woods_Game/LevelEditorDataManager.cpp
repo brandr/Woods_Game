@@ -458,7 +458,7 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 			t = this->active_levels[this->selected_level_index]->get_tile(grid_pos.first, grid_pos.second);
 			if (t) {
 				did_serialize = xmls::Serializable::fromXML(xml, t);
-				t->reset(this->active_tilesets[this->selected_tileset_index].get(), t);
+				t->reset(this->active_tilesets[this->selected_tileset_index].get(), t, grid_pos.first, grid_pos.second);
 			}
 			break;
 		case OBJECT_TYPE_BLOCK:
@@ -468,7 +468,7 @@ const bool LevelEditorDataManager::replace_selected_object_instance_xml(const st
 				if (b) {
 					did_serialize = xmls::Serializable::fromXML(xml, b);
 					const std::pair<int, int> ss_pos(b->get_entity_sheet_col(), b->get_entity_sheet_row());
-					const std::pair<int, int> pos(b->get_x(), b->get_y());
+					const std::pair<int, int> pos((int) b->get_x(), (int) b->get_y());
 				}
 			}
 			break;

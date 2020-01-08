@@ -42,7 +42,8 @@ private:
 	TileSet *tileset;
 	xmls::xString tileset_key;
 	xmls::xString biome_key;
-	xmls::Collection<TileGroup> tile_rows;	//serialized blocks are stored in here
+	xmls::Collection<TileGroup> tile_rows;	
+	xmls::Collection<Block> blocks;
 	xmls::Collection<EntityGroup> entity_groups; // these may also be stored in entities
 	xmls::Collection<Spawner> spawners;
 	xmls::Collection<PathNode> path_nodes;
@@ -51,7 +52,6 @@ private:
 	LevelGenData gen_data;
 	std::vector<Being*> beings;
 	std::vector<ItemPickup*> item_pickups;
-	std::set<int> active_light_filter_ids;
 	xmls::xInt grid_x;
 	xmls::xInt grid_y;
 	xmls::xInt grid_width;
@@ -59,14 +59,12 @@ private:
 	std::map<std::string, std::set<Entity *>> collide_buckets; 
 	int width;
 	int height;
-	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer);
+	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer, const int screen_w, const int screen_h);
 	void generate_paths();
 	void generate_tiles();
 	void generate_entity_groups();
 	void generate_blocks();
 	void update_collide_buckets(Entity * e);
-	void update_light_filters(World * world, GlobalTime * time, Entity * e);
-	void toggle_light_filter(const int filter_id);
 	void reset_collide_buckets();
 	const std::vector<std::string> collide_bucket_keys(Rect * collide_rect);
 	const std::vector<std::pair<int, int>> connect_path_nodes(const int tile_index, const std::pair<int, int> pos1, 
@@ -119,7 +117,6 @@ public:
 	void cutscene_animation_update();
 	void draw(ALLEGRO_DISPLAY *display, GlobalTime * global_time, const std::pair<int, int> offset);
 	void draw_edge_tile_onto_bitmap(Tile &tile, const std::string edge_filename, const int edge_row, const int dir_key);
-	//void draw_active_light_filters(ALLEGRO_DISPLAY * display, const std::pair<int, int> offset);
 	void add_edge_to_tile(Tile *tile, const int edge_row, const int dir_key, const std::string tile_key);
 	void add_being(Being *b);
 	void add_item_pickup(ItemPickup *ip);
@@ -137,6 +134,7 @@ public:
 	std::vector<Tile*> get_nearby_tiles(Entity*);
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
+	Block * get_block(const int tx, const int ty);
 	void remove_tile(std::pair<int, int> pos);
 	void remove_block(std::pair<int, int> pos);
 	void remove_entity_group(std::pair<int, int> pos);
@@ -168,6 +166,10 @@ public:
 	std::vector<LocationMarker *> get_location_markers();
 	LocationMarker * find_location_marker_matching_level(const std::string level_key);
 	const std::string get_biome_key();
+
+	// controls
+	void process_mouse_click_left(World * world, GlobalTime * time, const std::pair<int, int> offset, const int mouse_x, const int mouse_y);
+	void process_mouse_click_right(World * world, GlobalTime * time, const std::pair<int, int> offset, const int mouse_x, const int mouse_y);
 
 	// tile stuff
 	void set_tile(Tile * tile, std::pair<int, int> pos);

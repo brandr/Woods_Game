@@ -3,6 +3,7 @@
 GameScreen::GameScreen()
 {
 	this->config = std::make_unique<Configurations>();
+	this->default_config = std::make_unique<Configurations>();
 }
 
 
@@ -66,6 +67,7 @@ std::map<int, std::pair<float, float>> GameScreen::get_joystick_pos_map()
 
 void GameScreen::update()
 {
+	this->mouse_scroll = 0;
 }
 
 void GameScreen::draw(ALLEGRO_DISPLAY *display)
@@ -196,9 +198,15 @@ void GameScreen::process_mouse_click_left(const int x, const int y)
 {
 }
 
-void GameScreen::update_mouse_position(const int x, const int y)
+void GameScreen::process_mouse_click_right(const int x, const int y)
+{
+}
+
+void GameScreen::update_mouse_position(const int x, const int y, const int z)
 {
 	mouse_pos.first = x, mouse_pos.second = y;
+	this->mouse_scroll = z - this->last_mouse_z;
+	this->last_mouse_z = z;
 }
 
 void GameScreen::confirm_selection()
@@ -226,6 +234,10 @@ void GameScreen::use_item_action()
 }
 
 void GameScreen::open_inventory_action()
+{
+}
+
+void GameScreen::toggle_run_action()
 {
 }
 

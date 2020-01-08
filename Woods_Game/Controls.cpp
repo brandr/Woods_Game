@@ -21,7 +21,7 @@ const std::vector<int> Controls::controller_mappable_nums()
 	return std::vector<int>{
 		XC_BUTTON_A, XC_BUTTON_B, XC_BUTTON_X, XC_BUTTON_Y,
 		XC_BUTTON_RIGHT_SHOULDER, XC_BUTTON_LEFT_SHOULDER,
-		//XC_BUTTON_PAD_RIGHT, XC_BUTTON_PAD_LEFT, XC_BUTTON_PAD_DOWN, XC_BUTTON_PAD_UP
+		XC_BUTTON_PAD_RIGHT, XC_BUTTON_PAD_LEFT, XC_BUTTON_PAD_DOWN, XC_BUTTON_PAD_UP
 	};
 }
 
@@ -55,6 +55,10 @@ Controls::InputKeyToLabelMap Controls::input_key_to_label_map = {
 	{ "controller_y", "Y Button" },
 	{ "controller_left_shoulder", "L Shoulder" },
 	{ "controller_right_shoulder", "R Shoulder" },
+	{ "controller_pad_up", "Pad Up"},
+	{ "controller_pad_down", "Pad Down" },
+	{ "controller_pad_left", "Pad Left" },
+	{ "controller_pad_right", "Pad Right" },
 	{ "controller_start", "Start Button" },
 };
 
@@ -76,9 +80,8 @@ Controls::KeyboardNumToInputKeyMap Controls::controller_num_to_input_key_map = {
 	{ XC_BUTTON_A, "controller_a"},{ XC_BUTTON_B, "controller_b" }, 
 	{ XC_BUTTON_X, "controller_x"},{ XC_BUTTON_Y, "controller_y" },
 	{ XC_BUTTON_RIGHT_SHOULDER, "controller_right_shoulder" },{ XC_BUTTON_LEFT_SHOULDER, "controller_left_shoulder" },
-	{ XC_BUTTON_START, "controller_start"}
-	//{ XC_BUTTON_PAD_RIGHT, "controller_bpr" },{ XC_BUTTON_PAD_LEFT, "controller_bpl" },
-	//{ XC_BUTTON_PAD_DOWN, "controller_bpd" },{ XC_BUTTON_PAD_UP, "controller_bpu" }
+	{ XC_BUTTON_START, "controller_start"},
+	{ XC_BUTTON_PAD_UP, "controller_pad_up"}, { XC_BUTTON_PAD_DOWN, "controller_pad_down" }, { XC_BUTTON_PAD_LEFT, "controller_pad_left" }, { XC_BUTTON_PAD_RIGHT, "controller_pad_right" }
 };
 
 void Controls::clear()

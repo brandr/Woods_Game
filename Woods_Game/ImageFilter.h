@@ -22,7 +22,7 @@ private:
 public:
 	ImageFilter();
 	~ImageFilter();
-	void draw(ALLEGRO_DISPLAY*, ALLEGRO_BITMAP * filter_bitmap, GlobalTime*, int, int);
+	void draw(ALLEGRO_DISPLAY*, ALLEGRO_BITMAP * filter_bitmap, GlobalTime*, const int, const int, const int screen_w, const int screen_h);
 	void toggle();
 	const bool get_is_toggled();
 	const int get_filter_id();

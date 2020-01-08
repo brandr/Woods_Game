@@ -98,11 +98,11 @@ const bool World::calculate_npc_pathing(
 	bool has_found_path = false;
 
 	Rect * collide_rect = npc->get_rect_for_collision();
-	const std::pair<int, int> npc_t_pos(collide_rect->x / TILE_SIZE, collide_rect->y / TILE_SIZE);
+	const std::pair<int, int> npc_t_pos((int)collide_rect->x / TILE_SIZE, (int)collide_rect->y / TILE_SIZE);
 	const std::string current_npc_level_key = current_npc_level->get_filename();
 	std::vector<PathNode *> current_level_path_nodes = current_npc_level->get_path_nodes();
 	const std::string npc_key = npc->get_npc_key();
-	const std::pair<int, int> start_npc_pos((int)collide_rect->x, collide_rect->y);
+	const std::pair<int, int> start_npc_pos((int)collide_rect->x, (int)collide_rect->y);
 
 	bool should_force = false;
 	bool should_unset_forced_destination = false;
@@ -211,7 +211,7 @@ void World::move_npc_to_level(NPC * npc, Level * current_level, Level * dest_lev
 {
 	npc->set_current_level_key(dest_level->get_filename());
 	Rect * collide_rect = npc->get_rect_for_collision();
-	const std::pair<int, int> offset(collide_rect->x - npc->get_x(), collide_rect->y - npc->get_y());
+	const std::pair<int, int> offset((int) collide_rect->x - (int) npc->get_x(), (int) collide_rect->y - (int) npc->get_y());
 	npc->set_position(position.first - offset.first + arrive_offset.first, position.second - offset.second + arrive_offset.second);
 	npc->cancel_current_pathing(0);
 	current_level->remove_being(npc);
@@ -410,6 +410,12 @@ void World::reload_dungeons(const std::string dungeons_path)
 	}
 }
 
+void World::load_world_state(const std::string world_state_path)
+{
+	FileManager filemanager;
+	filemanager.load_xml_content(&(this->world_state), world_state_path, "SerializableClass", "WorldKey", this->get_world_key());
+}
+
 void World::reload_world_state(const std::string world_state_path)
 {
 	FileManager filemanager;
@@ -510,6 +516,16 @@ void World::generate_map_images()
 	}
 }
 
+void World::initialize_tiles()
+{
+	const int size = dungeons.size();
+	for (int i = 0; i < size; i++) {
+		if (dungeons[i]) {
+			dungeons[i]->initialize_tiles();
+		}
+	}
+}
+
 void World::unload_content()
 {
 	const int size = dungeons.size();
@@ -597,10 +613,8 @@ void World::save_game(World * world, GlobalTime * global_time)
 
 // updates all NPCs, even if they aren't on the current level
 
-//TODO: eventually this will incorporate NPC schedules, but just feed fake data for now
-void World::npc_update(GlobalTime * time, const int game_mode)
+void World::npc_update(Level * level, GlobalTime * time, const int game_mode)
 {
-	Level * active_level = this->get_current_level();
 	const int size = this->npcs.size();
 	for (int i = 0; i < size; i++) {
 		NPC * npc = this->npcs.getItem(i);
@@ -631,7 +645,7 @@ void World::npc_update(GlobalTime * time, const int game_mode)
 						// move the npc to the next level
 						const std::string next_level_node_key = npc->get_requested_next_level_node_key();
 						PathNode * next_level_node = npc_next_level->find_path_node_with_key(next_level_node_key);
-						const std::pair<int, int> next_level_node_pos(next_level_node->get_x(), next_level_node->get_y());
+						const std::pair<int, int> next_level_node_pos((int)next_level_node->get_x(), (int)next_level_node->get_y());
 						const std::pair<int, int> arrival_offset = next_level_node->get_arrival_offset();
 						this->move_npc_to_level(npc, current_npc_level, npc_next_level, 
 							std::pair<int, int>(next_level_node_pos.first, next_level_node_pos.second), arrival_offset, 
@@ -669,6 +683,7 @@ void World::update_reload_day(GlobalTime * time, Player * player, const std::str
 	// players position is updated in extract current level, so try passing the arg in there instead
 	Level * current_level = this->extract_current_level(player, current_level_key);
 	current_level->add_being(player);
+	this->initialize_tiles();
 	this->update_npcs_new_day();
 	this->spawn_critters(time);
 }
@@ -840,9 +855,8 @@ WorldState * World::get_world_state()
 	return &world_state;
 }
 
-void World::update_quests()
+void World::update_quests(Level * level)
 {
-	Level * level = this->get_current_level();
 	std::vector<Quest *> all_quests = this->world_state.get_quests();
 	for (Quest * q : all_quests) {
 		q->update(this, level);

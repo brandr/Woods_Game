@@ -82,7 +82,7 @@ void title_input_confirm_selection(GameScreen& screen, ALLEGRO_EVENT ev, bool to
 
 void title_move_mouse_pos(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.update_mouse_position(ev.mouse.x, ev.mouse.y);
+		screen.update_mouse_position(ev.mouse.x, ev.mouse.y, ev.mouse.z);
 	}
 }
 

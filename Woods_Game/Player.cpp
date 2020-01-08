@@ -16,9 +16,51 @@ void Player::quest_item_update(World * world, Level * level, GlobalTime * time)
 	this->clear_pending_quest_item_updates();
 }
 
+void Player::time_update(World * world, Level * level, GlobalTime * time)
+{
+	const int minutes = time->get_current_minutes();
+	if (minutes == 0 || minutes >= MIDNIGHT_MINUTES - 1) {
+		Cutscene * cutscene = new Cutscene();
+		cutscene->add_pass_out_update(this, time, this->wake_up_time()); //TODO: should we wake up later if passing out?
+		this->active_cutscene = cutscene;
+		//TODO: pass out cutscene, then wake up next day with lowered stamina
+		// (and maybe no stamina upgrade where we normally would?)
+	}
+}
+
 void Player::visible_entities_update(World * world, Level * level, GlobalTime * time)
 {
 	world->player_visible_entities_update(level);
+}
+
+void Player::stamina_update(World * world, Level * level, GlobalTime * time)
+{
+	TileSet * tileset = level->get_tileset();
+	std::vector<Tile*> nearby_tiles = level->get_nearby_tiles(this);
+	float speed_multiplier = get_speed_multiplier(tileset, nearby_tiles);
+	float base_speed = this->absolute_move_speed() / speed_multiplier; // how fast we're "trying" to go
+	//TODO: formula should make running less efficient than walking
+	if (base_speed > 0.0f) {
+		//TODO: tweak this formula until the results are sensible										
+		float stamina_consumption = (base_speed / speed_multiplier) * STAMINA_CONSUMPTION_MULTIPLIER; 
+		this->current_stamina = std::max(0, this->get_current_stamina() - (int)stamina_consumption);
+	}	
+	//TODO: what else consumes stamina? (might not need to check all of it per-frame)
+}
+
+const bool Player::has_low_stamina_1()
+{
+	return ((float)this->get_current_stamina() / (float)this->get_max_stamina()) < STAMINA_SLOW_1_RATIO;
+}
+
+const bool Player::has_low_stamina_2()
+{
+	return ((float)this->get_current_stamina() / (float)this->get_max_stamina()) < STAMINA_SLOW_2_RATIO;
+}
+
+void Player::set_reduced_stamina()
+{
+	this->current_stamina = (int)((float)this->get_max_stamina() * STAMINA_PASSED_OUT_RATIO);
 }
 
 void Player::collect_item_pickup(World * world, Level * level, ItemPickup * pickup)
@@ -133,6 +175,29 @@ const std::string Player::get_footstep_filename_suffix()
 	return "player";
 }
 
+const bool Player::should_adjust_anim_duration()
+{
+	return Being::should_adjust_anim_duration() || this->has_low_stamina_1() || this->has_low_stamina_2();
+}
+
+// "speed" actually means "frame duration" in this case, which is confusing but makes the calculation easier
+const float Player::speed_for_anim_duration()
+{
+	//TODO: is this always the correct way to check if we're swinging something?
+	if (this->current_action == ACTION_SWING) {
+		Animation* anim = this->get_animation();
+		if (anim != NULL) {
+			const float base_duration = (float) anim->get_frame_duration();
+			if (this->has_low_stamina_2()) {
+				return base_duration / STAMINA_SLOW_2_SPEED_RATIO;
+			} else if (this->has_low_stamina_1()) {
+				return base_duration / STAMINA_SLOW_1_SPEED_RATIO;
+			}
+		}		
+	}
+	return Being::speed_for_anim_duration();
+}
+
 Player::Player()
 {
 	// xml serialization attributes
@@ -146,12 +211,15 @@ Player::Player()
 	Register("spritesheet_frame_height", &spritesheet_frame_height);
 	Register("base_walk_speed", &base_walk_speed);
 	Register("jump_speed", &jump_speed);
+	Register("current_stamina", &current_stamina);
+	Register("max_stamina", &max_stamina);
+	Register("is_running", &is_running);
+	Register("spawn_key", &spawn_key);
+	Register("inventory", &inventory);
 	Register("animation_data", &animation_data);
 	Register("walk_animation_data", &walk_animation_data);
 	Register("additional_mask_data", &additional_mask_data);
-	Register("entity_effect_data", &entity_effect_data);
-	Register("inventory", &inventory);
-	Register("spawn_key", &spawn_key);
+	Register("entity_effect_data", &entity_effect_data);	
 	this->direction = DIR_NEUTRAL;
 	this->anim_state = ANIM_NEUTRAL;
 	this->solid = true; // the player counts as solid because NPCs will not be able to walk through
@@ -193,6 +261,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 		break;
 	case TOP_DOWN:
 		update_top_down(world, level);
+		time_update(world, level, time);
 		break;
 	case MAIN_GAME_DIALOG:
 		dialog_update(world, level);
@@ -205,6 +274,7 @@ void Player::update(World * world, Level * level, GlobalTime * time, const int g
 	}
 	this->quest_item_update(world, level, time);
 	this->visible_entities_update(world, level, time);
+	this->stamina_update(world, level, time);
 	clear_input();
 }
 
@@ -425,9 +495,9 @@ void Player::interact_update(World * world, Level * level, GlobalTime * time)
 	}
 }
 
-void Player::draw(ALLEGRO_DISPLAY * display, int x_off, int y_off)
+void Player::draw(ALLEGRO_DISPLAY * display, const int x_off, const int y_off, const int screen_w, const int screen_h)
 {
-	Being::draw(display, x_off, y_off);
+	Being::draw(display, x_off, y_off, screen_w, screen_h);
 }
 
 //TODO: anything player-specific goes here
@@ -585,23 +655,25 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 	const int anim_col = this->get_animation()->get_current_frame().first;
 	mask_t *swing_mask = this->get_additional_mask(swing_key, "player", this->get_animation_direction(), anim_col);
 	float x_off = 0, y_off = 0;
-	//TODO: change these offsets based on swung item type? or not necessary?
 	switch (direction) {
 	case DIR_NEUTRAL:
-		//x_off = 16, y_off = 52;
 		break;
 	case DIR_UP:
-		//x_off = 16, y_off = 8;
 		break;
 	case DIR_DOWN:
-		//x_off = 16, y_off = 52;
 		break;
 	case DIR_LEFT:
-		//x_off = -8, y_off = 16;
 		break;
 	case DIR_RIGHT:
-		//x_off = 40, y_off = 16;
 		break;
+	}
+
+	Item *swung_item = get_selected_item();
+	if (swung_item != NULL && swung_item->has_item_attribute(Item::ITEM_ATTR_STAMINA_COST)) {
+		const int stamina_cost = swung_item->get_item_attribute(Item::ITEM_ATTR_STAMINA_COST);
+		if (stamina_cost > 0) {
+			this->current_stamina = std::max(this->get_current_stamina() - stamina_cost, 0);
+		}
 	}
 
 	for (int i = 0; i < size; i++) {
@@ -612,11 +684,10 @@ void Player::swing_update(World * world, Level * level, const std::string swing_
 			if (this->can_swing_at_entity(e, swing_key)
 				&& e->get_entity_attribute(E_ATTR_BROKEN) != 1) {
 				TileSet * tileset = level->get_tileset();
-				set_entity_attribute(E_ATTR_HIT_OTHER, 1);
-				Item *swung_item = get_selected_item();
+				set_entity_attribute(E_ATTR_HIT_OTHER, 1);				
 				//TODO: if we add any more swing types, figure this out more generally
 				if (swing_key == "shearing") {
-					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);
+					const int shear_power = swung_item->get_item_attribute(Item::ITEM_ATTR_POWER);					
 					e->take_durability_damage(level, this, shear_power);
 					const std::string sound_filename = "entity_sounds/damage_" + tileset->get_block_key(e->get_entity_data_index());
 					const int sound_duration = 12; // TODO: how to get this?
@@ -650,7 +721,20 @@ void Player::load_game_for_day(const int day)
 
 float Player::get_walk_speed()
 {
-	return base_walk_speed.value();
+	float speed = this->base_walk_speed.value();
+	if (!this->is_running.value()) {
+		speed = speed * WALKING_SPEED_RATIO;
+	}
+	if (this->has_low_stamina_1()) {
+		if (this->has_low_stamina_2()) {
+			speed = speed * STAMINA_SLOW_2_SPEED_RATIO;
+		} else if (this->get_current_stamina() > 0 ) {
+			speed = speed * STAMINA_SLOW_1_SPEED_RATIO;
+		} else {
+			speed = speed * STAMINA_EMPTY_SPEED_RATIO;
+		}
+	}
+	return speed;
 }
 
 void Player::set_direction(int dir)
@@ -744,10 +828,15 @@ void Player::use_selected_item()
 {
 	if (current_action != ACTION_NONE) return;
 	if (counters[BOUNCE] || counters[SWING]) return;
-	//TODO: more general
-	//TODO: might want "use key" in additon/instead of swing key
 	Item *item = inventory.get_selected_hotbar_item();
-	if (item) {
+	if (item && item != NULL) {
+		if (item->has_item_attribute(Item::ITEM_ATTR_STAMINA_COST)) {
+			const int stamina_cost = item->get_item_attribute(Item::ITEM_ATTR_STAMINA_COST);
+			if (stamina_cost > this->get_current_stamina()) {
+				//TODO: error sound?
+				return;
+			}
+		}
 		const std::string swing_key = item->get_swing_key();
 		if (!swing_key.empty()) {
 			this->swing_item(swing_key);
@@ -945,6 +1034,36 @@ void Player::add_pending_quest_item_update(const std::string quest_item_key, con
 void Player::clear_pending_quest_item_updates()
 {
 	this->pending_quest_item_updates.clear();
+}
+
+void Player::take_damage(const int damage)
+{
+	this->current_stamina = std::max(0, this->get_current_stamina() - damage);
+}
+
+void Player::set_stamina_full()
+{
+	this->current_stamina = this->max_stamina.value();
+}
+
+const bool Player::has_full_stamina()
+{
+	return this->get_current_stamina() == this->max_stamina.value();
+}
+
+const int Player::get_max_stamina()
+{
+	return this->max_stamina.value();
+}
+
+const int Player::get_current_stamina()
+{
+	return this->current_stamina.value();
+}
+
+void Player::toggle_run()
+{
+	this->is_running = !this->is_running.value();
 }
 
 //TODO: need to check for no next level in the given direction

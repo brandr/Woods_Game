@@ -58,6 +58,8 @@ public:
 	void draw_confirm_dialog_ui(ALLEGRO_DISPLAY *display);
 	virtual void update();
 	void reset();
+	virtual void process_mouse_click_left(const int mouse_x, const int mouse_y);
+	void mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
 	virtual void menu_up();
 	virtual void menu_down();
 	virtual void menu_left();

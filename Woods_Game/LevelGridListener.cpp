@@ -6,7 +6,7 @@ LevelGridListener::LevelGridListener()
 
 void LevelGridListener::mouseClickCB(agui::MouseEvent & evt)
 {
-	this->last_event_pos = std::pair<float, float>(evt.getX(), evt.getY());
+	this->last_event_pos = std::pair<float, float>((float) evt.getX(), (float) evt.getY());
 	this->last_event_button = evt.getButton();
 	this->update = true;
 }

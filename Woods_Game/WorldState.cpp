@@ -34,9 +34,9 @@ WorldState::WorldState()
 	Register("world_key", &world_key);
 	Register("player", &player);
 	Register("inventories", &inventories);
-	Register("trigger_statuses", &trigger_statuses);
+	Register("trigger_statuses", &trigger_statuses);	
 	Register("explored_cells", &explored_cells);
-	Register("quests", &quests);
+	Register("quests", &quests);	
 }
 
 
@@ -46,9 +46,15 @@ WorldState::~WorldState()
 
 void WorldState::reset()
 {
-	this->trigger_statuses.Clear();
-	this->explored_cells.Clear();
-	this->quests.Clear();
+	if (this->trigger_statuses.size() > 0) {
+		this->trigger_statuses.Clear();
+	}
+	if (this->explored_cells.size() > 0) {
+		this->explored_cells.Clear();
+	}
+	if (this->quests.size() > 0) {
+		this->quests.Clear();
+	}
 	const int inv_size = this->inventories.size();
 	for (int i = 0; i < inv_size; i++) {
 		Inventory * inv = this->inventories.getItem(i);

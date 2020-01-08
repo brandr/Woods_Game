@@ -18,6 +18,9 @@ private:
 	xmls::xFloat master_volume;
 	xmls::xFloat music_volume;
 	xmls::xFloat sfx_volume;
+
+	// gameplay settings
+	xmls::xInt text_scroll_speed;
 public:
 	static constexpr const char* SCREEN_STYLE_WINDOWED = "Windowed";
 	static constexpr const char* SCREEN_STYLE_WINDOWED_FULLSCREEN = "Windowed Fullscreen";
@@ -36,6 +39,8 @@ public:
 	const float get_master_volume();
 	const float get_music_volume();
 	const float get_sfx_volume();
+	const int get_text_scroll_speed();
+	void set_text_scroll_speed(const int value);
 };
 
 #endif

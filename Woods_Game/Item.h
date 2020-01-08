@@ -25,6 +25,7 @@ class Item :
 {
 public:
 	static constexpr const char* ITEM_ATTR_POWER = "power";
+	static constexpr const char* ITEM_ATTR_STAMINA_COST = "stamina_cost";
 
 	Item();
 	~Item();

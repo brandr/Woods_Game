@@ -111,6 +111,18 @@ const std::vector<ItemAttribute*> ItemBase::get_item_attributes_vec_copy()
 	return attributes;
 }
 
+const bool ItemBase::has_item_attribute(const std::string attr_key)
+{
+	const int size = this->item_attributes.size();
+	for (int i = 0; i < size; i++) {
+		ItemAttribute *attr = this->item_attributes.getItem(i);
+		if (attr->attribute_key.value() == attr_key) {
+			return true;
+		}
+	}
+	return false;
+}
+
 const int ItemBase::get_item_attribute(const std::string attr_key)
 {
 	const int size = this->item_attributes.size();

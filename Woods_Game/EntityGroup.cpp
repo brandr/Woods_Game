@@ -104,10 +104,21 @@ std::pair<int, int> EntityGroup::get_root_pos()
 	return std::pair<int, int>(root_pos_x.value(), root_pos_y.value());
 }
 
-void EntityGroup::draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset)
+void EntityGroup::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
-	int size = (int) entities.size();
+	const int size = (int) entities.size();
 	for (int i = 0; i < size; i++) {
-		entities[i]->draw(display, x_offset, y_offset);
+		entities[i]->draw(display, x_offset, y_offset, screen_w, screen_h);
 	}
+}
+
+const bool EntityGroup::should_draw(const int x_offset, const int y_offset, const int screen_w, const int screen_h)
+{
+	const int size = (int)entities.size();
+	for (int i = 0; i < size; i++) {
+		if (entities[i]->should_draw(x_offset, y_offset, screen_w, screen_h)) {
+			return true;
+		}
+	}
+	return false;
 }

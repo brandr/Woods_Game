@@ -109,12 +109,15 @@ public:
 	virtual void load_additional_masks_from_attributes(std::string prefix);
 	virtual mask_t* get_additional_mask(const std::string mask_key, const std::string prefix, const int row, const int col);
 	virtual void unload_content();
-	virtual void draw(ALLEGRO_DISPLAY*, int, int);
+	virtual void draw(ALLEGRO_DISPLAY*, const int, const int, const int screen_w, const int screen_h);
+	virtual const bool should_draw(const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	virtual void update();
 	void set_position(int, int);
 	virtual void set_rect(int x, int y, int width, int height);
 	virtual void set_center_offset(std::pair<int, int> offset);
 	virtual const std::pair<int,int> get_center();
+	virtual const int get_center_x();
+	virtual const int get_center_y();
 	virtual void add_additional_image_layer(const std::string filename, Rect subsection);
 	virtual void refresh_mask();
 	mask_t* get_mask();

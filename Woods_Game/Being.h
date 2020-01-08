@@ -54,7 +54,7 @@ public:
 	virtual void play_sound_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void brush_effect_update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void animation_update(const int game_mode);
-	virtual void draw(ALLEGRO_DISPLAY * display, int x_offset, int y_offset);
+	virtual void draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	virtual void load_content_from_attributes();
 	virtual Animation* get_animation();
 	virtual const bool cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty);

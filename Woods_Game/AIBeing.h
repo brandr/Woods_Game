@@ -62,7 +62,7 @@ public:
 	~AIBeing();
 	virtual void update(World * world, Level * level, GlobalTime * time, const int game_mode);
 	virtual void update_animation_dir();
-	virtual void draw(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
+	virtual void draw(ALLEGRO_DISPLAY* display, const int x_offset, const int y_offset, const int screen_w, const int screen_h);
 	virtual void draw_adjacent_rect(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void draw_destinations(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual void clear_primary_destinations();

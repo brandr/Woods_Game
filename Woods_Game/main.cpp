@@ -8,10 +8,10 @@
 #else
 #define DBG_NEW new
 #endif
-//#include "vld.h"
-//#include <stdlib.h>  
+
 #include<allegro5/allegro_native_dialog.h>
 #include<allegro5/allegro_primitives.h>
+#include "AudioManager.h"
 #include "ScreenManager.h"
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_acodec.h>
@@ -86,6 +86,19 @@ ALLEGRO_DISPLAY * initialize_display(std::string config_path, std::string run_mo
 	return display;
 }
 
+void initialize_audio(const std::string config_path, const std::string run_mode) {
+	FileManager filemanager;
+	Configurations config;
+	const std::string config_key = run_mode == LEVEL_EDITOR ? "level_editor_configurations" : "current_configurations";
+	filemanager.load_xml_content(&config, config_path, "SerializableClass", "ConfigurationsKey", config_key);
+	const float master_volume = config.get_master_volume();
+	const float music_volume = config.get_music_volume();
+	const float sfx_volume = config.get_sfx_volume();
+	AudioManager::get_instance().set_master_gain(master_volume / 100.0);
+	AudioManager::get_instance().set_music_gain(music_volume / 100.0);
+	AudioManager::get_instance().set_sfx_gain(sfx_volume / 100.0);
+}
+
 void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string run_mode) {
 	
 	// set up timer/keyboard input
@@ -122,20 +135,20 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	//TEMP
 
 	AudioManager::get_instance().initialize_audio();
-
-	//temp
-	//AudioManager::get_instance().play_sfx("storm");
-	//AudioManager::get_instance().play_music("running_theme");
-	//temp
+	initialize_audio("resources/config", run_mode);
 	
 	// game loop
-	bool done = false, draw = true;
+	bool done = false, draw = true, has_joystick = false;
 	while (!done && !ScreenManager::get_instance().should_close()) {
 		ScreenManager::get_instance().refresh();
 		ALLEGRO_EVENT events;
 		al_wait_for_event(event_queue, &events);
 		if (events.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
 			done = true;
+		}
+		// reconfigure the joystick if you plug/unplug it
+		if (events.type == ALLEGRO_EVENT_JOYSTICK_CONFIGURATION) {
+			al_reconfigure_joysticks();
 		}
 		ScreenManager::get_instance().process_event(events);
 		// handle movement updates

@@ -48,8 +48,8 @@ void MenuManager::set_animations()
 
 void MenuManager::load_xml_content(std::string menu_key)
 {
+	this->menu_items.Clear();
 	this->menu_key = menu_key;
-	std::cout << "loading menu: " + menu_key + "\n";
 	file_manager.load_xml_content(this, "resources/load/menus",
 		"SerializableClass", "MenuKey", menu_key);
 	position[0] = x_pos.value();
@@ -154,7 +154,7 @@ const int MenuManager::mouse_selected_index(float x_pos, float y_pos, float x_of
 		const std::string text = item->get_text();
 		if (text == "") continue;
 		std::pair<float, float> menu_pos = item->get_position();
-		std::pair<float, float> adjusted_menu_pos(menu_pos.first - position[0], menu_pos.second);
+		std::pair<float, float> adjusted_menu_pos(menu_pos.first, menu_pos.second);
 		std::pair<float, float> menu_item_dim(
 			float(al_get_text_width(font, text.c_str())), 
 			float(al_get_font_line_height(font)));
@@ -230,6 +230,21 @@ void MenuManager::confirm_option_select()
 	selected_index = -1;
 	std::string xml_string = this->toXML();
 	this->file_manager.replace_xml_content("resources/load/menus", "SerializableClass", "MenuKey", this->menu_key, xml_string);
+}
+
+void MenuManager::set_option_for_menu_item(const std::string menu_item_name, const std::string option_name, const bool should_save)
+{
+	const int size = this->menu_items.size();
+	for (int i = 0; i < size; i++) {
+		MenuItem * item = this->menu_items.getItem(i);
+		if (item->get_text() == menu_item_name) {
+			item->set_option_with_name(option_name);
+			if (should_save) {
+				item->save();
+			}
+			break;
+		}
+	}
 }
 
 bool MenuManager::is_selecting_options()

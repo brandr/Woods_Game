@@ -5,7 +5,7 @@
 #define DIALOG_FONT_SIZE 24
 #define DIALOG_OFFSET_X 16
 #define DIALOG_OFFSET_Y 16
-#define DIALOG_TEXT_SCROLL_FRAMES 4
+#define DIALOG_TEXT_SCROLL_BASE_FRAMES 16
 
 #define DIALOG_PAGE_TOKEN "p";
 #define DIALOG_LINE_TOKEN "l";
@@ -19,6 +19,7 @@
 #include <allegro5/allegro_font.h>
 #include <algorithm>
 
+#include "Configurations.h"
 #include "FileManager.h"
 #include "InteractAction.h"
 #include "Quest.h"
@@ -67,12 +68,14 @@ private:
 	int page_num = 0;
 	int selected_option_index = 0;
 	std::string active_action_key = "";
+	int text_speed = 4;
 	std::vector<InteractAction *> active_actions;
 	TriggerStatus * active_trigger_status = NULL;
 	std::vector<QuestUpdate *> pending_quest_updates;
 	bool should_scroll_text = true;
 	int character_counter = 0;
 	const int current_num_characters();
+	const int get_dialog_text_scroll_frames();
 	const bool is_showing_full_page();
 	DialogPage * current_page();
 	void set_quest_updates_for_page(const int page_num, std::vector<QuestUpdate*> quest_updates);
@@ -80,13 +83,17 @@ private:
 	ALLEGRO_BITMAP * option_arrow;
 	std::vector<ActionBinding*> action_bindings;
 	void dialog_sound_update(DialogPage * page);
+	void initialize_text_speed();
 public:
 	Dialog();
 	~Dialog();
 	void update();
+	void mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
+	void process_mouse_click_left(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
 	void draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off);
 	void advance_dialog();
 	const bool has_current_page();
+	const bool current_page_has_options();
 	void add_line(const std::string line, const int page_num, const int next_page_num, const int line_num, 
 		const std::string option_action_key, std::vector<InteractAction *> page_actions, DialogItemOption * option);
 	void parse_text(const std::string text);

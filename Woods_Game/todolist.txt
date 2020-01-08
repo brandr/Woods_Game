@@ -4,64 +4,48 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 12/3/2019
+Last updated 1/7/2020
 
 Target date for main code to be done: ~ May 2020
 
-Total: 22-35 days (~1-2 months)
+Unsorted high priority todos:
 
-1. Menu/control stuff
+- take a "screenshot" of everything onscreen before fadeouts so we don't see things like beings, NPCs, bugs, etc. disappearing, plants spawing, etc.
+	# this applies to going to sleep/passing out
+	# pretty sure there's no choice but to generate a bitmap when doing this
+- fix bugs where thorns/ferns don't draw effects when sheared
+- Fix bugs for NPCs/quests/critters (see respective sections)
+- Add serialized EntityGroup filters like tree shadows (see animation code section)
+
+1. Stamina
 	(5-10 days)
 2. Audio
 	(5-10 days)
 (should get here around February 2020) 
 (clean up todos and try to think of what's missing here)	
-3. Loading screens/progress bars
-	(3-5 days)
-4. Figure out how to force end of day (otherwise saving gets weird after midnight)
-	(2-5 days)
-5. Wake-up time (alarm clock?)
-	(2-5 days)
-6. Stamina/resource management
-	(5-10 days)
-(should get here around March 2020) 
-(clean up todos and try to think of what's missing here)	
-7. Miscellaneous code stuff (break out into specific todos after getting here)
+3. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-8. Level Editor improvements
+4. Level Editor improvements
 	(???)
-9. Content!
+5. Content!
 	(???)
 
 ---------------------------------------------------
-Menus
+Stamina
 ---------------------------------------------------
 
-Need to make a "restore defaults" (or something similar) button for video/audio/etc configurations
-Allow changing text speed in options
-Display the current day and other info for a save in title screen menu
-Make custom mouse cursor
-
----------------------------------------------------
-Controls
----------------------------------------------------
-
-Allow exiting from calendar screen (I think there's a button for it but it doesn't get mapped or something)
-Make it so the game can detect when a controller is plugged in and update properly
-	*look at main, where the event queue registers the source 
-		(might need some check accessed through the main loop)
-	*might need to do this for mouse too, need to test
-Mouse/keyboard should take much more advantage of the mouse than it currently does (maybe WASD instead of arrow keys, click replaces most interact actions, etc.)
-
----------------------------------------------------
-Animation/image code
----------------------------------------------------
-
-Stairs
-	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-	* also make sure there are egs you can walk "under" like archways (I think we can do this using center)
-Give trees shadows and ensure they cover only the objects I want
-Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
+Consider setting stamina full as a cutscene block action so we don't need to redundantly set it full after passing out
+	* did this, but need to do it for the stamina upgrade step, too
+IDEA: max stamina levels up very slightly every day (need a well-balanced formula and an absolute maximum)
+	* maybe have some simple "health" mechanics influence stamina, dictated by exercise,
+			eating good food, etc. (make a stub method like "daily health multipler" and leave a todo for now)
+	* when reloading, remember to revert to max stamina stored in worldState (this should already happen, but need to test)
+	* also need to update it before we save the game
+	* Alternately, stamina upgrades could be something you take with you when reloading
+		# this makes a huge difference for game balance, so think carefully about whether it should work this way
+Tweak formula in player.stamina_update() (and other stamina constants)
+	* running should be significantly less stamina-efficient 
+		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than walking
 
 ---------------------------------------------------
 Audio
@@ -70,32 +54,40 @@ Audio
 Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
 Sound effects	
 	* Add sounds: 
+		- "damage" sound for bumping against thorns (possibly want various damage sounds and just have this as a collide action)
 		- menu sounds (advancing dialog page, scrolling, selecting button, etc.)
-		- sounds for catching critters ("victory" jingle)
+		- sounds for catching critters ("victory" jingle -- or is this music rather than sfx?) (bedtime jingle?)
 		- dialog sounds
 			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
 			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
-How to play sounds at title screen?
+How to play sounds at title screen (both music and menu sfx)?
 Replace placeholder sounds
 Music
+	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
 	* What kinds of things can cause music to start/stop/fade/add cues?
 		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
-		- do we want a MusicManager or some other structure in AudioManager that handles this?
-		- one example: bedtime sound
+
+---------------------------------------------------
+Controls
+---------------------------------------------------
+
+Should menu direction controls be wasd too?
+mouse controls for title screen
+Make custom mouse cursor (allow switching based on context/ what we're hovering over)	
+Test encyclopedia scrolling once we have enough encyclopedia items to scroll (both mouse scrolling and tab scrolling)
+Need more intuitive way to display/back out of encyclopedia category
+Maybe dialog click should advance regardless of where user clicks?
 
 ---------------------------------------------------
 Memory management/error handling
 ---------------------------------------------------
 
-Performance is much worse on large levels-- what could be causing this?
-	* not drawing entity groups fixes this (test extensively to make sure of this)
-		# they might have some associated images that aren't getting converted into video bitmaps
-		# maybe we need to break down their images into subsections (64x64 maximum, plus remainder)
-Consider getting rid of some serializable tile attributes, like position (we can get this by their index in the tilerow)
-	* remember to re-save levels in the editor after making this change or any others like it
-	* this same strategy could apply to a lot of serializable objects
+Why do we deserialize the same files so many times? Is it actually necessary? (might be making the game use a lot of memory)
+There seems to sometimes be input lag right on startup and/or after standing still for a long time 
+	* might need to have ants/lighting in the room for this to happen
+	* is it because ants are getting stuck in the wall?
 Document how to format serialized things like dialog trees so I don't forget
-Asynchronous loading screen
+Asynchronous loading screen (still not sure I want a progress bar, except possibly for world gen)
 	* https://www.allegro.cc/forums/thread/615021
 	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
 	* add a progress bar (remember to use mutex)
@@ -104,12 +96,15 @@ If necessary, could make it so we asynchronously load only adjacent levels to th
 	* need to be careful to ensure the player can't walk to the edge before we finish loading
 	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
 	* might be easier to just fade to black and have loading screens between areas
+Performance on large levels seems to be mostly fixed, but comes back in some cases.
+	* the previous problem was in Level.draw()-- sorting draw_entities when there are a lot of them, so see if this might be related
 Fix build warnings
 
 ---------------------------------------------------
 NPCs
 ---------------------------------------------------
 
+Why does the NPC "slide" right or left during the cutscene? (possibly a forced animation direction from ai state?)
 AIState/NPC schedule
 	- wander radius (min/max distance per wander) and wander delay should possibly be serialized/calculated
 	- Consider letting NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
@@ -120,6 +115,8 @@ AIState/NPC schedule
 	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
 Dialog 
+	- fix bug where it skips scrolling after a choice
+		* can be triggered by talking to NPC 1 repeatedly (he will ask a yes/no question)
 	- should you be unable to talk to the same NPC too many times a day like in stardew?
 		* probably need a lot more actual gameplay to answer this question
 NPC pathing
@@ -135,33 +132,49 @@ Critters
 ---------------------------------------------------
 
 Critter spawning/biomes
+	* fix bug where you can see the critters being respawned as the next day is loading 
+		# maybe don't make them visible until after full async load?
 	* fix bug where critters can spawn in walls (can be noticed because it causes massive input lag)
-	* when do critters despawn?
+		# not positive whether this is still happening
+		# can debug by drawing collision rect as white and non-transparent
+	* when should critters despawn?
 	* incorporate level size when calculating spawn chance/max critters to spawn for biome
 	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
 	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
-Accurate swing animation
 	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
 		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
 		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
 			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
 Basic AI
-	* better/more generalized wandering
-		# wandering in its own method-- what can critters do besides wander?
+	* what can critters do besides wander how to decide?
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
-		# sneak up on NPCs?
 Make other critters and large animals
 
 ---------------------------------------------------
-Encyclopedia
+Animation/image code
 ---------------------------------------------------
 
-* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
-* Could track NPCs in encyclopedia (bombers notebook-style schedule)
-* Add latin name, num caught, and other info to display
-* Write up entire encyclopedia in text document before making it into xml
-* Might need to make "seeing" more performance-friendly
+Fix bug where player animations get wonky after reloading via calendar (maybe need to reset some anim states? maybe we're double-drawing animations?)
+Add EntityGroup filters (see Level.draw())
+Stairs
+	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+	* also make sure there are egs you can walk "under" like archways (I think we can do this using center)
+Give trees shadows and ensure they cover only the objects I want
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
+Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
+
+---------------------------------------------------
+Menus
+---------------------------------------------------
+
+Display the current day and other info for a save in title screen menu
+Encyclopedia
+	* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
+	* Could track NPCs in encyclopedia (bombers notebook-style schedule)
+	* Add latin name, num caught, and other info to display
+	* Write up entire encyclopedia in text document before making it into xml
+	* Might need to make "seeing" more performance-friendly
 
 ---------------------------------------------------
 Inventory/items/money
@@ -172,23 +185,18 @@ Make an item shop (or at least someone who sells things)
 	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
+Error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
 
 ---------------------------------------------------
 Quests
 ---------------------------------------------------
 
+Fix quest weirdness (doesn't seem to check whether you have the letter properly)
+Probably want some brief, unobtrusive notification when a quest is updated
+	* not yet sure this is actually necessary
 Might want giving non-quest items for quests to require that you have them 
 	in your active slot like stardew valley (or there's an actual "give button")
 	* could just do ("do you want to give me x?" and yes option gives)
-Probably want some brief, unobtrusive notification when a quest is updated
-	* this should not be a dialog, because it would be annoying to have to click through
-
----------------------------------------------------
-Level editor
----------------------------------------------------
-
-- Fix bug where XML attributes can get saved twice after editing via ctrl-click
-- Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
 
 ---------------------------------------------------
 Procedural generation
@@ -207,24 +215,22 @@ Make a "PlantType" class or something similar and have EntityTypes point to it w
 	* probably only need to do this if plants become more complicated
 
 ---------------------------------------------------
-Bug fixes
+Level editor
 ---------------------------------------------------
 
-There's sometimes an exception on closing the window
-	* seems to have something to do with randomized procedural generation, because it only happens some of the time
-	* exception has something to do with level's tile rows -- happens in Level.unload_content()
-Exception when going to a level that doesn't exist
+Fix bug where XML attributes can get saved twice after editing via ctrl-click
+Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
 
 ---------------------------------------------------
 Physics
 ---------------------------------------------------
 
+For one-way gates, important part is player direction relative to gate-- could be an action binding/qualfier
 Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
 Consider giving blocks optional masks (we use the block's image if there's no mask filepath)
-For one-way gates, important part is player direction relative to gate-- could be an action binding/qualfier
 Can use qualifiers on interact actions to make doors only open at a certain time
 	- see if it's possible to "branch" actions this way and put multiplie actions with different qualfiers on the same door
-	- this allow allows "you must be friends with X to go here"
+	- this allows "you must be friends with X to go here"
 
 ---------------------------------------------------
 Day/night cycle
@@ -234,23 +240,13 @@ Day/night cycle
 	- What happens in terms of date/saving if the player stays up past midnight? (could also prevent them staying up till some late time like 11 PM)
 		* Should player pass out, get a game over, etc if they're up too late?
 	- calculate "time to wake up" somehow rather than just making it constant
-		* alarm clock upgrade/item?
-
----------------------------------------------------
-Stamina
----------------------------------------------------
-	
-IDEA: Stamina could drain slowly when walking and faster when running since time and stamina are both limited resources
-	* running should be significantly less stamina-efficient 
-		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than when walking
-	* need to add a run button, also consider how this works with analog stick (need smooth stamina formula)
-IDEA: Stamina upgrades could be the only thing you take with you when reloading
-Contact with thorns should cost stamina (look for a "damage" attribute that I already made)
+		* alarm clock upgrade/item? (need more gameplay to decide what I want here)
 
 ---------------------------------------------------
 Long term
 ---------------------------------------------------
 
+Populate the encyclopedia
 Hire a sprite artist
 Look up how to get on steam ahead of time
 When balancing money, adjust for inflation for 1987
