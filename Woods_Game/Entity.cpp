@@ -152,8 +152,6 @@ bool Entity::is_visible()
 
 void Entity::load_entity_effects(TileSet * tileset, const std::string entity_key, int row, std::pair<int, int> frame_dimensions)
 {
-	
-
 	const std::string tileset_filename = tileset->get_tile_sheet_filename();
 	const std::string filename_prefix = tileset_filename + "/effects/";
 	const int size = this->entity_effect_data.size();
@@ -192,10 +190,10 @@ void Entity::unload_content()
 
 void Entity::draw(ALLEGRO_DISPLAY * display, const int x_offset, const int y_offset, const int screen_w, const int screen_h)
 {
-	if (get_entity_attribute(E_ATTR_BROKEN) == 1) {
-		return; //TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
-	}
-	GameImage::draw(display, x_offset, y_offset, screen_w, screen_h);
+	//TEMP. May eventually want to draw the entity's "broken" sprite, not sure.	
+	if (get_entity_attribute(E_ATTR_BROKEN) != 1) {
+		GameImage::draw(display, x_offset, y_offset, screen_w, screen_h);
+	}	
 	for (auto &it : entity_effects) {
 		if (!it.second.get_effect_active()) continue;		
 		it.second.draw(display, x_offset, y_offset, screen_w, screen_h);
@@ -298,8 +296,9 @@ void Entity::entity_break(Level * level, Player * player)
 	set_entity_attribute(E_ATTR_CURRENT_DURABILITY, 0);
 	set_entity_attribute(E_ATTR_BROKEN, 1);
 	auto it = entity_effects.find("break");
-	if (it == entity_effects.end()) return;
-	entity_effects["break"].set_effect_active(true);
+	if (it != entity_effects.end()) {
+		entity_effects["break"].set_effect_active(true);
+	}	
 	this->drop_items(level, player);
 }
 
@@ -394,9 +393,15 @@ void Entity::copy_contact_actions(std::vector<InteractAction*> actions)
 		std::vector<ActionBinding *> copy_bindings;
 		for (ActionBinding * b : bindings) {
 			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
-			copy_bindings.push_back(b);
+			copy_bindings.push_back(copy_binding);
+		}
+		std::vector<Qualifier*> quals = ia->get_qualifiers();
+		std::vector<Qualifier *> copy_qualifiers;
+		for (Qualifier * q : quals) {
+			copy_qualifiers.push_back(q);
 		}
 		action->set_bindings(copy_bindings);
+		action->set_qualifiers(copy_qualifiers);
 		this->contact_actions.addItem(action);
 	}
 }
@@ -430,6 +435,13 @@ void Entity::copy_interact_actions(std::vector<InteractAction*> actions)
 			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
 			copy_bindings.push_back(b);
 		}
+		std::vector<Qualifier*> quals = ia->get_qualifiers();
+		std::vector<Qualifier *> copy_qualifiers;
+		for (Qualifier * q : quals) {
+			copy_qualifiers.push_back(q);
+		}
+		action->set_bindings(copy_bindings);
+		action->set_qualifiers(copy_qualifiers);
 		action->set_bindings(copy_bindings);
 		this->interact_actions.addItem(action);
 	}
@@ -464,8 +476,26 @@ void Entity::copy_load_day_actions(std::vector<InteractAction*> actions)
 			ActionBinding * copy_binding = new ActionBinding(b->binding_key.value(), b->binding_value.value());
 			copy_bindings.push_back(b);
 		}
+		std::vector<Qualifier*> quals = ia->get_qualifiers();
+		std::vector<Qualifier *> copy_qualifiers;
+		for (Qualifier * q : quals) {
+			copy_qualifiers.push_back(q);
+		}
+		action->set_bindings(copy_bindings);
+		action->set_qualifiers(copy_qualifiers);
 		action->set_bindings(copy_bindings);
 		this->load_day_actions.addItem(action);
+	}
+}
+
+void Entity::copy_entity_effect_data(std::vector<EntityEffectData*> effect_datas)
+{
+	this->entity_effect_data.Clear();
+	for (EntityEffectData * eed : effect_datas) {
+		EntityEffectData * copy_data = new EntityEffectData();
+		copy_data->effect_key = eed->effect_key.value();
+		copy_data->animation_data = eed->animation_data;
+		this->entity_effect_data.addItem(copy_data);
 	}
 }
 
@@ -618,6 +648,17 @@ void Entity::set_entity_effect_data(std::vector<EntityEffectData *> effect_data)
 	}
 }
 
+std::vector<EntityEffectData*> Entity::get_entity_effect_data()
+{
+	std::vector<EntityEffectData*> effects;
+	const int size = this->entity_effect_data.size();
+	for (int i = 0; i < size; i++) {
+		EntityEffectData * eed = this->entity_effect_data.getItem(i);
+		effects.push_back(eed);
+	}
+	return effects;
+}
+
 void Entity::load_image_filters()
 {
 	const int size = this->image_filters.size();
@@ -636,6 +677,16 @@ void Entity::set_image_filters(std::vector<ImageFilter*> filters)
 	for (ImageFilter * f : filters) {
 		this->image_filters.addItem(f);
 	}
+}
+
+std::vector<ImageFilter*> Entity::get_image_filters()
+{
+	std::vector<ImageFilter*> filters;
+	const int size = this->image_filters.size();
+	for (int i = 0; i < size; i++) {
+		filters.push_back(this->image_filters.getItem(i));
+	}
+	return filters;
 }
 
 void Entity::toggle_light_filter(const int filter_id)

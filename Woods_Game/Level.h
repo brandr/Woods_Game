@@ -201,11 +201,14 @@ public:
 	int get_grid_width();
 	void set_grid_height(const int value);
 	int get_grid_height();
+	// for frozen screen
+	ALLEGRO_BITMAP * take_screenshot(ALLEGRO_DISPLAY * display, GlobalTime * global_time, const int x_off, const int y_off, const int width, const int height);
 	// methods for level editor
 	void draw_tiles_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
-	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_blocks_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection, const bool check_visible);
 	void draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
+	void draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection, const int layer);
 	void draw_spawners_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_path_nodes_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);
 	void draw_location_markers_onto_bitmap(ALLEGRO_BITMAP *bitmap, Rect &subsection);

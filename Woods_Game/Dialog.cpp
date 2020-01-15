@@ -287,6 +287,7 @@ void Dialog::decrement_option()
 	if (page != NULL && page->has_options()) {
 		const int option_count = page->options_count();
 		this->selected_option_index = (this->selected_option_index - 1) % option_count;
+		AudioManager::get_instance().play_menu_scroll_sound();
 	}
 }
 
@@ -296,6 +297,7 @@ void Dialog::increment_option()
 	if (page != NULL && page->has_options()) {
 		const int option_count = page->options_count();
 		this->selected_option_index = (this->selected_option_index + 1) % option_count;
+		AudioManager::get_instance().play_menu_scroll_sound();
 	}
 }
 
@@ -403,14 +405,14 @@ void Dialog::advance_dialog()
 			}
 			if (!page->dialog_actions.empty()) {
 				this->active_actions = page->dialog_actions;
-				//this->active_action_key = page->dialog_action->get_interact_action_key();
-				//this->active_action = page->dialog_action;
 				page->dialog_actions.clear();
 			}
 		}
 		if (!should_advance) {
 			return;
 		}
+		this->character_counter = 0;
+		AudioManager::get_instance().play_sfx("dialog_sounds/dialog_advance", "" + SOUND_KEY_DIALOG);
 		if (next_page_num < 0) {
 			next_page_num = page->next_page_number;
 		}

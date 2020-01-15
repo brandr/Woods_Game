@@ -98,14 +98,24 @@ const bool Player::can_swing_at_entity(Entity * e, const std::string swing_key)
 
 void Player::catch_critter(World * world, Level * level, Critter * critter)
 {
-	//TODO: add item?
 	world->update_encyclopedia_for_critter(critter, ENTRY_KNOWN);
 	level->remove_being(critter);
 	Dialog * dialog = CritterManager::get_instance().get_critter_catch_dialog(critter->get_critter_key());
 	if (dialog != NULL) {
 		this->set_open_dialog(dialog);
+		AudioManager::get_instance().play_sfx("jingles/victory_catch_critter", "" + SOUND_KEY_JINGLE);
 	}
-	//TODO: could use dialog image (need to implement) to show critter sprite (use encyclopedia sprite?)
+}
+
+const int Player::calculate_stamina_change(World * world, Level * level, GlobalTime * time, const bool good_sleep)
+{
+	//TODO: tweak this for gameplay balance
+	//consider "health" mechanics like eating good food
+	// maybe don't automatically return 0 for bad sleep
+	if (!good_sleep) {
+		return 0;
+	}
+	return STAMINA_BASE_GAIN;
 }
 
 //TODO: probably need pickups in the set of items we check for (see level)
@@ -1039,6 +1049,12 @@ void Player::clear_pending_quest_item_updates()
 void Player::take_damage(const int damage)
 {
 	this->current_stamina = std::max(0, this->get_current_stamina() - damage);
+}
+
+void Player::update_max_stamina(World * world, Level * level, GlobalTime * time, const bool good_sleep)
+{
+	const int stamina_change = this->calculate_stamina_change(world, level, time, good_sleep);	
+	this->max_stamina = std::max(STAMINA_MINIMUM, this->get_max_stamina() + stamina_change);
 }
 
 void Player::set_stamina_full()

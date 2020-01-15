@@ -25,6 +25,10 @@
 #define ACTION_UPDATE_NEW_DAY "update_new_day"
 #define ACTION_SET_FULL_STAMINA "set_full_stamina"
 #define ACTION_SET_REDUCED_STAMINA "set_reduced_stamina"
+#define ACTION_UPDATE_MAX_STAMINA "update_max_stamina"
+#define ACTION_UPDATE_MAX_STAMINA_BAD_SLEEP "update_max_stamina_bad_sleep"
+#define ACTION_FREEZE_SCREEN "freeze_screen"
+#define ACTION_UNFREEZE_SCREEN "unfreeze_screen"
 
 // other actions
 #define ACTION_DIALOG "action_dialog"

@@ -79,6 +79,16 @@ void ImageLoader::set_keyed_image(ALLEGRO_BITMAP * image, const std::string imag
 	image_map[std::pair<std::string, std::string>(full_key, "")] = image;
 }
 
+void ImageLoader::delete_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix)
+{
+	const std::string full_key = this->full_image_key(image_key, width, height, suffix);
+	ALLEGRO_BITMAP * keyed_image = this->get_keyed_image(image_key, width, height, suffix);
+	if (keyed_image != NULL) {
+		al_destroy_bitmap(keyed_image);
+	}
+	image_map.erase(std::pair<std::string, std::string>(full_key, ""));
+}
+
 ALLEGRO_BITMAP * ImageLoader::get_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix)
 {
 	const std::string full_key = this->full_image_key(image_key, width, height, suffix);

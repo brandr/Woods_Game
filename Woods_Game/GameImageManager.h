@@ -3,6 +3,8 @@
 
 #define START_TIME_HOUR 3
 
+#define STILL_SCREEN_IMAGE "still_screen_image"
+
 #include <string>
 #include <set>
 #include "utility"  // for pair
@@ -56,12 +58,18 @@ private:
 	ALLEGRO_THREAD * loading_thread;
 	LoadingData thread_data;
 
+	std::string still_screen_image_key = "";
+
 	// async functions
 	static void *load_func_advance_day(ALLEGRO_THREAD *thr, void *arg);
 	static void *load_func_save_game(ALLEGRO_THREAD *thr, void *arg);
 	static void *load_func_load_from_save(ALLEGRO_THREAD *thr, void *arg);
 
 	void walk_agents_for_cutscene(Cutscene * cutscene);
+	const bool has_still_screen_image(const int width, const int height);
+	ALLEGRO_BITMAP * get_still_screen_image(const int width, const int height);
+	void freeze_screen();
+	void unfreeze_screen();
 public:
 	Level* current_level;
 	Player* player;
@@ -105,6 +113,7 @@ public:
 	const int get_num_days();
 	void change_player_level();
 	void draw(ALLEGRO_DISPLAY *display);
+	void draw_still_screen_image(ALLEGRO_DISPLAY *display, const int width, const int height);
 	void draw_filters(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void draw_time_light_filter(ALLEGRO_DISPLAY *display, std::pair<int, int> offset);
 	void resume();

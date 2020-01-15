@@ -182,6 +182,26 @@
                         <Member Name="tile_type_index">3</Member>
                     </Class>
                 </Collection>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">play_sound</Member>
+                        <Member Name="FunctionName">play_sound</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">sound_key</Member>
+                                <Member Name="BindingValue">thorn_poke</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">sound_duration</Member>
+                                <Member Name="BindingValue">8</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">require_moving</Member>
+                                <Member Name="BindingValue">0</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                </Collection>
                 <Collection Name="load_day_actions">
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">plant_day_update</Member>

@@ -24,7 +24,6 @@ void Cutscene::update(World * world, Level * level)
 		if (this->has_current_cutscene_block()) {
 			this->cutscene_blocks[this->current_block_index]->update(this->timer_active);
 			if (this->cutscene_blocks[this->current_block_index]->is_finished()) {
-				//TODO: process triggers for the block
 				if (this->cutscene_blocks[this->current_block_index]->process_action()) {
 					this->action_flag = true;
 				} else if (!this->update_trigger_statuses 
@@ -111,6 +110,7 @@ void Cutscene::add_global_time_update(const int day, const int time)
 
 void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_up_time)
 {
+	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
 	block->duration = 1;
@@ -124,10 +124,12 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 	this->add_action(ACTION_SET_FULL_STAMINA, EFFECT_DISPLAY_BLACK); // set full stamina before saving so player gets saved with it
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_UNFREEZE_SCREEN);
 }
 
 void Cutscene::add_load_game_update(const int day, const int time)
 {
+	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_LOAD_GAME;
 	block->duration = 1;
@@ -138,29 +140,30 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_global_time_update(day, time);
+	this->add_action(ACTION_UPDATE_MAX_STAMINA, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SET_FULL_STAMINA, EFFECT_DISPLAY_BLACK); // this is okay because we're reloading via calendar, so the player can't exploit it
-	//this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
-	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
+	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK); 
+	this->add_action(ACTION_UNFREEZE_SCREEN);
 }
 
 void Cutscene::add_pass_out_update(Player * player, GlobalTime * time, const int wake_up_time)
 {
+	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
 	block->duration = 1;
 	block->effect_key = EFFECT_DISPLAY_BLACK;
 	block->block_index = this->cutscene_blocks.size();
-	this->add_block(block); // do this here if we're updating async
+	this->add_block(block);
 	this->add_effect(EFFECT_FADE_TO_BLACK, 175);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_global_time_update(time->get_day() + 1, wake_up_time);
+	this->add_action(ACTION_UPDATE_MAX_STAMINA_BAD_SLEEP, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SET_REDUCED_STAMINA, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);	
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
-	
-	
-	//TODO: for this and new day, need a "Screenshot" so we don't see bugs/npc/player/etc disappering
+	this->add_action(ACTION_UNFREEZE_SCREEN);
 	//TODO: player needs passing out animation
 }
 
@@ -267,6 +270,18 @@ const bool CutsceneBlock::process_action()
 			return true;
 		}
 		else if (this->action_key == ACTION_SET_FULL_STAMINA) {
+			return true;
+		}
+		else if (this->action_key == ACTION_UPDATE_MAX_STAMINA) {
+			return true;
+		}
+		else if (this->action_key == ACTION_UPDATE_MAX_STAMINA_BAD_SLEEP) {
+			return true;
+		}
+		else if (this->action_key == ACTION_FREEZE_SCREEN) {
+			return true;
+		} 
+		else if (this->action_key == ACTION_UNFREEZE_SCREEN) {
 			return true;
 		}
 	}

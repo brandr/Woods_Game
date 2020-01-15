@@ -2390,6 +2390,73 @@
                 <Collection Name="SpawnTileRules"/>
                 <Collection Name="ImageFilters"/>
             </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">128</Member>
+                <Member Name="EntityStartingPosY">128</Member>
+                <Member Name="EntityDataIndex">7</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">toggle_light</Member>
+                        <Member Name="FunctionName">toggle_light</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">light_filter_key</Member>
+                                <Member Name="BindingValue">1</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters">
+                    <Class Type="ImageFilter" Version="1">
+                        <Member Name="filter_id">1</Member>
+                        <Member Name="filename">player_room_lamp_light</Member>
+                        <Member Name="filter_offset_x">-128</Member>
+                        <Member Name="filter_offset_y">-128</Member>
+                        <Member Name="draw_on_last_layer">true</Member>
+                        <Member Name="alpha_f">0.60</Member>
+                        <Member Name="is_toggled">false</Member>
+                        <Member Name="image_layer">21</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">256</Member>
+                <Member Name="EntityStartingPosY">128</Member>
+                <Member Name="EntityDataIndex">6</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions">
+                    <Class Type="InteractAction" Version="1">
+                                    <Member Name="InteractActionKey">exchange_inventory</Member>
+                                    <Member Name="FunctionName">exchange_inventory</Member>
+                                    <Collection Name="Bindings">
+                                        <Class Type="ActionBinding" Version="1">
+                                            <Member Name="BindingKey">inventory_key</Member>
+                                            <Member Name="BindingValue">player_room_chest_1</Member>
+                                        </Class>
+                                    </Collection>
+                                    <Collection Name="Qualifiers"/>
+                                </Class>
+                </Collection>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
         </Collection>
         <Collection Name="EntityGroups">
             <Class Type="EntityGroup" Version="1">
@@ -8069,24 +8136,71 @@
                 <Collection Name="EntityAttributes"/>
                 <Collection Name="ContactActions">
                     <Class Type="InteractAction" Version="1">
-                                    <Member Name="InteractActionKey">go_to_level</Member>
-                                    <Member Name="FunctionName">go_to_level</Member>
-                                    <Collection Name="Bindings">
-                                        <Class Type="ActionBinding" Version="1">
-                                            <Member Name="BindingKey">destination_level_key</Member>
-                                            <Member Name="BindingValue">start_neighborhood</Member>
-                                        </Class>
-                                        <Class Type="ActionBinding" Version="1">
-                                            <Member Name="BindingKey">destination_level_pos_x</Member>
-                                            <Member Name="BindingValue">830</Member>
-                                        </Class>
-                                        <Class Type="ActionBinding" Version="1">
-                                            <Member Name="BindingKey">destination_level_pos_y</Member>
-                                            <Member Name="BindingValue">462</Member>
-                                        </Class>
-                                    </Collection>
-                                    <Collection Name="Qualifiers"/>
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_key</Member>
+                                <Member Name="BindingValue">start_neighborhood</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_x</Member>
+                                <Member Name="BindingValue">830</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_y</Member>
+                                <Member Name="BindingValue">462</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">false</Member>
+                <Member Name="Visible">false</Member>
+                <Member Name="EntityStartingPosX">384</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">5</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">trigger_cutscene</Member>
+                        <Member Name="FunctionName">trigger_cutscene</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">cutscene_key</Member>
+                                <Member Name="BindingValue">test_cutscene_1</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers">
+                            <Class Type="Qualifier" Version="1">
+                                <Member Name="comparator">0</Member>
+                                <Member Name="evaluator">7</Member>
+                                <Member Name="month">-1</Member>
+                                <Member Name="day">-1</Member>
+                                <Member Name="hour">-1</Member>
+                                <Member Name="minute">-1</Member>
+                                <Member Name="day_of_week">-1</Member>
+                                <Member Name="int_val">-1</Member>
+                                <Member Name="string_val">stranger_house_a</Member>
+                                <Member Name="npc_key">stranger_2</Member>
+                                <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                    <Member Name="trigger_key"/>
+                                    <Member Name="trigger_state"/>
+                                    <Collection Name="trigger_attributes"/>
                                 </Class>
+                                <Collection Name="qualifiers"/>
+                            </Class>
+                        </Collection>
+                    </Class>
                 </Collection>
                 <Collection Name="InteractActions"/>
                 <Collection Name="LoadDayActions"/>

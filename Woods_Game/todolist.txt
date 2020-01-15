@@ -4,48 +4,28 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 1/7/2020
+Last updated 1/14/2020
 
 Target date for main code to be done: ~ May 2020
 
-Unsorted high priority todos:
+Unsorted high priority todos: (none)
 
-- take a "screenshot" of everything onscreen before fadeouts so we don't see things like beings, NPCs, bugs, etc. disappearing, plants spawing, etc.
-	# this applies to going to sleep/passing out
-	# pretty sure there's no choice but to generate a bitmap when doing this
-- fix bugs where thorns/ferns don't draw effects when sheared
-- Fix bugs for NPCs/quests/critters (see respective sections)
-- Add serialized EntityGroup filters like tree shadows (see animation code section)
-
-1. Stamina
+1. Audio
 	(5-10 days)
-2. Audio
+2. Level gen
+	(15-20 days)
+3. Physics/gates/NPC actions
+	(20-25 days)
+4. Animation code
 	(5-10 days)
-(should get here around February 2020) 
-(clean up todos and try to think of what's missing here)	
-3. Miscellaneous code stuff (break out into specific todos after getting here)
+5. Critters
+	(5-10 days)
+6. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-4. Level Editor improvements
+7. Level Editor improvements
 	(???)
-5. Content!
+8. Content!
 	(???)
-
----------------------------------------------------
-Stamina
----------------------------------------------------
-
-Consider setting stamina full as a cutscene block action so we don't need to redundantly set it full after passing out
-	* did this, but need to do it for the stamina upgrade step, too
-IDEA: max stamina levels up very slightly every day (need a well-balanced formula and an absolute maximum)
-	* maybe have some simple "health" mechanics influence stamina, dictated by exercise,
-			eating good food, etc. (make a stub method like "daily health multipler" and leave a todo for now)
-	* when reloading, remember to revert to max stamina stored in worldState (this should already happen, but need to test)
-	* also need to update it before we save the game
-	* Alternately, stamina upgrades could be something you take with you when reloading
-		# this makes a huge difference for game balance, so think carefully about whether it should work this way
-Tweak formula in player.stamina_update() (and other stamina constants)
-	* running should be significantly less stamina-efficient 
-		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than walking
 
 ---------------------------------------------------
 Audio
@@ -54,18 +34,42 @@ Audio
 Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
 Sound effects	
 	* Add sounds: 
-		- "damage" sound for bumping against thorns (possibly want various damage sounds and just have this as a collide action)
-		- menu sounds (advancing dialog page, scrolling, selecting button, etc.)
-		- sounds for catching critters ("victory" jingle -- or is this music rather than sfx?) (bedtime jingle?)
+		- menu sounds 
+			# inventory
+				$ item pickup/drop/swap
+				$ item trashing
+				$ tab scroll
+				$ map scroll
+				$ quest item/quest scroll
+				$ quest item/quest show description (different from select or no?)
+				$ encyclopedia scroll
+				$ encyclopedia show description
+			# scroll/select for pause menu/calendar/title screen (anything missing?)
+			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
 		- dialog sounds
 			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
+			# have voices for things like signs that aren't actually recordings of human voice, but still have 26 characters
 			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
 How to play sounds at title screen (both music and menu sfx)?
-Replace placeholder sounds
+Replace placeholder sounds based on filenames
 Music
 	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
 	* What kinds of things can cause music to start/stop/fade/add cues?
 		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
+
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
+
+Fix bug where player animations get wonky after reloading via calendar (maybe need to reset some anim states? maybe we're double-drawing animations?)
+Give player a "pass out" animation for end of day
+could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
+Give trees shadows and ensure they cover only the objects I want
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
+Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
+Add EntityGroup filters (see Level.draw())
+	# done, but not tested (need to copy over for genned egs?)
 
 ---------------------------------------------------
 Controls
@@ -104,7 +108,6 @@ Fix build warnings
 NPCs
 ---------------------------------------------------
 
-Why does the NPC "slide" right or left during the cutscene? (possibly a forced animation direction from ai state?)
 AIState/NPC schedule
 	- wander radius (min/max distance per wander) and wander delay should possibly be serialized/calculated
 	- Consider letting NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
@@ -115,8 +118,6 @@ AIState/NPC schedule
 	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
 		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
 Dialog 
-	- fix bug where it skips scrolling after a choice
-		* can be triggered by talking to NPC 1 repeatedly (he will ask a yes/no question)
 	- should you be unable to talk to the same NPC too many times a day like in stardew?
 		* probably need a lot more actual gameplay to answer this question
 NPC pathing
@@ -132,11 +133,6 @@ Critters
 ---------------------------------------------------
 
 Critter spawning/biomes
-	* fix bug where you can see the critters being respawned as the next day is loading 
-		# maybe don't make them visible until after full async load?
-	* fix bug where critters can spawn in walls (can be noticed because it causes massive input lag)
-		# not positive whether this is still happening
-		# can debug by drawing collision rect as white and non-transparent
 	* when should critters despawn?
 	* incorporate level size when calculating spawn chance/max critters to spawn for biome
 	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
@@ -146,35 +142,21 @@ Critter spawning/biomes
 		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
 			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
 Basic AI
-	* what can critters do besides wander how to decide?
+	* what can critters do besides wander? how to decide?
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
 Make other critters and large animals
 
 ---------------------------------------------------
-Animation/image code
----------------------------------------------------
-
-Fix bug where player animations get wonky after reloading via calendar (maybe need to reset some anim states? maybe we're double-drawing animations?)
-Add EntityGroup filters (see Level.draw())
-Stairs
-	* could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-	* also make sure there are egs you can walk "under" like archways (I think we can do this using center)
-Give trees shadows and ensure they cover only the objects I want
-Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
-Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
-
----------------------------------------------------
 Menus
 ---------------------------------------------------
 
-Display the current day and other info for a save in title screen menu
+Display the current day and other info for a save in title screen menu (why does "maps" appear as an option when loading game?)
 Encyclopedia
 	* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
 	* Could track NPCs in encyclopedia (bombers notebook-style schedule)
 	* Add latin name, num caught, and other info to display
 	* Write up entire encyclopedia in text document before making it into xml
-	* Might need to make "seeing" more performance-friendly
 
 ---------------------------------------------------
 Inventory/items/money
@@ -186,17 +168,6 @@ Make an item shop (or at least someone who sells things)
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
 Error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
-
----------------------------------------------------
-Quests
----------------------------------------------------
-
-Fix quest weirdness (doesn't seem to check whether you have the letter properly)
-Probably want some brief, unobtrusive notification when a quest is updated
-	* not yet sure this is actually necessary
-Might want giving non-quest items for quests to require that you have them 
-	in your active slot like stardew valley (or there's an actual "give button")
-	* could just do ("do you want to give me x?" and yes option gives)
 
 ---------------------------------------------------
 Procedural generation
@@ -229,18 +200,19 @@ For one-way gates, important part is player direction relative to gate-- could b
 Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
 Consider giving blocks optional masks (we use the block's image if there's no mask filepath)
 Can use qualifiers on interact actions to make doors only open at a certain time
-	- see if it's possible to "branch" actions this way and put multiplie actions with different qualfiers on the same door
+	- see if it's possible to "branch" actions this way and put multiple actions with different qualfiers on the same door
 	- this allows "you must be friends with X to go here"
 
 ---------------------------------------------------
-Day/night cycle
+Stamina
 ---------------------------------------------------
 
-Day/night cycle
-	- What happens in terms of date/saving if the player stays up past midnight? (could also prevent them staying up till some late time like 11 PM)
-		* Should player pass out, get a game over, etc if they're up too late?
-	- calculate "time to wake up" somehow rather than just making it constant
-		* alarm clock upgrade/item? (need more gameplay to decide what I want here)
+Tweak formula in player.stamina_update() and player.calculate_stamina_gain, etc.
+	* max stamina levels up very slightly every day (need a well-balanced formula and an absolute maximum)
+	* maybe have some simple "health" mechanics influence stamina, dictated by exercise,
+			eating good food, etc. (make a stub method like "daily health multipler" and leave a todo for now)
+	* running should be significantly less stamina-efficient 
+		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than walking
 
 ---------------------------------------------------
 Long term

@@ -1174,7 +1174,6 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 	std::map<int, std::vector<ImageFilter *>> active_filters;
 	std::vector<Block *> draw_blocks;
 	ALLEGRO_BITMAP * filter_bitmap = FilterManager::get_instance().time_light_filter(display, global_time->get_current_minutes());
-	//TODO: get entity group filters too
 
 	// tiles: layer 0
 	for (int y = start_y; y < end_y; y++) {
@@ -1214,7 +1213,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 			? active_filters[layer_index] : std::vector<ImageFilter *>();
 		if (!layer_filters.empty()) {
 			for (ImageFilter * f : layer_filters) {
-				f->draw(display, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
+				f->draw(display, NULL, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
 			}
 		}
 	}
@@ -1228,7 +1227,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 	std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[10] : std::vector<ImageFilter *>();
 	if (!layer_filters.empty()) {
 		for (ImageFilter * f : layer_filters) {
-			f->draw(display, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
+			f->draw(display, NULL, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
 		}
 	}
 
@@ -1241,7 +1240,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 			? active_filters[layer_index] : std::vector<ImageFilter *>();
 		if (!layer_filters.empty()) {
 			for (ImageFilter * f : layer_filters) {
-				f->draw(display, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
+				f->draw(display, NULL, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
 			}
 		}
 	}
@@ -1251,6 +1250,21 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 		EntityGroup * eg = this->entity_groups.getItem(i);
 		if (eg->should_draw(offset.first, offset.second, screen_w, screen_h)){
 			draw_entities.push_back(eg);
+			std::vector<ImageFilter *> eg_filters = eg->get_active_image_filters();
+			if (!eg_filters.empty()) {
+				for (ImageFilter * bf : eg_filters) {
+					const int bf_layer = bf->get_image_layer();
+					auto it = active_filters.find(bf_layer);
+					std::vector<ImageFilter *> layer_filters = it != active_filters.end()
+						? active_filters[bf_layer] : std::vector<ImageFilter *>();
+					bf->set_position(eg->get_x(), eg->get_y());
+					layer_filters.push_back(bf);
+					active_filters[bf_layer] = layer_filters;
+					if (bf_layer > max_layer_index) {
+						max_layer_index = bf_layer;
+					}
+				}
+			}
 		}
 	}
 
@@ -1278,7 +1292,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 		= it2 != active_filters.end() ? active_filters[20] : std::vector<ImageFilter *>();
 	if (!layer_filters2.empty()) {
 		for (ImageFilter * f : layer_filters2) {
-			f->draw(display, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
+			f->draw(display, NULL, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
 		}
 	}
 
@@ -1292,7 +1306,7 @@ void Level::draw(ALLEGRO_DISPLAY * display, GlobalTime * global_time, std::pair<
 			? active_filters[layer_index] : std::vector<ImageFilter *>();
 		if (!layer_filters3.empty()) {
 			for (ImageFilter * f : layer_filters3) {
-				f->draw(display, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
+				f->draw(display, NULL, filter_bitmap, global_time, offset.first, offset.second, screen_w, screen_h);
 			}
 		}
 	}
@@ -2187,6 +2201,166 @@ int Level::get_grid_height()
 	return this->grid_height.value();
 }
 
+//TODO: refactor so we don't repeat code from draw()
+ALLEGRO_BITMAP * Level::take_screenshot(ALLEGRO_DISPLAY * screen_display, GlobalTime * global_time, const int x_off, const int y_off, const int screen_w, const int screen_h)
+{
+	//...
+	ALLEGRO_BITMAP * screenshot = al_create_bitmap(screen_w, screen_h);
+	al_set_target_bitmap(screenshot);
+	this->draw_tiles_onto_bitmap(screenshot, Rect(x_off * -1, y_off * -1, screen_w, screen_h));
+	int max_layer_index = this->tiled_image_layers.size();
+	std::pair<int, int> off = std::pair<int, int>(x_off, y_off);
+	const int start_x = std::max(0, (-1 * off.first) / TILE_SIZE - 1);
+	const int start_y = std::max(0, (-1 * off.second) / TILE_SIZE - 1);
+	const int x_size = this->tile_rows.getItem(0)->get_size(), y_size = this->tile_rows.size();
+	const int end_x = std::min(x_size, start_x + width / TILE_SIZE + 3);
+	const int end_y = std::min(y_size, start_y + height / TILE_SIZE + 3);
+	std::map<int, std::vector<ImageFilter *>> active_filters;
+	std::vector<Block *> draw_blocks;
+	ALLEGRO_BITMAP * filter_bitmap = FilterManager::get_instance().time_light_filter(screen_display, global_time->get_current_minutes());
+
+	// tiles: layer 0
+	for (int y = start_y; y < end_y; y++) {
+		for (int x = start_x; x < end_x; x++) {
+			Tile * t = this->get_tile(x, y);
+			Block * b = t->get_block();
+			if (b != NULL && !b->is_empty()) {
+				if (b->is_visible()) {
+					draw_blocks.push_back(b);
+				}
+				std::vector<ImageFilter *> block_filters = b->get_active_image_filters();
+				if (!block_filters.empty()) {
+					for (ImageFilter * bf : block_filters) {
+						const int bf_layer = bf->get_image_layer();
+						auto it = active_filters.find(bf_layer);
+						std::vector<ImageFilter *> layer_filters = it != active_filters.end()
+							? active_filters[bf_layer] : std::vector<ImageFilter *>();
+						bf->set_position(b->get_x(), b->get_y());
+						layer_filters.push_back(bf);
+						active_filters[bf_layer] = layer_filters;
+						if (bf_layer > max_layer_index) {
+							max_layer_index = bf_layer;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	// layers 1-9
+	for (int layer_index = Level::LAYER_INDEX_TILES + 1;
+		layer_index < std::min(Level::LAYER_INDEX_BLOCKS, max_layer_index); layer_index++) {
+		this->draw_tiled_images_onto_bitmap(screenshot, Rect(x_off * -1, y_off * -1, screen_w, screen_h), layer_index);
+		//TODO: how to property draw filters onto screenshot? does this work?
+		auto it = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters = it != active_filters.end()
+			? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters.empty()) {
+			for (ImageFilter * f : layer_filters) {
+				f->draw(screen_display, screenshot, filter_bitmap, global_time, off.first, off.second, screen_w, screen_h);
+			}
+		}
+	}
+
+	// blocks: layer 10
+	this->draw_blocks_onto_bitmap(screenshot, Rect(x_off * -1, y_off * -1, screen_w, screen_h), true);
+
+	auto it = active_filters.find(10);
+	std::vector<ImageFilter *> layer_filters = it != active_filters.end() ? active_filters[10] : std::vector<ImageFilter *>();
+	if (!layer_filters.empty()) {
+		for (ImageFilter * f : layer_filters) {
+			f->draw(screen_display, screenshot, filter_bitmap, global_time, off.first, off.second, screen_w, screen_h);
+		}
+	}
+
+	// layers 11-19
+	for (int layer_index = Level::LAYER_INDEX_BLOCKS + 1;
+		layer_index < std::min(Level::LAYER_INDEX_BEINGS, max_layer_index); layer_index++) {
+		this->draw_tiled_images_onto_bitmap(screenshot, Rect(x_off * -1, y_off * -1, screen_w, screen_h), layer_index);
+		auto it = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters = it != active_filters.end()
+			? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters.empty()) {
+			for (ImageFilter * f : layer_filters) {
+				f->draw(screen_display, screenshot, filter_bitmap, global_time, off.first, off.second, screen_w, screen_h);
+			}
+		}
+	}
+
+	std::vector<Entity *> draw_entities;
+	const int eg_size = this->entity_groups.size();
+	for (int i = 0; i < eg_size; i++) {
+		EntityGroup * eg = this->entity_groups.getItem(i);
+		if (eg->should_draw(off.first, off.second, screen_w, screen_h)) {
+			draw_entities.push_back(eg);
+			std::vector<ImageFilter *> eg_filters = eg->get_active_image_filters();
+			if (!eg_filters.empty()) {
+				for (ImageFilter * bf : eg_filters) {
+					const int bf_layer = bf->get_image_layer();
+					auto it = active_filters.find(bf_layer);
+					std::vector<ImageFilter *> layer_filters = it != active_filters.end()
+						? active_filters[bf_layer] : std::vector<ImageFilter *>();
+					bf->set_position(eg->get_x(), eg->get_y());
+					layer_filters.push_back(bf);
+					active_filters[bf_layer] = layer_filters;
+					if (bf_layer > max_layer_index) {
+						max_layer_index = bf_layer;
+					}
+				}
+			}
+		}
+	}
+
+	// beings includes the player and NPCs
+	for (Being * b : this->beings) {
+		if (b->should_draw(off.first, off.second, screen_w, screen_h)) {
+			draw_entities.push_back(b);
+		}
+	}
+	// item pickups
+	for (ItemPickup * ip : this->item_pickups) {
+		if (ip->should_draw(off.first, off.second, screen_w, screen_h)) {
+			draw_entities.push_back(ip);
+		}
+	}
+
+	
+	// miscellaneous entities: layer 20
+	std::sort(draw_entities.begin(), draw_entities.end(), game_image_center_comparison());\
+	al_set_target_bitmap(screenshot);
+	int size = draw_entities.size();
+	for (int i = 0; i < size; i++) {
+		draw_entities[i]->draw(screen_display, off.first, off.second, screen_w, screen_h);
+	}
+	auto it2 = active_filters.find(20);
+	std::vector<ImageFilter *> layer_filters2
+		= it2 != active_filters.end() ? active_filters[20] : std::vector<ImageFilter *>();
+	if (!layer_filters2.empty()) {
+		for (ImageFilter * f : layer_filters2) {
+			f->draw(screen_display, screenshot, filter_bitmap, global_time, off.first, off.second, screen_w, screen_h);
+		}
+	}
+
+	// layers 21+
+	for (int layer_index = Level::LAYER_INDEX_BEINGS + 1;
+		layer_index < max_layer_index + 1; layer_index++) { //TODO: should it actually be less than max_layer_index + 1?
+		this->draw_tiled_images_onto_bitmap(screenshot, Rect(x_off * -1, y_off * -1, screen_w, screen_h), layer_index);
+		auto it3 = active_filters.find(layer_index);
+		std::vector<ImageFilter *> layer_filters3
+			= it3 != active_filters.end()
+			? active_filters[layer_index] : std::vector<ImageFilter *>();
+		if (!layer_filters3.empty()) {
+			for (ImageFilter * f : layer_filters3) {
+				f->draw(screen_display, screenshot, filter_bitmap, global_time, off.first, off.second, screen_w, screen_h);
+			}
+		}
+	}
+	al_set_target_bitmap(screenshot);
+	al_draw_bitmap(filter_bitmap, 0, 0, 0);
+	al_set_target_bitmap(al_get_backbuffer(screen_display));
+	return screenshot;
+}
+
 // level editor methods
 void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 {
@@ -2213,7 +2387,7 @@ void Level::draw_tiles_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 	al_set_target_bitmap(display);
 }
 
-void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect& subsection)
+void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect& subsection, const bool check_visible)
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
 	al_set_target_bitmap(bitmap);
@@ -2223,7 +2397,7 @@ void Level::draw_blocks_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect& subsection)
 		for (int x = x1; x < x_size; x++) {
 			Tile * t = this->get_tile(x, y);
 			Block * b = t->get_block();
-			if (b != NULL) {
+			if (b != NULL && (!check_visible || b->is_visible())) {
 				ALLEGRO_BITMAP *tile_bitmap = ImageLoader::get_instance().get_current_image(b);
 				float dx = x * TILE_SIZE - subsection.x;
 				float dy = y * TILE_SIZE - subsection.y;
@@ -2258,11 +2432,18 @@ void Level::draw_entity_groups_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsec
 
 void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection)
 {
-	ALLEGRO_BITMAP *display = al_get_target_bitmap();
-	al_set_target_bitmap(bitmap);
 	const int size = this->tiled_image_layers.size();
 	for (int i = 0; i < size; i++) {
-		TiledImageLayer * layer = this->tiled_image_layers.getItem(i);
+		this->draw_tiled_images_onto_bitmap(bitmap, subsection, i);
+	}
+}
+
+void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsection, const int layer_index)
+{
+	ALLEGRO_BITMAP *display = al_get_target_bitmap();
+	al_set_target_bitmap(bitmap);
+	if (layer_index >= 0 && layer_index < this->tiled_image_layers.size()) {
+		TiledImageLayer * layer = this->tiled_image_layers.getItem(layer_index);
 		layer->draw_tiled_images_onto_bitmap(bitmap, subsection);
 	}
 	al_set_target_bitmap(display);

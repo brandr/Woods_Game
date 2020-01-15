@@ -34,6 +34,8 @@ public:
 	const std::string get_binding(const std::string key);
 	std::vector<ActionBinding*> get_bindings();
 	void set_bindings(std::vector<ActionBinding*> bindings);
+	std::vector<Qualifier *> get_qualifiers();
+	void set_qualifiers(std::vector<Qualifier*> quals);
 };
 
 #endif

@@ -438,6 +438,39 @@ void GameImageManager::walk_agents_for_cutscene(Cutscene * cutscene)
 	}
 }
 
+const bool GameImageManager::has_still_screen_image(const int width, const int height)
+{
+	return this->get_still_screen_image(width, height) != NULL;
+}
+
+ALLEGRO_BITMAP * GameImageManager::get_still_screen_image(const int width, const int height)
+{
+	if (!this->still_screen_image_key.empty()) {
+		return ImageLoader::get_instance().get_keyed_image(STILL_SCREEN_IMAGE, width, height, this->still_screen_image_key);
+	}
+	return NULL;
+}
+
+void GameImageManager::freeze_screen()
+{
+	ALLEGRO_DISPLAY * display = al_get_current_display();
+	const int width = al_get_display_width(display), height = al_get_display_height(display);
+	const std::pair<int, int> offset = get_camera_offset(display);
+	//TODO: should offsets be multiplied by -1 or not?
+	ALLEGRO_BITMAP * frozen_screen = this->current_level->take_screenshot(display, this->current_global_time, offset.first, offset.second, width, height);
+	this->still_screen_image_key = "level_screenshot"; //TEMP
+	ImageLoader::get_instance().set_keyed_image(frozen_screen, 
+		STILL_SCREEN_IMAGE, width, height, this->still_screen_image_key);
+}
+
+void GameImageManager::unfreeze_screen()
+{
+	ALLEGRO_DISPLAY * display = al_get_current_display();
+	const int width = al_get_display_width(display), height =  al_get_display_height(display);
+	ImageLoader::get_instance().delete_keyed_image(STILL_SCREEN_IMAGE, width, height, this->still_screen_image_key);
+	this->still_screen_image_key = "";
+}
+
 Player * GameImageManager::get_player()
 {
 	return player;
@@ -664,10 +697,19 @@ void GameImageManager::change_player_level()
 void GameImageManager::draw(ALLEGRO_DISPLAY * display)
 {
 	if (current_level) {
-		const bool is_active = this->game_mode == TOP_DOWN;
-		current_level->draw(display, current_global_time, get_camera_offset(display));
+		const int width = al_get_display_width(display), height = al_get_display_height(display);
+		if (this->has_still_screen_image(width, height)) {
+			this->draw_still_screen_image(display, width, height);
+		} else {
+			current_level->draw(display, current_global_time, get_camera_offset(display));
+		}
 		this->draw_filters(display, get_camera_offset(display));
 	}
+}
+
+void GameImageManager::draw_still_screen_image(ALLEGRO_DISPLAY * display, const int width, const int height)
+{
+	al_draw_bitmap(this->get_still_screen_image(width, height), 0, 0, 0);
 }
 
 void GameImageManager::draw_filters(ALLEGRO_DISPLAY * display, std::pair<int, int> offset)
@@ -780,6 +822,22 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 			}
 			else if (action_key == ACTION_SET_FULL_STAMINA) {
 				player->set_stamina_full();
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == ACTION_UPDATE_MAX_STAMINA) {
+				player->update_max_stamina(&this->world, this->current_level, this->current_global_time, true);
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == ACTION_UPDATE_MAX_STAMINA_BAD_SLEEP) {
+				player->update_max_stamina(&this->world, this->current_level, this->current_global_time, false);
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == ACTION_FREEZE_SCREEN) {
+				this->freeze_screen();
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == ACTION_UNFREEZE_SCREEN) {
+				this->unfreeze_screen();
 				cutscene->advance_block(&(this->world), this->current_level);
 			}
 		}

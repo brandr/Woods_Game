@@ -14,6 +14,8 @@
 #define STAMINA_SLOW_2_SPEED_RATIO 0.55f
 #define STAMINA_EMPTY_SPEED_RATIO 0.16f
 #define STAMINA_PASSED_OUT_RATIO 0.60f
+#define STAMINA_BASE_GAIN 5000
+#define STAMINA_MINIMUM 10000
 
 #include "AudioManager.h"
 #include "Being.h"
@@ -77,6 +79,7 @@ private:
 	void collect_item_pickup(World * world, Level * level, ItemPickup * pickup);
 	const bool can_swing_at_entity(Entity * e, const std::string swing_key);
 	void catch_critter(World* world, Level * level, Critter * critter);
+	const int calculate_stamina_change(World * world, Level * level, GlobalTime * time, const bool good_sleep);
 protected:
 	virtual void collide_with_entity(World * world, Level * level, Entity* e);
 	virtual void play_sounds_for_entity(Entity* e);
@@ -180,6 +183,7 @@ public:
 	// damage 
 	virtual void take_damage(const int damage);
 	// stamina
+	void update_max_stamina(World * world, Level * level, GlobalTime * time, const bool good_sleep);
 	void set_stamina_full();
 	void set_reduced_stamina();
 	const bool has_full_stamina();

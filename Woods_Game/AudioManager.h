@@ -14,7 +14,9 @@ enum SOUND_KEYS {
 	SOUND_KEY_DEFAULT,
 	SOUND_KEY_PLAYER,
 	SOUND_KEY_NPC,
-	SOUND_KEY_DIALOG
+	SOUND_KEY_DIALOG,
+	SOUND_KEY_JINGLE,
+	SOUND_KEY_MENU
 };
 
 struct AudioInstance {
@@ -56,6 +58,7 @@ public:
 	void set_master_gain(const float gain);
 	void set_music_gain(const float gain);
 	void set_sfx_gain(const float gain);
+	void play_menu_scroll_sound();
 	
 };
 

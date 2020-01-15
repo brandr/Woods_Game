@@ -41,6 +41,7 @@ public:
 	const bool keyed_image_exists(const std::string image_key, const int width, const int height, const std::string suffix);
 	const bool keyed_image_exists(const std::string key);
 	void set_keyed_image(ALLEGRO_BITMAP * image, const std::string image_key, const int width, const int height, const std::string suffix);
+	void delete_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix);
 	ALLEGRO_BITMAP * get_keyed_image(const std::string image_key, const int width, const int height, const std::string suffix);
 	void load_image(std::string filename);
 	void load_image(std::string filename, Rect subsection);

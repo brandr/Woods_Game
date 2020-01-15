@@ -733,6 +733,12 @@ void AIBeing::draw_destinations(ALLEGRO_DISPLAY * display, int x_offset, int y_o
 	}
 }
 
+const bool AIBeing::cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty)
+{
+	this->ai_state.set_is_idle();
+	return Being::cutscene_walk_towards_tile_dest(level, tx, ty);
+}
+
 void AIBeing::add_primary_destination(const std::pair<int, int> destination, const std::string dest_key)
 {
 	this->primary_destinations.push_back(std::pair<std::string, std::pair<int, int>>(dest_key, destination));

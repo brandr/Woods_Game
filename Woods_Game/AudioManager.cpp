@@ -142,6 +142,11 @@ void AudioManager::set_sfx_gain(const float gain)
 	al_set_mixer_gain(sfx_mixer, gain);
 }
 
+void AudioManager::play_menu_scroll_sound()
+{
+	this->play_sfx("menu_sounds/menu_option_scroll", "" + SOUND_KEY_MENU);
+}
+
 void AudioManager::play_audio(const std::string filename, const int audio_type)
 {
 	this->play_audio(filename, audio_type, "" + SOUND_KEY_DEFAULT);

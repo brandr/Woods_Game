@@ -377,7 +377,7 @@ agui::Allegro5Image * LevelEditorDataManager::load_image_layer(const std::string
 		this->active_levels[this->selected_level_index]->draw_tiles_onto_bitmap(image_bitmap, subsection);
 	}
 	else if (BLOCK_LAYER == layer) {
-		this->active_levels[this->selected_level_index]->draw_blocks_onto_bitmap(image_bitmap, subsection);
+		this->active_levels[this->selected_level_index]->draw_blocks_onto_bitmap(image_bitmap, subsection, false);
 	}
 	else if (ENTITY_GROUP_LAYER == layer) {
 		this->active_levels[this->selected_level_index]->draw_entity_groups_onto_bitmap(image_bitmap, subsection);

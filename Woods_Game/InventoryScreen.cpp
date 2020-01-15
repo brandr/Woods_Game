@@ -229,6 +229,7 @@ void InventoryScreen::items_tab_menu_up()
 	if (y == -1) {
 		inventory->set_hotbar_index(x);
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::items_tab_menu_down()
@@ -250,6 +251,7 @@ void InventoryScreen::items_tab_menu_down()
 	if (y == -1) {
 		inventory->set_hotbar_index(x);
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::items_tab_menu_left()
@@ -264,6 +266,7 @@ void InventoryScreen::items_tab_menu_left()
 	if (y == -1) {
 		inventory->hotbar_index_left();
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::items_tab_menu_right()
@@ -278,6 +281,7 @@ void InventoryScreen::items_tab_menu_right()
 	if (y == -1) {
 		inventory->hotbar_index_right();
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::items_tab_select()

@@ -111,6 +111,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	std::vector<InteractAction *> interact_actions = tileset->get_block_interact_actions(block_index);
 	std::vector<InteractAction *> contact_actions = tileset->get_block_contact_actions(block_index);
 	std::vector<InteractAction *> load_day_actions = tileset->get_block_load_day_actions(block_index);
+	std::vector<EntityEffectData *> effect_data = tileset->get_block_entity_effect_data(block_index);
 	const std::vector<std::pair<std::string, std::string>> load_day_action_data
 		= tileset->get_block_load_day_action_data(block_index);
 	const std::vector<ItemDrop *> item_drops = tileset->get_block_item_drops(block_index);
@@ -131,6 +132,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.copy_interact_actions(interact_actions);
 	this->block.copy_contact_actions(contact_actions);
 	this->block.copy_load_day_actions(load_day_actions);
+	this->block.copy_entity_effect_data(effect_data);
 	//this->block.set_load_day_actions(load_day_action_data);
 	this->block.set_item_drops(item_drops);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);
@@ -150,10 +152,11 @@ void Tile::replace_block(TileSet * tileset, Block * other_block, std::pair<int, 
 	std::vector<InteractAction *> interact_actions = other_block->get_interact_actions();
 	std::vector<InteractAction *> contact_actions = other_block->get_contact_actions();
 	std::vector<InteractAction *> load_day_actions = other_block->get_load_day_actions();
-	const std::vector<ItemDrop *> item_drops = other_block->get_item_drops();//;tileset->get_block_item_drops(block_index);
+	std::vector<EntityEffectData *> entity_effects = other_block->get_entity_effect_data();
+	const std::vector<ItemDrop *> item_drops = other_block->get_item_drops();
 	const std::vector<EntitySpawnTileRule *> spawn_tile_rules
 		= tileset->get_block_spawn_tile_rules(other_block->get_entity_data_index());
-
+	std::vector<ImageFilter *> image_filters = other_block->get_image_filters();
 
 	// set serializable attributes
 	const bool solid  =other_block->is_solid();
@@ -168,9 +171,10 @@ void Tile::replace_block(TileSet * tileset, Block * other_block, std::pair<int, 
 	this->block.copy_interact_actions(interact_actions);
 	this->block.copy_contact_actions(contact_actions);
 	this->block.copy_load_day_actions(load_day_actions);
-	//this->block.set_load_day_actions(load_day_action_data);
+	this->block.copy_entity_effect_data(entity_effects);
 	this->block.set_item_drops(item_drops);
-	this->block.set_spawn_tile_rules(spawn_tile_rules);
+	this->block.set_spawn_tile_rules(spawn_tile_rules);	
+	this->block.set_image_filters(image_filters);
 	this->block.load_entity_effects(tileset,
 		tileset->get_block_key(other_block->get_entity_data_index()), ss_pos.second, std::pair<int, int>(TILE_SIZE, TILE_SIZE));
 	this->block.load_image_filters();

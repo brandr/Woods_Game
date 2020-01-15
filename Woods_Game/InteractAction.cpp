@@ -94,6 +94,26 @@ void InteractAction::set_bindings(std::vector<ActionBinding*> bindings)
 	}
 }
 
+std::vector<Qualifier*> InteractAction::get_qualifiers()
+{
+	std::vector<Qualifier*> quals;
+	const int size = (int)this->qualifiers.size();
+	for (int i = 0; i < size; i++) {
+		Qualifier * q = this->qualifiers.getItem(i);
+		quals.push_back(q);
+	}
+	return quals;
+}
+
+void InteractAction::set_qualifiers(std::vector<Qualifier*> quals)
+{
+	this->qualifiers.Clear();
+	const int size = (int) quals.size();
+	for (int i = 0; i < size; i++) {
+		this->qualifiers.addItem(quals[i]);
+	}
+}
+
 ActionBinding::ActionBinding()
 {
 	this->setClassName("ActionBinding");

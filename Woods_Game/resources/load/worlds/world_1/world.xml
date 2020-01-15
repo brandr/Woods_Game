@@ -299,7 +299,7 @@
                                                             <Collection Name="quest_updates">
                                                                 <Class Type="QuestUpdates" Version="1">
                                                                     <Member Name="quest_key">deliver_letter</Member>
-                                                                    <Member Name="page_num">1</Member>
+                                                                    <Member Name="page_num">2</Member>
                                                                 </Class>
                                                             </Collection>
                                                             <Collection Name="dialog_actions">
@@ -330,6 +330,17 @@
                                                 <Member Name="minute">-1</Member>
                                                 <Member Name="day_of_week">-1</Member>
                                                 <Member Name="int_val">2</Member>
+                                                <Member Name="string_val"></Member>
+                                            </Class>
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">1</Member>
+                                                <Member Name="evaluator">8</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">3</Member>
                                                 <Member Name="string_val"></Member>
                                             </Class>
                                             <Class Type="Qualifier" Version="1">
@@ -735,7 +746,7 @@
                                                             <Collection Name="quest_updates">
                                                                 <Class Type="QuestUpdates" Version="1">
                                                                     <Member Name="quest_key">deliver_letter</Member>
-                                                                    <Member Name="page_num">2</Member>
+                                                                    <Member Name="page_num">3</Member>
                                                                 </Class>
                                                             </Collection>
                                                             <Collection Name="dialog_actions">
@@ -756,6 +767,19 @@
                                             </Collection>
                                             <Member Name="priority">90</Member>
                                         </Class>
+                                        <Collection Name="qualifiers">
+                                            <Class Type="Qualifier" Version="1">
+                                                <Member Name="comparator">0</Member>
+                                                <Member Name="evaluator">8</Member>
+                                                <Member Name="month">-1</Member>
+                                                <Member Name="day">-1</Member>
+                                                <Member Name="hour">-1</Member>
+                                                <Member Name="minute">-1</Member>
+                                                <Member Name="day_of_week">-1</Member>
+                                                <Member Name="int_val">3</Member>
+                                                <Member Name="string_val"></Member>
+                                            </Class>
+                                        </Collection>
                                     </Class>
                                 </Collection>
                                 <Collection Name="qualifiers">

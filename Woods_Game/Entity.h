@@ -205,6 +205,7 @@ public:
 	virtual std::vector<InteractAction*> get_interact_actions();
 	virtual void set_load_day_actions(const std::vector<std::pair<std::string, std::string>> actions);
 	virtual void copy_load_day_actions(std::vector<InteractAction*> actions);
+	virtual void copy_entity_effect_data(std::vector<EntityEffectData*> effect_datas);
 	virtual std::vector<InteractAction*> get_load_day_actions();
 	virtual void set_item_drops(std::vector<ItemDrop*> item_drops);
 	virtual std::vector<ItemDrop*> get_item_drops();
@@ -224,8 +225,10 @@ public:
 	virtual const bool get_should_push_others();
 	virtual void push_back(Level * level, const float xvel, const float yvel);
 	virtual void set_entity_effect_data(std::vector<EntityEffectData *> effect_data);
+	virtual std::vector<EntityEffectData *> get_entity_effect_data();
 	virtual void load_image_filters();
 	virtual void set_image_filters(std::vector<ImageFilter *> image_filters);
+	virtual std::vector<ImageFilter *> get_image_filters();
 	virtual void toggle_light_filter(const int filter_id);
 	virtual std::vector<ImageFilter *> get_active_image_filters();
 	//sounds
