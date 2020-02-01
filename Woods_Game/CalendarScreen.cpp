@@ -291,6 +291,7 @@ void CalendarScreen::process_mouse_click_left(const int mouse_x, const int mouse
 			const int y1 = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
 			if (mouse_x >= x1 && mouse_y >= y1 && mouse_x < x1 + w1 && mouse_y < y1 + w1) {
 				this->month_index--;
+				AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 				return;
 			}
 		}
@@ -301,6 +302,7 @@ void CalendarScreen::process_mouse_click_left(const int mouse_x, const int mouse
 			const int y1 = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
 			if (mouse_x >= x1 && mouse_y >= y1 && mouse_x < x1 + w1 && mouse_y < y1 + w1) {
 				this->month_index++;
+				AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 				return;
 			}
 		}
@@ -323,6 +325,7 @@ void CalendarScreen::mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x,
 				const int y = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + (row * 53) + 100;
 				if (mouse_x >= x && mouse_y >= y && mouse_x < x + 70 && mouse_y < y + 53) {
 					this->select_pos = std::pair<int, int>(col, row);
+					AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 				}
 				day_num++;
 				col++;
@@ -351,6 +354,7 @@ void CalendarScreen::menu_up()
 		x = -1;
 	}
 	this->select_pos = std::pair<int, int>(x, y);
+	AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 }
 
 void CalendarScreen::menu_down()
@@ -374,6 +378,7 @@ void CalendarScreen::menu_down()
 		y = -1;
 	}
 	this->select_pos = std::pair<int, int>(x, y);
+	AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 }
 
 void CalendarScreen::menu_left()
@@ -402,7 +407,9 @@ void CalendarScreen::menu_left()
 	this->select_pos = std::pair<int, int>(x, y);
 	if (go_up) {
 		this->menu_up();
+		return;
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 }
 
 void CalendarScreen::menu_right()
@@ -431,7 +438,9 @@ void CalendarScreen::menu_right()
 	this->select_pos = std::pair<int, int>(x, y);
 	if (go_down) {
 		menu_down();
+		return;
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 }
 
 void CalendarScreen::select()
@@ -451,6 +460,7 @@ void CalendarScreen::select()
 			bindings.push_back(new ActionBinding("load_day_index", std::to_string(day_index)));
 			select_day_dialog->set_action_bindings(bindings);
 			this->player->set_open_dialog(select_day_dialog);
+			AudioManager::get_instance().play_sfx("menu_sounds/calendar_select", "" + SOUND_KEY_MENU);
 		}
 	}
 }
@@ -468,7 +478,6 @@ const bool CalendarScreen::may_increment_month()
 void CalendarScreen::set_global_time(GlobalTime * time)
 {
 	if (this->global_time != NULL && (this->global_time->get_day() != time->get_day())) {
-		//delete this->global_time;
 		this->global_time = NULL;
 	}
 	if (this->global_time == NULL) {

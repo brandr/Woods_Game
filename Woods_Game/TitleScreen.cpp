@@ -52,7 +52,7 @@ void title_menu_cancel(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 
 void title_input_menu_up(GameScreen& screen, ALLEGRO_EVENT ev, bool toggle) {
 	if (toggle) {
-		screen.screen_receiving_input().menu_up();
+		screen.screen_receiving_input().menu_up();		
 	}
 }
 
@@ -164,27 +164,32 @@ MenuManager & TitleScreen::current_menu_manager()
 void TitleScreen::menu_up()
 {
 	current_menu_manager().menu_up();
+	AudioManager::get_instance().play_sfx("menu_sounds/title_scroll", "" + SOUND_KEY_MENU);
 }
 
 void TitleScreen::menu_down()
 {
 	current_menu_manager().menu_down();
+	AudioManager::get_instance().play_sfx("menu_sounds/title_scroll", "" + SOUND_KEY_MENU);
 }
 
 void TitleScreen::menu_left()
 {
 	current_menu_manager().menu_left();
+	AudioManager::get_instance().play_sfx("menu_sounds/title_scroll", "" + SOUND_KEY_MENU);
 }
 
 void TitleScreen::menu_right()
 {
 	current_menu_manager().menu_right();
+	AudioManager::get_instance().play_sfx("menu_sounds/title_scroll", "" + SOUND_KEY_MENU);
 }
 
 void TitleScreen::cancel_menu()
 {
 	if (this->menu_key == TITLE_LOAD_GAME_MENU) {
 		this->menu_key = TITLE_MAIN_MENU;
+		AudioManager::get_instance().play_sfx("menu_sounds/title_cancel", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -201,6 +206,7 @@ void TitleScreen::confirm_selection()
 		screen_flag = FLAG_LOAD_GAME;
 		this->load_game_filepath = filename;
 	}
+	AudioManager::get_instance().play_sfx("menu_sounds/title_confirm", "" + SOUND_KEY_MENU);
 }
 
 

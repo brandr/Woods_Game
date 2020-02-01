@@ -27,7 +27,6 @@ ALLEGRO_BITMAP * PauseScreen::current_backdrop()
 {
 	const std::string backdrop_key = this->backdrop_filenames[this->menu_key];
 	return ImageLoader::get_instance().get_image(backdrop_key);
-	//return backdrops[menu_key];
 }
 
 MenuManager& PauseScreen::current_menu_manager()
@@ -108,7 +107,6 @@ void PauseScreen::load_config_settings()
 
 void PauseScreen::unload_content()
 {
-	//backdrops.clear();
 	GameScreen::unload_content();
 }
 
@@ -143,9 +141,11 @@ void PauseScreen::process_mouse_click_left(const int x, const int y)
 		switch (direction_index) {
 		case 0: //left bracket
 			menu_left();
+			AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 			return;
 		case 1:	//right bracket
 			menu_right();
+			AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 			return;
 		}
 		if (current_menu_manager().mouse_selecting_current_option(x, y, x_off, y_off,
@@ -181,6 +181,7 @@ void PauseScreen::mouse_cursor_update()
 
 void PauseScreen::cancel_menu()
 {
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_cancel", "" + SOUND_KEY_MENU);
 	if (current_menu_manager().is_selecting_options()) {
 		current_menu_manager().cancel_option_select();
 		return;
@@ -214,21 +215,25 @@ void PauseScreen::cancel_menu()
 void PauseScreen::menu_up()
 {
 	current_menu_manager().menu_up();
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 }
 
 void PauseScreen::menu_down()
 {
 	current_menu_manager().menu_down();
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 }
 
 void PauseScreen::menu_left()
 {
 	current_menu_manager().menu_left();
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 }
 
 void PauseScreen::menu_right()
 {
 	current_menu_manager().menu_right();
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
 }
 
 void PauseScreen::confirm_selection()
@@ -238,6 +243,7 @@ if (action_key == MenuManager::SELECTION_KEY_RETURN_TO_MAIN_PAUSE) {
 	current_menu_manager().reset();
 	menu_key = PAUSE_MAIN_MENU;
 }
+
 // confirm actions (for options selected from some scrollable list)
 else if (action_key == MenuManager::SELECTION_KEY_SELECT_OPTIONS) {
 	if (current_menu_manager().is_selecting_options()) {
@@ -372,6 +378,7 @@ else if (action_key == MenuManager::SELECTION_KEY_SAVE_CONTROLS_CHANGES) {
 	menu_key = PAUSE_CONTROLS_MENU;
 	screen_flag = FLAG_RESUME_GAME;
 }
+	AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_confirm", "" + SOUND_KEY_MENU);
 }
 
 void PauseScreen::update_video_settings(const std::string style_string, const std::string res_string)

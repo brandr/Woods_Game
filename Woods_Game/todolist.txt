@@ -4,7 +4,7 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 1/14/2020
+Last updated 1/21/2020
 
 Target date for main code to be done: ~ May 2020
 
@@ -35,24 +35,14 @@ Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
 Sound effects	
 	* Add sounds: 
 		- menu sounds 
-			# inventory
-				$ item pickup/drop/swap
-				$ item trashing
-				$ tab scroll
-				$ map scroll
-				$ quest item/quest scroll
-				$ quest item/quest show description (different from select or no?)
-				$ encyclopedia scroll
-				$ encyclopedia show description
-			# scroll/select for pause menu/calendar/title screen (anything missing?)
 			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
 		- dialog sounds
 			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
 			# have voices for things like signs that aren't actually recordings of human voice, but still have 26 characters
 			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
-How to play sounds at title screen (both music and menu sfx)?
 Replace placeholder sounds based on filenames
 Music
+	* play on title screen
 	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
 	* What kinds of things can cause music to start/stop/fade/add cues?
 		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
@@ -75,12 +65,10 @@ Add EntityGroup filters (see Level.draw())
 Controls
 ---------------------------------------------------
 
-Should menu direction controls be wasd too?
 mouse controls for title screen
 Make custom mouse cursor (allow switching based on context/ what we're hovering over)	
 Test encyclopedia scrolling once we have enough encyclopedia items to scroll (both mouse scrolling and tab scrolling)
 Need more intuitive way to display/back out of encyclopedia category
-Maybe dialog click should advance regardless of where user clicks?
 
 ---------------------------------------------------
 Memory management/error handling
@@ -151,7 +139,8 @@ Make other critters and large animals
 Menus
 ---------------------------------------------------
 
-Display the current day and other info for a save in title screen menu (why does "maps" appear as an option when loading game?)
+Display the current day and other info for a save in title screen menu 
+why does "maps" appear as an option when loading game?
 Encyclopedia
 	* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
 	* Could track NPCs in encyclopedia (bombers notebook-style schedule)
@@ -219,6 +208,5 @@ Long term
 ---------------------------------------------------
 
 Populate the encyclopedia
-Hire a sprite artist
 Look up how to get on steam ahead of time
 When balancing money, adjust for inflation for 1987

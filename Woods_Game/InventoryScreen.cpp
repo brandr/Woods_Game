@@ -287,8 +287,11 @@ void InventoryScreen::items_tab_menu_right()
 void InventoryScreen::items_tab_select()
 {
 	if (this->is_selecting_trash()) {
-		if (dragging_item() != NULL && !dragging_item()->is_empty() && dragging_item()->get_may_be_discarded()) {
+		if (dragging_item() != NULL 
+			&& !dragging_item()->is_empty() 
+			&& dragging_item()->get_may_be_discarded()) {
 			this->inventory->remove_item_with_key(dragging_item()->get_item_key());
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_trash", "" + SOUND_KEY_MENU);
 		}
 		return;
 	}
@@ -298,14 +301,19 @@ void InventoryScreen::items_tab_select()
 			inventory->set_item(dragging_item(), inventory_selection.first, inventory_selection.second);
 			inventory->set_item(NULL, dragging_selection.first, dragging_selection.second);
 			dragging_selection = std::pair<int, int>(-1, -1);
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_drop", "" + SOUND_KEY_MENU);
 		}
 		else {
 			inventory->swap_items(inventory_selection.first, inventory_selection.second, dragging_selection.first, dragging_selection.second);
 			dragging_selection = std::pair<int, int>(-1, -1);
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_swap", "" + SOUND_KEY_MENU);
 		}
 	} else {
-		if (item == NULL || item->is_empty()) return;
+		if (item == NULL || item->is_empty()) {
+			return;
+		}
 		dragging_selection = std::pair<int, int>(inventory_selection.first, inventory_selection.second);
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_pickup", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -323,12 +331,16 @@ void InventoryScreen::items_tab_secondary_select()
 		return;
 	}
 	this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_description", "" + SOUND_KEY_MENU);
 }
+
+// map tab
 
 void InventoryScreen::map_tab_menu_up()
 {
 	if (this->locations_for_display.size() > 0) {
 		this->map_selected_location_index = (this->map_selected_location_index - 1) % this->locations_for_display.size();
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_map_scroll", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -336,6 +348,7 @@ void InventoryScreen::map_tab_menu_down()
 {
 	if (this->locations_for_display.size() > 0) {
 		this->map_selected_location_index = (this->map_selected_location_index + 1) % this->locations_for_display.size();
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_map_scroll", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -343,6 +356,7 @@ void InventoryScreen::map_tab_menu_left()
 {
 	if (this->locations_for_display.size() > 0) {
 		this->map_selected_location_index = (this->map_selected_location_index - 1) % this->locations_for_display.size();
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_map_scroll", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -350,6 +364,7 @@ void InventoryScreen::map_tab_menu_right()
 {
 	if (this->locations_for_display.size() > 0) {
 		this->map_selected_location_index = (this->map_selected_location_index + 1) % this->locations_for_display.size();
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_map_scroll", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -537,10 +552,13 @@ void InventoryScreen::items_tab_trash_left_click(const float mouse_x, const floa
 		this->inventory_selection = std::pair<int, int>(0, -2);
 		if (dragging_item() != NULL && !dragging_item()->is_empty() && dragging_item()->get_may_be_discarded()) {
 			this->inventory->remove_item_with_key(dragging_item()->get_item_key());
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_item_trash", "" + SOUND_KEY_MENU);
 		}
 		return;
 	}
 }
+
+// journal
 
 std::vector<Quest*> InventoryScreen::quests_for_display()
 {
@@ -578,6 +596,7 @@ void InventoryScreen::journal_tab_menu_up()
 	const int y = quest_selection.second == 0 ? num_rows - 1 : quest_selection.second - 1;
 	quest_selection = std::pair<int, int>(x, y);
 	this->adjust_quest_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::journal_tab_menu_down()
@@ -589,6 +608,7 @@ void InventoryScreen::journal_tab_menu_down()
 	const int y = quest_selection.second == num_rows - 1 ? 0 : quest_selection.second + 1;
 	quest_selection = std::pair<int, int>(x, y);
 	this->adjust_quest_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::journal_tab_menu_left()
@@ -605,6 +625,7 @@ void InventoryScreen::journal_tab_menu_left()
 		y = quest_selection.second;
 	}
 	quest_selection = std::pair<int, int>(x, y);
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::journal_tab_menu_right()
@@ -622,6 +643,7 @@ void InventoryScreen::journal_tab_menu_right()
 		y = quest_selection.second;
 	}
 	quest_selection = std::pair<int, int>(x, y);
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::journal_tab_secondary_select()
@@ -633,10 +655,12 @@ void InventoryScreen::journal_tab_secondary_select()
 	QuestItem * qi = this->selected_quest_item();
 	if (qi != NULL && !qi->is_empty() && qi->get_is_obtained()) {
 		this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_description", "" + SOUND_KEY_MENU);
 	}
 	Quest * q = this->selected_quest();
 	if (q != NULL) {
 		this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_description", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -663,6 +687,7 @@ void InventoryScreen::journal_tab_left_click(const float mouse_x, const float mo
 		if (mouse_x >= x && mouse_y >= y && mouse_x < x + TILE_SIZE && mouse_y < y + TILE_SIZE) {
 			this->quest_selection = std::pair<int, int>(qi_x, qi_y);
 			this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_description", "" + SOUND_KEY_MENU);
 			return;
 		}
 	}
@@ -682,6 +707,7 @@ void InventoryScreen::journal_tab_left_click(const float mouse_x, const float mo
 		if (mouse_x >= qx && mouse_y >= qy && mouse_x < qx + q_w && mouse_y < qy + q_h) {
 			this->quest_selection = std::pair<int, int>(QUEST_INVENTORY_COLS, i + this->quest_scroll_offset);
 			this->tab_mode = TAB_MODE_DISPLAY_DESCRIPTION;
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_description", "" + SOUND_KEY_MENU);
 			return;
 		}
 	}
@@ -694,6 +720,7 @@ void InventoryScreen::journal_tab_left_click(const float mouse_x, const float mo
 		const int a_w = al_get_bitmap_width(quest_scroll_up_arrow()), a_h = al_get_bitmap_width(quest_scroll_up_arrow());
 		if (mouse_x >= a_x && mouse_y >= a_y && mouse_x < a_x + a_w && mouse_y < a_y + a_h) {
 			this->quest_scroll_offset = std::max(0, this->quest_scroll_offset - 1);
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 			return;
 		}
 	}
@@ -703,6 +730,7 @@ void InventoryScreen::journal_tab_left_click(const float mouse_x, const float mo
 		const int a_w = al_get_bitmap_width(quest_scroll_down_arrow()), a_h = al_get_bitmap_width(quest_scroll_down_arrow());
 		if (mouse_x >= a_x && mouse_y >= a_y && mouse_x < a_x + a_w && mouse_y < a_y + a_h) {
 			this->quest_scroll_offset = std::min(quest_count - 5, this->quest_scroll_offset + 1);
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_journal_scroll", "" + SOUND_KEY_MENU);
 			return;
 		}
 	}
@@ -764,6 +792,8 @@ void InventoryScreen::journal_tab_mouse_scroll_update(const int scroll)
 	}
 }
 
+// encyclopedia
+
 const int InventoryScreen::encyclopedia_rows_for_display()
 {
 	if (this->selected_encyclopedia_category.empty()) {
@@ -806,6 +836,7 @@ void InventoryScreen::encyclopedia_tab_menu_up()
 	const int num_rows = this->encyclopedia_rows_for_display();
 	encyclopedia_selection = encyclopedia_selection == 0 ? num_rows - 1 : encyclopedia_selection - 1;
 	this->adjust_encyclopedia_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::encyclopedia_tab_menu_down()
@@ -813,6 +844,7 @@ void InventoryScreen::encyclopedia_tab_menu_down()
 	const int num_rows = this->encyclopedia_rows_for_display();
 	encyclopedia_selection = encyclopedia_selection < num_rows - 1 ? encyclopedia_selection + 1 : 0;
 	this->adjust_encyclopedia_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::encyclopedia_tab_menu_left()
@@ -820,6 +852,7 @@ void InventoryScreen::encyclopedia_tab_menu_left()
 	this->selected_encyclopedia_category = "";
 	this->encyclopedia_selection = std::min(this->encyclopedia_rows_for_display() - 1, this->encyclopedia_selection);
 	this->adjust_encyclopedia_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::encyclopedia_tab_menu_right()
@@ -829,12 +862,14 @@ void InventoryScreen::encyclopedia_tab_menu_right()
 	}
 	this->encyclopedia_selection = std::min(this->encyclopedia_rows_for_display() - 1, this->encyclopedia_selection);
 	this->adjust_encyclopedia_scroll();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::encyclopedia_tab_select()
 {
 	if (this->selected_encyclopedia_category.empty()) {
 		this->encyclopedia_tab_menu_right();
+		AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 	}
 }
 
@@ -843,6 +878,7 @@ void InventoryScreen::encyclopedia_tab_cursor_update(const float mouse_x, const 
 	//TODO: does hovering do anything in the encyclopedia tab?
 }
 
+//TODO: test this 
 void InventoryScreen::encyclopedia_tab_left_click(const float mouse_x, const float mouse_y)
 {
 	const int width = al_get_display_width(al_get_current_display());
@@ -871,7 +907,10 @@ void InventoryScreen::encyclopedia_tab_left_click(const float mouse_x, const flo
 			if (this->selected_encyclopedia_category.empty()) {
 				this->selected_encyclopedia_category = this->encyclopedia->category_name(this->encyclopedia_selection);
 				this->encyclopedia_selection = 0;
-			}
+			}			
+			AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
+			//TODO: is this actually where we want to return?
+			return;
 		}
 	}
 }
@@ -888,6 +927,8 @@ void InventoryScreen::encyclopedia_tab_mouse_scroll_update(const int scroll)
 	} else if (scroll < 0) {
 		this->encyclopedia_scroll_offset = (this->encyclopedia_scroll_offset - scroll) % (encyclopedia_rows - 4);
 	}
+	//TODO: will this sound right?
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_encyclopedia_scroll", "" + SOUND_KEY_MENU);
 }
 
 InventoryScreen::InventoryScreen()
@@ -1545,12 +1586,14 @@ void InventoryScreen::tab_left()
 		this->tab_index = this->tab_index - 1;
 	}
 	this->reset_tab_mode();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_change_tab", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::tab_right()
 {
 	this->tab_index = (this->tab_index + 1) % NUM_INVENTORY_TABS;
 	this->reset_tab_mode();
+	AudioManager::get_instance().play_sfx("menu_sounds/inventory_change_tab", "" + SOUND_KEY_MENU);
 }
 
 void InventoryScreen::select()
