@@ -578,6 +578,16 @@ void GameImageManager::npc_update()
 	this->world.npc_update(this->current_level, this->current_global_time, this->game_mode);
 }
 
+void GameImageManager::wait(const int duration)
+{
+	Player * player = this->get_player();
+	if (player != NULL) {
+		Cutscene * scene = new Cutscene();
+		scene->add_wait(duration);
+		player->set_active_cutscene(scene);
+	}
+}
+
 GlobalTime * GameImageManager::get_current_global_time()
 {
 	return this->current_global_time;
@@ -750,7 +760,10 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 	if (cutscene != NULL) {
 		if (cutscene->has_action()) {
 			const std::string action_key = cutscene->get_active_action_key();
-			if (action_key == ACTION_AWAIT_LOAD) {
+			if (action_key == ACTION_WAIT) {
+				// do nothing
+				cutscene->advance_block(&(this->world), this->current_level);
+			} else if (action_key == ACTION_AWAIT_LOAD) {
 				if (this->thread_data.ready) {
 					al_lock_mutex(this->thread_data.mutex);
 					cutscene->advance_block(&(this->world), this->current_level);

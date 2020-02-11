@@ -136,6 +136,7 @@ int TitleScreen::get_game_mode()
 void TitleScreen::update()
 {
 	GameScreen::update();
+	mouse_cursor_update();
 }
 
 void TitleScreen::draw(ALLEGRO_DISPLAY * display)
@@ -207,6 +208,55 @@ void TitleScreen::confirm_selection()
 		this->load_game_filepath = filename;
 	}
 	AudioManager::get_instance().play_sfx("menu_sounds/title_confirm", "" + SOUND_KEY_MENU);
+}
+
+void TitleScreen::process_mouse_click_left(const int x, const int y)
+{
+	//TODO: menu option select
+	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
+	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	if (current_menu_manager().is_selecting_input()) {
+		return;
+	}
+	if (current_menu_manager().is_selecting_options()) {
+		const int direction_index = current_menu_manager().mouse_selected_options_direction_index(x, y,
+			x_off, y_off,
+			al_get_bitmap_width(current_backdrop()),
+			al_get_bitmap_height(current_backdrop()));
+		switch (direction_index) {
+		case 0: //left bracket
+			menu_left();
+			AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
+			return;
+		case 1:	//right bracket
+			menu_right();
+			AudioManager::get_instance().play_sfx("menu_sounds/pause_menu_scroll", "" + SOUND_KEY_MENU);
+			return;
+		}
+		if (current_menu_manager().mouse_selecting_current_option(x, y, x_off, y_off,
+			al_get_bitmap_width(current_backdrop()),
+			al_get_bitmap_height(current_backdrop()))) {
+			confirm_selection();
+		}
+		return;
+	}
+	const int index = current_menu_manager().mouse_selected_index(x, y, x_off, y_off);
+	if (index >= 0) {
+		current_menu_manager().set_item_index(index);
+		confirm_selection();
+	}
+}
+
+void TitleScreen::update_mouse_position(const int x, const int y, const int z)
+{
+	GameScreen::update_mouse_position(x, y, z);
+}
+
+void TitleScreen::mouse_cursor_update()
+{
+	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
+	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	current_menu_manager().mouse_cursor_update(mouse_pos.first, mouse_pos.second, x_off, y_off);
 }
 
 

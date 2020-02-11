@@ -18,6 +18,7 @@
 #define EFFECT_DISPLAY_BLACK "effect_display_black"
 
 // loading/global update actions
+#define ACTION_WAIT "action_wait"
 #define ACTION_AWAIT_LOAD "action_await_load"
 #define ACTION_SAVE_GAME "action_save_game"
 #define ACTION_LOAD_GAME "action_load_game"
@@ -106,6 +107,7 @@ public:
 	void add_action(const std::string action_key);
 	void add_action(const std::string action_key, const std::string effect_key);
 	void add_effect_fade_block(const int duration, const int end_alpha);
+	void add_wait(const int duration);
 	void add_global_time_update(const int day, const int time);
 	void add_advance_day_update(GlobalTime * global_time, const int wake_up_time);
 	void add_load_game_update(const int day, const int time);

@@ -69,6 +69,7 @@ private:
 	int selected_option_index = 0;
 	std::string active_action_key = "";
 	int text_speed = 4;
+	std::string voice_key = "";
 	std::vector<InteractAction *> active_actions;
 	TriggerStatus * active_trigger_status = NULL;
 	std::vector<QuestUpdate *> pending_quest_updates;
@@ -83,6 +84,8 @@ private:
 	ALLEGRO_BITMAP * option_arrow;
 	std::vector<ActionBinding*> action_bindings;
 	void dialog_sound_update(DialogPage * page);
+	void play_syllable_audio(const char letter);
+	const std::string get_dialog_sound_path();
 	void initialize_text_speed();
 public:
 	Dialog();
@@ -97,7 +100,7 @@ public:
 	void add_line(const std::string line, const int page_num, const int next_page_num, const int line_num, 
 		const std::string option_action_key, std::vector<InteractAction *> page_actions, DialogItemOption * option);
 	void parse_text(const std::string text);
-	void parse_dialog(DialogItem * dialog_item);
+	void parse_dialog(DialogItem * dialog_item, const std::string voice_key);
 	const std::string get_active_action_key();
 	void set_active_action_key(const std::string action_key);
 	std::vector<InteractAction *> get_active_actions();

@@ -13,7 +13,6 @@ private:
 public:
 	ScreenManager(ScreenManager const&) = delete;
 	void operator=(ScreenManager const&) = delete;
-	//~ScreenManager();
 	void load_content();
 	void unload_content();
 	static ScreenManager& get_instance();

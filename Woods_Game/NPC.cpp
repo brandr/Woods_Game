@@ -13,6 +13,11 @@ const std::string NPC::get_sound_key()
 	return "" + std::to_string(SOUND_KEY_NPC) + ":" + this->get_npc_key();
 }
 
+const std::string NPC::get_voice_key()
+{
+	return this->voice_key.value();
+}
+
 const std::string NPC::calculate_destination_node_key(World * world, GlobalTime * time)
 {
 	//TEMP. should probably have more AIState filtering before we get here.
@@ -125,6 +130,7 @@ NPC::NPC()
 	Register("start_spawn_key", &start_spawn_key);
 	Register("default_spawn_key", &default_spawn_key);
 	Register("obeys_tile_rules", &obeys_tile_rules);
+	Register("voice_key", &voice_key);
 	Register("dialog_tree", &dialog_tree);
 	Register("default_dialog_text", &default_dialog_text);
 }
@@ -182,7 +188,7 @@ Dialog * NPC::choose_dialog(World * world, GlobalTime * time, Player * player)
 		DialogItem * dialog_item = this->current_dialog_group->get_dialog_item(this->current_dialog_index);
 		if (dialog_item != NULL) {
 			dialog = new Dialog();
-			dialog->parse_dialog(dialog_item);
+			dialog->parse_dialog(dialog_item, this->get_voice_key());
 		} else {
 			this->current_dialog_group = NULL;
 			this->current_dialog_index = 0;
@@ -195,7 +201,7 @@ Dialog * NPC::choose_dialog(World * world, GlobalTime * time, Player * player)
 			DialogItem * dialog_item = this->current_dialog_group->get_dialog_item(this->current_dialog_index);
 			if (dialog_item != NULL) {
 				dialog = new Dialog();
-				dialog->parse_dialog(dialog_item);
+				dialog->parse_dialog(dialog_item, this->get_voice_key());
 			} else {
 				this->current_dialog_group = NULL;
 				this->current_dialog_index = 0;

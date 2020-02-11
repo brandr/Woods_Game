@@ -154,7 +154,7 @@ Dialog * CutsceneScriptBlock::get_dialog()
 {
 	if (this->action_key.value() == ACTION_DIALOG) {
 		Dialog * dialog = new Dialog();
-		dialog->parse_dialog(&dialog_item);
+		dialog->parse_dialog(&dialog_item, "");
 		return dialog;
 	}
 	return NULL;

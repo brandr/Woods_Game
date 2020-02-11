@@ -90,7 +90,7 @@ Dialog * DialogTreeNode::create_dialog(const int index)
 		DialogItem * item = this->dialog_group.get_dialog_item(index);
 		if (item != NULL) {
 			Dialog * dialog = new Dialog();
-			dialog->parse_dialog(item);
+			dialog->parse_dialog(item, "");
 			return dialog;
 			//TODO: avoid memory leaks
 		}

@@ -74,6 +74,11 @@ void GameScreen::draw(ALLEGRO_DISPLAY *display)
 {
 }
 
+void GameScreen::wait(const int duration)
+{
+	// override as necessary
+}
+
 int GameScreen::get_game_mode()
 {
 	return 0;

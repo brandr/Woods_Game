@@ -1097,6 +1097,11 @@ void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
 	}
 }
 
+void MainGameScreen::wait(const int duration)
+{
+	this->game_image_manager.wait(duration);
+}
+
 int MainGameScreen::get_game_mode()
 {
 	return game_image_manager.get_game_mode();

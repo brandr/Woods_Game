@@ -125,6 +125,7 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_UNFREEZE_SCREEN);
+	this->add_wait(20); // wait a bit so we don't start with input lag
 }
 
 void Cutscene::add_load_game_update(const int day, const int time)
@@ -145,6 +146,7 @@ void Cutscene::add_load_game_update(const int day, const int time)
 	this->add_action(ACTION_SAVE_GAME, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK); 
 	this->add_action(ACTION_UNFREEZE_SCREEN);
+	this->add_wait(20); // wait a bit so we don't start with input lag
 }
 
 void Cutscene::add_pass_out_update(Player * player, GlobalTime * time, const int wake_up_time)
@@ -165,6 +167,7 @@ void Cutscene::add_pass_out_update(Player * player, GlobalTime * time, const int
 	this->add_action(ACTION_AWAIT_LOAD, EFFECT_DISPLAY_BLACK);
 	this->add_action(ACTION_UNFREEZE_SCREEN);
 	//TODO: player needs passing out animation
+	this->add_wait(20); // wait a bit so we don't start with input lag
 }
 
 void Cutscene::set_cutscene_key(const std::string key)
@@ -248,8 +251,12 @@ const bool CutsceneBlock::is_finished()
 const bool CutsceneBlock::process_action()
 {
 	if (this->action_key.length() > 0) {
+		// do nothing
+		if (this->action_key == ACTION_WAIT) {
+			return true;
+		}
 		// save/load actions
-		if (this->action_key == ACTION_UPDATE_GLOBAL_TIME) {
+		else if (this->action_key == ACTION_UPDATE_GLOBAL_TIME) {
 			return true;
 		} else if (this->action_key == ACTION_SAVE_GAME) {
 			return true;
@@ -295,6 +302,15 @@ void CutsceneBlock::set_has_opened_dialog(const bool value)
 
 void Cutscene::add_effect_fade_block(const int duration, const int end_alpha)
 {
+}
+
+void Cutscene::add_wait(const int duration)
+{
+	CutsceneBlock * block = new CutsceneBlock();
+	block->action_key = ACTION_WAIT;
+	block->duration = duration;
+	block->block_index = this->cutscene_blocks.size();
+	this->add_block(block);
 }
 
 const bool Cutscene::get_is_finished()

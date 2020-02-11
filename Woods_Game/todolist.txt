@@ -4,16 +4,17 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 1/21/2020
+Last updated 2/10/2020
 
 Target date for main code to be done: ~ May 2020
 
 Unsorted high priority todos: (none)
 
-1. Audio
-	(5-10 days)
-2. Level gen
+
+1. Level gen
 	(15-20 days)
+2. Audio
+	(5-10 days)
 3. Physics/gates/NPC actions
 	(20-25 days)
 4. Animation code
@@ -28,6 +29,22 @@ Unsorted high priority todos: (none)
 	(???)
 
 ---------------------------------------------------
+Procedural generation
+---------------------------------------------------
+
+IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally" and we start with some baby plants
+IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
+Check NPC pathing when generating and in new day update (in former case, keep re-generating until it's pathable)
+How to place special objects/arrangements of objects that won't always be in the same spot?
+	* example: crashed car
+	* may want to spawn location markers that show up on map
+Make a "PlantType" class or something similar and have EntityTypes point to it with a "plant type key" or something similar if they are plants
+	* might not even need a plant type key-- could just use entity key
+	* When generating ferns, copy over this data in Plant methods rather than checking a bunch of entity attributes
+	* Can still store the entity attributes though, because it's nice to have blocks all be the same class
+	* probably only need to do this if plants become more complicated
+
+---------------------------------------------------
 Audio
 ---------------------------------------------------
 
@@ -37,8 +54,10 @@ Sound effects
 		- menu sounds 
 			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
 		- dialog sounds
-			# different "voices" (either serialize in dialog or default to the dialog "owner") (need different recordings/applied effects)
-			# have voices for things like signs that aren't actually recordings of human voice, but still have 26 characters
+			# make more voices
+			# make a default voice
+				* use this (and possibly other voices that can be set) for things like signs
+				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
 			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
 Replace placeholder sounds based on filenames
 Music
@@ -51,7 +70,6 @@ Music
 Animation/image code
 ---------------------------------------------------
 
-Fix bug where player animations get wonky after reloading via calendar (maybe need to reset some anim states? maybe we're double-drawing animations?)
 Give player a "pass out" animation for end of day
 could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
 make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
@@ -59,25 +77,21 @@ Give trees shadows and ensure they cover only the objects I want
 Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
 Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
 Add EntityGroup filters (see Level.draw())
-	# done, but not tested (need to copy over for genned egs?)
+	# done, but not tested (need to copy over for genned egs? can test this with large tree shadows) 
 
 ---------------------------------------------------
 Controls
 ---------------------------------------------------
 
-mouse controls for title screen
 Make custom mouse cursor (allow switching based on context/ what we're hovering over)	
 Test encyclopedia scrolling once we have enough encyclopedia items to scroll (both mouse scrolling and tab scrolling)
 Need more intuitive way to display/back out of encyclopedia category
+Need way to back out of load part of main menu
 
 ---------------------------------------------------
 Memory management/error handling
 ---------------------------------------------------
 
-Why do we deserialize the same files so many times? Is it actually necessary? (might be making the game use a lot of memory)
-There seems to sometimes be input lag right on startup and/or after standing still for a long time 
-	* might need to have ants/lighting in the room for this to happen
-	* is it because ants are getting stuck in the wall?
 Document how to format serialized things like dialog trees so I don't forget
 Asynchronous loading screen (still not sure I want a progress bar, except possibly for world gen)
 	* https://www.allegro.cc/forums/thread/615021
@@ -134,6 +148,7 @@ Basic AI
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
 Make other critters and large animals
+Fix bug where critters get stuck sometimes (either in wall or against it)
 
 ---------------------------------------------------
 Menus
@@ -157,22 +172,6 @@ Make an item shop (or at least someone who sells things)
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
 Error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
-
----------------------------------------------------
-Procedural generation
----------------------------------------------------
-
-IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally" and we start with some baby plants
-IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
-Check NPC pathing when generating and in new day update (in former case, keep re-generating until it's pathable)
-How to place special objects/arrangements of objects that won't always be in the same spot?
-	* example: crashed car
-	* may want to spawn location markers that show up on map
-Make a "PlantType" class or something similar and have EntityTypes point to it with a "plant type key" or something similar if they are plants
-	* might not even need a plant type key-- could just use entity key
-	* When generating ferns, copy over this data in Plant methods rather than checking a bunch of entity attributes
-	* Can still store the entity attributes though, because it's nice to have blocks all be the same class
-	* probably only need to do this if plants become more complicated
 
 ---------------------------------------------------
 Level editor

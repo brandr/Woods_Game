@@ -2442,7 +2442,7 @@ void Level::draw_tiled_images_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect &subsect
 {
 	ALLEGRO_BITMAP *display = al_get_target_bitmap();
 	al_set_target_bitmap(bitmap);
-	if (layer_index >= 0 && layer_index < this->tiled_image_layers.size()) {
+	if (layer_index >= 0 && layer_index < (int) this->tiled_image_layers.size()) {
 		TiledImageLayer * layer = this->tiled_image_layers.getItem(layer_index);
 		layer->draw_tiled_images_onto_bitmap(bitmap, subsection);
 	}

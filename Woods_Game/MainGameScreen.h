@@ -91,6 +91,7 @@ public:
 	void draw_stamina(ALLEGRO_DISPLAY* display);
 	void draw_ui_paused(ALLEGRO_DISPLAY* display);
 	void draw_ui_dialog(ALLEGRO_DISPLAY* display);
+	virtual void wait(const int duration);
 	virtual int get_game_mode();
 	virtual int get_camera_offset_x();
 	virtual int get_camera_offset_y();

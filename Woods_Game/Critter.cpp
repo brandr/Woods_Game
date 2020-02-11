@@ -208,7 +208,7 @@ Dialog * CritterTemplate::get_catch_dialog()
 {
 	if (this->catch_dialog_item.has_text()) {
 		Dialog * d = new Dialog();
-		d->parse_dialog(&this->catch_dialog_item);
+		d->parse_dialog(&this->catch_dialog_item, "");
 		return d;
 	}
 	return NULL;

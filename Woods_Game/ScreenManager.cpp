@@ -96,6 +96,8 @@ void ScreenManager::update()
 			//TODO: load fonts async if possible
 			next_screen->load_fonts();
 			add_screen(next_screen, false);
+			// wait to avoid input lag
+			next_screen->wait(60);
 		}
 		current_screen->update();
 	}

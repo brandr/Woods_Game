@@ -69,12 +69,28 @@ void Dialog::dialog_sound_update(DialogPage * page)
 		if (last_line_size > 0) {
 			const char letter = last_line.back();
 			if (isalpha(letter)) {
-				std::string syllable_filename = "dialog_sounds/syllables/";
-				syllable_filename += letter;
-				AudioManager::get_instance().play_sfx(syllable_filename, std::to_string(SOUND_KEY_DIALOG));
+				this->play_syllable_audio(letter);				
 			}
 		}
 	}
+}
+
+void Dialog::play_syllable_audio(const char letter)
+{
+	std::string syllable_filename = this->get_dialog_sound_path();
+	if (!syllable_filename.empty()) {
+		syllable_filename += letter;
+		AudioManager::get_instance().play_sfx(syllable_filename, std::to_string(SOUND_KEY_DIALOG));
+	}
+}
+
+const std::string Dialog::get_dialog_sound_path()
+{
+	std::string path = "";
+	if (!voice_key.empty()) {
+		path += "dialog_sounds/voices/" + voice_key + "/syllables/";
+	}
+	return path;
 }
 
 void Dialog::initialize_text_speed()
@@ -207,7 +223,7 @@ void Dialog::parse_text(const std::string text)
 	}
 }
 
-void Dialog::parse_dialog(DialogItem * dialog_item)
+void Dialog::parse_dialog(DialogItem * dialog_item, const std::string voice_key)
 {
 	FileManager manager;
 	std::string page_token = DIALOG_PAGE_TOKEN;
@@ -243,6 +259,7 @@ void Dialog::parse_dialog(DialogItem * dialog_item)
 		std::vector<QuestUpdate *> quest_updates = page->get_quest_updates();
 		this->set_quest_updates_for_page(page_index, quest_updates);
 		this->set_portrait_image_key_for_page(page_index, page->get_portrait_image_key());
+		this->voice_key = voice_key;
 	}
 }
 

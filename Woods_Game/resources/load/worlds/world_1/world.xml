@@ -100,6 +100,7 @@
         		<Member Name="start_spawn_key">stranger_spawner_1</Member>
         		<Member Name="default_spawn_key">stranger_spawner_house</Member>
         		<Member Name="obeys_tile_rules">true</Member>
+                <Member Name="voice_key">stranger</Member>
                 <Class Type="DialogTree" Name="dialog_tree" Version="1">
                     <Class Type="DialogTreeNode" Name="root_node" Version="1">
                         <Member Name="dialog_text"></Member>
@@ -615,6 +616,8 @@
         		<Member Name="default_spawn_level_key">start_neighborhood</Member>
         		<Member Name="start_spawn_key">stranger_spawner_2</Member>
         		<Member Name="default_spawn_key">stranger_spawner_2</Member>
+                <Member Name="obeys_tile_rules">false</Member>
+                <Member Name="voice_key">stranger</Member>
                 <Class Type="DialogTree" Name="dialog_tree" Version="1">
                     <Class Type="DialogTreeNode" Name="root_node" Version="1">
                         <Member Name="dialog_text"></Member>

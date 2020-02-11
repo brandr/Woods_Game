@@ -40,6 +40,9 @@ public:
 	virtual void menu_right();
 	virtual void cancel_menu();
 	virtual void confirm_selection();
+	virtual void process_mouse_click_left(const int x, const int y);
+	virtual void update_mouse_position(const int x, const int y, const int z);
+	virtual void mouse_cursor_update();
 };
 
 #endif

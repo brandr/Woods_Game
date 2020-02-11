@@ -57,6 +57,7 @@ public:
 	virtual void unload_content();
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
+	virtual void wait(const int duration);
 	virtual int get_game_mode();
 	virtual GameScreen& screen_receiving_input();
 	virtual void set_input_map();

@@ -104,6 +104,7 @@ public:
 	const std::string date_display_string();
 	void time_update();
 	void npc_update();
+	void wait(const int duration);
 	GlobalTime * get_current_global_time();
 	const int get_current_minutes();
 	const std::string get_current_month_str();

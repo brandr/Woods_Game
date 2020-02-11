@@ -27,6 +27,7 @@ private:
 	DialogTree dialog_tree;
 	xmls::xString default_dialog_text;
 	xmls::xBool obeys_tile_rules;
+	xmls::xString voice_key;
 	std::string current_level_key = "";
 	std::string current_position_node_key = "";
 	bool is_processing = false; //TEMP. replace with AI state for AIBeing
@@ -60,6 +61,7 @@ public:
 	const std::string get_current_destination_node_key();
 	virtual void clear_primary_destinations();
 	virtual const std::string get_sound_key();
+	const std::string get_voice_key();
 };
 
 #endif
