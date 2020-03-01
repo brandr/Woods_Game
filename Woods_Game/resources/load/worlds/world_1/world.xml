@@ -54,7 +54,20 @@
                                 <Member Name="should_wander">false</Member>
                             </Class>
                 			<Member Name="priority">1</Member>
-                			<Member Name="node_key">g_woods_a</Member>
+                			<Member Name="node_key">n_east_gate</Member>
+                            <Member Name="forced_anim_dir">3</Member>
+                            <Class Type="ScheduledAction" Name="scheduled_action" Version="1">
+                                <Member Name="scheduled_action_key">ensure_gate_1_shut</Member>
+                                <Class Type="InteractAction" Name="action" Version="1">
+                                    <Member Name="InteractActionKey">toggle_gate</Member>
+                                    <Member Name="FunctionName">toggle_gate</Member>
+                                    <Collection Name="Bindings"/>
+                                    <Collection Name="Qualifiers"/>
+                                </Class>
+                                <Member Name="action_object_type">Block</Member>
+                                <Member Name="action_object_tile_x">11</Member>
+                                <Member Name="action_object_tile_y">7</Member>
+                            </Class>
             			</Class>
             		</Collection>
 				</Class>

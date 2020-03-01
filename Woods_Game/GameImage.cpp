@@ -222,6 +222,16 @@ const int GameImage::get_center_y()
 	return this->center_offset_y.value() + this->rect.y;
 }
 
+const int GameImage::get_center_offset_x()
+{
+	return this->center_offset_x.value();
+}
+
+const int GameImage::get_center_offset_y()
+{
+	return this->center_offset_y.value();
+}
+
 void GameImage::add_additional_image_layer(const std::string filename, Rect subsection)
 {
 	additional_image_layer_data.push_back(std::pair<std::string, Rect>(filename, subsection));
@@ -229,14 +239,21 @@ void GameImage::add_additional_image_layer(const std::string filename, Rect subs
 
 void GameImage::refresh_mask()
 {
-	this->mask_filename = this->image_filename;
 	Rect* subsection = this->get_image_subsection();
 	std::string rect_string = "";
 	if (subsection) {
 		rect_string = ImageLoader::get_instance().rect_to_string(*subsection);
 	}
-	if (!ImageLoader::get_instance().has_mask(this->mask_filename, rect_string)) {
-		ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, false);
+	this->mask_filename = this->image_filename;
+	const std::string suffix_filename = this->image_filename + "_mask";
+	if (ImageLoader::get_instance().image_exists(suffix_filename)) {
+		if (!ImageLoader::get_instance().has_mask(this->mask_filename, rect_string)) {
+			ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, true, true);
+		}
+	} else {			
+		if (!ImageLoader::get_instance().has_mask(this->mask_filename, rect_string)) {
+			ImageLoader::get_instance().load_mask(this->mask_filename, rect_string, false);
+		}
 	}
 }
 

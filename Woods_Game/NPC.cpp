@@ -101,6 +101,16 @@ const int NPC::forced_animation_direction(World * world, Level * level, GlobalTi
 	return -1;
 }
 
+ScheduledAction * NPC::scheduled_action(World * world, Level * level, GlobalTime * time)
+{
+	const std::string node_key = this->calculate_destination_node_key(world, time);
+	PathNode * matching_node = level->find_path_node_with_key(node_key);
+	if (matching_node != NULL) {
+		return this->schedule.scheduled_action(world, level, time);
+	}
+	return NULL;
+}
+
 const std::string NPC::get_footstep_filename_suffix()
 {
 	return this->get_npc_key();

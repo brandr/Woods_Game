@@ -4,19 +4,16 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 2/10/2020
+Last updated 2/24/2020
 
 Target date for main code to be done: ~ May 2020
 
-Unsorted high priority todos: (none)
-
-
 1. Level gen
 	(15-20 days)
-2. Audio
-	(5-10 days)
-3. Physics/gates/NPC actions
+2. Physics/gates/NPC actions
 	(20-25 days)
+3. Audio
+	(5-10 days)
 4. Animation code
 	(5-10 days)
 5. Critters
@@ -29,26 +26,78 @@ Unsorted high priority todos: (none)
 	(???)
 
 ---------------------------------------------------
+Physics
+---------------------------------------------------
+
+One-way gates
+	- Allow NPCS to open from any side
+		* Make sure an NPC can't close the gate on the player
+Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
+
+---------------------------------------------------
+NPCs
+---------------------------------------------------
+
+AIState/NPC schedule
+	- Let NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
+		* kind of working, but need to have qualifiers so the NPC skips it if the gate is closed
+			# also need to try having two schedueld nodes with similar qualifiers, one where we close the gate if it's open and one where we don't if it's closed,
+				and see if the NPC closes it, then goes to do the other thing
+	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
+		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
+	- Can use qualifiers on interact actions to make doors only open at a certain time
+		* see if it's possible to "branch" actions this way and put multiple actions with different qualfiers on the same door
+		* this allows "you must be friends with X to go here"
+NPC pathing
+	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
+	- can end up on top of an npc and get temporarily stuck if you go into a building right as they're at the exit
+		* probably want to fix by having you appear just past them
+	- Set a debug launch argument to control whether test rect bitmaps appear
+		* Manage the bitmaps through ImageLoader
+		* instead of launch argument, could add console commands (this applies to FPS display too)
+Should you be unable to talk to the same NPC too many times a day like in stardew?
+	- probably need a lot more actual gameplay to answer this question
+
+---------------------------------------------------
+Critters
+---------------------------------------------------
+
+Critter spawning/biomes
+	* when should critters despawn?
+	* incorporate level size when calculating spawn chance/max critters to spawn for biome
+	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
+	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
+	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
+		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
+		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
+			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
+Basic AI
+	* what can critters do besides wander? how to decide?
+	* some critters should flee if player gets close
+		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
+Make other critters and large animals
+Fix bug where critters get stuck sometimes (either in wall or against it)
+
+---------------------------------------------------
 Procedural generation
 ---------------------------------------------------
 
-IDEA: When procedurally generating woods, allow a few days to pass so plant growth happens "naturally" and we start with some baby plants
-IDEA: can make level gen even more random by randomizing some destination path nodes within a network of levels
-Check NPC pathing when generating and in new day update (in former case, keep re-generating until it's pathable)
-How to place special objects/arrangements of objects that won't always be in the same spot?
-	* example: crashed car
-	* may want to spawn location markers that show up on map
-Make a "PlantType" class or something similar and have EntityTypes point to it with a "plant type key" or something similar if they are plants
-	* might not even need a plant type key-- could just use entity key
-	* When generating ferns, copy over this data in Plant methods rather than checking a bunch of entity attributes
-	* Can still store the entity attributes though, because it's nice to have blocks all be the same class
-	* probably only need to do this if plants become more complicated
+Improve generation performance (fix infinite loop that happens sometimes-- maybe restart from scratch after a certain number of tries?)
+Finish LevelGenSite
+	* Maybe allow critters to have site-based spawning?
+	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
+		or would it work better to just put them in the right order in the xml?
 
 ---------------------------------------------------
 Audio
 ---------------------------------------------------
 
 Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
+Music
+	* play music on title screen
+	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
+	* What kinds of things can cause music to start/stop/fade/add cues?
+		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
 Sound effects	
 	* Add sounds: 
 		- menu sounds 
@@ -60,11 +109,6 @@ Sound effects
 				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
 			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
 Replace placeholder sounds based on filenames
-Music
-	* play on title screen
-	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
-	* What kinds of things can cause music to start/stop/fade/add cues?
-		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
 
 ---------------------------------------------------
 Animation/image code
@@ -92,6 +136,10 @@ Need way to back out of load part of main menu
 Memory management/error handling
 ---------------------------------------------------
 
+It shouldn't be necessary to sort images to draw every frame, especially since some are still	
+	* test performance without sorting to make sure this is actually a problem
+	* instead, look into doing this for still images when loading the level 
+		(maybe storing in a map that we copy and sort-insert moving object positions into?)
 Document how to format serialized things like dialog trees so I don't forget
 Asynchronous loading screen (still not sure I want a progress bar, except possibly for world gen)
 	* https://www.allegro.cc/forums/thread/615021
@@ -107,55 +155,11 @@ Performance on large levels seems to be mostly fixed, but comes back in some cas
 Fix build warnings
 
 ---------------------------------------------------
-NPCs
----------------------------------------------------
-
-AIState/NPC schedule
-	- wander radius (min/max distance per wander) and wander delay should possibly be serialized/calculated
-	- Consider letting NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
-		* send to a node near the interactable, but perforam the action directly so we don't have to check if they're "close enough"
-	- now that pathing factors in tile cost, we can get a rough estimate of how long it'll take to reach the scheduled destination.
-		* this is useful for questions like "how soon do I need to leave to arrive on time?" and "am I already too late to reach the event?"
-		* note that this is only a rough estimate since we might get blocked on the way. This means it's the soonest possible arrival time
-	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
-		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
-Dialog 
-	- should you be unable to talk to the same NPC too many times a day like in stardew?
-		* probably need a lot more actual gameplay to answer this question
-NPC pathing
-	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
-	- can end up on top of an npc and get temporarily stuck if you go into a building right as they're at the exit
-		* probably want to fix by having you appear just past them
-	- Set a debug launch argument to control whether test rect bitmaps appear
-		* Manage the bitmaps through ImageLoader
-		* instead of launch argument, could add console commands (this applies to FPS display too)
-
----------------------------------------------------
-Critters
----------------------------------------------------
-
-Critter spawning/biomes
-	* when should critters despawn?
-	* incorporate level size when calculating spawn chance/max critters to spawn for biome
-	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
-	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
-	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
-		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
-		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
-			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
-Basic AI
-	* what can critters do besides wander? how to decide?
-	* some critters should flee if player gets close
-		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
-Make other critters and large animals
-Fix bug where critters get stuck sometimes (either in wall or against it)
-
----------------------------------------------------
 Menus
 ---------------------------------------------------
 
 Display the current day and other info for a save in title screen menu 
-why does "maps" appear as an option when loading game?
+why does "maps" appear as an option when loading game? Need to fix
 Encyclopedia
 	* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
 	* Could track NPCs in encyclopedia (bombers notebook-style schedule)
@@ -171,7 +175,7 @@ Make an item shop (or at least someone who sells things)
 	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
-Error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
+Add an error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
 
 ---------------------------------------------------
 Level editor
@@ -179,17 +183,7 @@ Level editor
 
 Fix bug where XML attributes can get saved twice after editing via ctrl-click
 Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
-
----------------------------------------------------
-Physics
----------------------------------------------------
-
-For one-way gates, important part is player direction relative to gate-- could be an action binding/qualfier
-Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
-Consider giving blocks optional masks (we use the block's image if there's no mask filepath)
-Can use qualifiers on interact actions to make doors only open at a certain time
-	- see if it's possible to "branch" actions this way and put multiple actions with different qualfiers on the same door
-	- this allows "you must be friends with X to go here"
+Fix bug where removing blocks doesn't seem to save (probaly because they only get removed from the tile, not the level-- should be more like egs)
 
 ---------------------------------------------------
 Stamina

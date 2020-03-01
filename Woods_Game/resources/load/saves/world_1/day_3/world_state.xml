@@ -11,9 +11,9 @@
             <Member Name="spritesheet_frame_height">64</Member>
             <Member Name="base_walk_speed">5</Member>
             <Member Name="jump_speed">30</Member>
-            <Member Name="current_stamina">100000</Member>
+            <Member Name="current_stamina">60000</Member>
             <Member Name="max_stamina">100000</Member>
-            <Member Name="is_running">false</Member>
+            <Member Name="is_running">true</Member>
             <Member Name="spawn_key">player_spawner_room</Member>
             <Class Name="inventory" Type="Inventory" Version="1">
                 <Member Name="inventory_key">player_inventory</Member>
@@ -601,7 +601,218 @@
                 <Member Name="grid_x">10</Member>
                 <Member Name="grid_y">10</Member>
             </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">11</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">12</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">13</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">13</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">14</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">14</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">15</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">15</Member>
+                <Member Name="grid_y">12</Member>
+            </Class>
         </Collection>
-        <Collection Name="quests"/>
+        <Collection Name="quests">
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">meet_stranger_2</Member>
+                <Member Name="quest_name">Meet Stranger 2</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You haven't met stranger 2 yet,\nbut you know you need to.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">1</Member>
+                        <Member Name="quest_state">3</Member>
+                        <Member Name="summary">You met stranger 2. Success!</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates">
+                    <Class Type="QuestUpdate" Version="1">
+                        <Member Name="quest_key">avoid_stranger_2</Member>
+                        <Member Name="page_num">1</Member>
+                        <Member Name="priority">100</Member>
+                        <Collection Name="qualifiers">
+                            <Class Type="Qualifier" Version="1">
+                                <Member Name="comparator">0</Member>
+                                <Member Name="evaluator">4</Member>
+                                <Member Name="month">-1</Member>
+                                <Member Name="day">-1</Member>
+                                <Member Name="hour">-1</Member>
+                                <Member Name="minute">-1</Member>
+                                <Member Name="day_of_week">-1</Member>
+                                <Member Name="int_val"/>
+                                <Member Name="string_val"/>
+                                <Member Name="npc_key"/>
+                                <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                    <Member Name="trigger_key">has_met_npc</Member>
+                                    <Member Name="trigger_state">1</Member>
+                                    <Collection Name="trigger_attributes">
+                                        <Class Type="TriggerAttribute" Version="1">
+                                            <Member Name="attribute_key">npc_key</Member>
+                                            <Member Name="attribute_value">stranger_2</Member>
+                                        </Class>
+                                    </Collection>
+                                </Class>
+                                <Collection Name="qualifiers"/>
+                            </Class>
+                        </Collection>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">avoid_stranger_2</Member>
+                <Member Name="quest_name">Avoid Stranger 2</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">Don't talk to stranger 2. He's bad.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">1</Member>
+                        <Member Name="quest_state">2</Member>
+                        <Member Name="summary">You talked to stranger 2. That's bad.</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates">
+                    <Class Type="QuestUpdate" Version="1">
+                        <Member Name="quest_key">avoid_stranger_2</Member>
+                        <Member Name="page_num">1</Member>
+                        <Member Name="priority">100</Member>
+                        <Collection Name="qualifiers">
+                            <Class Type="Qualifier" Version="1">
+                                <Member Name="comparator">0</Member>
+                                <Member Name="evaluator">4</Member>
+                                <Member Name="month">-1</Member>
+                                <Member Name="day">-1</Member>
+                                <Member Name="hour">-1</Member>
+                                <Member Name="minute">-1</Member>
+                                <Member Name="day_of_week">-1</Member>
+                                <Member Name="int_val"/>
+                                <Member Name="string_val"/>
+                                <Member Name="npc_key"/>
+                                <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                    <Member Name="trigger_key">has_met_npc</Member>
+                                    <Member Name="trigger_state">1</Member>
+                                    <Collection Name="trigger_attributes">
+                                        <Class Type="TriggerAttribute" Version="1">
+                                            <Member Name="attribute_key">npc_key</Member>
+                                            <Member Name="attribute_value">stranger_2</Member>
+                                        </Class>
+                                    </Collection>
+                                </Class>
+                                <Collection Name="qualifiers"/>
+                            </Class>
+                        </Collection>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">give_stranger_1_mushroom</Member>
+                <Member Name="quest_name">Find a Mushroom</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">Give Stranger 1 a mushroom.</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates"/>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">deliver_letter</Member>
+                <Member Name="quest_name">Deliver a Letter</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">Deliver a letter from Stranger 1 to \nStranger 2.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">1</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">Deliver a letter from Stranger 1 to \nStranger 2.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">2</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You have the letter. Now, deliver it.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">3</Member>
+                        <Member Name="quest_state">3</Member>
+                        <Member Name="summary">You delivered the letter. Good job!</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates"/>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">quest_5</Member>
+                <Member Name="quest_name">Test Quest 5</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You must complete this quest too.</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates"/>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">quest_6</Member>
+                <Member Name="quest_name">Test Quest 6</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You must complete this quest too.</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates"/>
+            </Class>
+            <Class Type="Quest" Version="1">
+                <Member Name="quest_key">quest_7</Member>
+                <Member Name="quest_name">Test Quest 7</Member>
+                <Member Name="current_page_index">-1</Member>
+                <Collection Name="pages">
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">0</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You must complete this quest too.</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="quest_updates"/>
+            </Class>
+        </Collection>
     </SerializableClass>
 </root>

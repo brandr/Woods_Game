@@ -197,6 +197,11 @@ void ImageLoader::load_mask(const std::string base_filename, const std::string r
 
 void ImageLoader::load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix)
 {
+	load_mask(base_filename, rect_string, include_suffix, false);
+}
+
+void ImageLoader::load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix, const bool allow_failure)
+{
 	std::string mask_filename = base_filename;
 	if (include_suffix) {
 		mask_filename += "_mask";
@@ -206,7 +211,7 @@ void ImageLoader::load_mask(const std::string base_filename, const std::string r
 		return;
 	}
 	mask_t * loaded_mask = NULL;
-	ImageLoader::get_instance().load_image(mask_filename);
+	ImageLoader::get_instance().load_image(mask_filename, "", allow_failure);
 	ALLEGRO_BITMAP * mask_image = NULL;
 	if (rect_string.length() > 0) {
 		FileManager fm;
@@ -215,7 +220,8 @@ void ImageLoader::load_mask(const std::string base_filename, const std::string r
 			::atoi(rect_parts[1].c_str()),
 			::atoi(rect_parts[2].c_str()),
 			::atoi(rect_parts[3].c_str()));
-		ImageLoader::get_instance().load_image(mask_filename, subsection);
+		const std::string rect_string = rect_to_string(subsection);
+		ImageLoader::get_instance().load_image(mask_filename, rect_string, allow_failure);
 		mask_image = ImageLoader::get_instance().get_image(mask_filename, subsection);
 	} else {
 		mask_image = ImageLoader::get_instance().get_image(mask_filename);

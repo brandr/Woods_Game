@@ -1,0 +1,385 @@
+<root>
+    <SerializableClass Type="WorldState" Version="1" WorldKey="world_1">
+        <Member Name="world_key">world_1</Member>
+        <Class Name="player" Type="Player" Version="1">
+            <Member Name="start_pos_x">512</Member>
+            <Member Name="start_pos_y">128</Member>
+            <Member Name="animation_spritesheet_key">player_spritesheet_1</Member>
+            <Member Name="center_offset_x">34</Member>
+            <Member Name="center_offset_y">58</Member>
+            <Member Name="spritesheet_frame_width">64</Member>
+            <Member Name="spritesheet_frame_height">64</Member>
+            <Member Name="base_walk_speed">5</Member>
+            <Member Name="jump_speed">30</Member>
+            <Member Name="spawn_key">player_spawner_room</Member>
+            <Class Name="inventory" Type="Inventory" Version="1">
+                <Collection Name="inventory_items">
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">0</Member>
+                        <Member Name="item_name">shears</Member>
+                        <Member Name="inventory_pos_x">0</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">power</Member>
+                                <Member Name="attribute_value">1</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">1</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">1</Member>
+                        <Member Name="item_name">mallet</Member>
+                        <Member Name="inventory_pos_x">2</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">power</Member>
+                                <Member Name="attribute_value">1</Member>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">3</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">4</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">5</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">6</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">7</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">8</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">9</Member>
+                        <Member Name="inventory_pos_y">-1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">0</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">1</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">2</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">3</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">4</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">5</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">6</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">7</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">8</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">9</Member>
+                        <Member Name="inventory_pos_y">0</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">0</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">1</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">2</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">3</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">4</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">5</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">6</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">7</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">8</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">9</Member>
+                        <Member Name="inventory_pos_y">1</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">0</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">1</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">2</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">3</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">4</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">5</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">6</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">7</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">8</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                    <Class Type="Item" Version="1">
+                        <Member Name="item_key">-1</Member>
+                        <Member Name="item_name"/>
+                        <Member Name="inventory_pos_x">9</Member>
+                        <Member Name="inventory_pos_y">2</Member>
+                        <Collection Name="item_attributes"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Collection Name="animation_data">
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">neutral</Member>
+                    <Member Name="animation_frame_width">3</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">1</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">walking</Member>
+                    <Member Name="animation_frame_width">2</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">8</Member>
+                </Class>
+                <Class Type="AnimationData" Version="1">
+                    <Member Name="animation_key">shearing</Member>
+                    <Member Name="animation_frame_width">5</Member>
+                    <Member Name="animation_frame_height">5</Member>
+                    <Member Name="animation_frame_duration">4</Member>
+                </Class>
+            </Collection>
+            <Collection Name="additional_mask_data">
+                <Class Type="MaskData" Version="1">
+                    <Member Name="mask_key">slicing</Member>
+                    <Member Name="mask_width">32</Member>
+                    <Member Name="mask_height">32</Member>
+                    <Member Name="mask_frame_count">5</Member>
+                </Class>
+            </Collection>
+        </Class>
+        <Collection Name="trigger_statuses">
+            <Class Type="TriggerStatus" Version="1">
+                <Member Name="trigger_key">has_met_npc</Member>
+                <Member Name="trigger_state">0</Member>
+                <Collection Name="trigger_attributes">
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">npc_key</Member>
+                        <Member Name="attribute_value">stranger_1</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TriggerStatus" Version="1">
+                <Member Name="trigger_key">has_met_npc</Member>
+                <Member Name="trigger_state">1</Member>
+                <Collection Name="trigger_attributes">
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">npc_key</Member>
+                        <Member Name="attribute_value">stranger_2</Member>
+                    </Class>
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">npc_key</Member>
+                        <Member Name="attribute_value">stranger_2</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TriggerStatus" Version="1">
+                <Member Name="trigger_key">has_viewed_cutscene</Member>
+                <Member Name="trigger_state">1</Member>
+                <Collection Name="trigger_attributes">
+                    <Class Type="TriggerAttribute" Version="1">
+                        <Member Name="attribute_key">cutscene_key</Member>
+                        <Member Name="attribute_value">test_cutscene_1</Member>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="explored_cells">
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">10</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">11</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+        </Collection>
+    </SerializableClass>
+</root>

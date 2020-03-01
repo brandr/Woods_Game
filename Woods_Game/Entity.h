@@ -213,6 +213,8 @@ public:
 	virtual void set_starting_pos(int x, int y);
 	virtual int get_entity_starting_pos_x();
 	virtual int get_entity_starting_pos_y();
+	virtual void set_entity_starting_pos_x(const int x);
+	virtual void set_entity_starting_pos_y(const int y);
 	virtual const std::vector<int> get_allowed_spawn_tile_types();
 	virtual int get_entity_data_index();
 	virtual int get_entity_attribute(std::string attribute);

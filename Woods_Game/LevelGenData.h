@@ -1,6 +1,11 @@
 #ifndef LEVEL_GEN_DATA_H
 #define LEVEL_GEN_DATA_H
 
+#include "Block.h"
+#include "EntityGroup.h"
+#include "LevelGenSite.h"
+#include "Tile.h"
+
 #include "XMLSerialization.h"
 
 struct TileGenRule : public xmls::Serializable {
@@ -14,8 +19,15 @@ struct TileGenRule : public xmls::Serializable {
 
 struct LevelGenPathNode : public xmls::Serializable {
 	LevelGenPathNode();
+	xmls::xString node_key;
 	xmls::xInt x_pos;
 	xmls::xInt y_pos;
+	xmls::xString dest_node_key;
+	xmls::xString dest_site_key;
+	xmls::xString edge_key;
+	xmls::xInt edge_range;
+	xmls::xInt edge_center_x;
+	xmls::xInt edge_center_y;
 };
 
 struct LevelGenPathSystem : public xmls::Serializable {
@@ -54,6 +66,13 @@ struct BlockGenRule : public xmls::Serializable {
 	const std::vector<int> get_allowed_spawn_tile_indeces();
 };
 
+struct ForcedTile : public xmls::Serializable {
+	ForcedTile();
+	xmls::xInt tile_type_index;
+	xmls::xInt tile_pos_x, tile_pos_y;
+	xmls::xInt tile_sheet_col, tile_sheet_row;
+};
+
 class LevelGenData : public xmls::Serializable
 {
 private:
@@ -63,6 +82,10 @@ private:
 	xmls::Collection<LevelGenPathSystem> path_systems;
 	xmls::Collection<EntityGroupGenRule> entity_group_gen_rules;
 	xmls::Collection<BlockGenRule> block_gen_rules;
+	xmls::Collection<LevelGenSite> level_gen_sites;
+	xmls::Collection<ForcedTile> forced_tiles;
+	xmls::Collection<Block> forced_blocks;
+	xmls::Collection<EntityGroup> forced_entity_groups;
 public:
 	LevelGenData();
 	const bool get_should_generate();
@@ -71,6 +94,10 @@ public:
 	const std::vector<TileGenRule*> get_tile_gen_rules();
 	const std::vector<EntityGroupGenRule*> get_entity_group_gen_rules();
 	const std::vector<BlockGenRule*> get_block_gen_rules();
+	const std::vector<LevelGenSite*> get_level_gen_sites();
+	const std::vector<ForcedTile*> get_forced_tiles();
+	const std::vector<Block*> get_forced_blocks();
+	const std::vector<EntityGroup*> get_forced_entity_groups();
 };
 
 #endif

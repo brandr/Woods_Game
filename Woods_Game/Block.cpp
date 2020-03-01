@@ -9,7 +9,9 @@ Block::Block()
 	this->Register("EntityStartingPosY", &entity_starting_pos_y);
 	this->Register("EntityDataIndex", &entity_data_index);
 	this->Register("EntitySheetCol", &entity_sheet_col);
-	this->Register("EntitySheetRow", &entity_sheet_row);
+	this->Register("EntitySheetRow", &entity_sheet_row);	
+	this->Register("CenterOffsetX", &center_offset_x);
+	this->Register("CenterOffsetY", &center_offset_y);
 	this->Register("EntityAttributes", &entity_attributes);
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
@@ -18,6 +20,10 @@ Block::Block()
 	this->Register("SpawnTileRules", &spawn_tile_rules);
 	this->Register("ImageFilters", &image_filters);
 	this->entity_data_index = -1;
+	this->center_offset_x = 0;
+	this->center_offset_y = 0;
+	this->entity_sheet_row = 0;
+	this->entity_sheet_col = 0;
 }
 
 Block::Block(int x, int y)
@@ -29,7 +35,9 @@ Block::Block(int x, int y)
 	this->Register("EntityStartingPosY", &entity_starting_pos_y);
 	this->Register("EntityDataIndex", &entity_data_index);
 	this->Register("EntitySheetCol", &entity_sheet_col);
-	this->Register("EntitySheetRow", &entity_sheet_row);
+	this->Register("EntitySheetRow", &entity_sheet_row);	
+	this->Register("CenterOffsetX", &center_offset_x);
+	this->Register("CenterOffsetY", &center_offset_y);
 	this->Register("EntityAttributes", &entity_attributes);
 	this->Register("ContactActions", &contact_actions);
 	this->Register("InteractActions", &interact_actions);
@@ -42,6 +50,8 @@ Block::Block(int x, int y)
 	this->rect.y = y;
 	this->entity_starting_pos_x = x;
 	this->entity_starting_pos_y = y;
+	this->center_offset_x = 0;
+	this->center_offset_y = 0;
 }
 
 

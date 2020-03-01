@@ -1,0 +1,63 @@
+<root>
+    <SerializableClass Type="CritterLibrary" Version="1" CritterLibraryKey="default_critter_library">
+    	<Collection Name="critter_templates">
+    		<Class Type="CritterTemplate" Version = "1">
+    			<Member Name="critter_key">ant</Member>
+    			<Member Name="encyclopedia_category_name">bugs</Member>
+    			<Member Name="encyclopedia_entry_name">ant</Member>
+    			<Member Name="spritesheet_frame_width">12</Member>
+    			<Member Name="spritesheet_frame_height">12</Member>
+    			<Member Name="collide_x_offset">0</Member>
+    			<Member Name="collide_y_offset">0</Member>
+    			<Member Name="collide_width">12</Member>
+    			<Member Name="collide_height">12</Member>
+    			<Member Name="solid">false</Member>
+    			<Member Name="base_speed">1</Member>
+    			<Collection Name="animation_data">
+    				<Class Type="AnimationData" Version="1">
+    					<Member Name="animation_key">neutral</Member>
+    					<Member Name="animation_frame_width">1</Member>
+    					<Member Name="animation_frame_height">5</Member>
+    					<Member Name="animation_frame_duration">1</Member>
+    				</Class>
+    				<Class Type="AnimationData" Version="1">
+    					<Member Name="animation_key">walking</Member>
+    					<Member Name="animation_frame_width">2</Member>
+    					<Member Name="animation_frame_height">5</Member>
+    					<Member Name="animation_frame_duration">16</Member>
+                        <Member Name="animation_pixel_step_size">10</Member>
+    				</Class>
+    			</Collection>
+                <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">16</Member>
+                        <Member Name="animation_pixel_step_size">10</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">5.0</Member>
+                    </Class>
+                </Collection>
+                <Class Type="WanderZone" Name="wander_zone" Version="1">
+                    <Member Name="should_wander">true</Member>
+                    <Member Name="min_x">-64</Member>
+                    <Member Name="min_y">-64</Member>
+                    <Member Name="max_x">64</Member>
+                    <Member Name="max_y">64</Member>
+                </Class>
+                <Class Type="DialogItem" Name="catch_dialog_item" Version ="1">
+                    <Member Name="conversation_index">0</Member>
+                    <Collection Name="pages">
+                        <Class Type="DialogItemPage" Version="1">
+                            <Member Name="dialog_text">[l]You caught an ant![/l][l]Don't let it out indoors.[/l]</Member>
+                            <Member Name="page_number">0</Member>
+                            <Member Name="next_page_index">-1</Member>
+                            <Member Name="portrait_image_key">ant_portrait</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+    		</Class>
+    	</Collection>
+    </SerializableClass>
+</root>

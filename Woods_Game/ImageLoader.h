@@ -52,6 +52,7 @@ public:
 	void load_mask(const std::string base_filename);
 	void load_mask(const std::string base_filename, const std::string rect_string);
 	void load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix);
+	void load_mask(const std::string base_filename, const std::string rect_string, const bool include_suffix, const bool allow_failure);
 	ALLEGRO_BITMAP* get_default_tile_image(std::string, TileType*);
 	ALLEGRO_BITMAP* get_default_block_image(std::string, EntityData*);
 	ALLEGRO_BITMAP* get_default_entity_group_image(std::string, EntityGroupData*);

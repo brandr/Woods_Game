@@ -1,0 +1,896 @@
+<root>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_main_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Resume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">resume_game</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Video</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">open_video_settings</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Controls</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">open_control_settings</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Audio</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">open_audio_settings</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Gameplay</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">150</Member>
+                <Member Name="SelectionActionKey">open_gameplay_settings</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Quit</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">180</Member>
+                <Member Name="SelectionActionKey">quit_game</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_video_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Resolution</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_resolution</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">1</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">1280x800</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">800x600</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Screen style</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_screen_style</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">1</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">Fullscreen</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">Windowed Fullscreen</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">Windowed</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Revert to Defaults</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">revert_video_settings_default</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Return</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">return_to_main_pause</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_audio_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Master Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_master_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">10</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Music Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_music_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">6</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Effects Volume</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_sfx_volume</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">4</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">0</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">10</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">20</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">30</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">40</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">50</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">60</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">70</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">80</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">90</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">100</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Revert to Defaults</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">revert_audio_settings_default</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Return</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">150</Member>
+                <Member Name="SelectionActionKey">return_to_main_pause</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_controls_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Keyboard</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">open_keyboard_controls</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Controller</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">open_controller_controls</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Return</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">return_to_main_pause</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_controls_menu_keyboard">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Member Name="ControlsID">pause_controls_menu_keyboard</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Up</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">move_up</Member>
+                <Member Name="ControlsInputKey">keyboard_w</Member>
+                <Member Name="ControlsInputLabel">W</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Left</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">move_left</Member>
+                <Member Name="ControlsInputKey">keyboard_a</Member>
+                <Member Name="ControlsInputLabel">A</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Down</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">move_down</Member>
+                <Member Name="ControlsInputKey">keyboard_s</Member>
+                <Member Name="ControlsInputLabel">S</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Right</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">move_right</Member>
+                <Member Name="ControlsInputKey">keyboard_d</Member>
+                <Member Name="ControlsInputLabel">D</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Interact</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">150</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">interact</Member>
+                <Member Name="ControlsInputKey">keyboard_z</Member>
+                <Member Name="ControlsInputLabel">Z</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Use Item</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">180</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">use_item</Member>
+                <Member Name="ControlsInputKey">keyboard_c</Member>
+                <Member Name="ControlsInputLabel">C</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Open inventory</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">210</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">open_inventory</Member>
+                <Member Name="ControlsInputKey">keyboard_v</Member>
+                <Member Name="ControlsInputLabel">V</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Toggle run</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">240</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">toggle_run</Member>
+                <Member Name="ControlsInputKey">keyboard_r</Member>
+                <Member Name="ControlsInputLabel">R</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Pause</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">270</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">pause</Member>
+                <Member Name="ControlsInputKey">keyboard_escape</Member>
+                <Member Name="ControlsInputLabel">Escape</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Hotbar left</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">300</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">hotbar_left</Member>
+                <Member Name="ControlsInputKey">keyboard_q</Member>
+                <Member Name="ControlsInputLabel">Q</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Hotbar right</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">330</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">hotbar_right</Member>
+                <Member Name="ControlsInputKey">keyboard_w</Member>
+                <Member Name="ControlsInputLabel">W</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Menu select</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">360</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">menu_select</Member>
+                <Member Name="ControlsInputKey">keyboard_enter</Member>
+                <Member Name="ControlsInputLabel">Enter</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Menu cancel</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">390</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">menu_cancel</Member>
+                <Member Name="ControlsInputKey">keyboard_space</Member>
+                <Member Name="ControlsInputLabel">Space</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Cancel Changes</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">420</Member>
+                <Member Name="SelectionActionKey">cancel_controls_changes</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Revert to Defaults</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">450</Member>
+                <Member Name="SelectionActionKey">revert_controls_default</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Confirm</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">480</Member>
+                <Member Name="SelectionActionKey">save_controls_changes</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_controls_menu_controller">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Member Name="ControlsID">pause_controls_menu_controller</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Use Item</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">use_item</Member>
+                <Member Name="ControlsInputKey">controller_x</Member>
+                <Member Name="ControlsInputLabel">X Button</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Open inventory</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">open_inventory</Member>
+                <Member Name="ControlsInputKey">controller_y</Member>
+                <Member Name="ControlsInputLabel">Y Button</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Toggle run</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">toggle_run</Member>
+                <Member Name="ControlsInputKey">controller_pad_up</Member>
+                <Member Name="ControlsInputLabel">Pad Up</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Pause</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">120</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">pause</Member>
+                <Member Name="ControlsInputKey">controller_start</Member>
+                <Member Name="ControlsInputLabel">Start Button</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Hotbar left</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">150</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">hotbar_left</Member>
+                <Member Name="ControlsInputKey">controller_left_shoulder</Member>
+                <Member Name="ControlsInputLabel">L Shoulder</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Hotbar right</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">180</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">hotbar_right</Member>
+                <Member Name="ControlsInputKey">controller_right_shoulder</Member>
+                <Member Name="ControlsInputLabel">R Shoulder</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Menu select</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">210</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">menu_select</Member>
+                <Member Name="ControlsInputKey">controller_a</Member>
+                <Member Name="ControlsInputLabel">A Button</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Menu cancel</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">240</Member>
+                <Member Name="SelectionActionKey">set_control_input</Member>
+                <Member Name="ControlsActionKey">menu_cancel</Member>
+                <Member Name="ControlsInputKey">controller_b</Member>
+                <Member Name="ControlsInputLabel">B Button</Member>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Cancel Changes</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">270</Member>
+                <Member Name="SelectionActionKey">cancel_controls_changes</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Revert to Default</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">300</Member>
+                <Member Name="SelectionActionKey">revert_controls_default</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Confirm</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">330</Member>
+                <Member Name="SelectionActionKey">save_controls_changes</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="pause_gameplay_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Text Speed</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">select_options</Member>
+                <Member Name="ConfirmActionKey">set_text_speed</Member>
+                <Member Name="LeftBracketFilename">ui/brackets/bracket_1L</Member>
+                <Member Name="RightBracketFilename">ui/brackets/bracket_1R</Member>
+                <Member Name="StoredOptionsIndex">7</Member>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions">
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">1</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">2</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">3</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">4</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">5</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">6</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">7</Member>
+                    </Class>
+                    <Class Type="TextOption" Version="1">
+                        <Member Name="Option">8</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Revert to Default</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">revert_gameplay_settings_default</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Return</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">90</Member>
+                <Member Name="SelectionActionKey">return_to_main_pause</Member>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+                <Member Name="StoredOptionsIndex"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="ImageFilename"/>
+                <Collection Name="TextOptions"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="title_main_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems">
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">New game</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">30</Member>
+                <Member Name="SelectionActionKey">start_new_game</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+            <Class Type="MenuItem" Version="1">
+                <Member Name="MenuText">Load game</Member>
+                <Member Name="xPos">30</Member>
+                <Member Name="yPos">60</Member>
+                <Member Name="SelectionActionKey">load_game</Member>
+                <Member Name="ImageFilename"/>
+                <Member Name="ConfirmActionKey"/>
+                <Member Name="ControlsActionKey"/>
+                <Member Name="ControlsInputKey"/>
+                <Member Name="ControlsInputLabel"/>
+                <Member Name="LeftBracketFilename"/>
+                <Member Name="RightBracketFilename"/>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="MenuManager" Version="1" MenuKey="title_load_game_menu">
+        <Member Name="xPos">30</Member>
+        <Member Name="yPos">0</Member>
+        <Member Name="Axis">2</Member>
+        <Member Name="SelectionStyle">brighten</Member>
+        <Member Name="FontFilename">OpenSans-Regular</Member>
+        <Member Name="FontSize">20</Member>
+        <Member Name="ColorStr">000066</Member>
+        <Collection Name="MenuItems"/>
+    </SerializableClass>
+</root>

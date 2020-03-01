@@ -484,6 +484,17 @@ std::map<std::string, int> TileSet::get_block_attributes(const int row)
 	return this->block_types.getItem(row)->attribute_map();
 }
 
+const std::pair<int, int> TileSet::get_block_center_offset(const int index)
+{
+	const int size = this->block_types.size();
+	if (index < 0 || index > size) {
+		return std::pair<int, int>();
+	}
+	return std::pair<int, int>(this->block_types.getItem(index)->center_offset_x.value(),
+		this->block_types.getItem(index)->center_offset_y.value());
+	
+}
+
 std::vector<std::string> TileSet::all_block_keys()
 {
 	std::vector<std::string> block_keys;

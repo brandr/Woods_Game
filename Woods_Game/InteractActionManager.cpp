@@ -258,6 +258,79 @@ const int toggle_light(
 	return 0;
 }
 
+const int toggle_gate(
+	const InteractActionManager * manager,
+	InteractAction * action,
+	Player * player,
+	Entity * actor)
+{
+	if (action != NULL && actor != NULL) {
+		//TODO: don't let NPCs close the gate on the player (or if they do, it pushes the player out)
+		if (actor->has_entity_attribute(GameImage::E_ATTR_GATE_STATE)) {
+			bool should_toggle = true;
+			bool should_show_error = false;
+			const int gate_state = actor->get_entity_attribute(GameImage::E_ATTR_GATE_STATE);
+			// the player is the one trying to open or close the gate
+			if (player != NULL) {
+				const int px = player->get_x(), py = player->get_y();
+				const int pcx = player->get_center_x(), pcy = player->get_center_y();
+				if (gate_state == 0) { // closed
+					if (actor->has_entity_attribute(GameImage::E_ATTR_GATE_DIR_X) && actor->has_entity_attribute(GameImage::E_ATTR_GATE_DIR_Y)) {
+						const int dir_x = actor->get_entity_attribute(GameImage::E_ATTR_GATE_DIR_X),
+							dir_y = actor->get_entity_attribute(GameImage::E_ATTR_GATE_DIR_Y);
+						int p_dir_x = 0, p_dir_y = 0;
+						if (player->get_center_x() < actor->get_center_x() - 16) {
+							p_dir_x = -1;
+						}
+						else if (player->get_center_x() > actor->get_center_x() + 16) {
+							p_dir_x = 1;
+						}
+						if (player->get_center_y() < actor->get_center_y() - 8) {
+							p_dir_y = -1;
+						}
+						else if (player->get_center_y() > actor->get_center_y() + 8) {
+							p_dir_y = 1;
+						}
+						// need to face the gate from the right direction to open it
+						if (p_dir_x != dir_x || p_dir_y != dir_y) {
+							should_toggle = false;
+							should_show_error = true;
+						}
+					}
+				} else if (gate_state == 1) { // open
+					// the player is standing on the gate and blocking it
+					if (Mask_Collide(player->get_mask(), actor->get_mask(),
+						px - actor->get_x(),
+						py - actor->get_y())) {
+						should_toggle = false;
+					}
+				}
+			}
+			if (should_toggle) {
+				if (gate_state == 0) { // closed
+					// open the gate
+					actor->set_entity_attribute(GameImage::E_ATTR_GATE_STATE, 1);
+					actor->set_solid(false);
+					return 1;
+				}
+				else if (gate_state == 1) { // open
+					// close the gate
+					actor->set_entity_attribute(GameImage::E_ATTR_GATE_STATE, 0);
+					actor->set_solid(true);
+					return 1;
+				}
+			}
+			if (should_show_error) {
+				Dialog * dialog = new Dialog();
+				dialog->parse_text("[p][l]It's locked from the other side.[/l][/p]");
+				player->set_open_dialog(dialog);
+				return 1; 
+			}
+		}
+	}
+	return 0;
+}
+
 void InteractActionManager::initialize_functions()
 {
 	std::function<const int(const InteractActionManager*,
@@ -295,6 +368,8 @@ void InteractActionManager::initialize_functions()
 	this->function_map["play_sound"] = fcnPtr;
 	fcnPtr = toggle_light;
 	this->function_map["toggle_light"] = fcnPtr;
+	fcnPtr = toggle_gate;
+	this->function_map["toggle_gate"] = fcnPtr;
 }
 
 InteractActionManager & InteractActionManager::get_instance()

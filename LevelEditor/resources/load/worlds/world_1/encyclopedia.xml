@@ -1,0 +1,30 @@
+<root>
+    <SerializableClass Type="Encyclopedia" Version="1" WorldKey="world_1">
+         <Collection Name="categories" Version="1">
+            <Class Type="EncyclopediaCategory" Version="1">
+                <Member Name="category_name">bugs</Member>
+                <Member Name="category_display_name">Bugs</Member>
+                <Collection Name="entries" Version="1">
+                    <Class Type="EncyclopediaEntry" Version="1">
+                         <Member Name="entry_name">ant</Member>
+                         <Member Name="entry_display_name">Ant</Member>
+                         <Member Name="entry_description">These little guys work hard and never sleep.\nAt least they get lots of exercise.</Member>
+                         <Member Name="entry_state">0</Member>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="EncyclopediaCategory" Version="1">
+                <Member Name="category_name">plants</Member>
+                <Member Name="category_display_name">Plants</Member>
+                <Collection Name="entries" Version="1">
+                    <Class Type="EncyclopediaEntry" Version="1">
+                         <Member Name="entry_name">fern</Member>
+                         <Member Name="entry_display_name">Fern</Member>
+                         <Member Name="entry_description">The spores of this plant will make you sneeze.</Member>
+                         <Member Name="entry_state">0</Member>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+    </SerializableClass>
+</root>

@@ -1,0 +1,247 @@
+<root>
+    <SerializableClass Type="CutsceneList" Version="1" CutsceneListKey="all_cutscenes">
+        <Collection Name="cutscenes">
+            <Class Type="CutsceneScript" Version="1">
+                <Member Name="cutscene_key">test_cutscene_1</Member>
+                <Member Name="replayable">false</Member>
+                <Collection Name="blocks">
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">0</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_walk_agents</Member>
+                        <Member Name="effect_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">player</Member>
+                                <Member Name="tile_x">6</Member>
+                                <Member Name="tile_y">7</Member>
+                                <Member Name="direction">3</Member>
+                            </Class>
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">stranger_2</Member>
+                                <Member Name="tile_x">6</Member>
+                                <Member Name="tile_y">4</Member>
+                                <Member Name="direction">4</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                        </Class>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">1</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">120</Member>
+                        <Member Name="action_key"></Member>
+                        <Member Name="effect_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                        </Class>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">2</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_dialog</Member>
+                        <Member Name="effect_key">effect_display_black</Member>
+                        <Member Name="music_key">running_theme</Member>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                            <Member Name="conversation_index">0</Member>
+                            <Collection Name="pages">
+                                <Class Type="DialogItemPage" Version="1">
+                                    <Member Name="dialog_text">[l]This is a very important cutscene.[/l]</Member>
+                                    <Member Name="page_number">0</Member>
+                                    <Member Name="next_page_index">-1</Member>
+                                </Class>
+                            </Collection>
+                        </Class>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">3</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">120</Member>
+                        <Member Name="effect_key">effect_fade_to_black</Member>
+                        <Member Name="music_key">no_music</Member>
+                        <Member Name="action_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                            <Class Type="TriggerStatus" Version="1">
+                                <Member Name="trigger_key">has_met_npc</Member>
+                                <Member Name="trigger_state">1</Member>
+                                <Collection Name="trigger_attributes">
+                                    <Class Type="TriggerAttribute" Version="1">
+                                        <Member Name="attribute_key">npc_key</Member>
+                                        <Member Name="attribute_value">stranger_2</Member>
+                                    </Class>
+                                </Collection>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">4</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_dialog</Member>
+                        <Member Name="effect_key"></Member>
+                        <Member Name="music_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                            <Member Name="conversation_index">0</Member>
+                            <Collection Name="pages">
+                                <Class Type="DialogItemPage" Version="1">
+                                    <Member Name="dialog_text">[l]Oh, wait. Should I walk right or left?[/l]</Member>
+                                    <Member Name="page_number">0</Member>
+                                    <Member Name="next_page_index">-1</Member>
+                                    <Collection Name="options" Version="1">
+                                        <Class Type="DialogItemOption" Version="1">
+                                            <Member Name="option_text">Left</Member>
+                                            <Member Name="next_page_index">-1</Member>
+                                            <Class Type="TriggerStatus" Name="trigger_status" Version="1">
+                                                <Member Name="trigger_key">test_cutscene_walk_left</Member>
+                                                <Member Name="trigger_state">1</Member>
+                                                <Collection Name="trigger_attributes">
+                                                </Collection>
+                                            </Class>
+                                            <Member Name="option_action_key"></Member>
+                                        </Class>
+                                        <Class Type="DialogItemOption" Version="1">
+                                            <Member Name="option_text">Right</Member>
+                                            <Member Name="next_page_index">-1</Member>
+                                            <Class Type="TriggerStatus" Name="trigger_status" Version="1">
+                                                <Member Name="trigger_key">test_cutscene_walk_right</Member>
+                                                <Member Name="trigger_state">1</Member>
+                                                <Collection Name="trigger_attributes">
+                                                </Collection>
+                                            </Class>
+                                            <Member Name="option_action_key"></Member>
+                                        </Class>
+                                    </Collection>
+                                </Class>
+                            </Collection>
+                        </Class>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">5</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Collection Name="branches" Version="1">
+                            <Class Type="CutsceneScriptBranch" Version="1">
+                                <Member Name="next_block_index">6</Member>
+                                <Collection Name="qualifiers" Version="1">
+                                    <Class Type="Qualifier" Version="1">
+                                        <Member Name="comparator">0</Member>
+                                        <Member Name="evaluator">4</Member>
+                                        <Member Name="month">-1</Member>
+                                        <Member Name="day">-1</Member>
+                                        <Member Name="hour">-1</Member>
+                                        <Member Name="minute">-1</Member>
+                                        <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
+                                        <Class Type="TriggerStatus" Name="trigger_status" Version="1">
+                                            <Member Name="trigger_key">test_cutscene_walk_left</Member>
+                                            <Member Name="trigger_state">1</Member>
+                                            <Collection Name="trigger_attributes">
+                                            </Collection>
+                                         </Class>
+                                    </Class>
+                                </Collection>
+                            </Class>
+                            <Class Type="CutsceneScriptBranch" Version="1">
+                                <Member Name="next_block_index">7</Member>
+                                <Collection Name="qualifiers" Version="1">
+                                    <Class Type="Qualifier" Version="1">
+                                        <Member Name="comparator">0</Member>
+                                        <Member Name="evaluator">4</Member>
+                                        <Member Name="month">-1</Member>
+                                        <Member Name="day">-1</Member>
+                                        <Member Name="hour">-1</Member>
+                                        <Member Name="minute">-1</Member>
+                                        <Member Name="day_of_week">-1</Member>
+                                        <Member Name="int_val"></Member>
+                                        <Member Name="string_val"></Member>
+                                        <Class Type="TriggerStatus" Name="trigger_status" Version="1">
+                                            <Member Name="trigger_key">test_cutscene_walk_right</Member>
+                                            <Member Name="trigger_state">1</Member>
+                                            <Collection Name="trigger_attributes">
+                                            </Collection>
+                                         </Class>
+                                    </Class>
+                                </Collection>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">6</Member>
+                        <Member Name="next_block_index">8</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_walk_agents</Member>
+                        <Member Name="effect_key"></Member>
+                        <Member Name="music_key"></Member>                        
+                        <Collection Name="block_tiles" Version="1">
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">stranger_2</Member>
+                                <Member Name="tile_x">3</Member>
+                                <Member Name="tile_y">4</Member>
+                                <Member Name="direction">4</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">7</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_walk_agents</Member>
+                        <Member Name="effect_key"></Member>
+                        <Member Name="music_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">stranger_2</Member>
+                                <Member Name="tile_x">9</Member>
+                                <Member Name="tile_y">4</Member>
+                                <Member Name="direction">4</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">8</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">120</Member>
+                        <Collection Name="agent_animations" Version="1">
+                            <Class Type="CutsceneScriptAgentAnimation" Version="1">
+                                <Member Name="agent_key">stranger_2</Member>
+                                <Member Name="animation_key">waving</Member>
+                                <Member Name="direction">4</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+    </SerializableClass>
+</root>

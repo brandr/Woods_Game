@@ -48,22 +48,46 @@
                                     <Member Name="max_x"/>
                                     <Member Name="max_y"/>
                                 </Class>
+                                <Class Name="scheduled_action" Type="ScheduledAction" Version="1">
+                                    <Member Name="scheduled_action_key"/>
+                                    <Member Name="action_object_type"/>
+                                    <Member Name="action_object_tile_x"/>
+                                    <Member Name="action_object_tile_y"/>
+                                    <Class Name="action" Type="InteractAction" Version="1">
+                                        <Member Name="InteractActionKey"/>
+                                        <Member Name="FunctionName"/>
+                                        <Collection Name="Bindings"/>
+                                        <Collection Name="Qualifiers"/>
+                                    </Class>
+                                </Class>
                                 <Collection Name="qualifiers"/>
                             </Class>
                         </Collection>
                     </Class>
                     <Collection Name="schedule_blocks">
                         <Class Type="ScheduleTimeBlock" Version="1">
-                            <Member Name="node_key">g_woods_a</Member>
+                            <Member Name="node_key">n_east_gate</Member>
                             <Member Name="priority">1</Member>
                             <Member Name="forced_anim_state"/>
-                            <Member Name="forced_anim_dir"/>
+                            <Member Name="forced_anim_dir">3</Member>
                             <Class Name="wander_zone" Type="WanderZone" Version="1">
                                 <Member Name="should_wander">false</Member>
                                 <Member Name="min_x"/>
                                 <Member Name="min_y"/>
                                 <Member Name="max_x"/>
                                 <Member Name="max_y"/>
+                            </Class>
+                            <Class Name="scheduled_action" Type="ScheduledAction" Version="1">
+                                <Member Name="scheduled_action_key">ensure_gate_1_shut</Member>
+                                <Member Name="action_object_type">Block</Member>
+                                <Member Name="action_object_tile_x">11</Member>
+                                <Member Name="action_object_tile_y">7</Member>
+                                <Class Name="action" Type="InteractAction" Version="1">
+                                    <Member Name="InteractActionKey">toggle_gate</Member>
+                                    <Member Name="FunctionName">toggle_gate</Member>
+                                    <Collection Name="Bindings"/>
+                                    <Collection Name="Qualifiers"/>
+                                </Class>
                             </Class>
                             <Collection Name="qualifiers">
                                 <Class Type="Qualifier" Version="1">
@@ -737,6 +761,18 @@
                                     <Member Name="max_x">64</Member>
                                     <Member Name="max_y">64</Member>
                                 </Class>
+                                <Class Name="scheduled_action" Type="ScheduledAction" Version="1">
+                                    <Member Name="scheduled_action_key"/>
+                                    <Member Name="action_object_type"/>
+                                    <Member Name="action_object_tile_x"/>
+                                    <Member Name="action_object_tile_y"/>
+                                    <Class Name="action" Type="InteractAction" Version="1">
+                                        <Member Name="InteractActionKey"/>
+                                        <Member Name="FunctionName"/>
+                                        <Collection Name="Bindings"/>
+                                        <Collection Name="Qualifiers"/>
+                                    </Class>
+                                </Class>
                                 <Collection Name="qualifiers"/>
                             </Class>
                         </Collection>
@@ -753,6 +789,18 @@
                                 <Member Name="min_y">-64</Member>
                                 <Member Name="max_x">64</Member>
                                 <Member Name="max_y">64</Member>
+                            </Class>
+                            <Class Name="scheduled_action" Type="ScheduledAction" Version="1">
+                                <Member Name="scheduled_action_key"/>
+                                <Member Name="action_object_type"/>
+                                <Member Name="action_object_tile_x"/>
+                                <Member Name="action_object_tile_y"/>
+                                <Class Name="action" Type="InteractAction" Version="1">
+                                    <Member Name="InteractActionKey"/>
+                                    <Member Name="FunctionName"/>
+                                    <Collection Name="Bindings"/>
+                                    <Collection Name="Qualifiers"/>
+                                </Class>
                             </Class>
                             <Collection Name="qualifiers">
                                 <Class Type="Qualifier" Version="1">

@@ -1,0 +1,46 @@
+<root>
+    <SerializableClass Type="CritterBiome" Version="1" BiomeKey="woods">
+    	<Member Name="biome_key">woods</Member>
+    	<Member Name="should_generate">true</Member>
+    	<Member Name="max_critter_override">10</Member>
+        <Collection Name="critter_spawn_rules">
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="CritterBiome" Version="1" BiomeKey="indoors">
+    	<Member Name="biome_key">indoors</Member>
+    	<Member Name="should_generate">true</Member>
+    	<Member Name="max_critter_override">7</Member>
+        <Collection Name="critter_spawn_rules" Version="1">
+            <Class Type="CritterSpawnRule" Version="1">
+                <Member Name="critter_key">ant</Member>
+                <Member Name="max_spawned">4</Member>
+                <Member Name="spawn_rate">0.95</Member>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="CritterBiome" Version="1" BiomeKey="indoors_clean">
+    	<Member Name="biome_key">indoors_clean</Member>
+    	<Member Name="should_generate">true</Member>
+    	<Member Name="max_critter_override">5</Member>
+        <Collection Name="critter_spawn_rules" Version="1">
+            <Class Type="CritterSpawnRule" Version="1">
+                <Member Name="critter_key">ant</Member>
+                <Member Name="max_spawned">4</Member>
+                <Member Name="spawn_rate">0.9</Member>
+            </Class>
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="CritterBiome" Version="1" BiomeKey="suburbs">
+    	<Member Name="biome_key">suburbs</Member>
+    	<Member Name="should_generate">true</Member>
+    	<Member Name="max_critter_override">8</Member>
+        <Collection Name="critter_spawn_rules">
+        </Collection>
+    </SerializableClass>
+    <SerializableClass Type="CritterBiome" Version="1" BiomeKey="empty">
+    	<Member Name="biome_key">empty</Member>
+    	<Member Name="should_generate">false</Member>
+    	<Member Name="max_critter_override">0</Member>
+        <Collection Name="critter_spawn_rules"></Collection>
+    </SerializableClass>
+</root>

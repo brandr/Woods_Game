@@ -9,6 +9,10 @@ LevelGenData::LevelGenData()
 	Register("path_systems", &path_systems);
 	Register("entity_group_gen_rules", &entity_group_gen_rules);
 	Register("block_gen_rules", &block_gen_rules);
+	Register("level_gen_sites", &level_gen_sites);
+	Register("forced_tiles", &forced_tiles);
+	Register("forced_blocks", &forced_blocks);
+	Register("forced_entity_groups", &forced_entity_groups);
 }
 
 const bool LevelGenData::get_should_generate()
@@ -61,6 +65,46 @@ const std::vector<BlockGenRule*> LevelGenData::get_block_gen_rules()
 	return rules;
 }
 
+const std::vector<LevelGenSite*> LevelGenData::get_level_gen_sites()
+{
+	std::vector<LevelGenSite*> sites;
+	const int size = this->level_gen_sites.size();
+	for (int i = 0; i < size; i++) {
+		sites.push_back(this->level_gen_sites.getItem(i));
+	}
+	return sites;
+}
+
+const std::vector<ForcedTile*> LevelGenData::get_forced_tiles()
+{
+	std::vector<ForcedTile*> tiles;
+	const int size = this->forced_tiles.size();
+	for (int i = 0; i < size; i++) {
+		tiles.push_back(this->forced_tiles.getItem(i));
+	}
+	return tiles;
+}
+
+const std::vector<Block*> LevelGenData::get_forced_blocks()
+{
+	std::vector<Block*> blocks;
+	const int size = this->forced_blocks.size();
+	for (int i = 0; i < size; i++) {
+		blocks.push_back(this->forced_blocks.getItem(i));
+	}
+	return blocks;
+}
+
+const std::vector<EntityGroup*> LevelGenData::get_forced_entity_groups()
+{
+	std::vector<EntityGroup*> egs;
+	const int size = this->forced_entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		egs.push_back(this->forced_entity_groups.getItem(i));
+	}
+	return egs;
+}
+
 LevelGenPathSystem::LevelGenPathSystem()
 {
 	setClassName("LevelGenPathSystem");
@@ -72,8 +116,15 @@ LevelGenPathSystem::LevelGenPathSystem()
 LevelGenPathNode::LevelGenPathNode()
 {
 	setClassName("LevelGenPathNode");
+	Register("node_key", &node_key);
 	Register("x_pos", &x_pos);
 	Register("y_pos", &y_pos);
+	Register("dest_node_key", &dest_node_key);
+	Register("dest_site_key", &dest_site_key);
+	Register("edge_key", &edge_key);
+	Register("edge_range", &edge_range);
+	Register("edge_center_x", &edge_center_x);
+	Register("edge_center_y", &edge_center_y);	
 }
 
 TileGenRule::TileGenRule()
@@ -152,4 +203,14 @@ const std::vector<int> BlockGenRule::get_allowed_spawn_tile_indeces()
 		allowed.push_back(this->spawn_tile_rules.getItem(i)->tile_type_index.value());
 	}
 	return allowed;
+}
+
+ForcedTile::ForcedTile()
+{
+	setClassName("ForcedTile");
+	Register("tile_type_index", &tile_type_index);
+	Register("tile_pos_x", &tile_pos_x);
+	Register("tile_pos_y", &tile_pos_y);
+	Register("tile_sheet_col", &tile_sheet_col);
+	Register("tile_sheet_row", &tile_sheet_row);
 }

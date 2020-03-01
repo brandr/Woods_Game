@@ -1,0 +1,292 @@
+<root>
+    <SerializableClass Type="LevelGenData" Version="1" GenDataKey="gen_woods_1">
+            <Member Name="should_generate">true</Member>
+            <Member Name="base_tile_type_index">3</Member>
+            <Collection Name="tile_gen_rules">
+                <Class Type="TileGenRule" Version="1">
+                    <Member Name="tile_type_index">0</Member>
+                    <Member Name="min_patches">8</Member>
+                    <Member Name="max_patches">14</Member>
+                    <Member Name="min_patch_size">8</Member>
+                    <Member Name="max_patch_size">18</Member>
+                </Class>
+                <Class Type="TileGenRule" Version="1">
+                    <Member Name="tile_type_index">1</Member>
+                    <Member Name="min_patches">14</Member>
+                    <Member Name="max_patches">22</Member>
+                    <Member Name="min_patch_size">5</Member>
+                    <Member Name="max_patch_size">8</Member>
+                </Class>
+            </Collection>
+            <Collection Name="path_systems">
+                <Class Type="LevelGenPathSystem" Version="1">
+                    <Member Name="tile_type_index">2</Member>
+                    <Member Name="path_size">1</Member>
+                    <Collection Name="path_nodes">
+                        <Class Type="LevelGenPathNode" Version="1">
+                            <Member Name="x_pos">0</Member>
+                            <Member Name="y_pos">9</Member>
+                            <Member Name="dest_node_key"></Member>   
+                            <Member Name="edge_key"></Member>
+                            <Member Name="edge_range"></Member>
+                            <Member Name="edge_center_x"></Member>
+                            <Member Name="edge_center_y"></Member> 
+                        </Class>
+                        <Class Type="LevelGenPathNode" Version="1">
+                            <Member Name="x_pos">-1</Member>
+                            <Member Name="y_pos">-1</Member>
+                            <Member Name="dest_node_key">gw_1_1_left</Member>   
+                            <Member Name="dest_site_key">gen_woods_1_site_1</Member>   
+                            <Member Name="edge_key"></Member>
+                            <Member Name="edge_range"></Member>
+                            <Member Name="edge_center_x"></Member>
+                            <Member Name="edge_center_y"></Member>                          
+                        </Class>    
+                    </Collection>    
+                </Class>
+            </Collection>
+            <Collection Name="path_systems">
+                <Class Type="LevelGenPathSystem" Version="1">   
+                    <Member Name="tile_type_index">2</Member>
+                    <Member Name="path_size">2</Member>     
+                    <Collection Name="path_nodes">
+                        <Class Type="LevelGenPathNode" Version="1">     
+                            <Member Name="x_pos">-1</Member>
+                            <Member Name="y_pos">-1</Member>
+                            <Member Name="dest_node_key">gw_1_1_right</Member>   
+                            <Member Name="dest_site_key">gen_woods_1_site_1</Member>
+                        </Class>
+                        <Class Type="LevelGenPathNode" Version="1">
+                            <Member Name="x_pos">20</Member>
+                            <Member Name="y_pos">0</Member>
+                            <Member Name="dest_node_key"></Member>   
+                            <Member Name="edge_key"></Member>
+                            <Member Name="edge_range"></Member>
+                            <Member Name="edge_center_x"></Member>
+                            <Member Name="edge_center_y"></Member> 
+                        </Class>
+                        <Class Type="LevelGenPathNode" Version="1">
+                            <Member Name="x_pos">39</Member>
+                            <Member Name="y_pos">39</Member>
+                            <Member Name="dest_node_key"></Member>   
+                            <Member Name="edge_key"></Member>
+                            <Member Name="edge_range"></Member>
+                            <Member Name="edge_center_x"></Member>
+                            <Member Name="edge_center_y"></Member> 
+                        </Class>
+                        <Class Type="LevelGenPathNode" Version="1">
+                            <Member Name="x_pos">51</Member>
+                            <Member Name="y_pos">12</Member>
+                            <Member Name="dest_node_key"></Member>   
+                            <Member Name="edge_key"></Member>
+                            <Member Name="edge_range"></Member>
+                            <Member Name="edge_center_x"></Member>
+                            <Member Name="edge_center_y"></Member> 
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
+            <Collection Name="entity_group_gen_rules">
+                <Class Type="EntityGroupGenRule" Version="1">
+                    <Member Name="entity_group_index">1</Member>
+                    <Member Name="min_groups">35</Member>
+                    <Member Name="max_groups">45</Member>
+                    <Member Name="min_spawn_dist_tx">3</Member>
+                    <Member Name="min_spawn_dist_ty">3</Member>
+                    <Collection Name="spawn_tile_rules">
+                        <Class Type="EntityGroupSpawnTileRule" Version="1">
+                            <Member Name="tile_type_index">3</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
+            <Collection Name="block_gen_rules">
+                <Class Type="BlockGenRule" Version="1">
+                    <Member Name="block_index">0</Member>
+                    <Member Name="min_blocks">50</Member>
+                    <Member Name="max_blocks">60</Member>
+                    <Member Name="min_spawn_dist_tx">1</Member>
+                    <Member Name="min_spawn_dist_ty">1</Member>
+                    <Collection Name="spawn_tile_rules">
+                        <Class Type="EntityGroupSpawnTileRule" Version="1">
+                            <Member Name="tile_type_index">3</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="BlockGenRule" Version="1">
+                    <Member Name="block_index">1</Member>
+                    <Member Name="min_blocks">150</Member>
+                    <Member Name="max_blocks">180</Member>
+                    <Member Name="min_spawn_dist_tx">1</Member>
+                    <Member Name="min_spawn_dist_ty">1</Member>
+                    <Collection Name="spawn_tile_rules">
+                        <Class Type="EntityGroupSpawnTileRule" Version="1">
+                            <Member Name="tile_type_index">3</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="BlockGenRule" Version="1">
+                    <Member Name="block_index">2</Member>
+                    <Member Name="min_blocks">40</Member>
+                    <Member Name="max_blocks">50</Member>
+                    <Member Name="min_spawn_dist_tx">1</Member>
+                    <Member Name="min_spawn_dist_ty">1</Member>
+                    <Collection Name="spawn_tile_rules">
+                        <Class Type="EntityGroupSpawnTileRule" Version="1">
+                            <Member Name="tile_type_index">3</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="BlockGenRule" Version="1">
+                    <Member Name="block_index">3</Member>
+                    <Member Name="min_blocks">5</Member>
+                    <Member Name="max_blocks">15</Member>
+                    <Member Name="min_spawn_dist_tx">1</Member>
+                    <Member Name="min_spawn_dist_ty">1</Member>
+                    <Collection Name="spawn_tile_rules">
+                        <Class Type="EntityGroupSpawnTileRule" Version="1">
+                            <Member Name="tile_type_index">3</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
+            <Collection Name="level_gen_sites">
+                <Class Type="LevelGenSite" Version="1">
+                    <Member Name="site_key">gw_1_site_1</Member>
+                    <Member Name="min_x">7</Member>
+                    <Member Name="max_x">10</Member>
+                    <Member Name="min_y">1</Member>
+                    <Member Name="max_y">5</Member>
+                    <Member Name="min_w">5</Member>
+                    <Member Name="max_w">8</Member>
+                    <Member Name="min_h">5</Member>
+                    <Member Name="max_h">10</Member>
+                    <Member Name="max_h">8</Member>
+                    <Member Name="level_gen_data_key">gen_woods_1_site_1</Member>
+                    <Member Name="min_dist_from_trail">2</Member>
+                    <Class Type="LocationMarker" Name="location_marker" Version="1">
+                                <Member Name="LocationName">Cemetery</Member>
+                                <Member Name="ContainingLevelKey">test_gen_woods</Member>
+                                <Member Name="EntityStartingPosX">-1</Member>
+                                <Member Name="EntityStartingPosY">-1</Member>
+                                <Member Name="EntityDataIndex">0</Member>
+                                <Member Name="EntitySheetCol">0</Member>
+                                <Member Name="EntitySheetRow">0</Member>
+                                <Collection Name="LocationLevels">
+                                    <Class Type="LocationMarkerLevel" Version="1">
+                                        <Member Name="LevelKey">test_gen_woods</Member>
+                                    </Class>
+                                </Collection>
+                                <Collection Name="EntityAttributes"/>
+                            </Class>
+                </Class>
+            </Collection>
+    </SerializableClass>
+    <SerializableClass Type="LevelGenData" Version="1" GenDataKey="gen_woods_1_site_1">
+                        <Member Name="should_generate">true</Member>
+                        <Member Name="base_tile_type_index">0</Member>
+                        <Collection Name="tile_gen_rules">
+                            <Class Type="TileGenRule" Version="1">
+                                <Member Name="tile_type_index">0</Member>
+                                <Member Name="min_patches">1</Member>
+                                <Member Name="max_patches">4</Member>
+                                <Member Name="min_patch_size">1</Member>
+                                <Member Name="max_patch_size">2</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="path_systems">
+                            <Class Type="LevelGenPathSystem" Version="1">
+                                    <Member Name="tile_type_index">2</Member>
+                                    <Member Name="path_size">2</Member>
+                                    <Collection Name="path_nodes">
+                                        <Class Type="LevelGenPathNode" Version="1">
+                                            <Member Name="node_key">gw_1_1_left</Member>
+                                            <Member Name="x_pos">-1</Member>
+                                            <Member Name="y_pos">-1</Member>
+                                            <Member Name="edge_key">left</Member>
+                                            <Member Name="edge_range">2</Member>
+                                            <Member Name="edge_center_x">-1</Member>
+                                            <Member Name="edge_center_y">1</Member>
+                                        </Class>
+                                        <Class Type="LevelGenPathNode" Version="1">
+                                            <Member Name="node_key">gw_1_1_right</Member>
+                                            <Member Name="x_pos">-1</Member>
+                                            <Member Name="y_pos">-1</Member>
+                                            <Member Name="edge_key">right</Member>
+                                            <Member Name="edge_range">2</Member>
+                                            <Member Name="edge_center_x">-1</Member>
+                                            <Member Name="edge_center_y">6</Member>
+                                        </Class>
+                                    </Collection>
+                            </Class>
+                        </Collection>
+                        <Collection Name="entity_group_gen_rules">
+                        </Collection>
+                        <Collection Name="block_gen_rules">
+                        </Collection>
+                        <Collection Name="level_gen_sites">
+                        </Collection>
+                        <Collection Name="forced_tiles">
+                            <Class Type="ForcedTile" Version="1">
+                            <Member Name="tile_type_index">1</Member>
+                            <Member Name="tile_pos_x">2</Member>
+                            <Member Name="tile_pos_y">4</Member>
+                            <Member Name="tile_sheet_row">0</Member>
+                            <Member Name="tile_sheet_col">0</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="forced_blocks">
+                            <Class Type="Block" Version="1">
+                                <Member Name="Solid">true</Member>
+                                <Member Name="Visible">true</Member>
+                                <Member Name="EntityStartingPosX">3</Member>
+                                <Member Name="EntityStartingPosY">3</Member>
+                                <Member Name="EntityDataIndex">8</Member>
+                                <Member Name="EntitySheetCol">0</Member>
+                                <Member Name="EntitySheetRow">0</Member>
+                                <Collection Name="EntityAttributes"/>
+                                <Collection Name="ContactActions"/>
+                                <Collection Name="InteractActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                        <Collection Name="Bindings"/>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">open_dialog</Member>
+                        <Member Name="FunctionName">open_dialog</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">dialog_text</Member>
+                                <Member Name="BindingValue">[p][l]Now's no time to mourn the dead.[/l][l]You should go play instead![/l][/p]</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                                <Collection Name="LoadDayActions"/>
+                                <Collection Name="ItemDrops"/>
+                                <Collection Name="SpawnTileRules"/>
+                                <Collection Name="ImageFilters"/>
+                            </Class>
+                        </Collection>
+                        <Collection Name="forced_entity_groups">
+                            <Class Type="EntityGroup" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="RootPosX">64</Member>
+                <Member Name="RootPosY">64</Member>
+                <Member Name="CollideXOffset">90</Member>
+                <Member Name="CollideYOffset">536</Member>
+                <Member Name="CollideWidth">70</Member>
+                <Member Name="CollideHeight">40</Member>
+                <Member Name="EntityGroupName">large_tree_1</Member>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+                        </Collection>
+    </SerializableClass>
+</root>

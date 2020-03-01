@@ -73,6 +73,7 @@ public:
 	bool get_block_solid(const int row);
 	bool get_block_visible(const int row);
 	std::map<std::string, int> get_block_attributes(const int row);
+	const std::pair<int, int> get_block_center_offset(const int index);
 	const int get_block_sheet_image_cols_by_index(const int index);
 	std::vector<EntityEffectData *> get_block_entity_effect_data(const int index);
 	std::vector<std::string> all_block_keys();

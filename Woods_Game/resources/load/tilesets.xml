@@ -288,7 +288,7 @@
                 <Member Name="solid">true</Member>
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">mushroom</Member>
-                <Member Name="entity_data_index">3</Member>
+                <Member Name="entity_data_index">7</Member>
                 <Collection Name="interact_actions">
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">gather_plant</Member>
@@ -428,6 +428,14 @@
                         <Member Name="FunctionName">trigger_cutscene</Member>
                     </Class>
                 </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">tombstone</Member>
+                <Member Name="entity_data_index">8</Member>
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
@@ -579,7 +587,7 @@
                 <Member Name="solid">true</Member>
                 <Member Name="visible">true</Member>
                 <Member Name="entity_data_key">game_console_1</Member>
-                <Member Name="entity_data_index">3</Member>
+                <Member Name="entity_data_index">7</Member>
                 <Collection Name="interact_actions">
                     <Class Type="InteractAction" Version="1">
                         <Member Name="InteractActionKey">open_dialog</Member>
@@ -656,6 +664,14 @@
                         <Member Name="is_toggled">true</Member>
                     </Class>
                 </Collection>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">false</Member>
+                <Member Name="entity_data_key">invisible_block</Member>
+                <Member Name="entity_data_index">8</Member>
                 <Collection Name="attributes"/>
                 <Collection Name="components"/>
             </Class>
@@ -796,6 +812,37 @@
                     </Class>
                 </Collection>
                 <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">fence</Member>
+                <Member Name="entity_data_index">4</Member>
+                <Member Name="center_offset_x">32</Member>
+                <Member Name="center_offset_y">58</Member>
+                <Collection Name="attributes"/>
+                <Collection Name="components"/>
+            </Class>
+            <Class Type="EntityData" Version="1">
+                <Member Name="solid">true</Member>
+                <Member Name="visible">true</Member>
+                <Member Name="entity_data_key">fence_gate</Member>
+                <Member Name="entity_data_index">5</Member>
+                <Member Name="center_offset_x">32</Member>
+                <Member Name="center_offset_y">58</Member>
+                <Collection Name="contact_actions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">toggle_gate</Member>
+                        <Member Name="FunctionName">toggle_gate</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="attributes">
+                    <Class Type="EntityAttribute" Version="1">
+                        <Member Name="attribute_key">gate_state</Member>
+                        <Member Name="attribute_value">0</Member>
+                    </Class>
+                </Collection>
                 <Collection Name="components"/>
             </Class>
         </Collection>

@@ -10,18 +10,22 @@
 
 const std::string Entity::image_filename_suffix()
 {
+	// plant suffix for growth
 	if (this->has_entity_attribute(E_ATTR_PLANT_GROWTH_CURRENT_AGE)
 		&& this->has_entity_attribute(E_ATTR_PLANT_GROWTH_MATURE_AGE)) {
 		const int current = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_CURRENT_AGE);
 		const int mature = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_MATURE_AGE);
 		if (current >= mature) {
 			return "";
-		}
-		else {
+		} else {
 			const int num_stages = this->get_entity_attribute(E_ATTR_PLANT_GROWTH_NUM_STAGES);
 			const int stage_index = current / (mature / num_stages) + 1;
 			return "_stage_" + std::to_string(stage_index);
 		}
+	}
+	// gate open sprite
+	if (this->has_entity_attribute(E_ATTR_GATE_STATE) && this->get_entity_attribute(E_ATTR_GATE_STATE) == 1) {
+		return "_open";
 	}
 	return GameImage::image_filename_suffix();
 }
@@ -551,6 +555,16 @@ int Entity::get_entity_starting_pos_y()
 	return this->entity_starting_pos_y.value();
 }
 
+void Entity::set_entity_starting_pos_x(const int x)
+{
+	this->entity_starting_pos_x = x;
+}
+
+void Entity::set_entity_starting_pos_y(const int y)
+{
+	this->entity_starting_pos_y = y;
+}
+
 const std::vector<int> Entity::get_allowed_spawn_tile_types()
 {
 	std::vector<int> types;
@@ -1006,6 +1020,10 @@ const std::vector<std::string> EntityData::image_filename_suffixes()
 				stage_index++;
 			}
 		}
+	}
+	// gate open sprite
+	if (this->has_entity_attribute(GameImage::E_ATTR_GATE_STATE)) {
+		suffixes.push_back("_open");
 	}
 	return suffixes;
 }

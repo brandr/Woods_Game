@@ -82,10 +82,10 @@ void Dungeon::initialize_tiles()
 	}
 }
 
-void Dungeon::generate_levels()
+void Dungeon::generate_levels(World * world, Player * player)
 {
 	for (Level * level : this->level_list) {
-		level->generate_level();
+		level->generate_level(world, player);
 	}
 }
 

@@ -11,7 +11,9 @@
             <Member Name="spritesheet_frame_height">64</Member>
             <Member Name="base_walk_speed">5</Member>
             <Member Name="jump_speed">30</Member>
+            <Member Name="current_stamina">60000</Member>
             <Member Name="max_stamina">100000</Member>
+            <Member Name="is_running">true</Member>
             <Member Name="spawn_key">player_spawner_room</Member>
             <Class Name="inventory" Type="Inventory" Version="1">
                 <Member Name="inventory_key">player_inventory</Member>
@@ -30,6 +32,10 @@
                             <Class Type="ItemAttribute" Version="1">
                                 <Member Name="attribute_key">power</Member>
                                 <Member Name="attribute_value">1</Member>
+                            </Class>
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">20</Member>
                             </Class>
                         </Collection>
                     </Class>
@@ -58,6 +64,10 @@
                                 <Member Name="attribute_key">power</Member>
                                 <Member Name="attribute_value">1</Member>
                             </Class>
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">50</Member>
+                            </Class>
                         </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
@@ -69,7 +79,12 @@
                         <Member Name="item_name">bug_net</Member>
                         <Member Name="item_display_name">Bug Net</Member>
                         <Member Name="swing_key">netting</Member>
-                        <Collection Name="item_attributes"/>
+                        <Collection Name="item_attributes">
+                            <Class Type="ItemAttribute" Version="1">
+                                <Member Name="attribute_key">stamina_cost</Member>
+                                <Member Name="attribute_value">10</Member>
+                            </Class>
+                        </Collection>
                     </Class>
                     <Class Type="Item" Version="1">
                         <Member Name="item_key">-1</Member>
@@ -599,44 +614,24 @@
                 <Member Name="grid_y">10</Member>
             </Class>
             <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">13</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">14</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
                 <Member Name="grid_x">14</Member>
                 <Member Name="grid_y">10</Member>
             </Class>
             <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">14</Member>
+                <Member Name="grid_x">15</Member>
                 <Member Name="grid_y">11</Member>
             </Class>
             <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">14</Member>
+                <Member Name="grid_x">15</Member>
                 <Member Name="grid_y">12</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">14</Member>
-                <Member Name="grid_y">13</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">13</Member>
-                <Member Name="grid_y">13</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">13</Member>
-                <Member Name="grid_y">12</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">12</Member>
-                <Member Name="grid_y">12</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">12</Member>
-                <Member Name="grid_y">11</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">10</Member>
-                <Member Name="grid_y">11</Member>
-            </Class>
-            <Class Type="DungeonGridCell" Version="1">
-                <Member Name="grid_x">11</Member>
-                <Member Name="grid_y">11</Member>
             </Class>
         </Collection>
         <Collection Name="quests">
@@ -764,10 +759,15 @@
                     <Class Type="QuestPage" Version="1">
                         <Member Name="page_index">1</Member>
                         <Member Name="quest_state">1</Member>
-                        <Member Name="summary">You have the letter. Now, deliver it.</Member>
+                        <Member Name="summary">Deliver a letter from Stranger 1 to \nStranger 2.</Member>
                     </Class>
                     <Class Type="QuestPage" Version="1">
                         <Member Name="page_index">2</Member>
+                        <Member Name="quest_state">1</Member>
+                        <Member Name="summary">You have the letter. Now, deliver it.</Member>
+                    </Class>
+                    <Class Type="QuestPage" Version="1">
+                        <Member Name="page_index">3</Member>
                         <Member Name="quest_state">3</Member>
                         <Member Name="summary">You delivered the letter. Good job!</Member>
                     </Class>

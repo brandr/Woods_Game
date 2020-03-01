@@ -514,6 +514,12 @@
     <ClInclude Include="FilterManager.h">
       <Filter>Animations\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LevelGenSite.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelGenManager.h">
+      <Filter>World\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Being.cpp">
@@ -794,6 +800,12 @@
     </ClCompile>
     <ClCompile Include="FilterManager.cpp">
       <Filter>Animations\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelGenSite.cpp">
+      <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LevelGenManager.cpp">
+      <Filter>World\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

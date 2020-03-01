@@ -94,6 +94,15 @@ const int NPCSchedule::scheduled_forced_animation_direction(World * world, Level
 	return -1;
 }
 
+ScheduledAction * NPCSchedule::scheduled_action(World * world, Level * level, GlobalTime * time)
+{
+	ScheduleTimeBlock * schedule_block = this->schedule_block_for_time(world, level, time);
+	if (schedule_block != NULL && schedule_block->has_scheduled_action()) {
+		return &schedule_block->scheduled_action;
+	}
+	return NULL;
+}
+
 DaySchedule::DaySchedule()
 {
 	setClassName("DaySchedule");
@@ -125,6 +134,7 @@ ScheduleTimeBlock::ScheduleTimeBlock()
 	Register("priority", &priority);
 	Register("forced_anim_state", &forced_anim_state);
 	Register("forced_anim_dir", &forced_anim_dir);
+	Register("scheduled_action", &scheduled_action);
 }
 
 ScheduleTimeBlock::~ScheduleTimeBlock()
@@ -148,4 +158,64 @@ const bool ScheduleTimeBlock::matches_time(World * world, Level * level, GlobalT
 const int ScheduleTimeBlock::get_priority()
 {
 	return this->priority.value();
+}
+
+const bool ScheduleTimeBlock::has_scheduled_action()
+{
+	return this->scheduled_action.has_action();
+}
+
+ScheduledAction::ScheduledAction()
+{
+	setClassName("ScheduledAction");
+	Register("scheduled_action_key", &scheduled_action_key);
+	Register("action", &action);
+	Register("action_object_type", &action_object_type);
+	Register("action_object_tile_x", &action_object_tile_x);
+	Register("action_object_tile_y", &action_object_tile_y);
+}
+
+ScheduledAction::~ScheduledAction()
+{
+}
+
+const bool ScheduledAction::has_action()
+{
+	return !this->action.get_interact_action_key().empty();
+}
+
+const std::string ScheduledAction::get_scheduled_action_key()
+{
+	return this->scheduled_action_key.value();
+}
+
+const std::string ScheduledAction::get_action_object_type()
+{
+	return this->action_object_type.value();
+}
+
+const int ScheduledAction::get_action_object_tile_x()
+{
+	return this->action_object_tile_x.value();
+}
+
+const int ScheduledAction::get_action_object_tile_y()
+{
+	return this->action_object_tile_y.value();
+}
+
+Entity * ScheduledAction::get_action_object(World * world, Level * level, GlobalTime * time)
+{
+	const std::string object_type = this->get_action_object_type();
+	if (object_type == "Block") {
+		const int tx = this->get_action_object_tile_x(), ty = this->get_action_object_tile_y();
+		Tile * t = level->get_tile(tx, ty);
+		if (t != NULL) {
+			Block * b = t->get_block();
+			if (b != NULL && !b->is_empty()) {
+				return b;
+			}
+		}
+	}
+	return NULL;
 }

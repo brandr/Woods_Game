@@ -65,9 +65,6 @@ const std::string World::get_tile_djikstra_path_key(Level * level, NPC * npc)
 	return "levelKey-" + level->get_filename() + ":npcKey-" + npc->get_npc_key();
 }
 
-// TODO: something in here causes a lot of slowdown that persists even when this is not being called
-// TODO: make as much of this method async as possible
-//		first, need to refactor out places where we use NPC and current level and replace with cached values
 const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 {
 	bool has_found_path = false;
@@ -85,8 +82,6 @@ const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 	return has_found_path;
 }
 
-//TODO: make this method or stuff inside it async
-//could store primary dests to add, whether we should cancel npc pathing, etc in thread data
 const bool World::calculate_npc_pathing(
 	NPC * npc, Level * current_npc_level, TileDjikstraPath * tile_djikstra_path, const std::string dest_node_id, const std::string dest_level_key)
 {
@@ -488,7 +483,7 @@ void World::generate_levels()
 	const int size = dungeons.size();
 	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
-			dungeons[i]->generate_levels();
+			dungeons[i]->generate_levels(this, this->get_player());
 		}
 	}
 }
@@ -703,6 +698,7 @@ void World::update_npcs_new_day()
 		}
 		npc->clear_primary_destinations();
 		npc->cancel_current_pathing(0);
+		npc->clear_scheduled_actions_performed();
 	}
 	//TODO: other NPC updates that should happen at the beginning of the day
 }

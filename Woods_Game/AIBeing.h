@@ -4,6 +4,7 @@
 
 #include "AIState.h"
 #include "Being.h"
+#include "NPCSchedule.h"
 #include "WanderZone.h"
 #include <math.h>
 
@@ -24,6 +25,7 @@ protected:
 	std::vector<std::pair<std::string, std::pair<int, int>>> primary_destinations;		// places the being actually wants to go and will resume trying to reach after an interruption
 	std::vector<std::pair<std::string, std::pair<int, int>>> secondary_destinations;	// places the being paths to, such as when going around obstacles
 	std::pair<std::string, std::pair<int, int>> forced_destination = std::pair<std::string, std::pair<int, int>>("", std::pair<int, int>(-1, -1));
+	std::map<std::string, bool> scheduled_action_perfomed_map;
 	bool should_path_around_moving = false;
 
 	int failed_pathing_tally = 0;
@@ -56,6 +58,9 @@ protected:
 	virtual const std::pair<int, int> get_wander_zone_center(World * world, Level * level, GlobalTime * time);
 	virtual const int forced_animation_state(World * world, Level * level, GlobalTime * time);
 	virtual const int forced_animation_direction(World * world, Level * level, GlobalTime * time);
+	virtual ScheduledAction * scheduled_action(World * world, Level * level, GlobalTime * time);
+	virtual void mark_scheduled_action_performed(ScheduledAction * action);
+	virtual const bool has_performed_scheduled_action(ScheduledAction * action);
 	virtual const int get_seed_index();
 public:
 	AIBeing();
@@ -67,6 +72,7 @@ public:
 	virtual void draw_destinations(ALLEGRO_DISPLAY* display, int x_offset, int y_offset);
 	virtual const bool cutscene_walk_towards_tile_dest(Level * level, const int tx, const int ty);
 	virtual void clear_primary_destinations();
+	virtual void clear_scheduled_actions_performed();
 	virtual void add_primary_destination(const std::pair<int, int> destination, const std::string dest_key);
 	virtual const std::pair<int, int> first_primary_destination();
 	virtual const bool has_primary_destinations();

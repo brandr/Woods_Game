@@ -20,10 +20,13 @@ void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * 
 		if (node_key != "") {
 			const bool close_enough = this->calculate_close_enough_to_node(world, level, time, node_key);
 			if (!close_enough) {
+				// we need to walk to the node
 				this->set_needs_pathing_calculation(node_key);
 			} else if (this->should_wander(world, level, time)) {
+				// we're at the right location and we should wander around
 				this->set_ai_state(AI_STATE_WANDERING);
 			} else {
+				// we're at the right location and are forced to assume a specific animation
 				const int forced_anim_state = this->forced_animation_state(world, level, time);
 				if (forced_anim_state >= 0) {
 					this->ai_state.set_forced_anim_state(forced_anim_state);
@@ -31,6 +34,15 @@ void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * 
 				const int forced_anim_dir = this->forced_animation_direction(world, level, time);
 				if (forced_anim_dir >= 0) {
 					this->ai_state.set_forced_anim_dir(forced_anim_dir);
+				}
+				//TODO: how to make sure we don't just spam the scheduled action repeatedly? (maybe need a conditional for toggle state?)
+				ScheduledAction * scheduled_action = this->scheduled_action(world, level, time);
+				if (scheduled_action != NULL && !this->has_performed_scheduled_action(scheduled_action)) {
+					Entity * action_object = scheduled_action->get_action_object(world, level, time);
+					if (action_object != NULL) {
+						action_object->interact_action(world, level, time, NULL);
+						this->mark_scheduled_action_performed(scheduled_action);
+					}
 				}
 			}
 		}
@@ -518,6 +530,11 @@ void AIBeing::forced_animation_update()
 		this->primary_destinations.clear();
 	}
 
+	void AIBeing::clear_scheduled_actions_performed()
+	{
+		this->scheduled_action_perfomed_map.clear();
+	}
+
 	void AIBeing::mark_destination_reached(const std::string dest_key)
 	{
 		// override in subclasses as necessary
@@ -584,6 +601,32 @@ void AIBeing::forced_animation_update()
 	{
 		//TODO: override in subclasses
 		return -1;
+	}
+
+	ScheduledAction * AIBeing::scheduled_action(World * world, Level * level, GlobalTime * time)
+	{
+		return NULL;
+	}
+
+	void AIBeing::mark_scheduled_action_performed(ScheduledAction * action)
+	{
+		if (action != NULL) {
+			const std::string action_key = action->get_scheduled_action_key();
+			if (!action_key.empty()) {
+				this->scheduled_action_perfomed_map[action_key] = true;
+			}
+		}
+	}
+
+	const bool AIBeing::has_performed_scheduled_action(ScheduledAction * action)
+	{
+		if (action != NULL) {
+			const std::string action_key = action->get_scheduled_action_key();
+			if (!action_key.empty() && this->scheduled_action_perfomed_map.find(action_key) != this->scheduled_action_perfomed_map.end()) {
+				return this->scheduled_action_perfomed_map[action_key];
+			}
+		}
+		return false;
 	}
 
 	const int AIBeing::get_seed_index()

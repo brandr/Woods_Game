@@ -41,6 +41,7 @@ protected:
 	virtual const std::pair<int, int> get_wander_zone_center(World * world, Level * level, GlobalTime * time);
 	virtual const int forced_animation_state(World * world, Level * level, GlobalTime * time);
 	virtual const int forced_animation_direction(World * world, Level * level, GlobalTime * time);
+	virtual ScheduledAction * scheduled_action(World * world, Level * level, GlobalTime * time);
 	virtual const std::string get_footstep_filename_suffix();
 public:
 	NPC();

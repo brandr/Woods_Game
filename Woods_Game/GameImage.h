@@ -56,6 +56,9 @@ public:
 	static constexpr const char* E_ATTR_BROKEN = "broken";
 	static constexpr const char* E_ATTR_CONTACT_SLOW = "contact_slow";
 	static constexpr const char* E_ATTR_CONTACT_DAMAGE = "contact_damage";
+	static constexpr const char* E_ATTR_GATE_DIR_X = "gate_dir_x";
+	static constexpr const char* E_ATTR_GATE_DIR_Y = "gate_dir_y";
+	static constexpr const char* E_ATTR_GATE_STATE = "gate_state";
 	static constexpr const char* E_ATTR_KNOCKBACK = "knockback";
 	static constexpr const char* E_ATTR_SHEARABLE = "shearable";
 	static constexpr const char* E_ATTR_PLANT_GATHER_ITEM_KEY = "plant_gather_item_key";
@@ -91,6 +94,7 @@ protected:
 	std::map<std::string, Animation*> animations;
 	SpriteSheetAnimation *ss_animation;
 	int direction = 0, anim_state = 0;
+	//std::string forced_filename_suffix = "";
 	virtual const int calculate_direction(GameImage * other);
 	virtual const bool should_adjust_anim_duration();
 	virtual const float speed_for_anim_duration();
@@ -118,6 +122,8 @@ public:
 	virtual const std::pair<int,int> get_center();
 	virtual const int get_center_x();
 	virtual const int get_center_y();
+	virtual const int get_center_offset_x();
+	virtual const int get_center_offset_y();
 	virtual void add_additional_image_layer(const std::string filename, Rect subsection);
 	virtual void refresh_mask();
 	mask_t* get_mask();

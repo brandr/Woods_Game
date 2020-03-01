@@ -53,7 +53,6 @@ private:
 	std::map<std::string, ALLEGRO_THREAD * > djikstra_path_thread_map;
 	
 	PathNodeDjikstraPath * get_node_djikstra_path(NPC * npc);
-	PathNodeDjikstraPath * get_mapped_node_djikstra_path(const std::string npc_key);
 	const std::string get_node_djikstra_path_key(const std::string npc_key);
 	TileDjikstraPath * get_tile_djikstra_path(Level * level, NPC * npc);
 	TileDjikstraPath * get_mapped_tile_djikstra_path(Level * level, NPC * npc);
@@ -143,6 +142,8 @@ public:
 	void update_encyclopedia_for_critter(Critter * critter, const int entry_state);
 	const int encyclopedia_state_for_critter(Critter * critter);
 	const int get_encyclopedia_state(const std::string category_name, const std::string entry_name);
+	// pathing
+	PathNodeDjikstraPath * get_mapped_node_djikstra_path(const std::string npc_key);
 };
 
 #endif

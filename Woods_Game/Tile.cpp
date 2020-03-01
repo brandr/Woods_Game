@@ -107,6 +107,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	const std::string filename = tileset->get_full_block_sheet_filename(block_index);
 	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::pair<int, int> center_offset = tileset->get_block_center_offset(block_index);
 	std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
 	std::vector<InteractAction *> interact_actions = tileset->get_block_interact_actions(block_index);
 	std::vector<InteractAction *> contact_actions = tileset->get_block_contact_actions(block_index);
@@ -126,6 +127,7 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.set_content(filename, offset_rect, pixel_pos);
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	this->block.set_center_offset(std::pair<int, int>(center_offset.first, center_offset.second));
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);						
 	this->block.set_entity_attributes(block_attributes);	
@@ -133,7 +135,6 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.copy_contact_actions(contact_actions);
 	this->block.copy_load_day_actions(load_day_actions);
 	this->block.copy_entity_effect_data(effect_data);
-	//this->block.set_load_day_actions(load_day_action_data);
 	this->block.set_item_drops(item_drops);
 	this->block.set_spawn_tile_rules(spawn_tile_rules);
 	this->block.load_entity_effects(tileset, 
@@ -142,13 +143,12 @@ void Tile::replace_block(TileSet * tileset, const int block_index, std::pair<int
 	this->block.refresh_mask();
 }
 
-void Tile::replace_block(TileSet * tileset, Block * other_block, std::pair<int, int> ss_pos, std::pair<int, int> pos)
+void Tile::replace_block(TileSet * tileset, Block * other_block, std::pair<int, int> ss_pos, std::pair<int, int> tpos)
 {
 	Rect* offset_rect = new Rect(ss_pos.first*TILE_SIZE, ss_pos.second*TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	const std::string filename = tileset->get_full_block_sheet_filename(other_block->get_entity_data_index());
-	const std::pair<int, int> pixel_pos(pos.first*TILE_SIZE, pos.second*TILE_SIZE);
+	const std::pair<int, int> pixel_pos(tpos.first*TILE_SIZE, tpos.second*TILE_SIZE);
 	std::map<std::string, int> block_attributes = other_block->get_entity_attributes();
-	//std::map<std::string, int> block_attributes = tileset->get_block_attributes(block_index);
 	std::vector<InteractAction *> interact_actions = other_block->get_interact_actions();
 	std::vector<InteractAction *> contact_actions = other_block->get_contact_actions();
 	std::vector<InteractAction *> load_day_actions = other_block->get_load_day_actions();
@@ -165,6 +165,7 @@ void Tile::replace_block(TileSet * tileset, Block * other_block, std::pair<int, 
 	this->block.set_content(filename, offset_rect, pixel_pos);
 	this->block.set_starting_pos(pixel_pos.first, pixel_pos.second);
 	this->block.set_entity_sheet_offset(ss_pos.first, ss_pos.second);
+	this->block.set_center_offset(std::pair<int, int>(other_block->get_center_offset_x(), other_block->get_center_offset_y()));
 	this->block.set_solid(solid);
 	this->block.set_visible(visible);
 	this->block.set_entity_attributes(block_attributes);
