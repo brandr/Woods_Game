@@ -302,7 +302,10 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 	if (start_node == NULL || dest_node == NULL) {
 		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, -1.0f);
 	}
-
+	if (start_t_pos == dest_t_pos) {
+		shortest_path.push_back(start_t_pos);
+		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, 0.0f);
+	}
 	std::vector<std::pair<int, int>> open_adjacent_tiles
 		= this->open_adjacent_tiles(
 			start_t_pos, dest_t_pos, visited);
@@ -312,9 +315,6 @@ const std::pair<std::vector<std::pair<int, int>>, float> TileDjikstraPath::calcu
 	float adj_start_cost = 1.0;
 
 	shortest_path.push_back(start_t_pos);
-	if (start_t_pos == dest_t_pos) {
-		return std::pair<std::vector<std::pair<int, int>>, float>(shortest_path, 0.0f);
-	}
 	auto it_start = distances.find(start_t_pos_key);
 	if (it_start == distances.end()) {
 		distances[start_t_pos_key] = std::map<std::string, float>();
@@ -702,7 +702,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 	double start_time = al_get_time();
 	double accounted_time = 0.0;
 
-	bool enable_logging = false; //temp
+	bool enable_logging = true; //temp
 
 	if (enable_logging) {
 		std::cout << "--------------------------------------\n";
@@ -716,6 +716,7 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 	const std::pair<int, int> forced_pos = forced_dest.second;
 	TileDjikstraPath * tile_djikstra_path = data->tile_djikstra_path;
 	PathNodeDjikstraPath * node_djikstra_path = data->node_djikstra_path;
+//	bool starting_on_level_edge = false;
 
 	if (forced_pos.first >= 0 && forced_pos.second >= 0) {
 		data->should_force = true;
@@ -735,13 +736,27 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 			if (level_key != data->current_level_key) {
 				break;
 			}
+			// make sure we're not already on the first node
 			if (std::abs(data->start_npc_pos.first - node_to_execute->position.first) > 0
 				|| std::abs(data->start_npc_pos.second - node_to_execute->position.second) > 0) {
 				// add the node as our next destination
 				data->primary_destinations.push_back
 				(std::pair<std::string, std::pair<int, int>>(node_to_execute->node_key, node_to_execute->position));
 				data->has_found_path = true;
+			} 
+			/*
+			else if (i < path_to_execute_size - 1) {
+				DjikstraNode *  next_execute_node = shortest_path_from_start.first[i + 1];
+				const std::string next_level_key = next_execute_node->level_key;
+				if (level_key != next_level_key) {
+					data->primary_destinations.push_back
+					(std::pair<std::string, std::pair<int, int>>(node_to_execute->node_key, node_to_execute->position));
+					starting_on_level_edge = true;
+					data->has_found_path = true;
+					break;
+				}
 			}
+			*/
 		}
 		//TODO: the entire point of this else block is to select a next primary destintation to path to.
 		// should refactor it since there should be a much easier way to do this.
@@ -967,7 +982,9 @@ void * PathNodeDjikstraPath::func_calculate_npc_pathing(ALLEGRO_THREAD * thr, vo
 		bool has_failed = false;
 
 		std::string start_node_key = "";
-		if (data->starting_node_key != "" && data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)) {
+		if (data->starting_node_key != "" 
+			&& data->node_djikstra_path->has_node(data->current_level_key, data->starting_node_key)
+			) {// &&!starting_on_level_edge) {
 			// the NPC is starting on a known PathNode, so we might be able to use the full stored path
 			start_node_key = data->starting_node_key;
 			use_full_stored_path = !path_around_moving;

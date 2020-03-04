@@ -19,7 +19,7 @@ void Level::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, in
 	}
 }
 
-void Level::generate_paths(LevelGenData * level_gen_data, 
+const bool Level::generate_paths(LevelGenData * level_gen_data,
 	std::vector<SiteRect *> site_rects, const std::string site_key, const int start_x, const int start_y, 
 	const int width, const int height)
 {
@@ -51,6 +51,7 @@ void Level::generate_paths(LevelGenData * level_gen_data,
 						coords = this->named_path_nodes[dest_node_key];
 					} else {
 						std::cout << "*** ERROR: Unable to path to named node: " << dest_node_key << "\n";
+						return false;
 						// TODO: do we need to save this for later if that node isn't generated yet?
 					}
 				} else {
@@ -126,9 +127,10 @@ void Level::generate_paths(LevelGenData * level_gen_data,
 			}
 		}
 	}
+	return true;
 }
 
-void Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, const int start_y, const int width, const int height)
 {
 	const int base_tile_index = level_gen_data->get_base_tile_type_index();
 	
@@ -172,6 +174,7 @@ void Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, con
 			center_tile->set_tile_sheet_col(sc);
 			center_tile->reset(this->tileset, tile_index);
 			int remaining_tiles = patch_size - 1;
+			const int  max_tries = remaining_tiles * 20;
 			std::vector<std::pair<int, int>> visited;
 			int cx = center_x, cy = center_y;
 			while (remaining_tiles > 0) {
@@ -198,14 +201,18 @@ void Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, con
 					visited.push_back(c_pos);
 					remaining_tiles--;
 				} else {
-					break; //TODO: this is probably bad
+					break;
 				}
+			}
+			if (remaining_tiles > 0) {
+				return false; // generation failed
 			}
 		}
 	}
+	return true;
 }
 
-void Level::generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
 {
 	const std::vector<EntityGroupGenRule *> gen_rules = gen_data->get_entity_group_gen_rules();
 	for (EntityGroupGenRule * rule : gen_rules) {
@@ -281,9 +288,10 @@ void Level::generate_entity_groups(LevelGenData * gen_data, const int start_x, c
 			}
 		}
 	}
+	return true;
 }
 
-void Level::generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
 {
 	const std::vector<BlockGenRule *> gen_rules = gen_data->get_block_gen_rules();
 	for (BlockGenRule * rule : gen_rules) {
@@ -357,7 +365,11 @@ void Level::generate_blocks(LevelGenData * gen_data, const int start_x, const in
 				}
 			}
 		}
+		if (remaining_blocks > 0) {
+			return false;
+		}
 	}
+	return true;
 }
 
 void Level::generate_forced_tiles(LevelGenData * gen_data, const int tx_off, const int ty_off)
@@ -370,13 +382,11 @@ void Level::generate_forced_tiles(LevelGenData * gen_data, const int tx_off, con
 		tile->reset(this->tileset, t->tile_type_index.value());
 	}
 }
-
-//TODO: need to generate these first and force genned trails to avoid them?
+\
 void Level::generate_forced_blocks(LevelGenData * gen_data, const int tx_off, const int ty_off)
 {	
 	std::vector<Block *> blocks = gen_data->get_forced_blocks();
 	for (Block * b : blocks) {
-		//TODO: should we take height/width as arguments and limit location based on that?
 		//TODO: should we allow forced blocks to have random locations?
 		const int adj_x = (b->get_entity_starting_pos_x() + tx_off) * TILE_SIZE, 
 			adj_y = (b->get_entity_starting_pos_y() + ty_off) * TILE_SIZE;
@@ -399,9 +409,10 @@ void Level::generate_forced_entity_groups(LevelGenData * gen_data, const int tx_
 	}
 }
 
-std::vector<SiteRect *> Level::generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+std::pair<bool, std::vector<SiteRect *>> Level::generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
 {
 	std::vector<SiteRect *> site_rects;
+	bool generation_successful = true;
 	const std::vector<LevelGenSite *> sites = gen_data->get_level_gen_sites();
 	for (LevelGenSite * site : sites) {		
 		bool has_valid_dimensions = false;
@@ -420,13 +431,20 @@ std::vector<SiteRect *> Level::generate_sites(LevelGenData * gen_data, const int
 				has_valid_dimensions = true;
 			}
 			tries++;
+			if (tries > 200) {
+				return std::pair<bool, std::vector<SiteRect *>>(false, site_rects);
+			}
 		}
 		if (has_valid_dimensions) {
 			LevelGenData * site_gen_data = this->get_level_gen_data(site->get_level_gen_data_key());
 			this->generate_tiles(site_gen_data, site_x, site_y, site_w, site_h);
-			std::vector<SiteRect*> sub_site_rects = this->generate_sites(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
+			std::pair<bool, std::vector<SiteRect *>> sub_site_rects 
+				= this->generate_sites(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
+			if (!sub_site_rects.first) {
+				return std::pair<bool, std::vector<SiteRect *>>(false, site_rects);
+			}
 			this->generate_paths(this->get_level_gen_data(site->get_level_gen_data_key()), 
-				sub_site_rects, site->get_site_key(), site_x, site_y, site_w, site_h);
+				sub_site_rects.second, site->get_site_key(), site_x, site_y, site_w, site_h);
 			this->generate_entity_groups(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
 			this->generate_blocks(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
 			this->generate_forced_tiles(site_gen_data, site_x, site_y);
@@ -452,7 +470,7 @@ std::vector<SiteRect *> Level::generate_sites(LevelGenData * gen_data, const int
 			//TODO: better error handling?
 		}
 	}
-	return site_rects;
+	return std::pair<bool, std::vector<SiteRect*>>(true, site_rects);
 }
 
 void Level::generate_pass_days(World * world, Player * player)
@@ -1091,36 +1109,67 @@ void Level::initialize_blocks()
 
 }
 
+//TODO: avoid infinite loop by starting over and seeding again for each failure
+//			how many failures until giving up completely?
 void Level::generate_level(World * world, Player * player)
 {
 	this->named_path_nodes.clear();
 	LevelGenData * gen_data = this->get_level_gen_data(this->gen_data_key.value());
 	if (gen_data == NULL || !(gen_data->get_should_generate())) {
 		return;
-	}
+	}	
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
-	this->collide_buckets.clear();
-	//TODO: do we need any other arguments to help sites generate correctly?
-	this->generate_tiles(gen_data, 0, 0, width, height);
-	//TODO: is this the right order to generate? do sites need to be generated avoiding paths? or should paths be generated later, avoiding sites?
-	std::vector<SiteRect *> site_rects = this->generate_sites(gen_data, 0, 0, width, height);
-	this->generate_paths(gen_data, site_rects, "", 0, 0, width, height);
-	this->generate_entity_groups(gen_data, 0, 0, width, height);
-	this->generate_blocks(gen_data, 0, 0, width, height);
+	bool generation_complete = false;
+	for (int i = 0; i < 200; i++) {
+		srand(std::time(NULL));
+		if (generation_complete) {
+			break;
+		}
+		this->collide_buckets.clear();
+		const bool tiles_generated = this->generate_tiles(gen_data, 0, 0, width, height);
+		if (!tiles_generated) {
+			continue;
+		}
+		//TODO: is this the right order to generate? do sites need to be generated avoiding paths? or should paths be generated later, avoiding sites?
+		std::pair<bool, std::vector<SiteRect *>> site_rect_data = this->generate_sites(gen_data, 0, 0, width, height);
+		if (!site_rect_data.first) {
+			continue;
+		}
+		std::vector<SiteRect *> site_rects = site_rect_data.second;
+		const bool generated_paths = this->generate_paths(gen_data, site_rects, "", 0, 0, width, height);
+		if (!generated_paths) {
+			continue;
+		}
+		const bool generated_egs = this->generate_entity_groups(gen_data, 0, 0, width, height);
+		if (!generated_egs) {
+			continue;
+		}
+		const bool generated_blocks = this->generate_blocks(gen_data, 0, 0, width, height);
+		if (!generated_blocks) {
+			continue;
+		}	
+		generation_complete = true;
+	}
+	
+	if (!generation_complete) {
+		std::cout << "*** ERROR: failed to generated level!\n";
+		//TODO: how to handle this error?
+		return;
+	}
 
+	//TODO: is it possible for infinite loops to happen in any other steps?
 	// forced objects
 	this->generate_forced_tiles(gen_data, 0, 0);
 	this->generate_forced_blocks(gen_data, 0, 0);
 	this->generate_forced_entity_groups(gen_data, 0, 0);
-	
+
 	// reload things as necessary
-	this->initialize_tiles();	
+	this->initialize_tiles();
 	this->load_tile_edges();
 	this->draw_tile_edge_bitmaps();
 	this->initialize_location_markers();
 
 	this->generate_pass_days(world, player);
-	//TODO: allow days to pass
 }
 
 void Level::initialize_entity_groups()

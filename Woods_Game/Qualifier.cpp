@@ -9,6 +9,7 @@ Qualifier::Qualifier()
 	Register("comparator", &comparator);
 	Register("evaluator", &evaluator);
 	Register("qualifiers", &qualifiers);
+	Register("bindings", &bindings);
 	Register("month", &month);
 	Register("day", &day);
 	Register("hour", &hour);
@@ -50,6 +51,8 @@ const bool Qualifier::evaluate(World * world, Level * current_level)
 		return this->quest_state_evaluate(world, current_level);
 	case EVALUATOR_INVENTORY_FULL:
 		return this->inventory_full_evaluate(world, current_level);
+	case EVALUATOR_BLOCK_ATTRIBUTE:
+		return this->block_attribute_evaluate(world, current_level);
 	default:
 		return false;
 	}
@@ -75,6 +78,30 @@ const bool Qualifier::evaluate(const int a, const int b)
 	default:
 		return false;
 	}
+}
+
+const bool Qualifier::has_binding(const std::string attr_key)
+{
+	const int size = this->bindings.size();
+	for (int i = 0; i < size; i++) {
+		QualifierBinding * qb = this->bindings.getItem(i);
+		if (qb->binding_key.value() == attr_key) {
+			return true;
+		}
+	}
+	return false;
+}
+
+const std::string Qualifier::get_binding(const std::string attr_key)
+{
+	const int size = this->bindings.size();
+	for (int i = 0; i < size; i++) {
+		QualifierBinding * qb = this->bindings.getItem(i);
+		if (qb->binding_key.value() == attr_key) {
+			return qb->binding_value.value();
+		}
+	}
+	return "";
 }
 
 const bool Qualifier::and_evaluate(World * world, Level * level)
@@ -235,7 +262,45 @@ const bool Qualifier::inventory_full_evaluate(World * world, Level * level)
 	return false;
 }
 
+const bool Qualifier::block_attribute_evaluate(World * world, Level * level)
+{
+	if (this->has_binding(Q_BINDING_BLOCK_ATTR_KEY) && this->has_binding(Q_BINDING_BLOCK_ATTR_VALUE)
+		&& this->has_binding(Q_BINDING_BLOCK_TX) && this->has_binding(Q_BINDING_BLOCK_TY)) {
+		const std::string b_attr_key = this->get_binding(Q_BINDING_BLOCK_ATTR_KEY),
+			b_attr_value = this->get_binding(Q_BINDING_BLOCK_ATTR_VALUE);
+		const std::string b_tx_str = this->get_binding(Q_BINDING_BLOCK_TX),
+			b_ty_str = this->get_binding(Q_BINDING_BLOCK_TY);
+		Level * check_level = level;
+		if (this->has_binding(Q_BINDING_BLOCK_LEVEL_KEY)) {
+			const std::string level_key = this->get_binding(Q_BINDING_BLOCK_LEVEL_KEY);
+			check_level = world->get_level_with_key(level_key);
+		}
+		Tile * t = check_level->get_tile(::atoi(b_tx_str.c_str()), ::atoi(b_ty_str.c_str()));
+		if (t != NULL) {
+			Block * b = t->get_block();
+			if (b != NULL && !b->is_empty()) {
+				// this is close enough to what we're checking that we can count false as true for "not equals"
+				const bool attribute_matches = b->has_entity_attribute(b_attr_key)
+					&& b->get_entity_attribute(b_attr_key) == ::atoi(b_attr_value.c_str());
+				if (COMPARATOR_EQUALS == this->comparator.value()) {
+					return attribute_matches;
+				} else if (COMPARATOR_NOT_EQUALS == this->comparator.value()) {
+					return !attribute_matches;
+				}
+			}
+		}
+	}
+	return false;
+}
+
 void Qualifier::set_other_time(GlobalTime * value)
 {
 	this->other_time = value;
+}
+
+QualifierBinding::QualifierBinding()
+{
+	setClassName("QualifierBinding");
+	Register("binding_key", &binding_key);
+	Register("binding_value", &binding_value);
 }

@@ -47,13 +47,46 @@
                                             <Member Name="int_val"></Member>
                                             <Member Name="string_val"></Member>
             							</Class>
+                                        <Class Type="Qualifier" Version="1">
+                                            <Member Name="comparator">0</Member>
+                                            <Member Name="evaluator">11</Member>
+                                            <Collection Name="bindings">
+                                                <Class Type="QualifierBinding" Version="1">
+                                                    <Member Name="binding_key">block_attr_key</Member>
+                                                    <Member Name="binding_value">gate_state</Member>
+                                                </Class>
+                                                <Class Type="QualifierBinding" Version="1">
+                                                    <Member Name="binding_key">block_attr_value</Member>
+                                                    <Member Name="binding_value">1</Member>
+                                                </Class>
+                                                <Class Type="QualifierBinding" Version="1">
+                                                    <Member Name="binding_key">block_level_key</Member>
+                                                    <Member Name="binding_value">start_neighborhood</Member>
+                                                </Class>                                                
+                                                <Class Type="QualifierBinding" Version="1">
+                                                    <Member Name="binding_key">block_tx</Member>
+                                                    <Member Name="binding_value">11</Member>
+                                                </Class>
+                                                <Class Type="QualifierBinding" Version="1">
+                                                    <Member Name="binding_key">block_ty</Member>
+                                                    <Member Name="binding_value">7</Member>
+                                                </Class>
+                                            </Collection>
+                                            <Member Name="month">-1</Member>
+                                            <Member Name="day">-1</Member>
+                                            <Member Name="hour">-1</Member>
+                                            <Member Name="minute">-1</Member>
+                                            <Member Name="day_of_week">-1</Member>
+                                            <Member Name="int_val"></Member>
+                                            <Member Name="string_val"></Member>
+                                        </Class>
             						</Collection>
             					</Class>
             				</Collection>
                             <Class Type="WanderZone" Name="wander_zone" Version="1">
                                 <Member Name="should_wander">false</Member>
                             </Class>
-                			<Member Name="priority">1</Member>
+                			<Member Name="priority">10</Member>
                 			<Member Name="node_key">n_east_gate</Member>
                             <Member Name="forced_anim_dir">3</Member>
                             <Class Type="ScheduledAction" Name="scheduled_action" Version="1">
@@ -69,6 +102,32 @@
                                 <Member Name="action_object_tile_y">7</Member>
                             </Class>
             			</Class>
+                        <Class Type="ScheduleTimeBlock" Version="1">
+                            <Collection Name="qualifiers">
+                                <Class Type="Qualifier" Version="1">
+                                    <Member Name="comparator">5</Member>
+                                    <Member Name="evaluator">1</Member>
+                                    <Collection Name="qualifiers">
+                                        <Class Type="Qualifier" Version="1">
+                                            <Member Name="comparator">5</Member>
+                                            <Member Name="evaluator">3</Member>
+                                            <Member Name="month">-1</Member>
+                                            <Member Name="day">-1</Member>
+                                            <Member Name="hour">5</Member>
+                                            <Member Name="minute">-1</Member>
+                                            <Member Name="day_of_week">-1</Member>
+                                            <Member Name="int_val"></Member>
+                                            <Member Name="string_val"></Member>
+                                        </Class>
+                                    </Collection>
+                                </Class>
+                            </Collection>
+                            <Class Type="WanderZone" Name="wander_zone" Version="1">
+                                <Member Name="should_wander">false</Member>
+                            </Class>
+                            <Member Name="priority">2</Member>
+                            <Member Name="node_key">n_east_d</Member>
+                        </Class>
             		</Collection>
 				</Class>
 				<Member Name="npc_key">stranger_1</Member>

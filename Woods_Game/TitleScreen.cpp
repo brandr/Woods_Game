@@ -2,6 +2,17 @@
 
 InputManager title_input;
 
+void TitleScreen::play_title_music()
+{
+	const std::string title_music_filename = "running_theme"; //temp
+	AudioManager::get_instance().play_music(title_music_filename);
+}
+
+void TitleScreen::music_update()
+{
+	this->play_title_music();
+}
+
 TitleScreen::TitleScreen()
 {
 }
@@ -27,7 +38,7 @@ void TitleScreen::load_content()
 	
 	//controls
 	set_default_controls();
-	//TODO: start new game, load game, options, quit, etc
+	//TODO: options, quit, etc
 }
 
 void TitleScreen::unload_content()
@@ -136,7 +147,8 @@ int TitleScreen::get_game_mode()
 void TitleScreen::update()
 {
 	GameScreen::update();
-	mouse_cursor_update();
+	this->mouse_cursor_update();
+	this->music_update();
 }
 
 void TitleScreen::draw(ALLEGRO_DISPLAY * display)

@@ -44,7 +44,6 @@ private:
 	void play_audio(const std::string filename, const int audio_type, const std::string sound_key);
 	void play_audio(const std::string filename, const int audio_type, const std::string sound_key, const float gain, const float pan, const bool stop_if_playing);
 	const bool audio_exists(const std::string filename, const int audio_type, const std::string sound_key);
-	void stop_all_music();
 public:
 	AudioManager(AudioManager const&) = delete;
 	void operator=(AudioManager const&) = delete;
@@ -52,6 +51,7 @@ public:
 	~AudioManager();
 	void initialize_audio();
 	void play_music(const std::string filename);
+	void stop_all_music();
 	void play_sfx(const std::string filename, const std::string sound_key);
 	void play_sfx(const std::string filename, const std::string sound_key, const float gain, const float pan, const bool stop_if_playing);
 	const bool sfx_exists(const std::string filename, const std::string sound_key);

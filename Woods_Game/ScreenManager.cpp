@@ -11,6 +11,12 @@
 
 ScreenManager::ScreenManager()
 {
+	
+}
+
+void ScreenManager::stop_music()
+{
+	AudioManager::get_instance().stop_all_music();
 }
 
 void ScreenManager::load_content()
@@ -50,8 +56,8 @@ void ScreenManager::update()
 			//TODO: how to determine where to load from? 
 			//options for world gen? how to know which save file/character name/etc?
 			
-			
-			const std::string world_key = "world_1";
+			this->stop_music();
+			const std::string world_key = "world_1"; //temp
 
 			// async (what we should do)
 
@@ -78,6 +84,7 @@ void ScreenManager::update()
 			//temp
 			return;
 		} else if (current_screen->get_screen_flag() == FLAG_LOAD_GAME) {
+			this->stop_music();
 			const std::string world_key = current_screen->get_load_game_filepath();
 			LoadingScreen * loading_screen = new LoadingScreen();
 			loading_screen->load_content();

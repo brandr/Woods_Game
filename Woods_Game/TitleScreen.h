@@ -1,9 +1,11 @@
 #ifndef TITLESCREEN_H
 #define TITLESCREEN_H
 
+#include "AudioManager.h"
 #include "GameScreen.h"
 #include "MenuManager.h"
 #include "LoadGameMenuManager.h"
+
 #include "allegro5/allegro_font.h"  // for ALLEGRO_FONT
 #include "allegro5/display.h"       // for ALLEGRO_DISPLAY
 #include "allegro5/events.h"        // for ALLEGRO_EVENT
@@ -22,6 +24,8 @@ private:
 	std::map<int, std::string> backdrop_filenames;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
 	int menu_key = TITLE_MAIN_MENU;
+	void play_title_music();
+	void music_update();
 public:
 	TitleScreen();
 	~TitleScreen();

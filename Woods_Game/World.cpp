@@ -73,6 +73,7 @@ const bool World::calculate_npc_pathing(NPC * npc, Level * current_npc_level)
 	TileDjikstraPath * tile_djikstra_path = NULL;
 	if (destination_level != NULL && destination_node != NULL) {
 		npc->clear_primary_destinations();
+		npc->clear_scheduled_actions_performed();
 		double start_create_tile_path_time = al_get_time();
 		tile_djikstra_path = this->get_mapped_tile_djikstra_path(current_npc_level, npc);
 		tile_djikstra_path->mark_blocked_tiles(current_npc_level, npc, npc->get_should_push_others());

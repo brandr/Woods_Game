@@ -13,9 +13,11 @@ void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * 
 		this->wander_update(world, level, time);
 	} else if (this->ai_state.is_idle() || this->ai_state.is_forcing_animation()) {
 		std::string node_key = this->ai_state.get_current_destination_node_key();
+		bool fresh_dest = false;
 		if (node_key == "") {;
 			node_key = this->calculate_destination_node_key(world, time);
 			this->ai_state.set_current_destination_node_key(node_key);
+			fresh_dest = true;
 		}
 		if (node_key != "") {
 			const bool close_enough = this->calculate_close_enough_to_node(world, level, time, node_key);
@@ -35,14 +37,17 @@ void AIBeing::request_pathing_update(World * world, Level * level, GlobalTime * 
 				if (forced_anim_dir >= 0) {
 					this->ai_state.set_forced_anim_dir(forced_anim_dir);
 				}
-				//TODO: how to make sure we don't just spam the scheduled action repeatedly? (maybe need a conditional for toggle state?)
 				ScheduledAction * scheduled_action = this->scheduled_action(world, level, time);
-				if (scheduled_action != NULL && !this->has_performed_scheduled_action(scheduled_action)) {
+				if (fresh_dest && scheduled_action != NULL && !this->has_performed_scheduled_action(scheduled_action)) {
 					Entity * action_object = scheduled_action->get_action_object(world, level, time);
 					if (action_object != NULL) {
-						action_object->interact_action(world, level, time, NULL);
-						this->mark_scheduled_action_performed(scheduled_action);
+						if (action_object->interact_action(world, level, time, (Player*)level->get_player())) {
+							this->mark_scheduled_action_performed(scheduled_action);
+						}
 					}
+				}
+				if (!fresh_dest) {
+					this->ai_state.set_current_destination_node_key(""); //TODO: is this correct? or will it make us recalculate too often?
 				}
 			}
 		}

@@ -64,15 +64,15 @@ private:
 	int width;
 	int height;
 	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer, const int screen_w, const int screen_h);
-	void generate_paths(LevelGenData * gen_data, std::vector<SiteRect *> site_rects, const std::string site_key, 
+	const bool generate_paths(LevelGenData * gen_data, std::vector<SiteRect *> site_rects, const std::string site_key,
 		const int start_x, const int start_y, const int width, const int height);
-	void generate_tiles(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
-	void generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
-	void generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
+	const bool generate_tiles(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
+	const bool generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
+	const bool generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
 	void generate_forced_tiles(LevelGenData * gen_data, const int x_off, const int y_off);
 	void generate_forced_blocks(LevelGenData * gen_data, const int x_off, const int y_off);
 	void generate_forced_entity_groups(LevelGenData * gen_data, const int x_off, const int y_off);
-	std::vector<SiteRect *> generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
+	std::pair<bool, std::vector<SiteRect *>> generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
 	void generate_pass_days(World * world, Player * player);
 	void update_collide_buckets(Entity * e);
 	void reset_collide_buckets();

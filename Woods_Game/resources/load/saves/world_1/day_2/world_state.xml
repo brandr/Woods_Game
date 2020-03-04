@@ -11,7 +11,7 @@
             <Member Name="spritesheet_frame_height">64</Member>
             <Member Name="base_walk_speed">5</Member>
             <Member Name="jump_speed">30</Member>
-            <Member Name="current_stamina">100000</Member>
+            <Member Name="current_stamina">60000</Member>
             <Member Name="max_stamina">100000</Member>
             <Member Name="is_running">true</Member>
             <Member Name="spawn_key">player_spawner_room</Member>
@@ -605,6 +605,26 @@
                 <Member Name="grid_x">11</Member>
                 <Member Name="grid_y">10</Member>
             </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">12</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">13</Member>
+                <Member Name="grid_y">10</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">13</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">12</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
+            <Class Type="DungeonGridCell" Version="1">
+                <Member Name="grid_x">11</Member>
+                <Member Name="grid_y">11</Member>
+            </Class>
         </Collection>
         <Collection Name="quests">
             <Class Type="Quest" Version="1">
@@ -651,6 +671,7 @@
                                     </Collection>
                                 </Class>
                                 <Collection Name="qualifiers"/>
+                                <Collection Name="bindings"/>
                             </Class>
                         </Collection>
                     </Class>
@@ -700,6 +721,7 @@
                                     </Collection>
                                 </Class>
                                 <Collection Name="qualifiers"/>
+                                <Collection Name="bindings"/>
                             </Class>
                         </Collection>
                     </Class>

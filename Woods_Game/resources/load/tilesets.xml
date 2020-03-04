@@ -890,6 +890,10 @@
                 <Member Name="image_data_key">house_windows_1</Member>
                 <Member Name="image_data_index">2</Member>
             </Class>
+            <Class Type="TiledImageData" Version="1">
+                <Member Name="image_data_key">house_low_res</Member>
+                <Member Name="image_data_index">3</Member>
+            </Class>
         </Collection>
         <Collection Name="spawner_types">
             <Class Type="EntityData" Version="1">

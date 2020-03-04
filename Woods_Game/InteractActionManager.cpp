@@ -281,18 +281,16 @@ const int toggle_gate(
 						int p_dir_x = 0, p_dir_y = 0;
 						if (player->get_center_x() < actor->get_center_x() - 16) {
 							p_dir_x = -1;
-						}
-						else if (player->get_center_x() > actor->get_center_x() + 16) {
+						} else if (player->get_center_x() > actor->get_center_x() + 16) {
 							p_dir_x = 1;
 						}
 						if (player->get_center_y() < actor->get_center_y() - 8) {
 							p_dir_y = -1;
-						}
-						else if (player->get_center_y() > actor->get_center_y() + 8) {
+						} else if (player->get_center_y() > actor->get_center_y() + 8) {
 							p_dir_y = 1;
 						}
 						// need to face the gate from the right direction to open it
-						if (p_dir_x != dir_x || p_dir_y != dir_y) {
+						if ((dir_x != 0 && p_dir_x != dir_x) || (dir_y != 0 && p_dir_y != dir_y)) {
 							should_toggle = false;
 							should_show_error = true;
 						}

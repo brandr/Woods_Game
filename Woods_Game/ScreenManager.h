@@ -1,6 +1,7 @@
 #ifndef SCREENMANAGER_H
 #define SCREENMANAGER_H
 
+#include "AudioManager.h"
 #include "LoadingScreen.h"
 #include "MainGameScreen.h"
 #include "TitleScreen.h"
@@ -10,6 +11,7 @@ class ScreenManager
 private:
 	ScreenManager();
 	GameScreen *current_screen;
+	void stop_music();
 public:
 	ScreenManager(ScreenManager const&) = delete;
 	void operator=(ScreenManager const&) = delete;

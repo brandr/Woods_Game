@@ -4,59 +4,46 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 2/24/2020
+Last updated 3/1/2020
 
 Target date for main code to be done: ~ May 2020
 
 1. Level gen
 	(15-20 days)
-2. Physics/gates/NPC actions
-	(20-25 days)
-3. Audio
+2. Audio
 	(5-10 days)
-4. Animation code
+3. Animation code
 	(5-10 days)
-5. Critters
+4. Critters
 	(5-10 days)
-6. Miscellaneous code stuff (break out into specific todos after getting here)
+5. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-7. Level Editor improvements
+6. Level Editor improvements
 	(???)
-8. Content!
+7. Content!
 	(???)
 
 ---------------------------------------------------
-Physics
+Audio
 ---------------------------------------------------
 
-One-way gates
-	- Allow NPCS to open from any side
-		* Make sure an NPC can't close the gate on the player
-Consider changing thorn behavior : Instead of just bouncing away, you get stuck and have to "shake" free (which uses a lot of stamina) or cut the thorns
-
----------------------------------------------------
-NPCs
----------------------------------------------------
-
-AIState/NPC schedule
-	- Let NPCs toggle lamps, open/close gates, and perform other interact actions as part of the schedule
-		* kind of working, but need to have qualifiers so the NPC skips it if the gate is closed
-			# also need to try having two schedueld nodes with similar qualifiers, one where we close the gate if it's open and one where we don't if it's closed,
-				and see if the NPC closes it, then goes to do the other thing
-	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
-		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
-	- Can use qualifiers on interact actions to make doors only open at a certain time
-		* see if it's possible to "branch" actions this way and put multiple actions with different qualfiers on the same door
-		* this allows "you must be friends with X to go here"
-NPC pathing
-	- I saw a case where NPC 2 "wiggled" after reaching a primary node, need to figure out how this happened and fix
-	- can end up on top of an npc and get temporarily stuck if you go into a building right as they're at the exit
-		* probably want to fix by having you appear just past them
-	- Set a debug launch argument to control whether test rect bitmaps appear
-		* Manage the bitmaps through ImageLoader
-		* instead of launch argument, could add console commands (this applies to FPS display too)
-Should you be unable to talk to the same NPC too many times a day like in stardew?
-	- probably need a lot more actual gameplay to answer this question
+Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
+Music
+	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
+	* What kinds of things can cause music to start/stop/fade/add cues?
+		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
+		- could have different music for different weather, or play and gradually fade away after some quests
+Sound effects	
+	* Add sounds: 
+		- menu sounds 
+			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
+		- dialog sounds
+			# make more voices
+			# make a default voice
+				* use this (and possibly other voices that can be set) for things like signs
+				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
+			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
+Replace placeholder sounds based on filenames
 
 ---------------------------------------------------
 Critters
@@ -79,51 +66,6 @@ Make other critters and large animals
 Fix bug where critters get stuck sometimes (either in wall or against it)
 
 ---------------------------------------------------
-Procedural generation
----------------------------------------------------
-
-Improve generation performance (fix infinite loop that happens sometimes-- maybe restart from scratch after a certain number of tries?)
-Finish LevelGenSite
-	* Maybe allow critters to have site-based spawning?
-	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
-		or would it work better to just put them in the right order in the xml?
-
----------------------------------------------------
-Audio
----------------------------------------------------
-
-Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
-Music
-	* play music on title screen
-	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
-	* What kinds of things can cause music to start/stop/fade/add cues?
-		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
-Sound effects	
-	* Add sounds: 
-		- menu sounds 
-			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
-		- dialog sounds
-			# make more voices
-			# make a default voice
-				* use this (and possibly other voices that can be set) for things like signs
-				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
-			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
-Replace placeholder sounds based on filenames
-
----------------------------------------------------
-Animation/image code
----------------------------------------------------
-
-Give player a "pass out" animation for end of day
-could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
-Give trees shadows and ensure they cover only the objects I want
-Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
-Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
-Add EntityGroup filters (see Level.draw())
-	# done, but not tested (need to copy over for genned egs? can test this with large tree shadows) 
-
----------------------------------------------------
 Controls
 ---------------------------------------------------
 
@@ -131,28 +73,6 @@ Make custom mouse cursor (allow switching based on context/ what we're hovering 
 Test encyclopedia scrolling once we have enough encyclopedia items to scroll (both mouse scrolling and tab scrolling)
 Need more intuitive way to display/back out of encyclopedia category
 Need way to back out of load part of main menu
-
----------------------------------------------------
-Memory management/error handling
----------------------------------------------------
-
-It shouldn't be necessary to sort images to draw every frame, especially since some are still	
-	* test performance without sorting to make sure this is actually a problem
-	* instead, look into doing this for still images when loading the level 
-		(maybe storing in a map that we copy and sort-insert moving object positions into?)
-Document how to format serialized things like dialog trees so I don't forget
-Asynchronous loading screen (still not sure I want a progress bar, except possibly for world gen)
-	* https://www.allegro.cc/forums/thread/615021
-	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
-	* add a progress bar (remember to use mutex)
-		# how to quantity loading progress? (could split into levels)
-If necessary, could make it so we asynchronously load only adjacent levels to the current one
-	* need to be careful to ensure the player can't walk to the edge before we finish loading
-	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
-	* might be easier to just fade to black and have loading screens between areas
-Performance on large levels seems to be mostly fixed, but comes back in some cases.
-	* the previous problem was in Level.draw()-- sorting draw_entities when there are a lot of them, so see if this might be related
-Fix build warnings
 
 ---------------------------------------------------
 Menus
@@ -176,6 +96,72 @@ Make an item shop (or at least someone who sells things)
 Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
 	* first make sure I actually want the mallet in the game (balance)
 Add an error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
+
+---------------------------------------------------
+Procedural generation
+---------------------------------------------------
+
+Add ability for forced changes to happen on certain dates and based on certain qualifiers
+	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church
+Improve generation performance (both time it takes and memory usage)
+Finish LevelGenSite
+	* Maybe allow critters to have site-based spawning?
+	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
+		or would it work better to just put them in the right order in the xml?
+
+---------------------------------------------------
+Memory management/error handling
+---------------------------------------------------
+
+Switch to smaller resolution before worrying about input lag
+It shouldn't be necessary to sort images to draw every frame, especially since some are still	
+	* test performance without sorting to make sure this is actually a problem
+		# no sorting helps, but doesn't completely solve the problem
+	* instead, look into doing this for still images when loading the level 
+		(maybe storing in a map that we copy and sort-insert moving object positions into?)
+Document how to format serialized things like dialog trees so I don't forget
+Asynchronous loading screen (still not sure I want a progress bar, except possibly for world gen)
+	* https://www.allegro.cc/forums/thread/615021
+	* https://wiki.allegro.cc/index.php?title=Allegro_5_Tutorial/Threads
+	* add a progress bar (remember to use mutex)
+		# how to quantity loading progress? (could split into levels)
+If necessary, could make it so we asynchronously load only adjacent levels to the current one
+	* need to be careful to ensure the player can't walk to the edge before we finish loading
+	* in the cave game this applied only to dungeons, so could implement travel between dungeons and make it work like that
+	* might be easier to just fade to black and have loading screens between areas
+Performance on large levels seems to be mostly fixed, but comes back in some cases.
+	* the previous problem was in Level.draw()-- sorting draw_entities when there are a lot of them, so see if this might be related
+Fix build warnings
+
+---------------------------------------------------
+NPCs
+---------------------------------------------------
+
+AIState/NPC schedule
+	- use schedule logic to determine NPC spawn locations (not sure if necessary yet)
+		* might become necessary if the world is so big we have to split out dungeons and calculate NPC locations when player enters an area
+	- Can use qualifiers on interact actions to make doors only open at a certain time
+		* see if it's possible to "branch" actions this way and put multiple actions with different qualfiers on the same door
+		* this allows "you must be friends with X to go here"
+NPC pathing
+	- Set a debug launch argument to control whether test rect bitmaps appear
+		* Manage the bitmaps through ImageLoader
+		* instead of launch argument, could add console commands (this applies to FPS display too)
+Should you be unable to talk to the same NPC too many times a day like in stardew?
+	- probably need a lot more actual gameplay to answer this question
+
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
+
+Give player a "pass out" animation for end of day
+could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
+Give trees shadows and ensure they cover only the objects I want
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
+Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
+Add EntityGroup filters (see Level.draw())
+	# done, but not tested (need to copy over for genned egs? can test this with large tree shadows) 
 
 ---------------------------------------------------
 Level editor

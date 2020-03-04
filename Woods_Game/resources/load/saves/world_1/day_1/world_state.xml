@@ -647,6 +647,7 @@
                                     </Collection>
                                 </Class>
                                 <Collection Name="qualifiers"/>
+                                <Collection Name="bindings"/>
                             </Class>
                         </Collection>
                     </Class>
@@ -696,6 +697,7 @@
                                     </Collection>
                                 </Class>
                                 <Collection Name="qualifiers"/>
+                                <Collection Name="bindings"/>
                             </Class>
                         </Collection>
                     </Class>
