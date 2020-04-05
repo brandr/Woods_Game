@@ -35,6 +35,42 @@ PathNodeDjikstraPath * World::get_mapped_node_djikstra_path(const std::string np
 	return this->node_djikstra_path_map[node_djikstra_path_key];
 }
 
+void World::music_update(Level * level, GlobalTime * time, const int game_mode)
+{
+	//TODO: weather effects separate from music? (and ambient sounds like birds singing)
+	AudioManager::get_instance().music_update();
+	if (game_mode == TOP_DOWN) {
+		AudioManager::get_instance().unpause_all_music();
+		if (!AudioManager::get_instance().is_playing_music()) {
+			//TODO: maybe base timer on day length?			
+			if (this->music_timer < 0) {
+				const int interval = this->get_music_update_interval();
+				this->music_timer = interval;
+				this->reset_music(level, time);
+			}
+		}
+		this->music_timer--;
+	} else {
+		switch (game_mode) {
+		case MAIN_GAME_PAUSED:
+			AudioManager::get_instance().pause_all_music();
+			break;
+		case MAIN_GAME_INVENTORY:
+			AudioManager::get_instance().pause_all_music();
+			break;
+		case CALENDAR:
+			AudioManager::get_instance().pause_all_music();
+			break;
+		}
+		//TODO: any other places we should pause music?
+	}
+}
+
+const int World::get_music_update_interval()
+{
+	return this->music_data.get_music_update_interval();
+}
+
 const std::string World::get_node_djikstra_path_key(const std::string npc_key)
 {
 	return "npcKey-" + npc_key;
@@ -344,6 +380,17 @@ const std::string World::get_npc_destination_node_key(NPC * npc)
 	return "";
 }
 
+void World::reset_music(Level * level, GlobalTime * time)
+{
+	MusicNode * selected_node = this->music_data.select_music_node(this, level, time);
+	if (selected_node != NULL) {
+		const std::string filename = selected_node->get_music_filename();
+		if (!filename.empty()) {
+			AudioManager::get_instance().play_music(filename);
+		}		
+	}
+}
+
 void World::clear_all_beings()
 {
 	for (std::shared_ptr<Dungeon> d : this->dungeons) {
@@ -364,6 +411,7 @@ World::World()
 	Register("dungeon_data", &dungeon_data);
 	Register("npcs", &npcs);
 	Register("current_day", &current_day);
+	Register("music_data", &music_data);
 }
 
 
@@ -670,6 +718,7 @@ void World::update_new_day(GlobalTime * time, Player * player, const std::string
 	}
 	this->update_npcs_new_day();
 	this->spawn_critters(time);
+	this->music_timer = 0;
 }
 
 void World::update_reload_day(GlobalTime * time, Player * player, const std::string current_level_key)
@@ -682,6 +731,7 @@ void World::update_reload_day(GlobalTime * time, Player * player, const std::str
 	this->initialize_tiles();
 	this->update_npcs_new_day();
 	this->spawn_critters(time);
+	this->music_timer = 0;
 }
 
 void World::update_npcs_new_day()

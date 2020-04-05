@@ -117,7 +117,8 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 				if (enable_logging) {
 					std::cout << "\nGenerating coords\n";
 				}
-				const std::vector<std::pair<std::string, std::pair<int, int>>> path_coords = this->connect_path_nodes(offset, dimensions, 
+				const std::vector<std::pair<std::string, std::pair<int, int>>> path_coords 
+					= this->connect_path_nodes(offset, dimensions, 
 					tile_index, site_rects, start_coords, target_coords, visited_coords, path_size);
 				for (std::pair<std::string, std::pair<int, int>> c : path_coords) {
 					if (!(std::find(visited_coords.begin(), visited_coords.end(), c) != visited_coords.end())) {

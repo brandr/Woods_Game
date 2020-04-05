@@ -5,7 +5,9 @@ InputManager title_input;
 void TitleScreen::play_title_music()
 {
 	const std::string title_music_filename = "running_theme"; //temp
-	AudioManager::get_instance().play_music(title_music_filename);
+	if (!AudioManager::get_instance().is_playing_music()) {
+		AudioManager::get_instance().play_music(title_music_filename);
+	}
 }
 
 void TitleScreen::music_update()

@@ -38,6 +38,23 @@ void AudioManager::initialize_audio()
 	al_set_mixer_playing(master_mixer, true);
 }
 
+void AudioManager::music_update()
+{
+	std::set<std::string> tracks_to_remove;
+	for (std::string filename : active_music_tracks) {
+		AudioInstance * music_instance = get_sample_instance(filename, AUDIO_TYPE_MUSIC);
+		if (music_instance != NULL 
+			&& !al_get_sample_instance_playing(music_instance->instance) 
+			&& paused_music_tracks.find(filename) == paused_music_tracks.end()) {
+			al_stop_sample_instance(music_instance->instance);
+			tracks_to_remove.insert(filename);
+		}		
+	}
+	for (std::string track : tracks_to_remove) {
+		active_music_tracks.erase(active_music_tracks.find(track));
+	}
+}
+
 AudioInstance * AudioManager::get_sample_instance(const std::string filename, const int audio_type)
 {
 	return this->get_sample_instance(filename, audio_type, "" + SOUND_KEY_DEFAULT);
@@ -93,11 +110,13 @@ void AudioManager::play_music(const std::string filename)
 void AudioManager::play_sfx(const std::string filename, const std::string sound_key)
 {
 	play_audio(filename, AUDIO_TYPE_SFX, sound_key);
+	this->active_sfx_tracks.insert(filename);
 }
 
 void AudioManager::play_sfx(const std::string filename, const std::string sound_key, const float gain, const float pan, const bool stop_if_playing)
 {
 	play_audio(filename, AUDIO_TYPE_SFX, sound_key, gain, pan, stop_if_playing);
+	this->active_sfx_tracks.insert(filename);
 }
 
 const bool AudioManager::sfx_exists(const std::string filename, const std::string sound_key)
@@ -125,6 +144,49 @@ void AudioManager::stop_all_music()
 		al_stop_sample_instance(music_instance->instance);
 	}
 	active_music_tracks.clear();
+}
+
+void AudioManager::stop_all_sfx(const std::string sound_key)
+{
+	for (std::string filename : active_sfx_tracks) {
+		AudioInstance * sfx_instance = get_sample_instance(filename, AUDIO_TYPE_SFX, sound_key);
+		al_stop_sample_instance(sfx_instance->instance);
+	}
+	active_sfx_tracks.clear();
+}
+
+void AudioManager::pause_all_music()
+{
+	for (std::string filename : active_music_tracks) {
+		if (paused_music_tracks.find(filename) == paused_music_tracks.end()) {
+			AudioInstance * music_instance = get_sample_instance(filename, AUDIO_TYPE_MUSIC);
+			const int position = al_get_sample_instance_position(music_instance->instance);
+			this->paused_music_track_positions[filename] = position;
+			al_set_sample_instance_playing(music_instance->instance, false);
+			paused_music_tracks.insert(filename);
+		}		
+	}
+}
+
+void AudioManager::unpause_all_music()
+{
+	std::set<std::string> tracks_to_remove;
+	for (std::string filename : paused_music_tracks) {
+		AudioInstance * music_instance = get_sample_instance(filename, AUDIO_TYPE_MUSIC);
+		al_set_sample_instance_playing(music_instance->instance, true);
+		const int position = this->paused_music_track_positions[filename];
+		al_set_sample_instance_position(music_instance->instance, position);
+		paused_music_tracks.insert(filename);
+		tracks_to_remove.insert(filename);
+	}
+	for (std::string track : tracks_to_remove) {
+		paused_music_tracks.erase(paused_music_tracks.find(track));
+	}
+}
+
+const bool AudioManager::is_playing_music()
+{
+	return !this->active_music_tracks.empty();
 }
 
 void AudioManager::set_master_gain(const float gain)
@@ -156,8 +218,16 @@ void AudioManager::play_audio(const std::string filename, const int audio_type, 
 {
 	AudioInstance * audio_instance = AudioManager::get_instance().get_sample_instance(filename, audio_type, sound_key);
 	ALLEGRO_SAMPLE_INSTANCE * sample_instance = audio_instance->instance;
-
-	if (al_play_sample_instance(sample_instance)) {
+	ALLEGRO_MIXER * mixer = NULL;
+	if (audio_type == AUDIO_TYPE_MUSIC) {
+		mixer = music_mixer;
+	} else if (audio_type == AUDIO_TYPE_SFX) {
+		mixer = sfx_mixer;
+	}
+	if (//al_attach_sample_instance_to_mixer(sample_instance, mixer)
+		//&& 
+		al_set_sample_instance_playing(sample_instance, true)) {
+	//if (al_play_sample_instance(sample_instance)) {
 		// success
 	}
 	else {

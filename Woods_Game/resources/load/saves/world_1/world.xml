@@ -8,6 +8,41 @@
         <Member Name="current_level_grid_x">-1</Member>
         <Member Name="current_level_grid_y">-1</Member>
         <Member Name="current_day">1</Member>
+        <Class Name="music_data" Type="MusicData" Version="1">
+            <Member Name="music_update_interval">500</Member>
+            <Collection Name="music_nodes">
+                <Class Type="MusicNode" Version="1">
+                    <Member Name="music_filename">running_theme</Member>
+                    <Member Name="weight">10</Member>
+                    <Collection Name="qualifiers">
+                        <Class Type="Qualifier" Version="1">
+                            <Member Name="comparator">5</Member>
+                            <Member Name="evaluator">3</Member>
+                            <Member Name="month">-1</Member>
+                            <Member Name="day">-1</Member>
+                            <Member Name="hour">7</Member>
+                            <Member Name="minute">-1</Member>
+                            <Member Name="day_of_week">-1</Member>
+                            <Member Name="int_val"/>
+                            <Member Name="string_val"/>
+                            <Member Name="npc_key"/>
+                            <Class Name="trigger_status" Type="TriggerStatus" Version="1">
+                                <Member Name="trigger_key"/>
+                                <Member Name="trigger_state"/>
+                                <Collection Name="trigger_attributes"/>
+                            </Class>
+                            <Collection Name="qualifiers"/>
+                            <Collection Name="bindings"/>
+                        </Class>
+                    </Collection>
+                </Class>
+                <Class Type="MusicNode" Version="1">
+                    <Member Name="music_filename"/>
+                    <Member Name="weight">20</Member>
+                    <Collection Name="qualifiers"/>
+                </Class>
+            </Collection>
+        </Class>
         <Collection Name="dungeon_data">
             <Class Type="DungeonData" Version="1">
                 <Member Name="dungeon_key">dungeon_1</Member>

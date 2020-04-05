@@ -110,6 +110,7 @@ void Cutscene::add_global_time_update(const int day, const int time)
 
 void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_up_time)
 {
+	this->add_action(STOP_ALL_MUSIC);
 	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
@@ -130,6 +131,7 @@ void Cutscene::add_advance_day_update(GlobalTime * global_time, const int wake_u
 
 void Cutscene::add_load_game_update(const int day, const int time)
 {
+	this->add_action(STOP_ALL_MUSIC);
 	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_LOAD_GAME;
@@ -151,6 +153,7 @@ void Cutscene::add_load_game_update(const int day, const int time)
 
 void Cutscene::add_pass_out_update(Player * player, GlobalTime * time, const int wake_up_time)
 {
+	this->add_action(STOP_ALL_MUSIC);
 	this->add_action(ACTION_FREEZE_SCREEN);
 	CutsceneBlock * block = new CutsceneBlock();
 	block->action_key = ACTION_UPDATE_NEW_DAY;
@@ -289,6 +292,9 @@ const bool CutsceneBlock::process_action()
 			return true;
 		} 
 		else if (this->action_key == ACTION_UNFREEZE_SCREEN) {
+			return true;
+		}
+		else if (this->action_key == STOP_ALL_MUSIC) {
 			return true;
 		}
 	}

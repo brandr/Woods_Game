@@ -520,6 +520,9 @@
     <ClInclude Include="LevelGenManager.h">
       <Filter>World\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MusicData.h">
+      <Filter>Audio\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Being.cpp">
@@ -806,6 +809,9 @@
     </ClCompile>
     <ClCompile Include="LevelGenManager.cpp">
       <Filter>World\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicData.cpp">
+      <Filter>Audio\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

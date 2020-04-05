@@ -10,6 +10,7 @@
 #include "Encyclopedia.h"
 #include "FileManager.h"
 #include "GlobalTime.h"
+#include "MusicData.h"
 #include "NPC.h"
 #include "PathNode.h"
 #include "QuestData.h"
@@ -42,6 +43,7 @@ private:
 	xmls::Collection<DungeonData> dungeon_data;
 	xmls::Collection<NPC> npcs;
 
+	MusicData music_data;
 	WorldState world_state;		// not serialzed in world because it's day-specific
 	QuestData quest_data;		// not serialized in world because we load it from a separate file
 	Encyclopedia encyclopedia;	// not serialized in world because we load it from a separate file
@@ -65,6 +67,9 @@ private:
 	Level * find_level_with_spawn_key(const std::string spawn_key);
 	PathNode * find_path_node_with_key(const std::string node_key);
 	const std::string get_npc_destination_node_key(NPC * npc);
+	// music
+	int music_timer = 0;
+	void reset_music(Level * level, GlobalTime * time);
 public:	
 	Dungeon* current_dungeon;
 	World();
@@ -144,6 +149,9 @@ public:
 	const int get_encyclopedia_state(const std::string category_name, const std::string entry_name);
 	// pathing
 	PathNodeDjikstraPath * get_mapped_node_djikstra_path(const std::string npc_key);
+	// music
+	void music_update(Level * level, GlobalTime* time, const int game_mode);
+	const int get_music_update_interval();
 };
 
 #endif

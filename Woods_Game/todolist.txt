@@ -4,7 +4,7 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 3/1/2020
+Last updated 3/28/2020
 
 Target date for main code to be done: ~ May 2020
 
@@ -23,27 +23,23 @@ Target date for main code to be done: ~ May 2020
 7. Content!
 	(???)
 
+-------------------------------------------------------------------------------------------------
+Programming (unblocked)
+-------------------------------------------------------------------------------------------------
+
 ---------------------------------------------------
-Audio
+Procedural generation
 ---------------------------------------------------
 
-Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
-Music
-	* How does looping music work? Is there some kind of general fade in/out behavior that should be used?
-	* What kinds of things can cause music to start/stop/fade/add cues?
-		- probably shouldn't just be tied to level, but could have an override that causes the music to fade out and be replaced by specific tracks for some levels
-		- could have different music for different weather, or play and gradually fade away after some quests
-Sound effects	
-	* Add sounds: 
-		- menu sounds 
-			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
-		- dialog sounds
-			# make more voices
-			# make a default voice
-				* use this (and possibly other voices that can be set) for things like signs
-				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
-			# standardize pitch for base audio and make pitch vary (such as upward inflection for a question)
-Replace placeholder sounds based on filenames
+What to do when we hit the "error generating level" breakpoint?
+	* also make sure we fix infinite loop that can happen in while loop for generating paths 
+Add ability for forced changes to happen on certain dates and based on certain qualifiers
+	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church
+Improve generation performance (both time it takes and memory usage)
+Finish LevelGenSite
+	* Maybe allow critters to have site-based spawning?
+	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
+		or would it work better to just put them in the right order in the xml?
 
 ---------------------------------------------------
 Critters
@@ -79,35 +75,22 @@ Menus
 ---------------------------------------------------
 
 Display the current day and other info for a save in title screen menu 
-why does "maps" appear as an option when loading game? Need to fix
 Encyclopedia
 	* What to show in main section when no entry is selected? (% discovered, summary, category image, etc.)
 	* Could track NPCs in encyclopedia (bombers notebook-style schedule)
 	* Add latin name, num caught, and other info to display
-	* Write up entire encyclopedia in text document before making it into xml
 
 ---------------------------------------------------
-Inventory/items/money
+Level editor
 ---------------------------------------------------
 
-Make sure ItemPickups disappear properly from level when they should (maybe on a timer or after leaving level?)
-Make an item shop (or at least someone who sells things)
-	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
-Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
-	* first make sure I actually want the mallet in the game (balance)
-Add an error sound in player.use_selected_item() when we can't use the item (specifically not enough stamina or something like that)
+Fix bug where XML attributes can get saved twice after editing via ctrl-click
+Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
+Fix bug where removing blocks doesn't seem to save (probaly because they only get removed from the tile, not the level-- should be more like egs)
 
----------------------------------------------------
-Procedural generation
----------------------------------------------------
-
-Add ability for forced changes to happen on certain dates and based on certain qualifiers
-	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church
-Improve generation performance (both time it takes and memory usage)
-Finish LevelGenSite
-	* Maybe allow critters to have site-based spawning?
-	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
-		or would it work better to just put them in the right order in the xml?
+-------------------------------------------------------------------------------------------------
+Programming (blocked/not sure if I want)
+-------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------
 Memory management/error handling
@@ -151,25 +134,14 @@ Should you be unable to talk to the same NPC too many times a day like in starde
 	- probably need a lot more actual gameplay to answer this question
 
 ---------------------------------------------------
-Animation/image code
+Audio
 ---------------------------------------------------
 
-Give player a "pass out" animation for end of day
-could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
-make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
-Give trees shadows and ensure they cover only the objects I want
-Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
-Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
-Add EntityGroup filters (see Level.draw())
-	# done, but not tested (need to copy over for genned egs? can test this with large tree shadows) 
-
----------------------------------------------------
-Level editor
----------------------------------------------------
-
-Fix bug where XML attributes can get saved twice after editing via ctrl-click
-Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
-Fix bug where removing blocks doesn't seem to save (probaly because they only get removed from the tile, not the level-- should be more like egs)
+Full documentation of allegro audio: https://www.allegro.cc/manual/5/audio.html
+Music
+	* see world.music_update() -- weather effects separate from music? (and ambient sounds like birds singing)
+	* should music fade out before finishing sometimes so we don't stop it so abruptly?
+	* short jingles for things like quests? (these should probably be SFX but not sure)
 
 ---------------------------------------------------
 Stamina
@@ -181,6 +153,48 @@ Tweak formula in player.stamina_update() and player.calculate_stamina_gain, etc.
 			eating good food, etc. (make a stub method like "daily health multipler" and leave a todo for now)
 	* running should be significantly less stamina-efficient 
 		-- it shouldn't only drain faster, you should lose more stamina per unit traveled than walking
+
+-------------------------------------------------------------------------------------------------
+Non-Programming
+-------------------------------------------------------------------------------------------------
+
+---------------------------------------------------
+Audio
+---------------------------------------------------
+
+Sound effects	
+	* Add sounds: 
+		- menu sounds 
+			# make the scroll sounds shorter in duration so they don't get cut off when rapidly activated
+		- dialog sounds
+			# make more voices
+			# make a default voice
+				* use this (and possibly other voices that can be set) for things like signs
+				* audio should be things that aren't actually recordings of human voice, but still have 26 "characters"
+
+Replace placeholder sounds based on filenames
+
+---------------------------------------------------
+Inventory/items/money
+---------------------------------------------------
+
+Make an item shop (or at least someone who sells things)
+	* to remove money, use "adjust_money_amount" interactAction and make sure it works for negative numbers
+Make mallet able to break rocks, add swinging animation and animations for rocks being hit/destroyed
+	* first make sure I actually want the mallet in the game (balance)
+
+---------------------------------------------------
+Animation/image code
+---------------------------------------------------
+
+Give player a "pass out" animation for end of day
+could make stairs an entitygroup and use an optical illusion to make it look like you're walking "up" it
+make egs you can walk "under" like garden archways (I think we can do this using a "center" lower than the actual sprite)
+Give trees shadows and ensure they cover only the objects I want
+Add shallow water tiles we can wade through (use brush animations to cover player feet and splash footstep sounds)
+Add more detailed night/day filters (but keep in mind they need to be compatible with the single-color filter since the filter code relies on that)
+Add EntityGroup filters (see Level.draw())
+	# done, but not tested (need to copy over for genned egs? can test this with large tree shadows) 
 
 ---------------------------------------------------
 Long term

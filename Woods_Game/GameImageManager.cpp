@@ -578,6 +578,11 @@ void GameImageManager::npc_update()
 	this->world.npc_update(this->current_level, this->current_global_time, this->game_mode);
 }
 
+void GameImageManager::music_update()
+{	
+	this->world.music_update(this->current_level, this->current_global_time, this->game_mode);
+}
+
 void GameImageManager::wait(const int duration)
 {
 	Player * player = this->get_player();
@@ -851,6 +856,10 @@ void GameImageManager::process_cutscene(Cutscene * cutscene)
 			}
 			else if (action_key == ACTION_UNFREEZE_SCREEN) {
 				this->unfreeze_screen();
+				cutscene->advance_block(&(this->world), this->current_level);
+			}
+			else if (action_key == STOP_ALL_MUSIC) {
+				AudioManager::get_instance().stop_all_music();
 				cutscene->advance_block(&(this->world), this->current_level);
 			}
 		}

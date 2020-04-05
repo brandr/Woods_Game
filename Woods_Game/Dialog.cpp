@@ -80,7 +80,8 @@ void Dialog::play_syllable_audio(const char letter)
 	std::string syllable_filename = this->get_dialog_sound_path();
 	if (!syllable_filename.empty()) {
 		syllable_filename += letter;
-		AudioManager::get_instance().play_sfx(syllable_filename, std::to_string(SOUND_KEY_DIALOG));
+		AudioManager::get_instance().stop_all_sfx(std::to_string(SOUND_KEY_DIALOG));
+		AudioManager::get_instance().play_sfx(syllable_filename, std::to_string(SOUND_KEY_DIALOG));		
 	}
 }
 
@@ -117,8 +118,12 @@ void Dialog::update()
 	if (this->should_scroll_text) {
 		DialogPage * page = this->current_page();
 		if (page && this->current_num_characters() < page->total_num_characters()) {
-			this->character_counter++; 
-			this->dialog_sound_update(page);
+			const int prev_chars = this->current_num_characters();
+			this->character_counter++;
+			const int new_chars = this->current_num_characters();
+			if (new_chars > prev_chars) {
+				this->dialog_sound_update(page);
+			}
 		}
 	}
 }

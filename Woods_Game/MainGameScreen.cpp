@@ -787,6 +787,7 @@ void MainGameScreen::update()
 {
 	this->mouse_cursor_update();
 	this->mouse_scroll_update();
+	game_image_manager.music_update();
 	const int game_mode = game_image_manager.get_game_mode();
 	GlobalTime * global_time = NULL;
 	World * world = NULL;

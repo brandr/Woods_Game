@@ -843,7 +843,7 @@ void Player::use_selected_item()
 		if (item->has_item_attribute(Item::ITEM_ATTR_STAMINA_COST)) {
 			const int stamina_cost = item->get_item_attribute(Item::ITEM_ATTR_STAMINA_COST);
 			if (stamina_cost > this->get_current_stamina()) {
-				//TODO: error sound?
+				AudioManager::get_instance().play_sfx("tool_sounds/no_stamina_error" , "" + SOUND_KEY_PLAYER);
 				return;
 			}
 		}

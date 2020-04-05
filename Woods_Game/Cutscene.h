@@ -30,6 +30,7 @@
 #define ACTION_UPDATE_MAX_STAMINA_BAD_SLEEP "update_max_stamina_bad_sleep"
 #define ACTION_FREEZE_SCREEN "freeze_screen"
 #define ACTION_UNFREEZE_SCREEN "unfreeze_screen"
+#define STOP_ALL_MUSIC "stop_all_music"
 
 // other actions
 #define ACTION_DIALOG "action_dialog"

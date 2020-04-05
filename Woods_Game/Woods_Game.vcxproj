@@ -353,6 +353,7 @@
     <ClInclude Include="Block.h" />
     <ClInclude Include="MenuItem.h" />
     <ClInclude Include="MenuManager.h" />
+    <ClInclude Include="MusicData.h" />
     <ClInclude Include="NPC.h" />
     <ClInclude Include="NPCSchedule.h" />
     <ClInclude Include="PathNode.h" />
@@ -451,6 +452,7 @@
     <ClCompile Include="MathUtilities.cpp" />
     <ClCompile Include="MenuItem.cpp" />
     <ClCompile Include="MenuManager.cpp" />
+    <ClCompile Include="MusicData.cpp" />
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="NPCSchedule.cpp" />
     <ClCompile Include="PathNode.cpp" />
