@@ -8701,7 +8701,7 @@
         <Member Name="GridY">10</Member>
         <Member Name="GridWidth">2</Member>
         <Member Name="GridHeight">2</Member>
-        <Member Name="LevelGenDataKey"/>
+        <Member Name="LevelGenDataKey">start_neighborhood</Member>
         <Collection Name="TileRows">
             <Class Type="TileGroup" Version="1">
                 <Member Name="Index"/>

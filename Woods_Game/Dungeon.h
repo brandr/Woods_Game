@@ -24,11 +24,11 @@ public:
 	void intialize_levels(const int default_level_width, const int default_level_height);
 	void intialize_levels(const std::string filepath, int default_level_width, const int default_level_height);
 	void initialize_tiles();
-	void generate_levels(World * world, Player * player);
+	void generate_levels(World * world, Player * player, GlobalTime * time);
 	ALLEGRO_BITMAP * generate_map_image(const int standard_level_width, const int standard_level_height);
 	static Dungeon * load_dungeon(const std::string dungeon_name, const int default_level_width, const int default_level_height);
 	void load_images(ImageLoader&);
-	void update_new_day(World * world, Player * player);
+	void update_new_day(World * world, Player * player, GlobalTime * time);
 	void add_level(Level*);
 	void remove_level(int index);
 	Level* level_at(int, int);

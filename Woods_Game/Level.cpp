@@ -21,7 +21,7 @@ void Level::draw_tiled_images(ALLEGRO_DISPLAY * display, const std::pair<int, in
 
 const bool Level::generate_paths(LevelGenData * level_gen_data,
 	std::vector<SiteRect *> site_rects, const std::string site_key, const int start_x, const int start_y, 
-	const int width, const int height)
+	const int width, const int height, const int seed)
 {
 	const bool enable_logging = false; //TEMP (should probably be a launch option or something)
 	const std::pair<int, int> offset(start_x, start_y);
@@ -55,7 +55,7 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 						// TODO: do we need to save this for later if that node isn't generated yet?
 					}
 				} else {
-					srand(start_x + start_y + i);
+					srand(start_x + start_y + seed + i);
 					const std::string edge_key = n->edge_key.value();
 					const int edge_center_x = n->edge_center_x.value(), edge_center_y = n->edge_center_y.value();
 					const int edge_range = n->edge_range.value();
@@ -83,7 +83,7 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 				std::pair<std::string, std::pair<int, int>> coord_data(n->dest_site_key.value(), coords);
 				vector_coords.push_back(coord_data);
 			}
-			srand(std::time(NULL) + node_count);
+			srand(std::time(NULL) + node_count + seed);
 			int i1 = rand() % node_count;
 			const std::pair<std::string, std::pair<int, int>> pos1 = vector_coords[i1];
 			vector_coords.erase(vector_coords.begin() + i1);
@@ -94,14 +94,17 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 			if (enable_logging) {
 				std::cout << "\nGenerating coords\n";
 			}
-			//TODO: ignore site rects that we're not allowed to touch if the destination is one of those sites
-			//TODO: level.named_path_nodes could also be a struct (so we can store site names)
-			const std::vector<std::pair<std::string, std::pair<int, int>>> coordinates 
+			const GennedCoordList path_coord_list
 				= this->connect_path_nodes(offset, dimensions, tile_index,
-				site_rects, pos1, pos2, visited_coords, path_size);
-			for (std::pair<std::string, std::pair<int, int>> c : coordinates) {
-				if (!(std::find(visited_coords.begin(), visited_coords.end(), c) != visited_coords.end())) {
-					visited_coords.push_back(c);
+					site_rects, pos1, pos2, visited_coords, path_size);
+			if (!path_coord_list.success) {
+				std::cout << "*** WARNING: Failed to generate path coords in Level.generate_paths()\n";
+				return false;
+			}
+			for (GennedCoords c : path_coord_list.coords) {
+				std::pair<std::string, std::pair<int, int>> check_c(c.coords_key, std::pair<int, int>(c.x, c.y));
+				if (!(std::find(visited_coords.begin(), visited_coords.end(), check_c) != visited_coords.end())) {
+					visited_coords.push_back(check_c);
 				}
 			}
 			while (vector_coords.size() > 0) {
@@ -110,19 +113,24 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 				const int iv = rand() % visited_coords.size();
 				// choose a random destination from those visited and path to there
 				const std::pair<std::string, std::pair<int, int>> target_coords = visited_coords[iv];
-				srand(std::time(NULL) + vector_coords.size() + 1);
+				srand(std::time(NULL) + vector_coords.size() + seed + 1);
 				const int index = rand() % vector_coords.size();
 				const std::pair<std::string, std::pair<int, int>> start_coords = vector_coords[index];
 				vector_coords.erase(vector_coords.begin() + index);
 				if (enable_logging) {
 					std::cout << "\nGenerating coords\n";
 				}
-				const std::vector<std::pair<std::string, std::pair<int, int>>> path_coords 
+				const GennedCoordList& coord_list
 					= this->connect_path_nodes(offset, dimensions, 
 					tile_index, site_rects, start_coords, target_coords, visited_coords, path_size);
-				for (std::pair<std::string, std::pair<int, int>> c : path_coords) {
-					if (!(std::find(visited_coords.begin(), visited_coords.end(), c) != visited_coords.end())) {
-						visited_coords.push_back(c);
+				if (!coord_list.success) {
+					std::cout << "*** WARNING: Failed to generate path coords in Level.generate_paths()\n";
+					return false;
+				}
+				for (GennedCoords c : coord_list.coords) {
+					std::pair<std::string, std::pair<int, int>> check_c(c.coords_key, std::pair<int, int>(c.x, c.y));
+					if (!(std::find(visited_coords.begin(), visited_coords.end(), check_c) != visited_coords.end())) {
+						visited_coords.push_back(check_c);
 					}
 				}
 			}
@@ -131,7 +139,7 @@ const bool Level::generate_paths(LevelGenData * level_gen_data,
 	return true;
 }
 
-const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_x, const int start_y, const int width, const int height, const int seed)
 {
 	const int base_tile_index = level_gen_data->get_base_tile_type_index();
 	
@@ -141,7 +149,7 @@ const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_
 			Tile *t = this->get_tile(x, y);
 			t->set_tile_pos_x(x);
 			t->set_tile_pos_y(y);
-			srand(std::time(NULL) + x + y);
+			srand(std::time(NULL) + x + y + seed);
 			const int sheet_col = rand() % base_tile_num_sheet_cols;
 			t->reset(this->tileset, base_tile_index);
 			t->set_tile_sheet_col(sheet_col);
@@ -156,7 +164,7 @@ const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_
 			min_size = rule->min_patch_size.value(), max_size = rule->max_patch_size.value();
 		const int num_patches = min_patches + rand() % (max_patches - min_patches);
 		for (int i = 0; i < num_patches; i++) {
-			srand(std::time(NULL) + tile_index + i);
+			srand(std::time(NULL) + tile_index + seed + i);
 			const int patch_size = std::max(1, min_size + rand() % (max_size - min_size));
 			const int min_rect_area = std::max(16, patch_size * 3), max_rect_area = std::max(min_rect_area + 1, patch_size * 4);
 			const int min_rect_width = std::max(4, (int) (std::pow((double)min_rect_area, 0.5) * 0.6));
@@ -179,7 +187,7 @@ const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_
 			std::vector<std::pair<int, int>> visited;
 			int cx = center_x, cy = center_y;
 			while (remaining_tiles > 0) {
-				srand(std::time(NULL) + remaining_tiles);
+				srand(std::time(NULL) + remaining_tiles + seed);
 				std::vector<std::pair<int, int>> candidates;
 				//TODO: figure out if patches spreading diagonally will look good or not (try both ways)
 				std::vector<Tile *> adjacent_tiles = this->get_tiles_in_range(cx, cy, 1, 1, 1);
@@ -213,7 +221,7 @@ const bool Level::generate_tiles(LevelGenData * level_gen_data, const int start_
 	return true;
 }
 
-const bool Level::generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed)
 {
 	const std::vector<EntityGroupGenRule *> gen_rules = gen_data->get_entity_group_gen_rules();
 	for (EntityGroupGenRule * rule : gen_rules) {
@@ -268,7 +276,7 @@ const bool Level::generate_entity_groups(LevelGenData * gen_data, const int star
 		const int num_egs = min_egs < max_egs ? min_egs + rand() % (max_egs - min_egs) : min_egs;
 		int remaining_egs = num_egs;
 		while (candidate_tiles.size() > 0 && remaining_egs > 0) {
-			srand(std::time(NULL) + eg_index + num_candidates + remaining_egs);
+			srand(std::time(NULL) + eg_index + num_candidates + remaining_egs + seed);
 			const int cand_index = rand() % candidate_tiles.size();
 			const std::pair<int, int> spawn_pos = candidate_tiles[cand_index];
 			const int eg_sc = rand() % eg_num_sheet_cols;
@@ -292,7 +300,7 @@ const bool Level::generate_entity_groups(LevelGenData * gen_data, const int star
 	return true;
 }
 
-const bool Level::generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+const bool Level::generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed)
 {
 	const std::vector<BlockGenRule *> gen_rules = gen_data->get_block_gen_rules();
 	for (BlockGenRule * rule : gen_rules) {
@@ -346,7 +354,7 @@ const bool Level::generate_blocks(LevelGenData * gen_data, const int start_x, co
 		const int num_blocks = min_blocks < max_blocks ? min_blocks + rand() % (max_blocks - min_blocks) : min_blocks;
 		int remaining_blocks = num_blocks;
 		while (candidate_tiles.size() > 0 && remaining_blocks > 0) {
-			srand(std::time(NULL) + block_index + num_candidates + remaining_blocks);
+			srand(std::time(NULL) + block_index + num_candidates + remaining_blocks + seed);
 			const int cand_index = rand() % candidate_tiles.size();
 			const std::pair<int, int> spawn_pos = candidate_tiles[cand_index];
 			const int b_sc = rand() % num_sheet_cols;
@@ -410,7 +418,7 @@ void Level::generate_forced_entity_groups(LevelGenData * gen_data, const int tx_
 	}
 }
 
-std::pair<bool, std::vector<SiteRect *>> Level::generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height)
+std::pair<bool, std::vector<SiteRect *>> Level::generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed)
 {
 	std::vector<SiteRect *> site_rects;
 	bool generation_successful = true;
@@ -432,22 +440,27 @@ std::pair<bool, std::vector<SiteRect *>> Level::generate_sites(LevelGenData * ge
 				has_valid_dimensions = true;
 			}
 			tries++;
-			if (tries > 200) {
+			if (tries > MAX_GEN_TRIES) {
 				return std::pair<bool, std::vector<SiteRect *>>(false, site_rects);
 			}
 		}
 		if (has_valid_dimensions) {
 			LevelGenData * site_gen_data = this->get_level_gen_data(site->get_level_gen_data_key());
-			this->generate_tiles(site_gen_data, site_x, site_y, site_w, site_h);
+			this->generate_tiles(site_gen_data, site_x, site_y, site_w, site_h, seed);
 			std::pair<bool, std::vector<SiteRect *>> sub_site_rects 
-				= this->generate_sites(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
+				= this->generate_sites(this->get_level_gen_data(site->get_level_gen_data_key()), 
+					site_x, site_y, site_w, site_h, seed);
 			if (!sub_site_rects.first) {
 				return std::pair<bool, std::vector<SiteRect *>>(false, site_rects);
 			}
-			this->generate_paths(this->get_level_gen_data(site->get_level_gen_data_key()), 
-				sub_site_rects.second, site->get_site_key(), site_x, site_y, site_w, site_h);
-			this->generate_entity_groups(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
-			this->generate_blocks(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h);
+			const bool generated_paths = this->generate_paths(this->get_level_gen_data(site->get_level_gen_data_key()), 
+				sub_site_rects.second, site->get_site_key(), site_x, site_y, site_w, site_h, seed);
+			if (!generated_paths) {
+				std::cout << "***WARNING: Failed to generate paths in Level.generate_sites()\n";
+				return std::pair<bool, std::vector<SiteRect *>>(false, site_rects);
+			}
+			this->generate_entity_groups(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h, seed);
+			this->generate_blocks(this->get_level_gen_data(site->get_level_gen_data_key()), site_x, site_y, site_w, site_h, seed);
 			this->generate_forced_tiles(site_gen_data, site_x, site_y);
 			this->generate_forced_blocks(site_gen_data, site_x, site_y);
 			this->generate_forced_entity_groups(site_gen_data, site_x, site_y);
@@ -467,18 +480,67 @@ std::pair<bool, std::vector<SiteRect *>> Level::generate_sites(LevelGenData * ge
 				this->location_markers.addItem(marker);
 			}
 		} else {
-			std::cout << "*** Error: 30 failed tries generating site\n";
+			std::cout << "*** Error: too many failed tries generating site\n";
 			//TODO: better error handling?
+			return std::pair<bool, std::vector<SiteRect*>>(false, site_rects);
 		}
 	}
 	return std::pair<bool, std::vector<SiteRect*>>(true, site_rects);
 }
 
-void Level::generate_pass_days(World * world, Player * player)
+void Level::generate_pass_days(World * world, Player * player, GlobalTime * time)
 {
 	for (int i = 0; i < LEVEL_GEN_PASS_DAYS; i++) {
-		this->update_new_day(world, player);
+		this->update_new_day(world, player, time);
 	}
+}
+
+// note: we check for the day the player goes to sleep, not the day he wakes up
+void Level::forced_gen_new_day_update(World * world, Player * player, GlobalTime * time)
+{
+	LevelGenData * gen_data = this->get_level_gen_data(this->gen_data_key.value());
+	if (gen_data == NULL || !gen_data->get_should_generate_new_day()) {
+		return;
+	}
+	std::vector<LevelGenUpdate *> gen_updates 
+		= this->get_level_gen_data(this->gen_data_key.value())->get_valid_level_gen_updates(world, this, time);
+	for (LevelGenUpdate * lgu : gen_updates) {
+		this->process_gen_update(lgu);
+	}
+}
+
+void Level::process_gen_update(LevelGenUpdate * gen_update)
+{
+	std::vector<ForcedTile *> forced_tiles = gen_update->get_forced_tiles();
+	for (ForcedTile * t : forced_tiles){
+		const int tx = t->tile_pos_x.value(), ty = t->tile_pos_y.value();
+		Tile * tile = this->get_tile(tx, ty);
+		tile->set_tile_sheet_col(t->tile_sheet_col.value());
+		tile->reset(this->tileset, t->tile_type_index.value());
+	}
+	std::vector<Block *> forced_blocks = gen_update->get_forced_blocks();
+	for (Block * b : forced_blocks) {
+		const int adj_x = (b->get_entity_starting_pos_x()) * TILE_SIZE,
+			adj_y = (b->get_entity_starting_pos_y()) * TILE_SIZE;
+		const int adj_tx = adj_x / TILE_SIZE, adj_ty = adj_y / TILE_SIZE;
+		Tile * t = this->get_tile(adj_x / TILE_SIZE, adj_y / TILE_SIZE);
+		const std::pair<int, int> ss_pos(b->get_entity_sheet_col(), b->get_entity_sheet_row());
+		t->replace_block(this->tileset, b, ss_pos, std::pair<int, int>(adj_tx, adj_ty));
+	}
+	std::vector<EntityGroup *> forced_egs = gen_update->get_forced_entity_groups();
+	for (EntityGroup * eg : forced_egs) {
+		const std::pair<int, int> adj_root_pos(eg->get_root_pos().first * TILE_SIZE,
+			eg->get_root_pos().second * TILE_SIZE);
+		eg->set_root_pos(adj_root_pos);
+		this->initialize_entity_group(eg);
+		this->entity_groups.addItem(eg);
+	}
+	// TODO: (what order? does it matter?)
+			// tiledImages
+			// path nodes
+			// NPCS (maybe just need their spawners, not the NPCs themselves-- goal is just that new NPCs show up)			
+			// what else?
+	//TODO: use same structs we use for regular gen forced updates
 }
 
 void Level::update_collide_buckets(Entity * e)
@@ -527,7 +589,7 @@ const std::vector<std::string> Level::collide_bucket_keys(Rect * collide_rect)
 	return bucket_keys;
 }
 
-const std::vector<std::pair<std::string, std::pair<int, int>>> Level::connect_path_nodes(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
+const GennedCoordList Level::connect_path_nodes(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
 	const int tile_index, std::vector<SiteRect*> site_rects, 
 	const std::pair<std::string, std::pair<int, int>> pos1_data, 
 	const std::pair<std::string, std::pair<int, int>> pos2_data,
@@ -535,21 +597,21 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::connect_pa
 {
 	std::pair<int, int> pos1 = pos1_data.second, pos2 = pos2_data.second;
 	const std::string key_1 = pos1_data.first, key_2 = pos2_data.first;
-	const bool enable_logging = false; //temp
+	const bool enable_logging = true; //temp
 	const int x1 = pos1.first, y1 = pos1.second,
 		x2 = pos2.first, y2 = pos2.second;
 	Tile * t1 = this->get_tile(x1, y1);
 	Tile * t2 = this->get_tile(x2, y2);
 	t1->reset(this->tileset, tile_index);
 	t2->reset(this->tileset, tile_index);
-	std::vector<std::pair<std::string, std::pair<int, int>>> path_coords;
+	std::vector<GennedCoords> path_coords;
 	if (x1 == x2 && y1 == y2) {
 		// the two tiles are actually the same, so there is no need to connect them
-		path_coords.push_back(std::pair<std::string, std::pair<int, int>> (key_1, std::pair<int, int>(x1, y1)));
+		path_coords.push_back(GennedCoords(x1, y1, key_1)); 
 		if (enable_logging) {
 			std::cout << "Not connecting tiles with coords (" + std::to_string(x1) + ", " + std::to_string(y1) + ") because same tile";
 		}
-		return path_coords;
+		return GennedCoordList(path_coords, true);
 	}
 	if (std::abs(x1 - x2) == 1 
 		&& std::abs(y1 - y2) == 1) {
@@ -559,14 +621,14 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::connect_pa
 				+ std::to_string(x2) + ", " + std::to_string(y2) + " because they are adjacent";
 		}
 		// the two tiles are adjacent and therefore already connected
-		path_coords.push_back(std::pair<std::string, std::pair<int, int>>(key_1, std::pair<int, int>(x1, y1)));
-		path_coords.push_back(std::pair<std::string, std::pair<int, int>>(key_2, std::pair<int, int>(x2, y2)));
-		return path_coords;
+		path_coords.push_back(GennedCoords(x1, y1, key_1));
+		path_coords.push_back(GennedCoords(x2, y2, key_2));
+		return GennedCoordList(path_coords, true);
 	}
 	return this->generate_weaving_paths(offset, dimensions, tile_index, site_rects, key_1, key_2, pos1, pos2, visited, path_size);
 }
 
-const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_weaving_paths(const std::pair<int, int> offset, 
+const GennedCoordList Level::generate_weaving_paths(const std::pair<int, int> offset, 
 	const std::pair<int, int> dimensions, 
 	const int tile_index, std::vector<SiteRect*> site_rects, 
 	const std::string key_1, const std::string key_2,
@@ -576,19 +638,19 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_w
 	const bool enable_logging = false; //temp
 	const int x1 = pos1.first, y1 = pos1.second, 
 		x2 = pos2.first, y2 = pos2.second;
-	std::vector<std::pair<int, int>> coordinates;
-	const std::vector<std::pair<std::string, std::pair<int, int>>> rolled_coordinates 
-		= this->generate_weaving_coordinates(offset, dimensions, 
-		site_rects, key_1, key_2, x1, y1, x2, y2, path_size, 1);
-	for (std::pair<std::string, std::pair<int, int>> coords : rolled_coordinates) {
-		// we won't need the site key here
-		coordinates.push_back(coords.second);
-	}
-	std::vector<std::pair<std::string, std::pair<int, int>>> path_coords;
-	const int size = coordinates.size();
+	const GennedCoordList coord_list
+		= this->generate_weaving_coordinates(offset, dimensions,
+			site_rects, key_1, key_2, x1, y1, x2, y2, path_size, 1);
+	std::vector<GennedCoords> path_coords;
+	if (!coord_list.success) {
+		std::cout << "*** WARNING: failure to generate paths in Level.generate_weaving_paths()\n";
+		return GennedCoordList(path_coords, false);
+	}	
+	std::vector<GennedCoords> coords = coord_list.coords;
+	const int size = coords.size();
 	for (int i = 0; i < size - 1; i++) {
-		const std::pair<int, int> pos1(coordinates[i].first, coordinates[i].second);
-		const std::pair<int, int> pos2(coordinates[i + 1].first, coordinates[i + 1].second);
+		const std::pair<int, int> pos1(coords[i].x, coords[i].y);
+		const std::pair<int, int> pos2(coords[i + 1].x, coords[i + 1].y);
 		const std::vector<std::pair<int, int>> line_coords 
 			= this->connect_path_nodes_straight_line(tile_index, pos1, pos2, path_size);
 		if (enable_logging) {
@@ -597,21 +659,28 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_w
 				+ std::to_string(pos2.first) + "," + std::to_string(pos2.second) + ")\n";
 		}
 		for (std::pair<int, int> lc : line_coords) {
-			std::pair<std::string, std::pair<int, int>> lc_data("", lc);
-			if (!(std::find(path_coords.begin(), path_coords.end(), lc_data) != path_coords.end())) {
-				// no key necessary for anything but the endpoints
-				path_coords.push_back(lc_data);
+			bool found_match = false;
+			for (GennedCoords pc : path_coords) {
+				if (pc.x == lc.first && pc.y == lc.second) { 
+					found_match = true;
+					break;
+				}
+			}
+			if (!found_match) {
+				std::pair<std::string, std::pair<int, int>> lc_data("", lc);
+				GennedCoords lc_coords = GennedCoords(lc.first, lc.second, "");
+				path_coords.push_back(lc_coords);
 				if (std::find(visited.begin(), visited.end(), lc_data) != visited.end()) {
 					// return early if we connect to a path we already visited
-					return path_coords;
+					return GennedCoordList(path_coords, true);
 				}
 			}
 		}
 	}
-	return path_coords; 
+	return GennedCoordList(path_coords, true);
 }
 
-const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_weaving_coordinates(
+const GennedCoordList Level::generate_weaving_coordinates(
 	const std::pair<int, int> offset,
 	const std::pair<int, int> dimensions, 
 	std::vector<SiteRect*> site_rects,
@@ -620,11 +689,12 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_w
 	const int x2, const int y2, 
 	const int path_size, int seed)
 {
-	std::vector<std::pair<std::string, std::pair<int, int>>> coordinates;
-	coordinates.push_back(std::pair<std::string, std::pair<int, int>>(key_1, std::pair<int, int>(x1, y1)));
+	std::vector<GennedCoords> coordinates;
+	coordinates.push_back(GennedCoords(x1, y1, key_1));
+	int tries = 0;
 	const int x_dist = std::abs(x1 - x2), y_dist = std::abs(y1 - y2);
 	// base case is that they are so close together we don't need to weave
-	if (x_dist > 4 || y_dist > 4) {
+	if (x_dist > 4 || y_dist > 4) {		
 		std::set<std::string> ignore_keys;
 		ignore_keys.insert(key_1);
 		ignore_keys.insert(key_2);
@@ -638,6 +708,10 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_w
 		bool has_valid_roll = false;
 		int adj_x = 0, adj_y = 0;
 		while (!has_valid_roll) {
+			if (tries > MAX_GEN_TRIES) {
+				std::cout << "*** WARNING: too many tries in Level.generate_weaving_coordinates()" << std::endl;
+				return GennedCoordList(coordinates, false);
+			}
 			has_valid_roll = true; // get into the first iteration of the while loop
 			srand(std::time(NULL) + x1 + y1 + x2 + y2 + seed);
 			const int x_roll = (rand() % x_range) - x_range;
@@ -652,19 +726,22 @@ const std::vector<std::pair<std::string, std::pair<int, int>>> Level::generate_w
 					break;
 				}
 			}
-			x_range++;
-			y_range++;
+			//x_range++;
+			//y_range++;
 			seed++;
+			tries++;
 		}
-		const std::vector<std::pair<std::string, std::pair<int, int>>> rolled_coordinates 
-			= this->generate_weaving_coordinates(offset, dimensions, site_rects, key_1, key_2, adj_x, adj_y, x2, y2, path_size, seed + 1);
-		for (std::pair<std::string, std::pair<int, int>> coords : rolled_coordinates) {
+		const GennedCoordList rolled_coordinates
+			= this->generate_weaving_coordinates(offset, dimensions, site_rects, 
+				key_1, key_2, adj_x, adj_y, x2, y2, path_size, seed + 1);
+		for (GennedCoords coords : rolled_coordinates.coords) {
 			coordinates.push_back(coords);
 		}
 	} else {
-		coordinates.push_back(std::pair<std::string, std::pair<int, int>>(key_2, std::pair<int, int>(x2, y2)));
+		GennedCoords coords = GennedCoords(x2, y2, key_2);
+		coordinates.push_back(coords);
 	}
-	return coordinates;
+	return GennedCoordList(coordinates, true);
 }
 
 const std::vector<std::pair<int, int>> Level::connect_path_nodes_straight_line(const int tile_index,
@@ -957,8 +1034,11 @@ ALLEGRO_BITMAP * Level::generate_cell_map_image(const int cell_width, const int 
 	return cell_image;
 }
 
-void Level::update_new_day(World * world, Player * player)
+void Level::update_new_day(World * world, Player * player, GlobalTime * time)
 {
+	//TODO: forced block updates (like adding/changing buildings and everything that would entail)
+	//			Make sure things happen in the right order (probably before update npcs)
+	this->forced_gen_new_day_update(world, player, time);
 	this->update_tiles_new_day(world, player);
 	this->update_npcs_new_day();
 	this->reset_collide_buckets();
@@ -1110,42 +1190,39 @@ void Level::initialize_blocks()
 
 }
 
-//TODO: avoid infinite loop by starting over and seeding again for each failure
-//			how many failures until giving up completely?
-void Level::generate_level(World * world, Player * player)
+void Level::generate_level(World * world, Player * player, GlobalTime * time)
 {
-	this->named_path_nodes.clear();
 	LevelGenData * gen_data = this->get_level_gen_data(this->gen_data_key.value());
 	if (gen_data == NULL || !(gen_data->get_should_generate())) {
 		return;
 	}	
 	const int width = this->tile_rows.getItem(0)->get_size(), height = this->tile_rows.size();
 	bool generation_complete = false;
-	for (int i = 0; i < 200; i++) {
-		srand(std::time(NULL));
+	for (int i = 0; i < MAX_GEN_TRIES; i++) {
 		if (generation_complete) {
 			break;
 		}
+		this->named_path_nodes.clear();
 		this->collide_buckets.clear();
-		const bool tiles_generated = this->generate_tiles(gen_data, 0, 0, width, height);
+		const bool tiles_generated = this->generate_tiles(gen_data, 0, 0, width, height, i);
 		if (!tiles_generated) {
 			continue;
 		}
 		//TODO: is this the right order to generate? do sites need to be generated avoiding paths? or should paths be generated later, avoiding sites?
-		std::pair<bool, std::vector<SiteRect *>> site_rect_data = this->generate_sites(gen_data, 0, 0, width, height);
+		std::pair<bool, std::vector<SiteRect *>> site_rect_data = this->generate_sites(gen_data, 0, 0, width, height, i);
 		if (!site_rect_data.first) {
 			continue;
 		}
 		std::vector<SiteRect *> site_rects = site_rect_data.second;
-		const bool generated_paths = this->generate_paths(gen_data, site_rects, "", 0, 0, width, height);
+		const bool generated_paths = this->generate_paths(gen_data, site_rects, "", 0, 0, width, height, i);
 		if (!generated_paths) {
 			continue;
 		}
-		const bool generated_egs = this->generate_entity_groups(gen_data, 0, 0, width, height);
+		const bool generated_egs = this->generate_entity_groups(gen_data, 0, 0, width, height, i);
 		if (!generated_egs) {
 			continue;
 		}
-		const bool generated_blocks = this->generate_blocks(gen_data, 0, 0, width, height);
+		const bool generated_blocks = this->generate_blocks(gen_data, 0, 0, width, height, i);
 		if (!generated_blocks) {
 			continue;
 		}	
@@ -1154,6 +1231,19 @@ void Level::generate_level(World * world, Player * player)
 	
 	if (!generation_complete) {
 		std::cout << "*** ERROR: failed to generated level!\n";
+		bool draw_debug = true; //TEMP (TODO: is this the right place?)
+		if (draw_debug) {
+			const int cell_width = this->width / LEVEL_MAP_SCALE, cell_height = this->height/ LEVEL_MAP_SCALE;
+			ALLEGRO_BITMAP *display = al_get_target_bitmap();
+			ALLEGRO_BITMAP * map_bitmap = al_create_bitmap(cell_width, cell_height);
+			al_set_target_bitmap(map_bitmap);
+			ALLEGRO_BITMAP * cell_bitmap = this->generate_cell_map_image(cell_width, cell_height, this->get_grid_x(), this->get_grid_y());
+			al_draw_bitmap(cell_bitmap, 0, 0, 0);
+			al_set_target_bitmap(display);
+			al_save_bitmap("resources/debug/map_failure.png", map_bitmap); //TODO: better name, possibly including dungeon 
+			//TODO: don't keep debug in final version
+			al_destroy_bitmap(map_bitmap);
+		}
 		//TODO: how to handle this error?
 		return;
 	}
@@ -1170,7 +1260,7 @@ void Level::generate_level(World * world, Player * player)
 	this->draw_tile_edge_bitmaps();
 	this->initialize_location_markers();
 
-	this->generate_pass_days(world, player);
+	this->generate_pass_days(world, player, time);
 }
 
 void Level::initialize_entity_groups()
@@ -2826,4 +2916,15 @@ void Level::draw_location_markers_onto_bitmap(ALLEGRO_BITMAP * bitmap, Rect & su
 		}
 	}
 	al_set_target_bitmap(display);
+}
+
+GennedCoords::GennedCoords(const int coord_x, const int coord_y, const std::string key)
+{
+	this->x = coord_x, this->y = coord_y, this->coords_key = key;
+}
+
+GennedCoordList::GennedCoordList(std::vector<GennedCoords> coordinates, const bool succ)
+{
+	this->coords = coordinates;
+	this->success = succ;
 }

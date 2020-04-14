@@ -34,6 +34,19 @@
 #define LEVEL_MAP_SCALE 30 // actual pixels to map pixels
 
 #define LEVEL_GEN_PASS_DAYS 5 // this many "days" pass when generating a level
+#define MAX_GEN_TRIES 10
+
+struct GennedCoords {
+	int x, y;
+	std::string coords_key;
+	GennedCoords(const int coord_x, const int coord_y, const std::string key);
+};
+
+struct GennedCoordList {
+	std::vector<GennedCoords> coords;
+	bool success;
+	GennedCoordList(std::vector<GennedCoords> coordinates, const bool success);
+};
 
 class World;
 class Level : public xmls::Serializable
@@ -65,29 +78,31 @@ private:
 	int height;
 	void draw_tiled_images(ALLEGRO_DISPLAY *display, const std::pair<int, int> offset, const int layer, const int screen_w, const int screen_h);
 	const bool generate_paths(LevelGenData * gen_data, std::vector<SiteRect *> site_rects, const std::string site_key,
-		const int start_x, const int start_y, const int width, const int height);
-	const bool generate_tiles(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
-	const bool generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
-	const bool generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
+		const int start_x, const int start_y, const int width, const int height, const int seed);
+	const bool generate_tiles(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed);
+	const bool generate_entity_groups(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed);
+	const bool generate_blocks(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed);
 	void generate_forced_tiles(LevelGenData * gen_data, const int x_off, const int y_off);
 	void generate_forced_blocks(LevelGenData * gen_data, const int x_off, const int y_off);
 	void generate_forced_entity_groups(LevelGenData * gen_data, const int x_off, const int y_off);
-	std::pair<bool, std::vector<SiteRect *>> generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height);
-	void generate_pass_days(World * world, Player * player);
+	std::pair<bool, std::vector<SiteRect *>> generate_sites(LevelGenData * gen_data, const int start_x, const int start_y, const int width, const int height, const int seed);
+	void generate_pass_days(World * world, Player * player, GlobalTime * time);
+	void forced_gen_new_day_update(World * world, Player * player, GlobalTime * time);
+	void process_gen_update(LevelGenUpdate * gen_update);
 	void update_collide_buckets(Entity * e);
 	void reset_collide_buckets();
 	const std::vector<std::string> collide_bucket_keys(Rect * collide_rect);
-	const std::vector<std::pair<std::string, std::pair<int, int>>> connect_path_nodes(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
+	const GennedCoordList connect_path_nodes(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
 		const int tile_index, std::vector<SiteRect *> site_rects,
 		const std::pair<std::string, std::pair<int, int>> pos1,
 		const std::pair<std::string, std::pair<int, int>> pos2, 
 		const std::vector<std::pair<std::string, std::pair<int, int>>> visited, const int path_size);
-	const std::vector<std::pair<std::string, std::pair<int, int>>> generate_weaving_paths(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
+	const GennedCoordList generate_weaving_paths(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
 		const int tile_index, std::vector<SiteRect *> site_rects, 
 		const std::string key_1, const std::string key_2, 
 		const std::pair<int, int> pos1, const std::pair<int, int> pos2,
 		const std::vector<std::pair<std::string, std::pair<int, int>>> visited, const int path_size);
-	const std::vector<std::pair<std::string, std::pair<int, int>>> generate_weaving_coordinates(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
+	const GennedCoordList generate_weaving_coordinates(const std::pair<int, int> offset, const std::pair<int, int> dimensions,
 		std::vector<SiteRect *> site_rects,
 		const std::string key_1, const std::string key_2,
 		const int x1, const int y1, const int x2, const int y2, const int path_size, int seed);
@@ -112,7 +127,7 @@ public:
 	void reset_for_reload();
 	void reload_tiles(Level &copy_level);
 	ALLEGRO_BITMAP * generate_cell_map_image(const int width, const int height, const int grid_x, const int grid_y);
-	void update_new_day(World * world, Player * player);
+	void update_new_day(World * world, Player * player, GlobalTime * time);
 	void update_tiles_new_day(World * world, Player * player);
 	void update_npcs_new_day();
 	void plant_day_update(World * world, Entity * plant, const int x, const int y);
@@ -120,7 +135,7 @@ public:
 	void initialize_empty();
 	void initialize_tiles();
 	void initialize_blocks();
-	void generate_level(World * world, Player * player);
+	void generate_level(World * world, Player * player, GlobalTime * time);
 	void initialize_entity_groups();
 	void initialize_entity_group(EntityGroup *eg);
 	void initialize_tiled_images();

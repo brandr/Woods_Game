@@ -1,6 +1,57 @@
 <root>
+    <SerializableClass Type="LevelGenData" Version="1" GenDataKey="start_neighborhood">
+            <Member Name="should_generate">false</Member>
+            <Member Name="should_generate_new_day">true</Member>
+            <Collection Name="gen_updates">
+                <Class Type="LevelGenUpdate" Version="1">
+                    <Collection Name="qualifiers">
+                        <Class Type="Qualifier" Version="1">
+                            <Member Name="comparator">0</Member>
+                            <Member Name="evaluator">1</Member>
+                            <Member Name="month">-1</Member>
+                            <Member Name="day">-1</Member>
+                            <Member Name="hour">-1</Member>
+                            <Member Name="minute">-1</Member>
+                            <Member Name="day_of_week">-1</Member>
+                            <Member Name="int_val"></Member>
+                            <Member Name="string_val"></Member>
+                            <Collection Name="qualifiers">
+                                <Class Type="Qualifier" Version="1">
+                                <Member Name="comparator">0</Member>
+                                <Member Name="evaluator">3</Member>
+                                <Member Name="month">5</Member>
+                                <Member Name="day">-1</Member>
+                                <Member Name="hour">-1</Member>
+                                <Member Name="minute">-1</Member>
+                                <Member Name="day_of_week">-1</Member>
+                                </Class>
+                                <Class Type="Qualifier" Version="1">
+                                <Member Name="comparator">0</Member>
+                                <Member Name="evaluator">3</Member>
+                                <Member Name="month">-1</Member>
+                                <Member Name="day">21</Member>
+                                <Member Name="hour">-1</Member>
+                                <Member Name="minute">-1</Member>
+                                <Member Name="day_of_week">-1</Member>
+                                </Class>
+                            </Collection>
+                        </Class>
+                    </Collection>
+                    <Collection Name="forced_tiles">
+                        <Class Type="ForcedTile" Version="1">
+                            <Member Name="tile_type_index">1</Member>
+                            <Member Name="tile_pos_x">10</Member>
+                            <Member Name="tile_pos_y">10</Member>
+                            <Member Name="tile_sheet_row">0</Member>
+                            <Member Name="tile_sheet_col">0</Member>
+                        </Class>
+                    </Collection>
+                </Class>
+            </Collection>
+        </SerializableClass>
     <SerializableClass Type="LevelGenData" Version="1" GenDataKey="gen_woods_1">
             <Member Name="should_generate">true</Member>
+            <Member Name="should_generate_new_day">false</Member>
             <Member Name="base_tile_type_index">3</Member>
             <Collection Name="tile_gen_rules">
                 <Class Type="TileGenRule" Version="1">

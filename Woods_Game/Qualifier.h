@@ -85,6 +85,7 @@ public:
 	Qualifier();
 	~Qualifier();
 	virtual const bool evaluate(World * world, Level * current_level);
+	virtual const bool evaluate(World * world, Level * current_level, GlobalTime * time);
 	virtual const bool evaluate(const int a, const int b);
 	virtual void set_other_time(GlobalTime * value);
 };

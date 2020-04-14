@@ -4,9 +4,9 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 3/28/2020
+Last updated 4/5/2020
 
-Target date for main code to be done: ~ May 2020
+Target date for main code to be done: ~ Sep 2020
 
 1. Level gen
 	(15-20 days)
@@ -31,35 +31,27 @@ Programming (unblocked)
 Procedural generation
 ---------------------------------------------------
 
-What to do when we hit the "error generating level" breakpoint?
-	* also make sure we fix infinite loop that can happen in while loop for generating paths 
 Add ability for forced changes to happen on certain dates and based on certain qualifiers
-	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church
+	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church	
+	* remember to allow both adding and removing
+	* would this just be like normal forced block generation but with qualifiers? (and it gets activated each day instead of once on world gen)
 Improve generation performance (both time it takes and memory usage)
-Finish LevelGenSite
-	* Maybe allow critters to have site-based spawning?
-	* will it be feasible to have the code figure out what order to place/generate keyed path nodes in? 
-		or would it work better to just put them in the right order in the xml?
+	* use breakpoints to see what part takes the longest 
+		# sometimes seems to be generate_blocks() but not sure
+		# add time logging similar to pathing
+		# this might be a good time to implement properties/launch settings for debug logging options
 
 ---------------------------------------------------
 Critters
 ---------------------------------------------------
 
 Critter spawning/biomes
-	* when should critters despawn?
 	* incorporate level size when calculating spawn chance/max critters to spawn for biome
 	* some critters might be under rocks, some indoors, some in ferns, etc-- how to categorize possible spawn locations?
-	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?)
-	* it's possible to catch bugs on the ground before the net hits the ground-- is this worth fixing?
-		# not enough to just change the mask to not allow catching in the air-- flying bugs can be caught that way (need to measure "height")
-		# Could make flying bugs render on the correct layer by putting their center pos on the ground "below" them
-			$ this will make no sense visually when they're really high up, so make them disappear if they go too high
 Basic AI
 	* what can critters do besides wander? how to decide?
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
-Make other critters and large animals
-Fix bug where critters get stuck sometimes (either in wall or against it)
 
 ---------------------------------------------------
 Controls
@@ -88,9 +80,36 @@ Fix bug where XML attributes can get saved twice after editing via ctrl-click
 Add specific editor components for things like path nodes, tiles, etc and reduce how much has to be entered directly as xml
 Fix bug where removing blocks doesn't seem to save (probaly because they only get removed from the tile, not the level-- should be more like egs)
 
+---------------------------------------------------
+Misc
+---------------------------------------------------
+
+Fix bug where player "snaps" position on new day after sleeping in bed
+
 -------------------------------------------------------------------------------------------------
-Programming (blocked/not sure if I want)
+Programming (blocked/not sure what I want)
 -------------------------------------------------------------------------------------------------
+
+---------------------------------------------------
+Procedural generation
+---------------------------------------------------
+
+What to do when we hit the "error generating level" breakpoint?
+	* also make sure this still happens-- not sure if it's possible anymore
+LevelGenSite
+	* will it always be feasible to have the code figure out what order to place/generate keyed path nodes in? 
+		or would it work better to just put them in the right order in the xml?
+	* Maybe allow critters to have site-based spawning?
+
+---------------------------------------------------
+Critters
+---------------------------------------------------
+
+Critter spawning/biomes
+	* when should critters despawn/respawn? (need core gameplay loop more refined to answer this)
+	* Maybe some critter types are set to only appear n days into the game (seasonal for early/late summer?) Can  this be done currently with qualifiers?
+Fix bug where critters get stuck sometimes (either in wall or against it)
+	* also make sure this is actually happening
 
 ---------------------------------------------------
 Memory management/error handling
@@ -142,6 +161,7 @@ Music
 	* see world.music_update() -- weather effects separate from music? (and ambient sounds like birds singing)
 	* should music fade out before finishing sometimes so we don't stop it so abruptly?
 	* short jingles for things like quests? (these should probably be SFX but not sure)
+	* how to decide music update timer (besides serialization)? maybe base on day length?		
 
 ---------------------------------------------------
 Stamina

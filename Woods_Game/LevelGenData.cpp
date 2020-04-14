@@ -4,6 +4,7 @@ LevelGenData::LevelGenData()
 {
 	setClassName("LevelGenData");
 	Register("should_generate", &should_generate);
+	Register("should_generate_new_day", &should_generate_new_day);
 	Register("base_tile_type_index", &base_tile_type_index);
 	Register("tile_gen_rules", &tile_gen_rules);
 	Register("path_systems", &path_systems);
@@ -13,11 +14,30 @@ LevelGenData::LevelGenData()
 	Register("forced_tiles", &forced_tiles);
 	Register("forced_blocks", &forced_blocks);
 	Register("forced_entity_groups", &forced_entity_groups);
+	Register("gen_updates", &gen_updates);
+}
+
+std::vector<LevelGenUpdate*> LevelGenData::get_valid_level_gen_updates(World * world, Level * level, GlobalTime * time)
+{
+	std::vector<LevelGenUpdate*> valid_updates;
+	const int size = this->gen_updates.size();
+	for (int i = 0; i < size; i++) {
+		LevelGenUpdate* lgu = this->gen_updates.getItem(i);
+		if (lgu->qualify(world, level, time)) {
+			valid_updates.push_back(lgu);
+		}
+	}
+	return valid_updates;
 }
 
 const bool LevelGenData::get_should_generate()
 {
 	return this->should_generate.value();
+}
+
+const bool LevelGenData::get_should_generate_new_day()
+{
+	return this->should_generate_new_day.value();
 }
 
 const int LevelGenData::get_base_tile_type_index()
@@ -213,4 +233,56 @@ ForcedTile::ForcedTile()
 	Register("tile_pos_y", &tile_pos_y);
 	Register("tile_sheet_col", &tile_sheet_col);
 	Register("tile_sheet_row", &tile_sheet_row);
+}
+
+LevelGenUpdate::LevelGenUpdate()
+{
+	setClassName("LevelGenUpdate");
+	Register("qualifiers", &qualifiers);
+	Register("forced_tiles", &forced_tiles);
+	Register("forced_blocks", &forced_blocks);
+	Register("forced_entity_groups", &forced_entity_groups);
+	//TODO: serialize forced updates
+}
+
+const bool LevelGenUpdate::qualify(World * world, Level * level, GlobalTime * time)
+{
+	const int size = this->qualifiers.size();
+	for (int i = 0; i < size; i++) {
+		Qualifier * q = this->qualifiers.getItem(i);
+		if (!q->evaluate(world, level, time)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+std::vector<ForcedTile*> LevelGenUpdate::get_forced_tiles()
+{
+	std::vector<ForcedTile*> tiles;
+	const int size = this->forced_tiles.size();
+	for (int i = 0; i < size; i++) {
+		tiles.push_back(this->forced_tiles.getItem(i));
+	}
+	return tiles;
+}
+
+std::vector<Block*> LevelGenUpdate::get_forced_blocks()
+{
+	std::vector<Block*> blocks;
+	const int size = this->forced_blocks.size();
+	for (int i = 0; i < size; i++) {
+		blocks.push_back(this->forced_blocks.getItem(i));
+	}
+	return blocks;
+}
+
+std::vector<EntityGroup*> LevelGenUpdate::get_forced_entity_groups()
+{
+	std::vector<EntityGroup*> egs;
+	const int size = this->forced_entity_groups.size();
+	for (int i = 0; i < size; i++) {
+		egs.push_back(this->forced_entity_groups.getItem(i));
+	}
+	return egs;
 }

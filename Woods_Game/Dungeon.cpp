@@ -82,10 +82,10 @@ void Dungeon::initialize_tiles()
 	}
 }
 
-void Dungeon::generate_levels(World * world, Player * player)
+void Dungeon::generate_levels(World * world, Player * player, GlobalTime * time)
 {
 	for (Level * level : this->level_list) {
-		level->generate_level(world, player);
+		level->generate_level(world, player, time);
 	}
 }
 
@@ -138,10 +138,10 @@ void Dungeon::load_images(ImageLoader& loader)
 {
 }
 
-void Dungeon::update_new_day(World * world, Player * player)
+void Dungeon::update_new_day(World * world, Player * player, GlobalTime * time)
 {
 	for (Level *level : this->level_list) {
-		level->update_new_day(world, player);
+		level->update_new_day(world, player, time);
 	}
 }
 

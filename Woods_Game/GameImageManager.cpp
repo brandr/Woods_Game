@@ -59,7 +59,7 @@ void GameImageManager::start_new_game(const std::string world_key)
 	filemanager.load_xml_content(&(this->world), world_filename, "SerializableClass", "WorldKey", world_key);
 	this->world.load_dungeons();
 	this->world.load_npcs();
-	this->world.generate_levels();
+	this->world.generate_levels(this->get_current_global_time()); // this is the most time-consuming step
 	this->world.generate_map_images();
 	const std::string initial_state_filename = new_game_path + "world_state";
 	this->world.load_world_state(initial_state_filename);

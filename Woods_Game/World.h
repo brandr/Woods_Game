@@ -84,7 +84,7 @@ public:
 	void load_npcs();
 	void recalculate_npc_paths();
 	void load_player();
-	void generate_levels();
+	void generate_levels(GlobalTime * time);
 	void generate_map_images();
 	void initialize_tiles();
 	void unload_content();

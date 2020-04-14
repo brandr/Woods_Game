@@ -37,12 +37,10 @@ PathNodeDjikstraPath * World::get_mapped_node_djikstra_path(const std::string np
 
 void World::music_update(Level * level, GlobalTime * time, const int game_mode)
 {
-	//TODO: weather effects separate from music? (and ambient sounds like birds singing)
 	AudioManager::get_instance().music_update();
 	if (game_mode == TOP_DOWN) {
 		AudioManager::get_instance().unpause_all_music();
-		if (!AudioManager::get_instance().is_playing_music()) {
-			//TODO: maybe base timer on day length?			
+		if (!AudioManager::get_instance().is_playing_music()) {	
 			if (this->music_timer < 0) {
 				const int interval = this->get_music_update_interval();
 				this->music_timer = interval;
@@ -527,12 +525,12 @@ void World::load_player()
 
 }
 
-void World::generate_levels()
+void World::generate_levels(GlobalTime * time)
 {
 	const int size = dungeons.size();
 	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
-			dungeons[i]->generate_levels(this, this->get_player());
+			dungeons[i]->generate_levels(this, this->get_player(), time);
 		}
 	}
 }
@@ -713,7 +711,7 @@ void World::update_new_day(GlobalTime * time, Player * player, const std::string
 	const int size = dungeons.size();
 	for (int i = 0; i < size; i++) {
 		if (dungeons[i]) {
-			dungeons[i]->update_new_day(this, player);
+			dungeons[i]->update_new_day(this, player, time);
 		}
 	}
 	this->update_npcs_new_day();

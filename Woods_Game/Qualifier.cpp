@@ -59,6 +59,12 @@ const bool Qualifier::evaluate(World * world, Level * current_level)
 	return false;
 }
 
+const bool Qualifier::evaluate(World * world, Level * current_level, GlobalTime * time)
+{
+	this->set_other_time(time);
+	return this->evaluate(world, current_level);
+}
+
 const bool Qualifier::evaluate(const int a, const int b)
 {
 	const int comp = this->comparator.value();

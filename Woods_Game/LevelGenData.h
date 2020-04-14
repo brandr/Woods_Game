@@ -4,9 +4,14 @@
 #include "Block.h"
 #include "EntityGroup.h"
 #include "LevelGenSite.h"
+#include "Qualifier.h"
 #include "Tile.h"
 
 #include "XMLSerialization.h"
+
+class GlobalTime;
+class Level;
+class World;
 
 struct TileGenRule : public xmls::Serializable {
 	TileGenRule();
@@ -73,10 +78,23 @@ struct ForcedTile : public xmls::Serializable {
 	xmls::xInt tile_sheet_col, tile_sheet_row;
 };
 
+struct LevelGenUpdate : public xmls::Serializable {
+	LevelGenUpdate();
+	xmls::Collection<Qualifier> qualifiers;
+	xmls::Collection<ForcedTile> forced_tiles;
+	xmls::Collection<Block> forced_blocks;
+	xmls::Collection<EntityGroup> forced_entity_groups;
+	const bool qualify(World * world, Level * level, GlobalTime * time);
+	std::vector<ForcedTile *> get_forced_tiles();
+	std::vector<Block*> get_forced_blocks();
+	std::vector<EntityGroup*> get_forced_entity_groups();
+};
+
 class LevelGenData : public xmls::Serializable
 {
 private:
 	xmls::xBool should_generate;
+	xmls::xBool should_generate_new_day;
 	xmls::xInt base_tile_type_index;
 	xmls::Collection<TileGenRule> tile_gen_rules;
 	xmls::Collection<LevelGenPathSystem> path_systems;
@@ -86,9 +104,12 @@ private:
 	xmls::Collection<ForcedTile> forced_tiles;
 	xmls::Collection<Block> forced_blocks;
 	xmls::Collection<EntityGroup> forced_entity_groups;
+	xmls::Collection<LevelGenUpdate> gen_updates;
 public:
 	LevelGenData();
+	std::vector<LevelGenUpdate *> get_valid_level_gen_updates(World * world, Level * level, GlobalTime * time);
 	const bool get_should_generate();
+	const bool get_should_generate_new_day();
 	const int get_base_tile_type_index();
 	const std::vector<LevelGenPathSystem*> get_path_systems();
 	const std::vector<TileGenRule*> get_tile_gen_rules();
