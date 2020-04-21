@@ -125,6 +125,7 @@ void run_main_loop(int argc, char *argv[], ALLEGRO_DISPLAY *display, std::string
 	ScreenManager::get_instance().initilaize(game_screen);
 	ScreenManager::get_instance().load_content();
 	ImageLoader::get_instance().load_content();
+	al_hide_mouse_cursor(display);
 	InputManager input;
 	al_start_timer(timer);
 	

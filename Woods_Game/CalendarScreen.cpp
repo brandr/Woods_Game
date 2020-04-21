@@ -158,6 +158,7 @@ void CalendarScreen::draw(ALLEGRO_DISPLAY * display)
 	if (this->showing_dialog()) {
 		this->draw_confirm_dialog_ui(display);
 	}
+	GameScreen::draw(display);
 }
 
 void CalendarScreen::draw_day_labels(ALLEGRO_DISPLAY * display)

@@ -742,12 +742,13 @@ void World::update_npcs_new_day()
 		const std::string level_key = npc->get_current_spawn_level_key();
 		const std::string spawner_key = npc->get_current_spawn_key();
 		Level * level = this->get_level_with_key(level_key);
+		// failing this if check is fine-- it just means the NPC won't be in town today
 		if (level && level->spawner_for_key(spawner_key)) {
 			level->add_npc_at_spawner(npc, spawner_key);
-		}
-		npc->clear_primary_destinations();
-		npc->cancel_current_pathing(0);
-		npc->clear_scheduled_actions_performed();
+			npc->clear_primary_destinations();
+			npc->cancel_current_pathing(0);
+			npc->clear_scheduled_actions_performed();
+		}		
 	}
 	//TODO: other NPC updates that should happen at the beginning of the day
 }

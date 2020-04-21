@@ -512,7 +512,7 @@ void Level::forced_gen_new_day_update(World * world, Player * player, GlobalTime
 void Level::process_gen_update(LevelGenUpdate * gen_update)
 {
 	std::vector<ForcedTile *> forced_tiles = gen_update->get_forced_tiles();
-	for (ForcedTile * t : forced_tiles){
+	for (ForcedTile * t : forced_tiles) {
 		const int tx = t->tile_pos_x.value(), ty = t->tile_pos_y.value();
 		Tile * tile = this->get_tile(tx, ty);
 		tile->set_tile_sheet_col(t->tile_sheet_col.value());
@@ -535,12 +535,50 @@ void Level::process_gen_update(LevelGenUpdate * gen_update)
 		this->initialize_entity_group(eg);
 		this->entity_groups.addItem(eg);
 	}
-	// TODO: (what order? does it matter?)
-			// tiledImages
-			// path nodes
-			// NPCS (maybe just need their spawners, not the NPCs themselves-- goal is just that new NPCs show up)			
-			// what else?
-	//TODO: use same structs we use for regular gen forced updates
+	std::vector<Spawner *> forced_spawners = gen_update->get_forced_spawners();
+	for (Spawner * s : forced_spawners) {
+		Rect *subsection = s->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_spawner_sheet_filename(s->get_entity_data_index());
+		std::pair<int, int> position(s->get_entity_starting_pos_x(), s->get_entity_starting_pos_y());
+		s->set_content(filename, subsection, position);
+		s->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
+		this->spawners.addItem(s);
+	}
+	std::vector<ForcedTiledImage *> forced_tiled_images = gen_update->get_forced_tiled_images();
+	for (ForcedTiledImage * fit : forced_tiled_images) {
+		std::pair<int, int> ss_pos(fit->tiled_image_sheet_col.value(), fit->tiled_image_sheet_row.value());
+		std::pair<int, int> pos(fit->x_pos.value(), fit->y_pos.value());
+		this->add_tiled_image(fit->tiled_image_key.value(), ss_pos, pos, fit->tiled_image_layer.value());
+	}
+	std::vector<LocationMarker *> forced_location_markers = gen_update->get_forced_location_markers();
+	for (LocationMarker * marker : forced_location_markers) {
+		Rect *subsection = marker->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_location_marker_sheet_filename(marker->get_entity_data_index());
+		std::pair<int, int> position(marker->get_entity_starting_pos_x(), marker->get_entity_starting_pos_y());
+		marker->set_content(filename, subsection, position);
+		marker->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
+		this->location_markers.addItem(marker);
+	}
+	std::vector<PathNode *> forced_path_nodes = gen_update->get_forced_path_nodes();
+	for (PathNode * node : forced_path_nodes) {
+		Rect *subsection = node->get_bitmap_subsection();
+		const std::string filename = this->tileset->get_full_path_node_sheet_filename(node->get_entity_data_index());
+		std::pair<int, int> position(node->get_entity_starting_pos_x(), node->get_entity_starting_pos_y());
+		node->set_content(filename, subsection, position);
+		node->set_rect(position.first, position.second,
+			TILE_SIZE, TILE_SIZE);
+		this->path_nodes.addItem(node);
+	}
+	
+	// handle removes last
+	std::vector<LevelGenRemove *> forced_removes = gen_update->get_forced_removes();
+	for (LevelGenRemove * lgr : forced_removes) {
+		const int object_type = lgr->object_type.value();
+		const int tx = lgr->tile_pos_x.value(), ty = lgr->tile_pos_y.value();
+		this->remove_level_object(object_type, std::pair<int, int>(tx, ty));
+	}	
 }
 
 void Level::update_collide_buckets(Entity * e)
@@ -1964,6 +2002,34 @@ Block * Level::get_block(const int tx, const int ty)
 		}
 	}
 	return NULL;
+}
+
+const bool Level::remove_level_object(const int object_type, const std::pair<int, int> tile_pos)
+{
+
+	switch (object_type) {
+	case OBJECT_TYPE_TILE:
+		this->remove_tile(tile_pos);
+		return true;
+	case OBJECT_TYPE_BLOCK:
+		this->remove_block(tile_pos);
+		return true;
+	case OBJECT_TYPE_ENTITY_GROUP:
+		this->remove_entity_group(tile_pos);
+		return true;
+	case OBJECT_TYPE_SPAWNER:
+		this->remove_spawner(tile_pos);
+		return true;
+	case OBJECT_TYPE_PATH_NODE:
+		this->remove_path_node(tile_pos);
+		return true;
+	case OBJECT_TYPE_LOCATION_MARKER:
+		this->remove_location_marker(tile_pos);
+		return true;
+	default:
+		break;
+	}
+	return false;
 }
 
 void Level::remove_tile(std::pair<int, int> pos)

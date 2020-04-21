@@ -1,42 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="GameImages">
-      <UniqueIdentifier>{b7337292-dd01-402c-9308-9f7d84ff19f0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameImages\Header Files">
-      <UniqueIdentifier>{d9f39a06-d019-4091-b48b-2109ba60cca8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameImages\Source Files">
-      <UniqueIdentifier>{c325aa2c-1453-4de0-b10e-da0caa57eb11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Screens">
-      <UniqueIdentifier>{6976a8e7-7f15-4be3-b677-5737722fcc40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Screens\Source Files">
-      <UniqueIdentifier>{d6189f48-441c-4a67-b854-3ef182e450c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Screens\Header Files">
-      <UniqueIdentifier>{0a063aae-9077-450f-8a7d-4efea143661d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities">
-      <UniqueIdentifier>{eb782931-6b94-4531-b9e4-864237cfc335}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities\Header Files">
-      <UniqueIdentifier>{ca006afb-4bc8-49e5-9c3a-b5b91d319589}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Utilities\Source Files">
-      <UniqueIdentifier>{7f8cfe7a-9b49-4f8d-90b5-8bb9d5eac9b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Items">
-      <UniqueIdentifier>{093a7900-7b5a-49c1-98ad-01858daca012}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Items\Source Files">
-      <UniqueIdentifier>{0a54efcb-c6fb-4e39-a58f-f034c6f5cd53}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Items\Header Files">
-      <UniqueIdentifier>{51a709b3-0338-488e-80c2-faeecc3fe496}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Controls">
       <UniqueIdentifier>{2219ea80-926a-4de1-a959-9ff05d9a93e2}</UniqueIdentifier>
     </Filter>
@@ -92,12 +56,6 @@
     <Filter Include="Application\Header Files">
       <UniqueIdentifier>{3d49d6ab-1071-47b6-bf11-cc9c0f523689}</UniqueIdentifier>
     </Filter>
-    <Filter Include="World">
-      <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="World\Header Files">
-      <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
-    </Filter>
     <Filter Include="LevelEditor">
       <UniqueIdentifier>{0bb47399-6fe3-488b-bbd9-153ae10cc8aa}</UniqueIdentifier>
     </Filter>
@@ -106,72 +64,6 @@
     </Filter>
     <Filter Include="LevelEditor\Source Files">
       <UniqueIdentifier>{6182198c-4dfe-41ac-8d4b-8614993d3f1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dialogs">
-      <UniqueIdentifier>{f8dc2ea9-6920-4d6a-a505-d53d359d604e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dialogs\Header Files">
-      <UniqueIdentifier>{d4e2bd99-0bea-4999-bbb0-4ec4d2f5f4b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Dialogs\Source Files">
-      <UniqueIdentifier>{102acaa2-dfa5-4604-9470-35602e14e6f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="World\Source Files">
-      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cutscenes">
-      <UniqueIdentifier>{7e34b6bd-836a-4793-b74e-3cee9aa273ab}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cutscenes\Header Files">
-      <UniqueIdentifier>{850f6694-cd9e-48ad-9152-da41fc775ce2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Cutscenes\Source Files">
-      <UniqueIdentifier>{21a233e3-dfa1-467b-b84b-54e158b34fd6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Time">
-      <UniqueIdentifier>{21ddf0ec-47b1-4097-b938-5f6afafc028a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Time\Header Files">
-      <UniqueIdentifier>{3ea2a00a-8ced-483f-a6e2-1cbbcb4d5370}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Time\Source Files">
-      <UniqueIdentifier>{a3a6e163-d804-4d08-9e29-be58a786ba8f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pathing">
-      <UniqueIdentifier>{6f0cd2f7-ec1d-4c27-9804-358882fc1b14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pathing\Header Files">
-      <UniqueIdentifier>{c29f1c18-52b1-4684-b4a7-389b01f93dec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Pathing\Source Files">
-      <UniqueIdentifier>{6df0917c-fbbe-4ddd-84ef-0b86e752975f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI">
-      <UniqueIdentifier>{d3e17301-76f1-4c54-beba-41c348e582c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Header Files">
-      <UniqueIdentifier>{4f1d2c5f-4762-4d45-85fe-6cb9bee29488}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="AI\Source Files">
-      <UniqueIdentifier>{c7aa5685-e9a4-4a1b-88f2-8ea1f8c17cb5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Qualifiers">
-      <UniqueIdentifier>{12dc44cf-fa4d-498f-b8c4-62d6265b0300}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Qualifiers\Header Files">
-      <UniqueIdentifier>{6b0be6f2-7b11-402b-b711-c8acf035bbdb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Qualifiers\Source Files">
-      <UniqueIdentifier>{92d8f63b-4b79-4233-a7fc-047cfd39e94c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quests">
-      <UniqueIdentifier>{0195131e-332e-462b-b447-9da7ad1ea173}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quests\Header Files">
-      <UniqueIdentifier>{c6559296-e51d-4797-a215-ec1275d14906}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Quests\Source Files">
-      <UniqueIdentifier>{e1f2ed2c-68fe-4ab6-bf7a-57f15cb0d11a}</UniqueIdentifier>
     </Filter>
     <Filter Include="Audio">
       <UniqueIdentifier>{09f6bae8-3a2a-4443-9cee-03c0d07fd624}</UniqueIdentifier>
@@ -182,91 +74,202 @@
     <Filter Include="Audio\Source Files">
       <UniqueIdentifier>{f3d02c3f-cef1-4c3c-b008-0dab0947b600}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Critters">
-      <UniqueIdentifier>{5dc5eda9-4092-4e7d-87ff-2ef9b37f019b}</UniqueIdentifier>
+    <Filter Include="Core">
+      <UniqueIdentifier>{7c4bec63-4d6e-4d9c-b9ec-ada704697cc3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Critters\Header Files">
-      <UniqueIdentifier>{f3f8199b-09ee-4a80-9779-89b4d032b017}</UniqueIdentifier>
+    <Filter Include="Core\AI">
+      <UniqueIdentifier>{d3e17301-76f1-4c54-beba-41c348e582c4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Critters\Source Files">
-      <UniqueIdentifier>{cd92421b-2f05-40d7-9482-e3b40843af26}</UniqueIdentifier>
+    <Filter Include="Core\AI\Header Files">
+      <UniqueIdentifier>{4f1d2c5f-4762-4d45-85fe-6cb9bee29488}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Encyclopedia">
+    <Filter Include="Core\AI\Source Files">
+      <UniqueIdentifier>{c7aa5685-e9a4-4a1b-88f2-8ea1f8c17cb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Encyclopedia">
       <UniqueIdentifier>{5d0a0461-d34a-465f-9666-ad7cc23eac44}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Encyclopedia\Header Files">
+    <Filter Include="Core\Encyclopedia\Header Files">
       <UniqueIdentifier>{2261fb30-cf05-4677-afcb-f1a0f0cb129c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Encyclopedia\Source Files">
+    <Filter Include="Core\Encyclopedia\Source Files">
       <UniqueIdentifier>{26c8c182-ae51-42aa-a255-6e4718674318}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menus">
-      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
+    <Filter Include="Core\Pathing">
+      <UniqueIdentifier>{6f0cd2f7-ec1d-4c27-9804-358882fc1b14}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menus\Header Files">
-      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
+    <Filter Include="Core\Pathing\Header Files">
+      <UniqueIdentifier>{c29f1c18-52b1-4684-b4a7-389b01f93dec}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Menus\Source Files">
-      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
+    <Filter Include="Core\Pathing\Source Files">
+      <UniqueIdentifier>{6df0917c-fbbe-4ddd-84ef-0b86e752975f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tiles">
-      <UniqueIdentifier>{8ed693ab-a79d-4abb-ac5b-62e880a99c3c}</UniqueIdentifier>
+    <Filter Include="Core\World">
+      <UniqueIdentifier>{1c205014-005c-4f47-9c84-38a9cb8fe53f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tiles\Header Files">
-      <UniqueIdentifier>{de13d9ba-5e72-4dd9-8762-92f30fdeebe4}</UniqueIdentifier>
+    <Filter Include="Core\World\Header Files">
+      <UniqueIdentifier>{c1d42f34-eaa8-4914-bd05-075fef30caab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Tiles\Source Files">
-      <UniqueIdentifier>{e57e7cd6-a020-443b-9152-a9b44d7ab946}</UniqueIdentifier>
+    <Filter Include="Core\World\Source Files">
+      <UniqueIdentifier>{74b4fcc4-3d4c-4e43-83d3-f92c89133e2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Animations">
+    <Filter Include="Core\Time">
+      <UniqueIdentifier>{21ddf0ec-47b1-4097-b938-5f6afafc028a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Header Files">
+      <UniqueIdentifier>{3ea2a00a-8ced-483f-a6e2-1cbbcb4d5370}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Time\Source Files">
+      <UniqueIdentifier>{a3a6e163-d804-4d08-9e29-be58a786ba8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities">
+      <UniqueIdentifier>{eb782931-6b94-4531-b9e4-864237cfc335}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Header Files">
+      <UniqueIdentifier>{ca006afb-4bc8-49e5-9c3a-b5b91d319589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utilities\Source Files">
+      <UniqueIdentifier>{7f8cfe7a-9b49-4f8d-90b5-8bb9d5eac9b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\GameImage">
+      <UniqueIdentifier>{b7337292-dd01-402c-9308-9f7d84ff19f0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\GameImage\Header Files">
+      <UniqueIdentifier>{d9f39a06-d019-4091-b48b-2109ba60cca8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\GameImage\Source Files">
+      <UniqueIdentifier>{c325aa2c-1453-4de0-b10e-da0caa57eb11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Animation">
       <UniqueIdentifier>{1ef228f6-c61f-41f8-b728-6693da5f5d70}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Animations\Header Files">
+    <Filter Include="Core\Animation\Header Files">
       <UniqueIdentifier>{d148d286-5a8f-45fd-8bdf-82f74573160c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Animations\Source Files">
+    <Filter Include="Core\Animation\Source Files">
       <UniqueIdentifier>{70928667-40e3-419c-b921-38690a387bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Cutscene">
+      <UniqueIdentifier>{7e34b6bd-836a-4793-b74e-3cee9aa273ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Cutscene\Header Files">
+      <UniqueIdentifier>{850f6694-cd9e-48ad-9152-da41fc775ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Cutscene\Source Files">
+      <UniqueIdentifier>{21a233e3-dfa1-467b-b84b-54e158b34fd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Item">
+      <UniqueIdentifier>{093a7900-7b5a-49c1-98ad-01858daca012}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Item\Source Files">
+      <UniqueIdentifier>{0a54efcb-c6fb-4e39-a58f-f034c6f5cd53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Item\Header Files">
+      <UniqueIdentifier>{51a709b3-0338-488e-80c2-faeecc3fe496}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Menu">
+      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Menu\Header Files">
+      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Menu\Source Files">
+      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Qualifier">
+      <UniqueIdentifier>{12dc44cf-fa4d-498f-b8c4-62d6265b0300}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Qualifier\Header Files">
+      <UniqueIdentifier>{6b0be6f2-7b11-402b-b711-c8acf035bbdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Qualifier\Source Files">
+      <UniqueIdentifier>{92d8f63b-4b79-4233-a7fc-047cfd39e94c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Quest">
+      <UniqueIdentifier>{0195131e-332e-462b-b447-9da7ad1ea173}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Quest\Header Files">
+      <UniqueIdentifier>{c6559296-e51d-4797-a215-ec1275d14906}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Quest\Source Files">
+      <UniqueIdentifier>{e1f2ed2c-68fe-4ab6-bf7a-57f15cb0d11a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Tile">
+      <UniqueIdentifier>{8ed693ab-a79d-4abb-ac5b-62e880a99c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Tile\Header Files">
+      <UniqueIdentifier>{de13d9ba-5e72-4dd9-8762-92f30fdeebe4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Tile\Source Files">
+      <UniqueIdentifier>{e57e7cd6-a020-443b-9152-a9b44d7ab946}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screen">
+      <UniqueIdentifier>{6976a8e7-7f15-4be3-b677-5737722fcc40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screen\Source Files">
+      <UniqueIdentifier>{d6189f48-441c-4a67-b854-3ef182e450c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Screen\Header Files">
+      <UniqueIdentifier>{0a063aae-9077-450f-8a7d-4efea143661d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Dialog">
+      <UniqueIdentifier>{f8dc2ea9-6920-4d6a-a505-d53d359d604e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Dialog\Header Files">
+      <UniqueIdentifier>{d4e2bd99-0bea-4999-bbb0-4ec4d2f5f4b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Dialog\Source Files">
+      <UniqueIdentifier>{102acaa2-dfa5-4604-9470-35602e14e6f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\AI\Critter">
+      <UniqueIdentifier>{5dc5eda9-4092-4e7d-87ff-2ef9b37f019b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\AI\Critter\Header Files">
+      <UniqueIdentifier>{f3f8199b-09ee-4a80-9779-89b4d032b017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\AI\Critter\Source Files">
+      <UniqueIdentifier>{cd92421b-2f05-40d7-9482-e3b40843af26}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Being.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Block.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Entity.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityEffect.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EntityGroup.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameImage.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameImageManager.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TitleScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InventoryScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PauseScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ScreenManager.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FileManager.h">
       <Filter>Utilities\Header Files</Filter>
@@ -287,31 +290,31 @@
       <Filter>Utilities\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MainGameScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ControlsMenuManager.h">
-      <Filter>Menus\Header Files</Filter>
+      <Filter>Core\Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuManager.h">
-      <Filter>Menus\Header Files</Filter>
+      <Filter>Core\Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuItem.h">
-      <Filter>Menus\Header Files</Filter>
+      <Filter>Core\Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="World.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dungeon.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Item.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Inventory.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InputManager.h">
       <Filter>Controls\Header Files</Filter>
@@ -356,7 +359,7 @@
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DungeonData.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TiledImageGrid.h">
       <Filter>LevelEditor\Header Files</Filter>
@@ -365,70 +368,70 @@
       <Filter>LevelEditor\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InteractAction.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InteractActionManager.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialog.h">
-      <Filter>Dialogs\Header Files</Filter>
+      <Filter>Core\Dialog\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Spawner.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Cutscene.h">
-      <Filter>Cutscenes\Header Files</Filter>
+      <Filter>Core\Cutscene\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Binding.h">
       <Filter>Utilities\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GlobalTime.h">
-      <Filter>Time\Header Files</Filter>
+      <Filter>Core\Time\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CalendarScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoadGameMenuManager.h">
-      <Filter>Menus\Header Files</Filter>
+      <Filter>Core\Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelGenData.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PathNode.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DjikstraPath.h">
-      <Filter>Pathing\Header Files</Filter>
+      <Filter>Core\Pathing\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AIState.h">
-      <Filter>AI\Header Files</Filter>
+      <Filter>Core\AI\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoadingScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NPCSchedule.h">
-      <Filter>Time\Header Files</Filter>
+      <Filter>Core\Time\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoadingData.h">
       <Filter>Utilities\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DjiktraPathData.h">
-      <Filter>Pathing\Header Files</Filter>
+      <Filter>Core\Pathing\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Qualifier.h">
-      <Filter>Qualifiers\Header Files</Filter>
+      <Filter>Core\Qualifier\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WorldState.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TriggerStatus.h">
-      <Filter>Quests\Header Files</Filter>
+      <Filter>Core\Quest\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DialogTree.h">
-      <Filter>Dialogs\Header Files</Filter>
+      <Filter>Core\Dialog\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LocationMarker.h">
-      <Filter>GameImages\Header Files</Filter>
+      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AudioLoader.h">
       <Filter>Audio\Header Files</Filter>
@@ -437,88 +440,88 @@
       <Filter>Audio\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CutsceneScript.h">
-      <Filter>Cutscenes\Header Files</Filter>
+      <Filter>Core\Cutscene\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ItemBase.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuestItem.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="QuestData.h">
-      <Filter>Quests\Header Files</Filter>
+      <Filter>Core\Quest\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Quest.h">
-      <Filter>Quests\Header Files</Filter>
+      <Filter>Core\Quest\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ItemManager.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ExchangeInventoryScreen.h">
-      <Filter>Screens\Header Files</Filter>
+      <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ItemPickup.h">
-      <Filter>Items\Header Files</Filter>
+      <Filter>Core\Item\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Critter.h">
-      <Filter>Critters\Header Files</Filter>
+      <Filter>Core\AI\Critter\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CritterManager.h">
-      <Filter>Critters\Header Files</Filter>
+      <Filter>Core\AI\Critter\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Encyclopedia.h">
-      <Filter>Encyclopedia\Header Files</Filter>
+      <Filter>Core\Encyclopedia\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CritterBiome.h">
-      <Filter>Critters\Header Files</Filter>
+      <Filter>Core\AI\Critter\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="BiomeManager.h">
-      <Filter>Critters\Header Files</Filter>
+      <Filter>Core\AI\Critter\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileType.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TiledImage.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TiledImageLayer.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileGroup.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TileSet.h">
-      <Filter>Tiles\Header Files</Filter>
+      <Filter>Core\Tile\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AIBeing.h">
-      <Filter>AI\Header Files</Filter>
+      <Filter>Core\AI\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WanderZone.h">
-      <Filter>AI\Header Files</Filter>
+      <Filter>Core\AI\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NPC.h">
-      <Filter>AI\Header Files</Filter>
+      <Filter>Core\AI\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Animation.h">
-      <Filter>Animations\Header Files</Filter>
+      <Filter>Core\Animation\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SpriteSheetAnimation.h">
-      <Filter>Animations\Header Files</Filter>
+      <Filter>Core\Animation\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ImageFilter.h">
-      <Filter>Animations\Header Files</Filter>
+      <Filter>Core\Animation\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FilterManager.h">
-      <Filter>Animations\Header Files</Filter>
+      <Filter>Core\Animation\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelGenSite.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelGenManager.h">
-      <Filter>World\Header Files</Filter>
+      <Filter>Core\World\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MusicData.h">
       <Filter>Audio\Header Files</Filter>
@@ -526,37 +529,37 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Being.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Block.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EntityEffect.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EntityGroup.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameImage.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameImageManager.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainGameScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PauseScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TitleScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ScreenManager.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FileManager.cpp">
       <Filter>Utilities\Source Files</Filter>
@@ -574,31 +577,31 @@
       <Filter>Utilities\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InventoryScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ControlsMenuManager.cpp">
-      <Filter>Menus\Source Files</Filter>
+      <Filter>Core\Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuItem.cpp">
-      <Filter>Menus\Source Files</Filter>
+      <Filter>Core\Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuManager.cpp">
-      <Filter>Menus\Source Files</Filter>
+      <Filter>Core\Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dungeon.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Level.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="World.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Item.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InputManager.cpp">
       <Filter>Controls\Source Files</Filter>
@@ -613,10 +616,10 @@
       <Filter>Application\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Entity.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GameScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelEditorScreen.cpp">
       <Filter>LevelEditor\Source Files</Filter>
@@ -652,7 +655,7 @@
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DungeonData.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TiledImageGrid.cpp">
       <Filter>LevelEditor\Source Files</Filter>
@@ -661,64 +664,64 @@
       <Filter>LevelEditor\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InteractAction.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InteractActionManager.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dialog.cpp">
-      <Filter>Dialogs\Source Files</Filter>
+      <Filter>Core\Dialog\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Spawner.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Cutscene.cpp">
-      <Filter>Cutscenes\Source Files</Filter>
+      <Filter>Core\Cutscene\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="GlobalTime.cpp">
-      <Filter>Time\Source Files</Filter>
+      <Filter>Core\Time\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CalendarScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoadGameMenuManager.cpp">
-      <Filter>Menus\Source Files</Filter>
+      <Filter>Core\Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelGenData.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MathUtilities.cpp">
       <Filter>Utilities\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PathNode.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DjikstraPath.cpp">
-      <Filter>Pathing\Source Files</Filter>
+      <Filter>Core\Pathing\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AIState.cpp">
-      <Filter>AI\Source Files</Filter>
+      <Filter>Core\AI\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoadingScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NPCSchedule.cpp">
-      <Filter>Time\Source Files</Filter>
+      <Filter>Core\Time\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Qualifier.cpp">
-      <Filter>Qualifiers\Source Files</Filter>
+      <Filter>Core\Qualifier\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WorldState.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TriggerStatus.cpp">
-      <Filter>Quests\Source Files</Filter>
+      <Filter>Core\Quest\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="DialogTree.cpp">
-      <Filter>Dialogs\Source Files</Filter>
+      <Filter>Core\Dialog\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LocationMarker.cpp">
-      <Filter>GameImages\Source Files</Filter>
+      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AudioLoader.cpp">
       <Filter>Audio\Source Files</Filter>
@@ -727,88 +730,88 @@
       <Filter>Audio\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CutsceneScript.cpp">
-      <Filter>Cutscenes\Source Files</Filter>
+      <Filter>Core\Cutscene\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemBase.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuestItem.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="QuestData.cpp">
-      <Filter>Quests\Source Files</Filter>
+      <Filter>Core\Quest\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Quest.cpp">
-      <Filter>Quests\Source Files</Filter>
+      <Filter>Core\Quest\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemManager.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ExchangeInventoryScreen.cpp">
-      <Filter>Screens\Source Files</Filter>
+      <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ItemPickup.cpp">
-      <Filter>Items\Source Files</Filter>
+      <Filter>Core\Item\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Critter.cpp">
-      <Filter>Critters\Source Files</Filter>
+      <Filter>Core\AI\Critter\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CritterManager.cpp">
-      <Filter>Critters\Source Files</Filter>
+      <Filter>Core\AI\Critter\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Encyclopedia.cpp">
-      <Filter>Encyclopedia\Source Files</Filter>
+      <Filter>Core\Encyclopedia\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CritterBiome.cpp">
-      <Filter>Critters\Source Files</Filter>
+      <Filter>Core\AI\Critter\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BiomeManager.cpp">
-      <Filter>Critters\Source Files</Filter>
+      <Filter>Core\AI\Critter\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tile.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TiledImage.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TiledImageLayer.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileGroup.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileSet.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TileType.cpp">
-      <Filter>Tiles\Source Files</Filter>
+      <Filter>Core\Tile\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="AIBeing.cpp">
-      <Filter>AI\Source Files</Filter>
+      <Filter>Core\AI\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="WanderZone.cpp">
-      <Filter>AI\Source Files</Filter>
+      <Filter>Core\AI\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NPC.cpp">
-      <Filter>AI\Source Files</Filter>
+      <Filter>Core\AI\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Animation.cpp">
-      <Filter>Animations\Source Files</Filter>
+      <Filter>Core\Animation\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SpriteSheetAnimation.cpp">
-      <Filter>Animations\Source Files</Filter>
+      <Filter>Core\Animation\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ImageFilter.cpp">
-      <Filter>Animations\Source Files</Filter>
+      <Filter>Core\Animation\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="FilterManager.cpp">
-      <Filter>Animations\Source Files</Filter>
+      <Filter>Core\Animation\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelGenSite.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelGenManager.cpp">
-      <Filter>World\Source Files</Filter>
+      <Filter>Core\World\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MusicData.cpp">
       <Filter>Audio\Source Files</Filter>

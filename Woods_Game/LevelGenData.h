@@ -4,7 +4,10 @@
 #include "Block.h"
 #include "EntityGroup.h"
 #include "LevelGenSite.h"
+#include "LocationMarker.h"
+#include "PathNode.h"
 #include "Qualifier.h"
+#include "Spawner.h"
 #include "Tile.h"
 
 #include "XMLSerialization.h"
@@ -78,16 +81,43 @@ struct ForcedTile : public xmls::Serializable {
 	xmls::xInt tile_sheet_col, tile_sheet_row;
 };
 
+struct LevelGenRemove : public xmls::Serializable {
+	LevelGenRemove();
+	xmls::xInt object_type;
+	xmls::xInt tile_pos_x;
+	xmls::xInt tile_pos_y;
+};
+
+struct ForcedTiledImage : public xmls::Serializable {
+	ForcedTiledImage();
+	xmls::xInt tiled_image_key;
+	xmls::xInt tiled_image_layer;
+	xmls::xInt tiled_image_sheet_col;
+	xmls::xInt tiled_image_sheet_row;
+	xmls::xInt x_pos;
+	xmls::xInt y_pos;
+};
+
 struct LevelGenUpdate : public xmls::Serializable {
 	LevelGenUpdate();
 	xmls::Collection<Qualifier> qualifiers;
 	xmls::Collection<ForcedTile> forced_tiles;
 	xmls::Collection<Block> forced_blocks;
 	xmls::Collection<EntityGroup> forced_entity_groups;
+	xmls::Collection<Spawner> forced_spawners;
+	xmls::Collection<LevelGenRemove> forced_removes;
+	xmls::Collection<ForcedTiledImage> forced_tiled_images;
+	xmls::Collection<LocationMarker> forced_location_markers;
+	xmls::Collection<PathNode> forced_path_nodes;
 	const bool qualify(World * world, Level * level, GlobalTime * time);
 	std::vector<ForcedTile *> get_forced_tiles();
 	std::vector<Block*> get_forced_blocks();
 	std::vector<EntityGroup*> get_forced_entity_groups();
+	std::vector<Spawner*> get_forced_spawners();
+	std::vector<LevelGenRemove*> get_forced_removes();
+	std::vector<ForcedTiledImage*> get_forced_tiled_images();
+	std::vector<LocationMarker*> get_forced_location_markers();
+	std::vector<PathNode*> get_forced_path_nodes();
 };
 
 class LevelGenData : public xmls::Serializable

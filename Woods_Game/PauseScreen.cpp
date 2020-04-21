@@ -174,8 +174,10 @@ void PauseScreen::update_mouse_position(const int x, const int y, const int z)
 
 void PauseScreen::mouse_cursor_update()
 {
-	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
-	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	const float back_w = al_get_bitmap_width(current_backdrop());
+	const float back_h = al_get_bitmap_height(current_backdrop());
+	const float x_off = (al_get_display_width(al_get_current_display()) - back_w) / 2.0;
+	const float y_off = (al_get_display_height(al_get_current_display()) - back_h) / 2.0;
 	current_menu_manager().mouse_cursor_update(mouse_pos.first, mouse_pos.second, x_off, y_off);
 }
 

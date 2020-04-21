@@ -154,7 +154,7 @@ const int MenuManager::mouse_selected_index(float x_pos, float y_pos, float x_of
 		const std::string text = item->get_text();
 		if (text == "") continue;
 		std::pair<float, float> menu_pos = item->get_position();
-		std::pair<float, float> adjusted_menu_pos(menu_pos.first, menu_pos.second);
+		std::pair<float, float> adjusted_menu_pos(menu_pos.first - position[0], menu_pos.second - position[1]);
 		std::pair<float, float> menu_item_dim(
 			float(al_get_text_width(font, text.c_str())), 
 			float(al_get_font_line_height(font)));

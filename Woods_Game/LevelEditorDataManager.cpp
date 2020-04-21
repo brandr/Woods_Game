@@ -627,39 +627,17 @@ bool LevelEditorDataManager::delete_level_object(std::pair<int, int> tile_pos)
 			&& tile_pos.second >= 0 && tile_pos.second < level_tile_dim.second) {
 			if (this->selected_object_tab_index >= 0) {
 				if (this->selected_object_tab_index >= 0) {
-					switch (this->selected_object_tab_index) {
-					case OBJECT_TYPE_TILE:
-						this->delete_level_tile(tile_pos);
-						update = true;
-						break;
-					case OBJECT_TYPE_BLOCK:
-						this->delete_level_block(tile_pos);
-						update = true;
-						break;
-					case OBJECT_TYPE_ENTITY_GROUP:
-						this->delete_level_entity_group(tile_pos);
-						update = true;
-						break;
-					case OBJECT_TYPE_SPAWNER:
-						this->delete_level_spawner(tile_pos);
-						update = true;
-						break;
-					case OBJECT_TYPE_PATH_NODE:
-						this->delete_level_path_node(tile_pos);
-						update = true;
-						break;
-					case OBJECT_TYPE_LOCATION_MARKER:
-						this->delete_level_location_marker(tile_pos);
-						update = true;
-						break;
-					default:
-						break;
-					}
+					update = this->confirm_delete_level_object(this->selected_object_tab_index, tile_pos);
 				}
 			}
 		}
 	}
 	return update;
+}
+
+const bool LevelEditorDataManager::confirm_delete_level_object(const int object_type, const std::pair<int, int> tile_pos)
+{
+	return this->active_levels[this->selected_level_index]->remove_level_object(object_type, tile_pos);
 }
 
 void LevelEditorDataManager::select_level_object(const std::pair<int, int> tile_pos)

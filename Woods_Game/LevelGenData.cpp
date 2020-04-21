@@ -242,7 +242,11 @@ LevelGenUpdate::LevelGenUpdate()
 	Register("forced_tiles", &forced_tiles);
 	Register("forced_blocks", &forced_blocks);
 	Register("forced_entity_groups", &forced_entity_groups);
-	//TODO: serialize forced updates
+	Register("forced_spawners", &forced_spawners);
+	Register("forced_removes", &forced_removes);
+	Register("forced_tiled_images", &forced_tiled_images);
+	Register("forced_location_markers", &forced_location_markers);
+	Register("forced_path_nodes", &forced_path_nodes);
 }
 
 const bool LevelGenUpdate::qualify(World * world, Level * level, GlobalTime * time)
@@ -285,4 +289,73 @@ std::vector<EntityGroup*> LevelGenUpdate::get_forced_entity_groups()
 		egs.push_back(this->forced_entity_groups.getItem(i));
 	}
 	return egs;
+}
+
+std::vector<Spawner*> LevelGenUpdate::get_forced_spawners()
+{
+	std::vector<Spawner*> spawners;
+	const int size = this->forced_spawners.size();
+	for (int i = 0; i < size; i++) {
+		spawners.push_back(this->forced_spawners.getItem(i));
+	}
+	return spawners;
+}
+
+std::vector<LevelGenRemove*> LevelGenUpdate::get_forced_removes()
+{
+	std::vector<LevelGenRemove*> removes;
+	const int size = this->forced_spawners.size();
+	for (int i = 0; i < size; i++) {
+		removes.push_back(this->forced_removes.getItem(i));
+	}
+	return removes;
+}
+
+std::vector<ForcedTiledImage*> LevelGenUpdate::get_forced_tiled_images()
+{
+	std::vector<ForcedTiledImage*> tiled_images;
+	const int size = this->forced_spawners.size();
+	for (int i = 0; i < size; i++) {
+		tiled_images.push_back(this->forced_tiled_images.getItem(i));
+	}
+	return tiled_images;
+}
+
+std::vector<LocationMarker*> LevelGenUpdate::get_forced_location_markers()
+{
+	std::vector<LocationMarker*> location_markers;
+	const int size = this->forced_location_markers.size();
+	for (int i = 0; i < size; i++) {
+		location_markers.push_back(this->forced_location_markers.getItem(i));
+	}
+	return location_markers;
+}
+
+std::vector<PathNode*> LevelGenUpdate::get_forced_path_nodes()
+{
+	std::vector<PathNode*> path_nodes;
+	const int size = this->forced_path_nodes.size();
+	for (int i = 0; i < size; i++) {
+		path_nodes.push_back(this->forced_path_nodes.getItem(i));
+	}
+	return path_nodes;
+}
+
+LevelGenRemove::LevelGenRemove()
+{
+	setClassName("LevelGenRemove");
+	Register("object_type", &object_type);
+	Register("tile_pos_x", &tile_pos_x);
+	Register("tile_pos_y", &tile_pos_y);
+}
+
+ForcedTiledImage::ForcedTiledImage()
+{
+	setClassName("ForcedTiledImage");
+	Register("tiled_image_key", &tiled_image_key);
+	Register("tiled_image_layer", &tiled_image_layer);
+	Register("tiled_image_sheet_col", &tiled_image_sheet_col);
+	Register("tiled_image_sheet_row", &tiled_image_sheet_row);
+	Register("pos_x", &x_pos);
+	Register("pos_y", &y_pos);
 }

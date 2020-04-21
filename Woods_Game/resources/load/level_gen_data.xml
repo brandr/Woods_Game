@@ -46,6 +46,17 @@
                             <Member Name="tile_sheet_col">0</Member>
                         </Class>
                     </Collection>
+                    <Collection Name="forced_spawners">
+                        <Class Type="Spawner" Version="1">
+                            <Member Name="SpawnerID">stranger_spawner_3</Member>
+                            <Member Name="EntityStartingPosX">320</Member>
+                            <Member Name="EntityStartingPosY">832</Member>
+                            <Member Name="EntityDataIndex">0</Member>
+                            <Member Name="EntitySheetCol">0</Member>
+                            <Member Name="EntitySheetRow">0</Member>
+                            <Collection Name="EntityAttributes"/>
+                        </Class>
+                    </Collection>
                 </Class>
             </Collection>
         </SerializableClass>

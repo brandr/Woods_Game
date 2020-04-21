@@ -1,5 +1,28 @@
 #include "GameScreen.h"
 
+ALLEGRO_BITMAP * GameScreen::get_mouse_cursor_bitmap()
+{
+	const std::string filename = this->get_mouse_cursor_bitmap_filename();
+	const std::string full_filename = ImageLoader::get_instance().full_filename(filename);
+	if (!ImageLoader::get_instance().keyed_image_exists(full_filename)) {
+		ImageLoader::get_instance().load_image(filename);
+	}
+	if (ImageLoader::get_instance().keyed_image_exists(full_filename)) {
+		return ImageLoader::get_instance().get_image(filename);
+	}
+	return NULL;
+}
+
+const std::string GameScreen::get_mouse_cursor_bitmap_filename()
+{
+	return "ui/cursors/" + this->get_mouse_cursor_key();	
+}
+
+const std::string GameScreen::get_mouse_cursor_key()
+{
+	return MOUSE_CURSOR_DEFAULT;
+}
+
 GameScreen::GameScreen()
 {
 	this->config = std::make_unique<Configurations>();
@@ -72,6 +95,15 @@ void GameScreen::update()
 
 void GameScreen::draw(ALLEGRO_DISPLAY *display)
 {
+	this->draw_mouse_cursor(display);
+}
+
+void GameScreen::draw_mouse_cursor(ALLEGRO_DISPLAY * display)
+{
+	ALLEGRO_BITMAP * cursor = this->get_mouse_cursor_bitmap();
+	if (cursor != NULL) {
+		al_draw_bitmap(cursor, this->mouse_pos.first, this->mouse_pos.second, 0);
+	}
 }
 
 void GameScreen::wait(const int duration)

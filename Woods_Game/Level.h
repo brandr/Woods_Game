@@ -36,6 +36,15 @@
 #define LEVEL_GEN_PASS_DAYS 5 // this many "days" pass when generating a level
 #define MAX_GEN_TRIES 10
 
+enum OBJECT_TYPES {
+	OBJECT_TYPE_TILE = 0,
+	OBJECT_TYPE_BLOCK = 1,
+	OBJECT_TYPE_ENTITY_GROUP = 2,
+	OBJECT_TYPE_SPAWNER = 3,
+	OBJECT_TYPE_PATH_NODE = 4,
+	OBJECT_TYPE_LOCATION_MARKER = 5
+};
+
 struct GennedCoords {
 	int x, y;
 	std::string coords_key;
@@ -173,6 +182,7 @@ public:
 	std::vector<Tile*> get_tiles_in_range(Entity* entity, const int range);
 	std::vector<Tile*> get_tiles_in_range(const int tx, const int ty, const int t_width, const int t_height, const int range);
 	Block * get_block(const int tx, const int ty);
+	const bool remove_level_object(const int object_type, const std::pair<int, int> tile_pos);
 	void remove_tile(std::pair<int, int> pos);
 	void remove_block(std::pair<int, int> pos);
 	void remove_entity_group(std::pair<int, int> pos);

@@ -957,6 +957,7 @@ void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
 {
 	game_image_manager.draw(display);
 	draw_ui(display);
+	GameScreen::draw(display);
 }
 
 void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)

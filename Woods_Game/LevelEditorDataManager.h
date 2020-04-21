@@ -16,15 +16,6 @@
 
 //TODO: make sure we avoid all memory leaks by filtering loading/unloading/etc through this class
 
-enum OBJECT_TYPES {
-	OBJECT_TYPE_TILE = 0, 
-	OBJECT_TYPE_BLOCK = 1, 
-	OBJECT_TYPE_ENTITY_GROUP = 2, 
-	OBJECT_TYPE_SPAWNER = 3, 
-	OBJECT_TYPE_PATH_NODE = 4,
-	OBJECT_TYPE_LOCATION_MARKER = 5
-};
-
 class Level;
 struct LevelDeleter
 {
@@ -131,6 +122,7 @@ public:
 	const std::string get_selected_object_display_name();
 	bool add_level_object(std::pair<int, int> tile_pos);
 	bool delete_level_object(std::pair<int, int> tile_pos);
+	const bool confirm_delete_level_object(const int object_type, const std::pair<int, int> tile_pos);
 	void select_level_object(const std::pair<int, int> tile_pos);
 	const bool selected_level_object_instance_matches(const std::pair<int, int> grid_pos, const int index);
 	const std::pair<int, int> get_selected_object_instance_dimensions();

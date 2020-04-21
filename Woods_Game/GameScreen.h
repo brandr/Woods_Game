@@ -10,6 +10,9 @@
 #include "ImageLoader.h"
 #include <memory>
 
+#define MOUSE_CURSOR_DEFAULT "default_cursor"
+#define MOUSE_CURSOR_HAND "hand_cursor"
+
 class ImageLoader;
 
 enum SCREEN_FLAGS { 
@@ -36,6 +39,9 @@ const static std::string FONT_COLOR_CALENDAR_DAYS = "333333";
 class GameScreen {
 protected:
 	typedef void(*controlFunc)(GameScreen&, ALLEGRO_EVENT, bool);
+	virtual ALLEGRO_BITMAP * get_mouse_cursor_bitmap();
+	virtual const std::string get_mouse_cursor_bitmap_filename();
+	virtual const std::string get_mouse_cursor_key();
 	InputManager input;
 	FileManager file_manager;
 	std::unique_ptr<Configurations> config;
@@ -57,6 +63,7 @@ public:
 	virtual void unload_content();
 	virtual void update();
 	virtual void draw(ALLEGRO_DISPLAY *display);
+	virtual void draw_mouse_cursor(ALLEGRO_DISPLAY *display);
 	virtual void wait(const int duration);
 	virtual int get_game_mode();
 	virtual GameScreen& screen_receiving_input();

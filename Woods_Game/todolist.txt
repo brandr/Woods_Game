@@ -4,23 +4,21 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 4/5/2020
+Last updated 4/18/2020
 
 Target date for main code to be done: ~ Sep 2020
 
-1. Level gen
-	(15-20 days)
+1. Critters
+	(5-10 days)
 2. Audio
 	(5-10 days)
 3. Animation code
 	(5-10 days)
-4. Critters
-	(5-10 days)
-5. Miscellaneous code stuff (break out into specific todos after getting here)
+4. Miscellaneous code stuff (break out into specific todos after getting here)
 	(???)
-6. Level Editor improvements
+5. Level Editor improvements
 	(???)
-7. Content!
+6. Content!
 	(???)
 
 -------------------------------------------------------------------------------------------------
@@ -28,18 +26,14 @@ Programming (unblocked)
 -------------------------------------------------------------------------------------------------
 
 ---------------------------------------------------
-Procedural generation
+Controls
 ---------------------------------------------------
 
-Add ability for forced changes to happen on certain dates and based on certain qualifiers
-	* example: eye of pan symbol on community center changes to cross when renaldo makes it his church	
-	* remember to allow both adding and removing
-	* would this just be like normal forced block generation but with qualifiers? (and it gets activated each day instead of once on world gen)
-Improve generation performance (both time it takes and memory usage)
-	* use breakpoints to see what part takes the longest 
-		# sometimes seems to be generate_blocks() but not sure
-		# add time logging similar to pathing
-		# this might be a good time to implement properties/launch settings for debug logging options
+Make custom mouse cursor 
+	* allow switching based on context/ what we're hovering over
+	* once we have all the cursors and the sizes are good, make sure hitboxes are correct for menus
+Need more intuitive way to display/back out of encyclopedia category
+Need way to back out of load part of main menu
 
 ---------------------------------------------------
 Critters
@@ -52,15 +46,6 @@ Basic AI
 	* what can critters do besides wander? how to decide?
 	* some critters should flee if player gets close
 		# this could be a good time to add sneaking mechanics -- tap control stick lightly on controller, press/hold some button on keyboard
-
----------------------------------------------------
-Controls
----------------------------------------------------
-
-Make custom mouse cursor (allow switching based on context/ what we're hovering over)	
-Test encyclopedia scrolling once we have enough encyclopedia items to scroll (both mouse scrolling and tab scrolling)
-Need more intuitive way to display/back out of encyclopedia category
-Need way to back out of load part of main menu
 
 ---------------------------------------------------
 Menus

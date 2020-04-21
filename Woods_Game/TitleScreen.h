@@ -26,6 +26,8 @@ private:
 	int menu_key = TITLE_MAIN_MENU;
 	void play_title_music();
 	void music_update();
+protected:
+	virtual const std::string get_mouse_cursor_key();
 public:
 	TitleScreen();
 	~TitleScreen();
