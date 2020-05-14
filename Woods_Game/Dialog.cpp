@@ -142,9 +142,10 @@ void Dialog::mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const i
 			const std::string text = text_lines[l];
 			const bool line_has_option = page->has_option(l);
 			if (line_has_option) {
-				const int x = x_off + DIALOG_OFFSET_X, y = y_off + DIALOG_OFFSET_Y + (l * DIALOG_LINE_SPACING);
+				const int opt_off = 34;
+				const int x = x_off + DIALOG_OFFSET_X + opt_off, y = y_off + DIALOG_OFFSET_Y + (l * DIALOG_LINE_SPACING);
 				const int text_width = al_get_text_width(font, text.c_str()), text_height = DIALOG_LINE_SPACING;
-				if (mouse_x >= x && y >= y && mouse_x < x + text_width, mouse_y < y + text_height) {
+				if (mouse_x >= x && mouse_y >= y && mouse_x < x + text_width && mouse_y < y + text_height) {
 					this->selected_option_index = option_index;
 					return;
 				}
@@ -152,6 +153,34 @@ void Dialog::mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const i
 			}
 		}
 	}
+}
+
+const bool Dialog::mouse_option_is_selected(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off) {
+	if (this->has_current_page()) {
+		DialogPage * page = this->page_map[this->page_num];
+		const bool page_has_options = page->has_options();
+		const int num_characters = this->should_scroll_text ? this->current_num_characters() : page->total_num_characters();
+		const std::vector<std::string> text_lines = page->get_text_lines(num_characters);
+		const int line_count = text_lines.size();
+		int option_index = 0;
+		int text_x_off = 0;
+		for (int l = 0; l < line_count; l++) {
+			const std::string text = text_lines[l];
+			const bool line_has_option = page->has_option(l);
+			if (line_has_option) {
+				const int opt_off = 34;
+				const int x = x_off + opt_off + DIALOG_OFFSET_X, y = y_off + DIALOG_OFFSET_Y + (l * DIALOG_LINE_SPACING);
+				const int text_width = font != NULL ? al_get_text_width(font, text.c_str()) : 120, 
+					text_height = DIALOG_LINE_SPACING;
+				if (mouse_x >= x && mouse_y >= y && mouse_x < x + text_width && mouse_y < y + text_height) {
+					this->selected_option_index = option_index;
+					return true;
+				}
+				option_index++;
+			}
+		}
+	}
+	return false;
 }
 
 void Dialog::process_mouse_click_left(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off)

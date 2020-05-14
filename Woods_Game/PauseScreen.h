@@ -21,6 +21,8 @@ private:
 	std::map<int, std::string> backdrop_filenames;
 	std::map<int, std::unique_ptr<MenuManager>> menus;
 	int menu_key = PAUSE_MAIN_MENU;
+protected:
+	virtual const std::string get_mouse_cursor_key();
 public:
 	PauseScreen();
 	~PauseScreen();

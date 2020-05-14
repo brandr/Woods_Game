@@ -1,6 +1,12 @@
 #include "InventoryScreen.h"
 #include "Level.h"
 
+const std::string InventoryScreen::get_mouse_cursor_key()
+{
+	//TODO
+	return GameScreen::get_mouse_cursor_key();
+}
+
 ALLEGRO_BITMAP * InventoryScreen::inventory_backdrop()
 {
 	return ImageLoader::get_instance().get_image("ui/inventory_backdrop");

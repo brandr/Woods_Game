@@ -34,7 +34,10 @@ class InventoryScreen :
 	public GameScreen
 {
 protected:
+	// shared with GameScreen
+	virtual const std::string get_mouse_cursor_key();
 
+	// shared with ExchangeInventoryScreen
 	int tab_index = INVENTORY_TAB_ITEMS;
 	int tab_mode = TAB_MODE_DEFAULT;
 	

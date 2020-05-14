@@ -7,7 +7,7 @@
         <Member Name="default_level_height">640</Member>
         <Member Name="current_level_grid_x">-1</Member>
         <Member Name="current_level_grid_y">-1</Member>
-        <Member Name="current_day">1</Member>
+        <Member Name="current_day">2</Member>
         <Class Name="music_data" Type="MusicData" Version="1">
             <Member Name="music_update_interval">500</Member>
             <Collection Name="music_nodes">

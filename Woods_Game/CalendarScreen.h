@@ -45,6 +45,8 @@ private:
 	const int last_day_index();
 	const int day_at_pos(const int x, const int y);
 	const bool may_select_day_at_pos(const int x, const int y);
+protected:
+	virtual const std::string get_mouse_cursor_key();
 public:
 	CalendarScreen();
 	~CalendarScreen();

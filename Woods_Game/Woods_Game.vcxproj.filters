@@ -167,15 +167,6 @@
     <Filter Include="Core\Item\Header Files">
       <UniqueIdentifier>{51a709b3-0338-488e-80c2-faeecc3fe496}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Menu">
-      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Menu\Header Files">
-      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Core\Menu\Source Files">
-      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Qualifier">
       <UniqueIdentifier>{12dc44cf-fa4d-498f-b8c4-62d6265b0300}</UniqueIdentifier>
     </Filter>
@@ -229,6 +220,15 @@
     </Filter>
     <Filter Include="Core\AI\Critter\Source Files">
       <UniqueIdentifier>{cd92421b-2f05-40d7-9482-e3b40843af26}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{81d8cd6e-51a8-45f3-8b0f-2b2f9e144dde}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu\Header Files">
+      <UniqueIdentifier>{09909907-35ad-47e8-be77-cdb35a685078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Menu\Source Files">
+      <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -293,13 +293,13 @@
       <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ControlsMenuManager.h">
-      <Filter>Core\Menu\Header Files</Filter>
+      <Filter>Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuManager.h">
-      <Filter>Core\Menu\Header Files</Filter>
+      <Filter>Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MenuItem.h">
-      <Filter>Core\Menu\Header Files</Filter>
+      <Filter>Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Level.h">
       <Filter>Core\World\Header Files</Filter>
@@ -392,7 +392,7 @@
       <Filter>Screen\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LoadGameMenuManager.h">
-      <Filter>Core\Menu\Header Files</Filter>
+      <Filter>Menu\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="LevelGenData.h">
       <Filter>Core\World\Header Files</Filter>
@@ -580,13 +580,13 @@
       <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ControlsMenuManager.cpp">
-      <Filter>Core\Menu\Source Files</Filter>
+      <Filter>Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuItem.cpp">
-      <Filter>Core\Menu\Source Files</Filter>
+      <Filter>Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MenuManager.cpp">
-      <Filter>Core\Menu\Source Files</Filter>
+      <Filter>Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dungeon.cpp">
       <Filter>Core\World\Source Files</Filter>
@@ -685,7 +685,7 @@
       <Filter>Screen\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LoadGameMenuManager.cpp">
-      <Filter>Core\Menu\Source Files</Filter>
+      <Filter>Menu\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="LevelGenData.cpp">
       <Filter>Core\World\Source Files</Filter>

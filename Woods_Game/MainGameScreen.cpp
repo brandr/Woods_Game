@@ -321,6 +321,36 @@ void MainGameScreen::dialog_mouse_cursor_update(const int mouse_x, const int mou
 	}
 }
 
+const std::string MainGameScreen::get_mouse_cursor_key()
+{
+	Dialog * dialog = NULL;
+	switch (get_game_mode()) {
+	case TOP_DOWN:
+		//TODO
+		return GameScreen::get_mouse_cursor_key();
+	case MAIN_GAME_DIALOG:
+		dialog = game_image_manager.get_player()->get_open_dialog();
+		if (dialog != NULL) {
+			const int mouse_x = this->mouse_pos.first, mouse_y = this->mouse_pos.second;
+			const int width = al_get_bitmap_width(dialog_backdrop_full_width());
+			const int height = al_get_bitmap_height(dialog_backdrop_full_width());
+			int x = (al_get_display_width(al_get_current_display()) - width) / 2;
+			const int y = 10;
+			if (mouse_x >= x && mouse_y >= y 
+				&& mouse_x < x + width && mouse_y < y + height) {
+				if (dialog->current_page_has_options()) {
+					if (dialog->mouse_option_is_selected(font_map[FONT_DIALOG], mouse_x, mouse_y, x, y)) {
+						return MOUSE_CURSOR_HAND;
+					}
+				}
+			}
+		}
+		return GameScreen::get_mouse_cursor_key();
+	default:
+		return GameScreen::get_mouse_cursor_key();
+	}
+}
+
 MainGameScreen::MainGameScreen()
 {
 	set_input_map();
@@ -957,7 +987,8 @@ void MainGameScreen::draw(ALLEGRO_DISPLAY * display)
 {
 	game_image_manager.draw(display);
 	draw_ui(display);
-	GameScreen::draw(display);
+	//TODO: only call super method if we want to draw the cursor and it's not drawn by another screen
+	//GameScreen::draw(display);
 }
 
 void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
@@ -990,12 +1021,14 @@ void MainGameScreen::draw_ui(ALLEGRO_DISPLAY * display)
 void MainGameScreen::draw_ui_inventory(ALLEGRO_DISPLAY * display)
 {
 	inventory_screen.draw(display);
+	draw_mouse_cursor(display);
 }
 
 void MainGameScreen::draw_ui_exchange_inventory(ALLEGRO_DISPLAY * display)
 {
 	if (exchange_inventory_screen.has_inventory()) {
 		exchange_inventory_screen.draw(display);
+		draw_mouse_cursor(display);
 	}
 }
 
@@ -1009,6 +1042,7 @@ void MainGameScreen::draw_ui_main_game(ALLEGRO_DISPLAY * display)
 	draw_hotbar(display);
 	draw_clock(display);
 	draw_stamina(display);
+	draw_mouse_cursor(display);
 }
 
 void MainGameScreen::draw_hotbar(ALLEGRO_DISPLAY * display)
@@ -1095,7 +1129,7 @@ void MainGameScreen::draw_ui_dialog(ALLEGRO_DISPLAY * display)
 		}
 		al_draw_bitmap(backdrop_bitmap, x, y, 0);
 		dialog->draw(display, font_map[FONT_DIALOG], x, y);
-		//TODO: font, text size, etc set in some config
+		draw_mouse_cursor(display);
 	}
 }
 

@@ -110,6 +110,54 @@ const bool CalendarScreen::may_select_day_at_pos(const int x, const int y)
 	return true;
 }
 
+const std::string CalendarScreen::get_mouse_cursor_key()
+{
+	const int mouse_x = this->mouse_pos.first;
+	const int mouse_y = this->mouse_pos.second;
+	if (this->showing_dialog()) {
+		const int x1 = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(calendar_backdrop_dialog())) / 2;
+		const int y1 = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop_dialog())) / 2;
+		if (this->player->get_open_dialog()->mouse_option_is_selected(NULL, mouse_x, mouse_y, x1, y1)) {
+			return MOUSE_CURSOR_HAND;
+		}
+	}
+	else {
+		int day_num = 1;
+		int col = this->first_day_index();
+		for (int row = 0; row < 6; row++ && day_num <= this->num_days_in_month()) {
+			col = col % 7;
+			while (col < 7 && day_num <= this->num_days_in_month()) {
+				const int x = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(calendar_backdrop())) / 2 + (col * 70) + 26;
+				const int y = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + (row * 53) + 100;
+				if (mouse_x >= x && mouse_y >= y && mouse_x < x + 70 && mouse_y < y + 53) {
+					return MOUSE_CURSOR_HAND;
+				}
+				day_num++;
+				col++;
+			}
+		}
+		if (this->may_decrement_month()) {
+			ALLEGRO_BITMAP * left = this->arrow_left();
+			const int w1 = al_get_bitmap_width(left), h1 = al_get_bitmap_height(left);
+			const int x1 = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(calendar_backdrop())) / 2 + 16;
+			const int y1 = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
+			if (mouse_x >= x1 && mouse_y >= y1 && mouse_x < x1 + w1 && mouse_y < y1 + w1) {
+				return MOUSE_CURSOR_HAND;
+			}
+		}
+		if (this->may_increment_month()) {
+			ALLEGRO_BITMAP * right = this->arrow_right();
+			const int w1 = al_get_bitmap_width(right), h2 = al_get_bitmap_height(right);
+			const int x1 = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(calendar_backdrop())) / 2 + al_get_bitmap_width(calendar_backdrop()) - 48;
+			const int y1 = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + 22;
+			if (mouse_x >= x1 && mouse_y >= y1 && mouse_x < x1 + w1 && mouse_y < y1 + w1) {
+				return MOUSE_CURSOR_HAND;
+			}
+		}
+	}
+	return GameScreen::get_mouse_cursor_key();
+}
+
 CalendarScreen::CalendarScreen()
 {
 }
@@ -326,7 +374,6 @@ void CalendarScreen::mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x,
 				const int y = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(calendar_backdrop())) / 2 + (row * 53) + 100;
 				if (mouse_x >= x && mouse_y >= y && mouse_x < x + 70 && mouse_y < y + 53) {
 					this->select_pos = std::pair<int, int>(col, row);
-					AudioManager::get_instance().play_sfx("menu_sounds/calendar_scroll", "" + SOUND_KEY_MENU);
 				}
 				day_num++;
 				col++;

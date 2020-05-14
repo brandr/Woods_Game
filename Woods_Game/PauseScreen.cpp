@@ -2,6 +2,17 @@
 
 
 
+const std::string PauseScreen::get_mouse_cursor_key()
+{
+	const float x_off = (al_get_display_width(al_get_current_display()) - al_get_bitmap_width(current_backdrop())) / 2.0;
+	const float y_off = (al_get_display_height(al_get_current_display()) - al_get_bitmap_height(current_backdrop())) / 2.0;
+	const int index = current_menu_manager().mouse_selected_index(this->mouse_pos.first, this->mouse_pos.second, x_off, y_off);
+	if (index >= 0) {
+		return MOUSE_CURSOR_HAND;
+	}
+	return GameScreen::get_mouse_cursor_key();
+}
+
 PauseScreen::PauseScreen()
 {
 	

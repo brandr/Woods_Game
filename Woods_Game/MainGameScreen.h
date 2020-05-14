@@ -48,6 +48,8 @@ private:
 
 	void dialog_process_mouse_click_left(const int mouse_x, const int mouse_y);
 	void dialog_mouse_cursor_update(const int mouse_x, const int mouse_y);
+protected:
+	virtual const std::string get_mouse_cursor_key();
 public:
 	MainGameScreen();
 	~MainGameScreen();

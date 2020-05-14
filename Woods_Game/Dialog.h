@@ -92,6 +92,7 @@ public:
 	~Dialog();
 	void update();
 	void mouse_cursor_update(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
+	const bool mouse_option_is_selected(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
 	void process_mouse_click_left(ALLEGRO_FONT * font, const int mouse_x, const int mouse_y, const int x_off, const int y_off);
 	void draw(ALLEGRO_DISPLAY * display, ALLEGRO_FONT * font, const int x_off, const int y_off);
 	void advance_dialog();

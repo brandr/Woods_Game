@@ -29,9 +29,9 @@ Programming (unblocked)
 Controls
 ---------------------------------------------------
 
-Make custom mouse cursor 
-	* allow switching based on context/ what we're hovering over
-	* once we have all the cursors and the sizes are good, make sure hitboxes are correct for menus
+Make custom mouse cursors vary based on context
+	* MainGameScreen (need to change based on what we hover over)
+	* inventory screen (probably need special icons for dragging, and test exchange inventory too)
 Need more intuitive way to display/back out of encyclopedia category
 Need way to back out of load part of main menu
 
