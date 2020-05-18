@@ -5446,6 +5446,148 @@
                 <Collection Name="SpawnTileRules"/>
                 <Collection Name="ImageFilters"/>
             </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">128</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">64</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">192</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">false</Member>
+                <Member Name="Visible">false</Member>
+                <Member Name="EntityStartingPosX">128</Member>
+                <Member Name="EntityStartingPosY">576</Member>
+                <Member Name="EntityDataIndex">0</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings"/>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_key</Member>
+                                <Member Name="BindingValue">player_kitchen</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_x</Member>
+                                <Member Name="BindingValue">128</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_y</Member>
+                                <Member Name="BindingValue">128</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">false</Member>
+                <Member Name="Visible">false</Member>
+                <Member Name="EntityStartingPosX">64</Member>
+                <Member Name="EntityStartingPosY">128</Member>
+                <Member Name="EntityDataIndex">0</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings"/>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_key</Member>
+                                <Member Name="BindingValue">player_kitchen</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_x</Member>
+                                <Member Name="BindingValue">128</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_y</Member>
+                                <Member Name="BindingValue">128</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
         </Collection>
         <Collection Name="EntityGroups"/>
         <Collection Name="Spawners"/>
@@ -8628,6 +8770,7 @@
                                     <Collection Name="trigger_attributes"/>
                                 </Class>
                                 <Collection Name="qualifiers"/>
+                                <Collection Name="bindings"/>
                             </Class>
                         </Collection>
                     </Class>
@@ -12492,7 +12635,7 @@
                     </Class>
                     <Class Type="NeighborNode" Version="1">
                         <Member Name="NeighborNodeID">n_east_gate</Member>
-                    </Class>                    
+                    </Class>
                 </Collection>
                 <Collection Name="NextLevelNodes">
                     <Class Type="NextLevelNode" Version="1">
@@ -30026,6 +30169,2037 @@
                 <Collection Name="EntityAttributes"/>
             </Class>
         </Collection>
+        <Collection Name="LocationMarkers"/>
+        <Collection Name="TiledImageLayers"/>
+    </SerializableClass>
+    <SerializableClass LevelKey="player_kitchen" Type="Level" Version="1">
+        <Member Name="TilesetKey">tileset_indoors</Member>
+        <Member Name="BiomeKey">indoors</Member>
+        <Member Name="GridX">-1</Member>
+        <Member Name="GridY">-1</Member>
+        <Member Name="GridWidth">1</Member>
+        <Member Name="GridHeight">1</Member>
+        <Member Name="LevelGenDataKey"/>
+        <Collection Name="TileRows">
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+            <Class Type="TileGroup" Version="1">
+                <Member Name="Index"/>
+                <Collection Name="Tiles">
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                    <Class Type="Tile" Version="1">
+                        <Member Name="TileTypeIndex">0</Member>
+                        <Member Name="TileSheetCol">0</Member>
+                        <Member Name="TileSheetRow">0</Member>
+                        <Collection Name="TileEdges"/>
+                    </Class>
+                </Collection>
+            </Class>
+        </Collection>
+        <Collection Name="Blocks">
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">64</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">64</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">192</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">128</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">256</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">320</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">384</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">448</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">512</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">576</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">704</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">640</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">0</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">64</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">128</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">192</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">256</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">320</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">384</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">448</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">576</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">640</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">704</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">768</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">704</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">640</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">576</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">512</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">448</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">384</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">128</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">192</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">256</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">0</Member>
+                <Member Name="EntityStartingPosY">320</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">64</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">128</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">704</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">640</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">576</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">192</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">256</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">512</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">448</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">true</Member>
+                <Member Name="Visible">true</Member>
+                <Member Name="EntityStartingPosX">320</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">1</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions"/>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">false</Member>
+                <Member Name="Visible">false</Member>
+                <Member Name="EntityStartingPosX">384</Member>
+                <Member Name="EntityStartingPosY">678</Member>
+                <Member Name="EntityDataIndex">0</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings"/>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_key</Member>
+                                <Member Name="BindingValue">start_neighborhood</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_x</Member>
+                                <Member Name="BindingValue">447</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">destination_level_pos_y</Member>
+                                <Member Name="BindingValue">480</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">play_sound</Member>
+                        <Member Name="FunctionName">play_sound</Member>
+                        <Collection Name="Bindings">
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">sound_key</Member>
+                                <Member Name="BindingValue">door_slam</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">sound_duration</Member>
+                                <Member Name="BindingValue">8</Member>
+                            </Class>
+                            <Class Type="ActionBinding" Version="1">
+                                <Member Name="BindingKey">require_moving</Member>
+                                <Member Name="BindingValue">0</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+            <Class Type="Block" Version="1">
+                <Member Name="Solid">false</Member>
+                <Member Name="Visible">false</Member>
+                <Member Name="EntityStartingPosX">384</Member>
+                <Member Name="EntityStartingPosY">768</Member>
+                <Member Name="EntityDataIndex">0</Member>
+                <Member Name="EntitySheetCol">0</Member>
+                <Member Name="EntitySheetRow">0</Member>
+                <Member Name="CenterOffsetX">0</Member>
+                <Member Name="CenterOffsetY">0</Member>
+                <Collection Name="EntityAttributes"/>
+                <Collection Name="ContactActions">
+                    <Class Type="InteractAction" Version="1">
+                        <Member Name="InteractActionKey">go_to_level</Member>
+                        <Member Name="FunctionName">go_to_level</Member>
+                        <Collection Name="Bindings"/>
+                        <Collection Name="Qualifiers"/>
+                    </Class>
+                </Collection>
+                <Collection Name="InteractActions"/>
+                <Collection Name="LoadDayActions"/>
+                <Collection Name="ItemDrops"/>
+                <Collection Name="SpawnTileRules"/>
+                <Collection Name="ImageFilters"/>
+            </Class>
+        </Collection>
+        <Collection Name="EntityGroups"/>
+        <Collection Name="Spawners"/>
+        <Collection Name="PathNodes"/>
         <Collection Name="LocationMarkers"/>
         <Collection Name="TiledImageLayers"/>
     </SerializableClass>
