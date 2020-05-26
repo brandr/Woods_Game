@@ -4,7 +4,7 @@ Woods game todolist
 Code Prioritization
 ---------------------------------------------------
 
-Last updated 4/18/2020
+Last updated 5/25/2020
 
 Target date for main code to be done: ~ Sep 2020
 
@@ -24,6 +24,12 @@ Target date for main code to be done: ~ Sep 2020
 -------------------------------------------------------------------------------------------------
 Programming (unblocked)
 -------------------------------------------------------------------------------------------------
+
+---------------------------------------------------
+Misc
+---------------------------------------------------
+
+Make it so time doesn't pass until the player first goes downstairs on day 1 and can't use bed/calendar
 
 ---------------------------------------------------
 Controls

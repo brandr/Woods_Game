@@ -1,6 +1,59 @@
 <root>
     <SerializableClass Type="CutsceneList" Version="1" CutsceneListKey="all_cutscenes">
-        <Collection Name="cutscenes">
+        <Collection Name="cutscenes">            
+            <Class Type="CutsceneScript" Version="1">
+                <Member Name="cutscene_key">mom_first_cutscene</Member>
+                <Member Name="replayable">false</Member>
+                <Collection Name="blocks">
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">0</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_walk_agents</Member>
+                        <Member Name="effect_key"></Member>
+                        <Collection Name="block_tiles" Version="1">
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">player</Member>
+                                <Member Name="tile_x">6</Member>
+                                <Member Name="tile_y">5</Member>
+                                <Member Name="direction">3</Member>
+                            </Class>
+                            <Class Type="CutsceneBlockTile" Version="1">
+                                <Member Name="agent_key">player_mom</Member>
+                                <Member Name="tile_x">6</Member>
+                                <Member Name="tile_y">4</Member>
+                                <Member Name="direction">4</Member>
+                            </Class>
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                        </Class>
+                    </Class>
+                    <Class Type="CutsceneScriptBlock" Version="1">
+                        <Member Name="block_index">1</Member>
+                        <Member Name="next_block_index">-1</Member>                        
+                        <Member Name="duration">0</Member>
+                        <Member Name="action_key">action_dialog</Member>
+                        <Member Name="effect_key"></Member>
+                        <Member Name="music_key">running_theme</Member>
+                        <Collection Name="block_tiles" Version="1">
+                        </Collection>
+                        <Collection Name="block_triggers" Version="1">
+                        </Collection>
+                        <Class Type="DialogItem" Name="dialog_item" Version="1">
+                            <Member Name="conversation_index">0</Member>
+                            <Collection Name="pages">
+                                <Class Type="DialogItemPage" Version="1">
+                                    <Member Name="dialog_text">[l]It's your first day of summer! You should go have fun outside![/l]</Member>
+                                    <Member Name="page_number">0</Member>
+                                    <Member Name="next_page_index">-1</Member>
+                                </Class>
+                            </Collection>
+                        </Class>
+                    </Class>
+                </Collection>
+            </Class>
             <Class Type="CutsceneScript" Version="1">
                 <Member Name="cutscene_key">test_cutscene_1</Member>
                 <Member Name="replayable">false</Member>

@@ -230,6 +230,15 @@
     <Filter Include="Menu\Source Files">
       <UniqueIdentifier>{41b8db95-79f4-41fb-9830-8e4456e79a75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Core\Action">
+      <UniqueIdentifier>{41a5bf38-a135-43de-9342-9ea29472a035}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Action\Header Files">
+      <UniqueIdentifier>{983b79c2-1b93-44d9-b532-cd75c3f8f14b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core\Action\Source Files">
+      <UniqueIdentifier>{ad5af999-9cd8-4176-84ca-4f8d79b0872a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Player.h">
@@ -366,12 +375,6 @@
     </ClInclude>
     <ClInclude Include="LevelGridKeyboardListener.h">
       <Filter>LevelEditor\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InteractAction.h">
-      <Filter>Core\GameImage\Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="InteractActionManager.h">
-      <Filter>Core\GameImage\Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Dialog.h">
       <Filter>Core\Dialog\Header Files</Filter>
@@ -526,6 +529,12 @@
     <ClInclude Include="MusicData.h">
       <Filter>Audio\Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="InteractAction.h">
+      <Filter>Core\Action\Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="InteractActionManager.h">
+      <Filter>Core\Action\Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Being.cpp">
@@ -662,12 +671,6 @@
     </ClCompile>
     <ClCompile Include="LevelGridKeyboardListener.cpp">
       <Filter>LevelEditor\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InteractAction.cpp">
-      <Filter>Core\GameImage\Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="InteractActionManager.cpp">
-      <Filter>Core\GameImage\Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Dialog.cpp">
       <Filter>Core\Dialog\Source Files</Filter>
@@ -815,6 +818,12 @@
     </ClCompile>
     <ClCompile Include="MusicData.cpp">
       <Filter>Audio\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractAction.cpp">
+      <Filter>Core\Action\Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="InteractActionManager.cpp">
+      <Filter>Core\Action\Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

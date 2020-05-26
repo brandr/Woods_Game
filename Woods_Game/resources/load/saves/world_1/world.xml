@@ -50,6 +50,102 @@
         </Collection>
         <Collection Name="npcs">
             <Class Type="NPC" Version="1">
+                <Member Name="npc_key">player_mom</Member>
+                <Member Name="start_level_key">player_kitchen</Member>
+                <Member Name="default_spawn_level_key">player_kitchen</Member>
+                <Member Name="animation_spritesheet_key">mom_spritesheet_1</Member>
+                <Member Name="center_offset_x">32</Member>
+                <Member Name="center_offset_y">89</Member>
+                <Member Name="collide_x_offset">0</Member>
+                <Member Name="collide_y_offset">64</Member>
+                <Member Name="collide_width">64</Member>
+                <Member Name="collide_height">32</Member>
+                <Member Name="spritesheet_frame_width">64</Member>
+                <Member Name="spritesheet_frame_height">96</Member>
+                <Member Name="base_walk_speed">1.0</Member>
+                <Member Name="start_spawn_key">mom_spawner_kitchen</Member>
+                <Member Name="default_spawn_key">mom_spawner_kitchen</Member>
+                <Member Name="obeys_tile_rules">true</Member>
+                <Member Name="voice_key">stranger</Member>
+                <Member Name="default_dialog_text">[p][l]I am your mother.[/l][/p]</Member>
+                <Class Name="schedule" Type="NPCSchedule" Version="1">
+                    <Class Name="default_day_schedule" Type="DaySchedule" Version="1">
+                        <Collection Name="schedule_blocks">
+                            <Class Type="ScheduleTimeBlock" Version="1">
+                                <Member Name="node_key">player_kitchen_a</Member>
+                                <Member Name="priority">1</Member>
+                                <Member Name="forced_anim_state"/>
+                                <Member Name="forced_anim_dir"/>
+                                <Class Name="wander_zone" Type="WanderZone" Version="1">
+                                    <Member Name="should_wander">false</Member>
+                                    <Member Name="min_x"/>
+                                    <Member Name="min_y"/>
+                                    <Member Name="max_x"/>
+                                    <Member Name="max_y"/>
+                                </Class>
+                                <Class Name="scheduled_action" Type="ScheduledAction" Version="1">
+                                    <Member Name="scheduled_action_key"/>
+                                    <Member Name="action_object_type"/>
+                                    <Member Name="action_object_tile_x"/>
+                                    <Member Name="action_object_tile_y"/>
+                                    <Class Name="action" Type="InteractAction" Version="1">
+                                        <Member Name="InteractActionKey"/>
+                                        <Member Name="FunctionName"/>
+                                        <Collection Name="Bindings"/>
+                                        <Collection Name="Qualifiers"/>
+                                    </Class>
+                                </Class>
+                                <Collection Name="qualifiers"/>
+                            </Class>
+                        </Collection>
+                    </Class>
+                    <Collection Name="schedule_blocks"/>
+                </Class>
+                <Class Name="dialog_tree" Type="DialogTree" Version="1">
+                    <Class Name="root_node" Type="DialogTreeNode" Version="1">
+                        <Class Name="dialog_group" Type="DialogGroup" Version="1">
+                            <Member Name="priority"/>
+                            <Collection Name="dialog_items"/>
+                        </Class>
+                        <Collection Name="child_nodes"/>
+                        <Collection Name="qualifiers"/>
+                    </Class>
+                </Class>
+                <Collection Name="animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">neutral</Member>
+                        <Member Name="animation_frame_width">1</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">1</Member>
+                        <Member Name="animation_pixel_step_size"/>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
+                    </Class>
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed"/>
+                        <Member Name="animation_max_speed"/>
+                    </Class>
+                </Collection>
+                <Collection Name="walk_animation_data">
+                    <Class Type="AnimationData" Version="1">
+                        <Member Name="animation_key">walking</Member>
+                        <Member Name="animation_frame_width">2</Member>
+                        <Member Name="animation_frame_height">5</Member>
+                        <Member Name="animation_frame_duration">8</Member>
+                        <Member Name="animation_pixel_step_size">26</Member>
+                        <Member Name="animation_min_speed">0.0</Member>
+                        <Member Name="animation_max_speed">5.0</Member>
+                    </Class>
+                </Collection>
+                <Collection Name="entity_effect_data"/>
+                <Collection Name="additional_mask_data"/>
+            </Class>
+            <Class Type="NPC" Version="1">
                 <Member Name="npc_key">stranger_3</Member>
                 <Member Name="start_level_key">start_neighborhood</Member>
                 <Member Name="default_spawn_level_key">start_neighborhood</Member>
